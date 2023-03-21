@@ -196,7 +196,8 @@ unset DISABLE_MAGIC_FUNCTIONS
 
 # p10k
 if [[ ! -v POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS ]]; then
-	[[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
+	[[ -f ~/.zsh/.p10k.zsh ]] && source ~/.zsh/.p10k.zsh
+	# [[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
 fi
 
 # ### install fd
