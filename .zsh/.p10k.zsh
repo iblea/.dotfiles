@@ -130,6 +130,8 @@
   # full icon
   # typeset -g POWERLEVEL9K_VCS_BRANCH_ICON='\uF126 '
   # typeset -g POWERLEVEL9K_HIDE_BRANCH_ICON=true
+  # typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=''
+
   # none icon
   # typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=
 
@@ -256,8 +258,9 @@
   # If directory is too long, shorten some of its segments to the shortest possible unique
   # prefix. The shortened directory can be tab-completed to the original.
   # typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
-  typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=0
+  typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=30
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_absolute_chars
+  # typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_last
   # Replace removed segment suffixes with this symbol.
   typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=""
   # typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=
@@ -1783,3 +1786,4 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
+
