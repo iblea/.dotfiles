@@ -1,6 +1,8 @@
 #!/bin/bash
 
 SETTINGS_DIR=dotfiles
+# current path
+SCRIPT_PATH=$(dirname $(realpath $0))
 
 cd $HOME
 
@@ -17,11 +19,11 @@ ln -s $HOME/$SETTINGS_DIR/.zsh/.p10k.zsh $HOME/.zsh/.p10k.zsh
 ln -s $HOME/$SETTINGS_DIR/vimrc/.vimrc
 cd $HOME/$SETTINGS_DIR
 if [ -d ./.vim/ ]; then
-	rm -rf ./.vim
+	rm -rf ./.vim/
 fi
-tar -zxvf vim.tgz
+tar -zxf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
-cd - > /dev/null
+cd $HOME
 ln -s $HOME/$SETTINGS_DIR/.vim
 
 
@@ -41,7 +43,7 @@ fi
 # ln -s $HOME/$SETTINGS_DIR/.gdbinit
 
 # only linux workspace
-if [ "$1" == "linux" ]; then
-	# ln -s $HOME/$SETTINGS_DIR/.alias_waf
-fi
+# if [ "$1" == "linux" ]; then
+# 	ln -s $HOME/$SETTINGS_DIR/.alias_waf
+# fi
 
