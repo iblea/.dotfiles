@@ -57,6 +57,75 @@ if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
 fi
 
 
+# =======================================================================
+
+# wsl command
+if [ -d /mnt/c/Users/ ]; then
+    if [ "$(command -v code)" = "" ]; then
+        local codepath="/mnt/c/jvscode/Code.exe"
+        if [ -f $codepath ] && [ ! -f $HOME/.local/.bin/code ]; then
+            [ ! -d $HOME/.local/.bin/ ] && mkdir -p $HOME/.local/.bin/
+            ln -s $codepath $HOME/.local/.bin/code
+        fi
+    fi
+
+    # íěźíěę¸° (windows + explorer)
+    function winer() {
+        if [[ "$@" = "" ]]; then
+            /mnt/c/WINDOWS/explorer.exe .
+            return
+        fi
+        if [ -d "$@" ]; then
+            cd "$@"
+            /mnt/c/WINDOWS/explorer.exe .
+            cd - > /dev/null
+            return
+        fi
+        /mnt/c/WINDOWS/explorer.exe .
+    }
+
+    # function code() {
+    #     if [[ "$@" = "s" ]]; then
+    #         /mnt/c/jvscode/Code.exe ./
+    #     else
+    #         /mnt/c/jvscode/Code.exe $@
+    #     fi
+    # }
+
+    function goc() { cd /mnt/c/$@; }
+    function god() { cd /mnt/d/$@; }
+    function goe() { cd /mnt/e/$@; }
+    function govscode() { cd /mnt/c/jvscode/data/user-data/User/$@; }
+    function gohome() { cd /mnt/c/Users/ghkd0/$@; }
+    function golog() { cd /mnt/e/mylog/$@; }
+    function godown() { cd /mnt/c/Users/ghkd0/Downloads/$@; }
+    function godesktop() { cd /mnt/c/Users/ghkd0/Desktop/$@; }
+
+    # "/mnt/c/Program\\ Files/Beyond\\ Compare\\ 4/BComp.exe"
+    # alias diffb='"/mnt/c/Program Files/Beyond Compare 4/BComp.exe"'
+    alias diffb='~/.bcomp.sh'
+
+    alias shcurl="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
+    alias shhcurl="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
+
+    [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
+# mac command
+elif [ -d /Users/ ]; then
+	# alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
+	export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+else
+    alias diffb='~/.bcomp.sh'
+fi
+
+# =======================================================================
+
+
+
+
+
+
+
+
 # absolute path
 alias abs='readlink -e'
 
@@ -136,7 +205,8 @@ if [ "$(command -v fzf)" != "" ]; then
     {
         local codepath=vi
         [ "$(command -v code)" != "" ] && codepath=code
-        local FZF_BIN_PATH=$(/bin/which fzf)
+        local WHICH_IS=$(/bin/bash -c "which which")
+        local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
         if [ $# -ge 2 ]; then
             local search_path=()
@@ -185,10 +255,10 @@ if [ "$(command -v fzf)" != "" ]; then
         local fzfres=""
         # pipeline으로 입력이 들어온 경우
         if [ -p /dev/stdin ]; then
-            cat < /dev/stdin > /tmp/fzfinput
+            cat < /dev/stdin > $HOME/dotfiles/.fzfinput
             sleep 0.05
-            fzfres=$(cat /tmp/fzfinput | $FZF_BIN_PATH --height 40% --layout=reverse)
-            [ -f /tmp/fzfinput ] && rm -f /tmp/fzfinput
+            fzfres=$(cat $HOME/dotfiles/.fzfinput | $FZF_BIN_PATH --height 40% --layout=reverse)
+            [ -f $HOME/dotfiles/.fzfinput ] && rm -f $HOME/dotfiles/.fzfinput
             if [ -d "$fzfres" ]; then
                 echo "$fzfres is directory (so skip)"
                 return
