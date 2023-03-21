@@ -1,0 +1,788 @@
+fualias() { echo -n ""; }
+
+fuinit() {
+fualias $@ ; unset -f fualias; fualias () { echo -n ""; }
+}
+
+function function_exist_check() {
+    if (declare -f -F "$@" > /dev/null); then
+        return 0
+    else
+        return 1
+    fi
+}
+
+
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r $HOME/.dircolors && eval "$(dircolors -b $HOME/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias grepi='grep --color=auto -rnIH'
+    alias grepapi="grep --color=auto --exclude-dir=hmapi -rnIH"
+    alias grepf='grep --color=auto -rnIHF'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# ssh
+if [ -f $HOME/.ssh/config ]; then
+    alias ssh='ssh -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
+    alias scp='scp -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
+    alias sshinit='ssh-keygen -f $HOME/.ssh/known_hosts -R '
+fi
+
+# some more ls aliases
+alias ll='ls -lhF'
+alias lla='ls -alhF'
+alias lf='ls -alhF'
+alias jl='ls -lhF'
+alias af='ls -lhF'
+alias sf='ls -CF'
+alias ef='ls -alhF'
+alias wf='ls -CF'
+alias la='ls -A'
+alias l='ls -CF'
+alias j='ls -CF'
+alias psf='ps -aef'
+alias makef='make -j8'
+
+# add export path
+if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
+	export PATH="$PATH:$HOME/.local/.bin"
+fi
+
+
+# absolute path
+alias abs='readlink -e'
+
+function grepn() {
+    local search_str=("$@")
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    grep --color=always -rnIH ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
+    grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
+}
+
+function grepm() {
+    local search_str=("$@")
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
+}
+
+# absolute path grep
+function agrepn() {
+    local curpwd=$(pwd);
+    local search_str=("$@")
+    if [[ "$curpwd" != "/" ]]; then
+        curpwd="${curpwd}/"
+    fi
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
+}
+function agrepm() {
+    local curpwd=$(pwd);
+    local search_str=("$@")
+    if [[ "$curpwd" != "/" ]]; then
+        curpwd="${curpwd}/"
+    fi
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
+}
+
+# fzfcode
+if [ "$(command -v fzf)" != "" ]; then
+    if (alias fzf >/dev/null 2>&1); then
+        unalias fzf
+    fi
+    alias fzf="fzf --height 40% --layout=reverse"
+    # if (declare -f -F "$@" > /dev/null); then
+    #     unset -f fzf
+    # fi
+    # whence -p fzf # command in zsh
+    # local FU_FZF_BIN_PATH="$(/bin/which fzf)"
+    function faf() {
+        # TODO : -m 등 옵션값 처리하지 못함. 해당 방법 모색
+        # local FU_FZF_BIN_PATH="$(/bin/which fzf)"
+        [ $# -ge 2 ] && echo "too many arguments" && return
+        if [ $# -eq 1 ]; then
+            if [ ! -d "$@" ]; then
+                echo "$@ not directory"
+                return
+            fi
+            cd $@
+            fzf --height 40% --layout=reverse
+            cd - > /dev/null
+            return
+        fi
+        fzf --height 40% --layout=reverse
+    }
+    # 기존 alias 가 있을 경우 삭제
+
+    # alias di='fzfoutput=$(fzf); [ "$fzfoutput" != "" ] && code $fzfoutput; unset fzfoutput'
+    # code+vi = di
+    function di()
+    {
+        local codepath=vi
+        [ "$(command -v code)" != "" ] && codepath=code
+        local FZF_BIN_PATH=$(/bin/which fzf)
+        # argument 가 2개 이상일 경우
+        if [ $# -ge 2 ]; then
+            local search_path=()
+            for arg in "$@"; do
+                if [ -d "$arg" ]; then
+                    echo "\"$arg\" is directory (so skip)"
+                    continue
+                fi
+                if [ ! -e "$arg" ]; then
+                    echo "file not found. create new file? (ctrl-c to stop)"
+                    read $anykey
+                fi
+                search_path+=("$arg")
+            done
+            $codepath "${search_path[@]}"
+            return;
+        fi
+        # argument가 1개일 경우
+        if [ $# -eq 1 ]; then
+            if [ -d "$@" ]; then
+                # 해당 디렉토리로 이동하여 검색
+                cd $@
+            else
+                if [ ! -e "$@" ]; then
+                    echo "file not found. create new file? (ctrl-c to stop)"
+                    read $anykey
+                fi
+                # 1개이고 디렉토리가 아니면 바로 실행
+                $codepath $@
+                return
+            fi
+        fi
+        # find 의 경우 '! -name "*.o"' 로 사용
+        local exclude_pot=''
+        if [ "$FZF_DEFAULT_COMMAND" = "" ]; then
+            exclude_opt=''
+        elif [ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]; then
+            exclude_opt='-E ".git"'
+        elif [ "${FZF_DEFAULT_COMMAND:0:4}" = "find" ]; then
+            exclude_opt='! -name ".git"'
+        else
+            exclude_opt=''
+        fi
+        local origin_fzf_cmd=$(echo "$FZF_DEFAULT_COMMAND")
+        export FZF_DEFAULT_COMMAND="$FZF_DEFAULT_COMMAND $exclude_opt"
+        local fzfres=""
+        # pipeline으로 입력이 들어온 경우
+        if [ -p /dev/stdin ]; then
+            cat < /dev/stdin > /tmp/fzfinput
+            sleep 0.05
+            fzfres=$(cat /tmp/fzfinput | $FZF_BIN_PATH --height 40% --layout=reverse)
+            [ -f /tmp/fzfinput ] && rm -f /tmp/fzfinput
+            if [ -d "$fzfres" ]; then
+                echo "$fzfres is directory (so skip)"
+                return
+            fi
+        else
+            fzfres=$($FZF_BIN_PATH --height 40% --layout=reverse)
+        fi
+        if [ "$fzfres" != "" ]; then
+            $codepath $fzfres
+        fi
+        export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
+        # 디렉토리 이동했을 경우 원래 디렉토리로 이동
+        [ $# -eq 1 ] && cd - > /dev/null
+    }
+else
+    function di()
+    {
+        local codepath=vi
+        [ "$(command -v code)" != "" ] && codepath=code
+        # local FZF_BIN_PATH=$(/bin/which fzf)
+        # argument 가 2개 이상일 경우
+        if [ $# -ge 2 ]; then
+            local search_path=()
+            for arg in "$@"; do
+                if [ -d "$arg" ]; then
+                    echo "\"$arg\" is directory (so skip)"
+                    continue
+                fi
+                if [ ! -e "$@" ]; then
+                    echo "file not found. create new file? (ctrl-c to stop)"
+                    read $anykey
+                fi
+                search_path+=("$arg")
+            done
+            $codepath "${search_path[@]}"
+            return;
+        fi
+        # argument가 1개일 경우
+        if [ $# -eq 1 ]; then
+            if [ -d "$@" ]; then
+                # 해당 디렉토리로 이동하여 검색
+                echo "\"$@\" is directory (so skip)"
+                return
+            else
+                if [ ! -e "$@" ]; then
+                    echo "file not found. create new file? (ctrl-c to stop)"
+                    read $anykey
+                fi
+                # 1개이고 디렉토리가 아니면 바로 실행
+                $codepath $@
+                return
+            fi
+        fi
+        if [ $# -eq 0 ]; then
+            echo "no argument"
+        fi
+    }
+fi
+
+function toucha() { touch $@; chmod 755 $@; }
+
+function makectags() { ctags --tag-relative --langmap=C:.c.h.l.y --c-kinds=+p+l --languages=C --fields=+l $@ -f .tags --sort=foldcase -R ./*; }
+function makepytags() { ctags --tag-relative --langmap=Python:.py --languages=Python --fields=+l $@ --sort=foldcase -R ./*; }
+alias guifiles='vim -c :UpdateTypesFileOnly -c :q'
+function maketaghl() {
+    if [ ! -f ~/.vim/plugin/TagHighlight.vim ]; then
+        echo "no TagHighlight.vim plugin"
+        return
+    fi
+    test ! -f taghl_config.txt && touch taghl_config.txt
+    echo "IncludeLocals:True" > taghl_config.txt
+    echo "TagFileName:.tags" >> taghl_config.txt
+    echo -n "UserLibraries:" >> taghl_config.txt
+}
+
+function clearsslkeylog() {
+    if [ "$SSLKEYLOGFILE" = "" ]; then
+        echo "SSLKEYLOGFILE is not defined"
+        return
+    fi
+
+    echo -n "" > $SSLKEYLOGFILE
+}
+
+# find . ! \( -type d \( -path "./test1" -o -path "./test2" \) -prune \) -type f -and ! -name "LICENSE.txt" -and ! -name "readme.txt" -and -name "*.txt"
+# alias findsrc='fualias() { find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.\(c\|h\|y\|l\|py\)" -type f -exec grep -Hn --color "$@" {} \; ; }; fuinit'
+function findsrc() {
+    local ext="\(c\|h\|y\|l\|py\)"
+    find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$@" {} \; |
+    sed -e "s/\:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
+}
+
+function afindsrc() {
+    local curpwd=$(pwd)
+    if [[ "$curpwd" != "/" ]]; then
+        curpwd="${curpwd}/"
+    fi
+    local ext="\(c\|h\|y\|l\|py\)"
+    find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$@" {} \; |
+    sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
+}
+
+function findall() { find . -name "*" -type f -exec grep -Hn --color "$@" {} \; ; }
+function svndiff() {
+    local SVN_REV=0
+    local AGO_REV=0
+    # if [[ $@ =~ "-" ]]; then
+    if grep -q "-" <<< "$@"; then
+        SVN_REV=`svn info | grep Revision | awk -F ': ' ' { print $2 } '`
+        local REV_MINUS=`echo $@ | sed -e 's/\-//g'`
+        SVN_REV=`expr \( ${SVN_REV} \- ${REV_MINUS} + 1 \)`
+        AGO_REV=`expr \( ${SVN_REV} \- 1 \)`
+        svn log -r $SVN_REV
+    else
+        SVN_REV=`echo $@ | cut -d ":" -f2 -s`
+        AGO_REV=0
+        if [[ $SVN_REV = "" ]]; then
+            SVN_REV=$@
+            AGO_REV=`expr \( ${SVN_REV} \- 1 \)`
+            svn log -r $SVN_REV;
+        else
+            AGO_REV=`echo $@ | cut -d ":" -f1 -s`
+            AGO_REV=`expr \( ${AGO_REV} \- 1 \)`
+        fi
+    fi
+    svn diff -r$AGO_REV:$SVN_REV --summarize | sort;
+}
+
+# echo $SSH_CONNECTION
+
+
+function vsdiff() { svn diff $@ | vi -; }
+
+function sdfile() {
+    # svn diff | grep -E "\-\-\-\s.*(\(revision\s.*\)|\(nonexistent\))";
+    svn status | grep "^A" --color=never;
+    svn status | grep "^D" --color=never;
+    svn status | grep "^M" --color=never;
+}
+
+alias cc='clear'
+
+function rmvimtmp() {
+    find . -name ".*.sw*" -type f -exec rm -rf {} \;
+    find . -name ".sw*" -type f -exec rm -rf {} \;
+}
+
+alias sendhttp='~/req.sh'
+
+#memcheck
+#ps -eo user,pid,ppid,rss,size,vsize,pmem,pcpu,time,comm --sort -rss | egrep "USER|health_check"
+#ps -aeo user,pid,ppid,rss,size,vsize,pmem,pcpu,time,comm --sort -rss | egrep "USER|health_check"
+#top -d 1 | egrep "PID|health_check"
+
+
+# alias cme='fualias() { myname=`echo "$USER"`; sudo chown -R $myname:$myname $@ ; }; fuinit'
+alias cme='fualias() { myname=`whoami`; sudo chown -R $myname $@ ;  }; fuinit'
+
+function killvscode() {
+    echo "touch kill_vsc_tmp_script.sh"
+    if [ -f ./kill_vsc_tmp_script.sh ]; then
+        rm -f ./kill_vsc_tmp_script.sh
+    fi
+    touch kill_vsc_tmp_script.sh
+    chmod 755 kill_vsc_tmp_script.sh
+    echo "make command"
+    echo -e "#/bin/bash" >> ./kill_vsc_tmp_script.sh
+    echo -e "" >> ./kill_vsc_tmp_script.sh
+
+    echo -e "echo \"before kill vscode process\"" >> ./kill_vsc_tmp_script.sh
+    echo -e "ps -aef | grep vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "" >> ./kill_vsc_tmp_script.sh
+
+    echo -e "while true" >> ./kill_vsc_tmp_script.sh
+    echo -e "do" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tsleep 1" >> ./kill_vsc_tmp_script.sh
+    # local ps_vscode=`ps -ef | grep "vscode" | grep -v --color ".*\sgrep\s.*vscode.*"`
+    echo -e "\tps_vscode=\`ps -ef | grep \"vscode\" | grep -v \".*\sgrep\s.*vscode.*\"\`" >> ./kill_vsc_tmp_script.sh
+    # if [[ "$ps_vscode" = "" ]]; then
+    echo -e "\tif [ \"\$ps_vscode\" = \"\" ]; then" >> ./kill_vsc_tmp_script.sh
+    echo -e "\t\tbreak" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tfi" >> ./kill_vsc_tmp_script.sh
+    echo -e "done" >> ./kill_vsc_tmp_script.sh
+    echo -e "" >> ./kill_vsc_tmp_script.sh
+
+    echo -e "echo \"after kill vscode process\"" >> ./kill_vsc_tmp_script.sh
+    echo -e "ps -aef | grep vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "" >> ./kill_vsc_tmp_script.sh
+
+    echo -e "if [ \"\$1\" = \"1\" ]; then" >> ./kill_vsc_tmp_script.sh
+    echo -e "\trm -rf ./kill_vsc_tmp_script.sh" >> ./kill_vsc_tmp_script.sh
+    echo -e "else" >> ./kill_vsc_tmp_script.sh
+
+    echo -e "\tsleep 2" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tnohup /bin/bash ./kill_vsc_tmp_script.sh 1 1>/dev/null 2>&1 &" >> ./kill_vsc_tmp_script.sh
+    echo -e "fi" >> ./kill_vsc_tmp_script.sh
+
+
+    echo "execute this file"
+    nohup /bin/bash ./kill_vsc_tmp_script.sh 1>/dev/null 2>&1 &
+}
+
+# markdown remove unuse image
+function rmdimg() {
+    # validation check
+    if [ $# -eq 0 ] || [ $# -gt 2 ]; then
+        echo "wrong argument"
+        return
+    fi
+    local filename=$1
+    local imgdir=mdresources/dir_$1_img
+    local imgrealpath=""
+    if [ $# -eq 1 ]; then
+        imgrealpath=./$imgdir
+    else
+        imgrealpath=$2/$imgdir
+    fi
+
+    if [[ ! -f $filename ]]; then
+        echo "file not exist"
+        return
+    fi
+    if [ ! -d $imgrealpath ]; then
+        echo "img dir not exist"
+        return
+    fi
+
+    # get file list in imgdir
+    # local imgfiles=$(ls $imgrealpath/*.{png,jpg,gif,jpeg,webp})
+    local imgfiles=$(ls $imgrealpath)
+    filearray=(`echo $imgfiles | tr " " "\n"`)
+    # echo "${filearray[@]}"
+
+    # parse img path
+    # ![] () remove
+    content=$(grep -E "\!.*\]\(.*$imgdir/img_[^\/]*\)" $filename)
+    content=$(echo "$content" | sed "s/\![^!]*](//g")
+    # <img src= > remove
+    content2=$(grep -E "<img src=\".*$imgdir/img_[^\/]*\"" $filename)
+    content2=$(echo "$content2" | sed "s/<img[^\<]*src=\"//g")
+    content2=$(echo "$content2" | sed "s/\"[^\>]*>/|/g")
+    content=`echo "$content"; echo "$content2"`
+
+    for imgfile in "${filearray[@]}"
+    do
+        if grep -q "$imgfile" <<<"$content"; then
+            echo "exist : $imgfile"
+            filearray=( ${filearray[@]/$imgfile} )
+        fi
+    done
+
+    local rm_index=0
+    for imgfile in "${filearray[@]}"
+    do
+        if [[ "$imgfile" != "" ]]; then
+            rm -f $imgrealpath/$imgfile
+            rm_index=$(expr $rm_index + 1)
+        fi
+    done
+
+    if test -n "$(find "$imgrealpath" -maxdepth 0 -type d -empty)" ; then
+        echo "directory empty, remove it ($imgrealpath)"
+        rmdir $imgrealpath
+    fi
+
+    echo "remove ${rm_index} files."
+}
+
+function killdbgprocess() {
+    echo "health check process"
+    ps -aef | grep health_check
+    echo "info_optimizer process"
+    ps -aef | grep info_optimizer
+    echo ""
+    echo "kill health_check"
+    pkill -f health_check
+    pkill -f health_check
+    pkill -f health_check
+    echo "kill info_optimizer"
+    pkill -f info_optimizer
+    pkill -f info_optimizer
+    pkill -f info_optimizer
+    echo ""
+    echo "health check process"
+    ps -aef | grep health_check
+    echo "info_optimizer process"
+    ps -aef | grep info_optimizer
+    echo ""
+}
+
+function cpdown() {
+    cp -r $@ ~/download/
+}
+
+alias colorpreview='for i in {0..255}; do print -Pn “%K{$i} %k%F{$i}${(l:3::0:)i}%f “ ${${(M)$((i%6)):#3}:+$’\n’}; done'
+
+alias sshclear='pkill -f "sshd:.*$USER.*\\@"'
+alias sshclearall='pkill -f "sshd:.*\\@"'
+
+function pytest() {
+    pytest $@;
+
+    if [ -d __pycache__ ]; then
+        rm -rf __pycache__/;
+    fi
+
+    if [ -d .pytest_cache ]; then
+        rm -rf .pytest_cache/;
+    fi
+}
+
+
+# wiki alias =============================
+
+function gowiki() { cd ~/jhh9232.github.io/wiki/$@; }
+function gomantis() { cd ~/jhh9232.github.io/wiki/issue/issue_note/mantis/$@; }
+# alias wifind='fualias() { find ~/jhh9232.github.io/wiki/ -name "*.md" -type f -exec grep --color=always -Hn $@ {} \; | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p" }; fuinit'
+function wifind() {
+    local blog_dir=~/jhh9232.github.io/wiki/
+    if [ ! -d $blog_dir ]; then
+        echo "no blog dir"
+        return
+    fi
+    cd $blog_dir;
+    grep --color=always -rnIH --include="*.md" $@ ./ | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
+    cd - > /dev/null ;
+}
+
+function wnfind() {
+    local blog_dir=~/jhh9232.github.io/wiki/
+    test -d $blog_dir && find $blog_dir -type f -name "*.md" | grep "$@"
+}
+
+
+
+
+
+# git alias ==============================
+
+alias delspace="sed -i 's/\s\+$//g'"
+alias delspaceall="grep -rlI . | xargs -d '\n' -I{} sed -i 's/\s\+$//g' {}"
+# 문장 뒤 공백 제거
+# xargs
+# grep -rlI . | xargs -d '\n' -I{} sed -i 's/\s\+$//g' {}
+# find
+# find ./ -xdev -type f -exec grep -rlI . {} \; -exec sed -i 's/\s\+$//g' {} \; > /dev/null
+
+# git alias
+if [ ! -f ~/.gitconfig ]; then
+    git config --global alias.co checkout
+    git config --global alias.br branch
+    git config --global alias.ci commit
+    git config --global alias.st status
+    git config --global alias.last 'log -1 HEAD'
+    # Git 편집 에디터 변경
+    git config --global core.editor "vim"
+    # Git 원격 저장소에서 삭제된 branch를 로컬 저장소에서 자동으로 지우기
+    git config --global fetch.prune true
+    git config --global push.default current
+    git config --global core.sshCommand "ssh -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=no"
+
+    # diff, merge
+    git config --global diff.tool bcompare
+    git config --global merge.tool bcompare
+    git config --global difftool.bcompare.cmd "$HOME"/'.bcomp.sh "$LOCAL" "$REMOTE"'
+    git config --global difftool.bcompare.trustExitCode true
+    git config --global mergetool.bcompare.cmd "$HOME"/'.bcomp.sh "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
+    git config --global mergetool.bcompare.trustExitCode true
+    git config --global mergetool.bcompare.keepBackup false
+fi
+
+
+# gb -> git branch
+# gba -> git branch -a (git branch --all)
+# gco -> git checkout
+# gci -> git commit
+# gbv -> git branch -vv
+# gs, gst ->  git status
+# gsti  ->  git stash
+# gsb -> git status -sb
+# gr -> git remote
+# grb -> git rebase
+# grev -> git revert
+# gsh -> git reset
+# grs -> git restore
+
+
+fuunalias_alias()
+{
+    local alias_name=$1
+    local cmd=$2
+    local is_cmd=`alias | grep "\<$alias_name\>"`
+    if [[ "$is_cmd" != "" ]]; then
+        unalias $alias_name
+    fi
+    if [[ "$cmd" != "" ]]; then
+        alias $alias_name="$cmd"
+    fi
+}
+
+fuunalias_alias 'gci' 'git commit'
+fuunalias_alias 'gcf' 'git config'
+fuunalias_alias 'gcfl' 'git config --list'
+fuunalias_alias 'gs' 'git status'
+fuunalias_alias 'gst' 'git status'
+fuunalias_alias 'gsti' 'git stash'
+fuunalias_alias 'gstiku' 'git stash -k -u'
+fuunalias_alias 'gsm' 'git submodule'
+fuunalias_alias 'gbv' 'git branch -vv'
+fuunalias_alias 'gu' 'git push'
+fuunalias_alias 'gp' 'git pull'
+# merge no commit no ff (squash - no commit)
+fuunalias_alias 'gmn' 'git merge --no-commit --no-ff'
+fuunalias_alias 'gl' ''
+
+function gl() {
+    # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
+    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+}
+
+function gld() {
+    if [ $# -eq 0 ]; then
+        git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ./
+    else
+        if [[ "$1" = "/" ]]; then
+            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ${@:2}
+        elif [[ "${1:0:1}" = "-" ]]; then
+            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ ./
+        else
+            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+        fi
+    fi
+}
+
+function gstai() {
+    if [[ "$@" = "" ]]; then
+        git stash apply
+    else
+        git stash apply stash@{$@}
+    fi
+}
+
+alias gitsync='git remote update origin --prune'
+function gitsvnrev() {
+    if [[ "$@" = "" ]]; then
+        return
+    fi
+
+    local revinf="$@"
+    if [[ "${revinf:0:1}" = "r" ]]; then
+        for branch in $(git for-each-ref --format='%(refname)' refs/heads/); do
+            local inform=$(git svn find-rev $@ $branch)
+            if [[ "$inform" = "" ]]; then
+                continue
+            fi
+            echo "branch (${branch}) : ${inform}"
+        done
+    else
+        git svn find-rev $@
+    fi
+}
+
+# [svn-remote "v5.0"]
+#     url = svn://1.1.1.1/test/v5.0
+#     fetch = :refs/remotes/origin/develop
+# [svn-remote "v5.0.2"]
+#     url = svn://1.1.1.1/test/v5.0.2_2
+#     fetch = :refs/remotes/origin/main
+
+function gitsvnrevb() {
+    if [[ "$@" = "" ]]; then
+        return
+    fi
+    git svn find-rev $(git log remotes/origin/$@ --max-count 1 --pretty=format:%H)
+}
+
+alias gital='alias | grep "^g.*git"'
+
+# 모든 변경사항 pull
+function pullall() {
+    git branch -r | grep -v "\->" | while read remote; do git branch --track "${remote#origin/}" "$remote"; done
+    git branch -r | grep -v "\->" | while read remote; do git branch --set-upstream-to="$remote" "${remote#origin/}"; done
+    git fetch --all
+    git pull --all
+}
+alias missmerge='grep -rnI "\s*<<<<<<< "'
+
+function gconflictundo()
+{
+    con_path=$@
+    if [[ $con_path = "" ]]; then
+        con_path=.
+    fi
+    # git status -s $con_path | grep "^AA " | awk -F '\''AA '\'' '\'' { print $2 } '\'' | xargs -I {} echo {}
+    git status -s $con_path | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
+}
+
+# git status -s . | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
+
+# git note =====================================================================
+
+# git commit message 수정
+# git commit --amend -m "message"
+
+# git orphan branch 머지
+# git merge --allow-unrelated-histories -X theirs a(merge apply) b (merge target)
+# git merge --allow-unrelated-histories --squash feature/waf50 remotes/svn/git-svn
+# ->  feature/waf50에 remotes/svn/git-svn 변경사항이 적용됨 (squash를 적용했기 때문에 커밋 로그는 하나로 합쳐짐)
+
+# git remote에서 삭제된 브랜치 동기화하기
+# git remote prune origin
+
+# git merge (origin branch) (target branch)
+# git co --ours dir/* -> origin branch 변경사항 적용 (현재 브랜치 내용 적용) (gco -2 dir/*)
+# git co --theirs dir/* -> target branch 변경사항 적용 (브랜치 머지내용 적용) (gco -3 dir/*)
+# git co --merge dir/* -> 충돌때로 undo (gco -m dir/*)
+# 충돌때로 undo 시 에러가 나면 (현재 경로)
+# git status -s . | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
+
+# git-svn
+# git svn init svn://1.1.1.1/REPO/v5.0 --prefix=svn/
+# git svn fetch
+# git checkout -b git-svn remotes/svn/git-svn
+# git push origin git-svn
+
+# git-svn fetch and dcommit
+# git svn fetch v5.0
+# git checkout waf50
+# git merge --hard origin/waf50   or   git reset --merge orogin/waf50   or   git rebase remotes/origin/waf50
+# git svn dcommit --username jhhwang
+
+# ==============================================================================
+
+
+
+# wsl command
+if [ -d /mnt/c/Users/ ]; then
+    if [ "$(command -v code)" = "" ]; then
+        local codepath="/mnt/c/jvscode/Code.exe"
+        if [ -f $codepath ] && [ ! -f $HOME/.local/.bin/code ]; then
+            [ ! -d $HOME/.local/.bin/ ] && mkdir -p $HOME/.local/.bin/
+            ln -s $codepath $HOME/.local/.bin/code
+        fi
+    fi
+
+    # 파일탐색기 (windows + explorer)
+    function winer() {
+        if [[ "$@" = "" ]]; then
+            /mnt/c/WINDOWS/explorer.exe .
+            return
+        fi
+        if [ -d "$@" ]; then
+            cd "$@"
+            /mnt/c/WINDOWS/explorer.exe .
+            cd - > /dev/null
+            return
+        fi
+        /mnt/c/WINDOWS/explorer.exe .
+    }
+
+    # function code() {
+    #     if [[ "$@" = "s" ]]; then
+    #         /mnt/c/jvscode/Code.exe ./
+    #     else
+    #         /mnt/c/jvscode/Code.exe $@
+    #     fi
+    # }
+
+    function goc() { cd /mnt/c/$@; }
+    function god() { cd /mnt/d/$@; }
+    function goe() { cd /mnt/e/$@; }
+    function govscode() { cd /mnt/c/jvscode/data/user-data/User/$@; }
+    function gohome() { cd /mnt/c/Users/ghkd0/$@; }
+    function golog() { cd /mnt/e/mylog/$@; }
+    function godown() { cd /mnt/c/Users/ghkd0/Downloads/$@; }
+    function godesktop() { cd /mnt/c/Users/ghkd0/Desktop/$@; }
+
+    # "/mnt/c/Program\\ Files/Beyond\\ Compare\\ 4/BComp.exe"
+    # alias diffb='"/mnt/c/Program Files/Beyond Compare 4/BComp.exe"'
+    alias diffb='~/.bcomp.sh'
+
+    alias shcurl="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
+    alias shhcurl="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
+
+    [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
+else
+    alias diffb='~/.bcomp.sh'
+fi
+
+# alias
+[ -f $HOME/.alias_waf ] && source ~/.alias_waf
+
