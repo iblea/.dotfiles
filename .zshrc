@@ -209,17 +209,19 @@ fi
 # git clone --depth 1 https://github.com/junegunn/fzf.git ~/.zsh/.fzf
 # ~/.zsh/.fzf/install
 # ---------
-if [ -d $HOME/.zsh/.fzf/ ]; then
+if [ "$(command -v fzf)" != "" ]; then
 	if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then
 		PATH="${PATH:+${PATH}:}$HOME/.zsh/.fzf/bin"
 	fi
 	# Auto-completion
 	# ---------------
-	[[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
+	# [[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
+	[[ $- == *i* ]] && source "/opt/homebrew/Cellar/fzf/0.38.0/shell/completion.zsh" 2> /dev/null
 
 	# Key bindings
 	# ------------
-	source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
+	# source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
+	source "/opt/homebrew/Cellar/fzf/0.38.0/shell/key-bindings.zsh"
 
 	# fzf file search command
 	# -----------------------
