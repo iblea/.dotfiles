@@ -35,6 +35,11 @@ if [ -d "/mnt/c/Program Files/" ]; then
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
 fi
 
+
+
+# gdbinit
+# ln -s $HOME/$SETTINGS_DIR/.gdbinit
+
 # only linux workspace
 if [ "$1" == "linux" ]; then
 	# ln -s $HOME/$SETTINGS_DIR/.alias_waf
