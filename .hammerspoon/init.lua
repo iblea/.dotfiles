@@ -54,12 +54,12 @@ hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Google Chrome"))
 
 hs.hotkey.bind({"option", "control"}, "J", appLaunchOrFocus("DuelKakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "K", appLaunchOrFocus("KakaoTalk"))
-hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Discord"))
+hs.hotkey.bind({"option", "control"}, "L", appLaunchOrFocus("Discord"))
 --- hs.hotkey.bind({"option", "control"}, "O", appLaunchOrFocus("Docker"))
 --- hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Slack"))
 --- hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Messages"))
 
-hs.hotkey.bind({"option", "control"}, "B", appLaunchOrFocus("Beyond Compare"))
+hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Beyond Compare"))
 
 
 
