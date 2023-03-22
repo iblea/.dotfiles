@@ -35,6 +35,10 @@ ln -s $HOME/$SETTINGS_DIR/.aliases
 if [ -d "/mnt/c/Program Files/" ]; then
 	# wsl
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
+elif [ -d "/Applications/" ]; then
+	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
+else
+	ln -s $HOME/$SETTINGS_DIR/bcomp/.remotebcomp.sh $HOME/.bcomp.sh
 fi
 
 
