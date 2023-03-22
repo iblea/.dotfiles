@@ -69,7 +69,7 @@ if [ -d /mnt/c/Users/ ]; then
         fi
     fi
 
-    # íěźíěę¸° (windows + explorer)
+    # windows + explorer
     function winer() {
         if [[ "$@" = "" ]]; then
             /mnt/c/WINDOWS/explorer.exe .
@@ -113,6 +113,9 @@ if [ -d /mnt/c/Users/ ]; then
 elif [ -d /Users/ ]; then
 	# alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
 	export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    # alias diffb='~/.bcomp'
+    alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
+    alias which="$(/bin/bash -c 'which which')"
 else
     alias diffb='~/.bcomp.sh'
 fi
@@ -800,60 +803,6 @@ function gconflictundo()
 # ==============================================================================
 
 
-
-# wsl command
-if [ -d /mnt/c/Users/ ]; then
-    if [ "$(command -v code)" = "" ]; then
-        local codepath="/mnt/c/jvscode/Code.exe"
-        if [ -f $codepath ] && [ ! -f $HOME/.local/.bin/code ]; then
-            [ ! -d $HOME/.local/.bin/ ] && mkdir -p $HOME/.local/.bin/
-            ln -s $codepath $HOME/.local/.bin/code
-        fi
-    fi
-
-    # 파일탐색기 (windows + explorer)
-    function winer() {
-        if [[ "$@" = "" ]]; then
-            /mnt/c/WINDOWS/explorer.exe .
-            return
-        fi
-        if [ -d "$@" ]; then
-            cd "$@"
-            /mnt/c/WINDOWS/explorer.exe .
-            cd - > /dev/null
-            return
-        fi
-        /mnt/c/WINDOWS/explorer.exe .
-    }
-
-    # function code() {
-    #     if [[ "$@" = "s" ]]; then
-    #         /mnt/c/jvscode/Code.exe ./
-    #     else
-    #         /mnt/c/jvscode/Code.exe $@
-    #     fi
-    # }
-
-    function goc() { cd /mnt/c/$@; }
-    function god() { cd /mnt/d/$@; }
-    function goe() { cd /mnt/e/$@; }
-    function govscode() { cd /mnt/c/jvscode/data/user-data/User/$@; }
-    function gohome() { cd /mnt/c/Users/ghkd0/$@; }
-    function golog() { cd /mnt/e/mylog/$@; }
-    function godown() { cd /mnt/c/Users/ghkd0/Downloads/$@; }
-    function godesktop() { cd /mnt/c/Users/ghkd0/Desktop/$@; }
-
-    # "/mnt/c/Program\\ Files/Beyond\\ Compare\\ 4/BComp.exe"
-    # alias diffb='"/mnt/c/Program Files/Beyond Compare 4/BComp.exe"'
-    alias diffb='~/.bcomp.sh'
-
-    alias shcurl="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
-    alias shhcurl="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
-
-    [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
-else
-    alias diffb='~/.bcomp.sh'
-fi
 
 # alias
 [ -f $HOME/.alias_waf ] && source ~/.alias_waf
