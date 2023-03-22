@@ -215,13 +215,20 @@ if [ "$(command -v fzf)" != "" ]; then
 	fi
 	# Auto-completion
 	# ---------------
-	# [[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
-	[[ $- == *i* ]] && source "/opt/homebrew/Cellar/fzf/0.38.0/shell/completion.zsh" 2> /dev/null
+	if [ -d $HOME/.zsh/.fzf/ ]; then
+		[[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
+		# Key bindings
+		source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
+	elif [ -d /opt/homebrew/ ]; then
+		WHICH_CMD=$(/bin/bash -c "which which")
+		fzf_bin_path=$($WHICH_CMD "fzf")
+		fzf_sympath=$(greadlink -f $fzf_bin_path)
+		fzf_realpath=$(dirname $(dirname $fzf_sympath))
 
-	# Key bindings
-	# ------------
-	# source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
-	source "/opt/homebrew/Cellar/fzf/0.38.0/shell/key-bindings.zsh"
+		[[ $- == *i* ]] && source "$fzf_realpath/shell/completion.zsh" 2> /dev/null
+		# Key bindings
+		source "$fzf_realpath/shell/key-bindings.zsh"
+	fi
 
 	# fzf file search command
 	# -----------------------
@@ -258,3 +265,10 @@ autoload predict-on
 # predict-on
 unsetopt menucomplete
 
+
+# Java Paths
+export JAVA_HOME_14=$(/usr/libexec/java_home -v14)
+
+# Java 14
+# 14버전을 사용하고자 하는 경우 아래 주석(#)을 해제하고 위에 11버전을 주석처리 하면된다.
+export JAVA_HOME=$JAVA_HOME_14
