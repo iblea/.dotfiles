@@ -1,5 +1,7 @@
 if [ -d /opt/homebrew ]; then
-	export PATH=/opt/homebrew/bin:$PATH
+	if ! grep -q "/opt/homebrew//bin" <<< "$PATH"; then
+		export PATH=/opt/homebrew/bin:$PATH
+	fi
 fi
 
 # into /etc/zsh/zshrc (vscode terminal)
