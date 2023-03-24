@@ -27,8 +27,19 @@ cd $HOME
 ln -s $HOME/$SETTINGS_DIR/.vim
 
 
+# envpath
+ln -s /$HOME/$SETTINGS_DIR/.envpath
+
+
 # alias
 ln -s $HOME/$SETTINGS_DIR/.aliases
+
+# karabiner
+complex_path=karabiner/assets/complex_modifications
+if [ -d $HOME/.config/$complex_path ]; then
+	rm -rf $HOME/.config/$complex_path
+fi
+ln -s $HOME/$SETTINGS_DIR/$complex_path  $HOME/.config/$complex_path
 
 
 # bcomp (beyond compare command)
