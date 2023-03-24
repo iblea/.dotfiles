@@ -55,6 +55,10 @@ hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Google Chrome"))
 hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Mail"))
 hs.hotkey.bind({"option", "control"}, "O", appLaunchOrFocus("Microsoft Outlook"))
 
+--- one hand key
+hs.hotkey.bind({"option", "control"}, "z", appLaunchOrFocus("DuelKakaoTalk"))
+hs.hotkey.bind({"option", "control"}, "c", appLaunchOrFocus("KakaoTalk"))
+
 --- Messenger
 hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocus("TeamUP"))
 hs.hotkey.bind({"option", "control"}, "J", appLaunchOrFocus("DuelKakaoTalk"))
