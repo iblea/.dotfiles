@@ -36,8 +36,8 @@ end
 
 --- quick open applications
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
-hs.hotkey.bind({"option", "control"}, ";", appLaunchOrFocus("Finder"))
-hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Iterm"))
+hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
+hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Iterm"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
 hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("Visual Studio Code"))
@@ -52,6 +52,11 @@ hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Google Chrome"))
 --- hs.hotkey.bind({"option", "control"}, "R", appLaunchOrFocus("Preview"))
 --- hs.hotkey.bind({"option", "control"}, "P", appLaunchOrFocus("Microsoft PowerPoint"))
 
+hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Mail"))
+hs.hotkey.bind({"option", "control"}, "O", appLaunchOrFocus("Microsoft Outlook"))
+
+--- Messenger
+hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocus("TeamUP"))
 hs.hotkey.bind({"option", "control"}, "J", appLaunchOrFocus("DuelKakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "K", appLaunchOrFocus("KakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "L", appLaunchOrFocus("Discord"))
