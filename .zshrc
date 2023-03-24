@@ -265,10 +265,6 @@ autoload predict-on
 # predict-on
 unsetopt menucomplete
 
+export CLICOLOR=1
 
-# Java Paths
-export JAVA_HOME_14=$(/usr/libexec/java_home -v14)
-
-# Java 14
-# 14버전을 사용하고자 하는 경우 아래 주석(#)을 해제하고 위에 11버전을 주석처리 하면된다.
-export JAVA_HOME=$JAVA_HOME_14
+. ~/.envpath
