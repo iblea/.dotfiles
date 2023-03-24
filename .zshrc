@@ -269,4 +269,7 @@ unsetopt menucomplete
 
 export CLICOLOR=1
 
-. ~/.envpath
+if [ -f $HOME/.envpath ]; then
+	. ~/.envpath
+fi
+
