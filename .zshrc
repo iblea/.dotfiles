@@ -211,10 +211,15 @@ fi
 # git clone --depth 1 https://github.com/junegunn/fzf.git ~/.zsh/.fzf
 # ~/.zsh/.fzf/install
 # ---------
-if [ "$(command -v fzf)" != "" ]; then
-	if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then
-		PATH="${PATH:+${PATH}:}$HOME/.zsh/.fzf/bin"
+if [ "$(command -v fzf)" = "" ]; then
+	if [ -d $HOME/.zsh/.fzf/ ]; then
+		# if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then fi
+		if ! grep -q "$HOME/.zsh/.fzf/bin" <<< "$PATH"; then
+			export PATH="$HOME/.zsh/.fzf/bin:$PATH"
+		fi
 	fi
+fi
+if [ "$(command -v fzf)" != "" ]; then
 	# Auto-completion
 	# ---------------
 	if [ -d $HOME/.zsh/.fzf/ ]; then
