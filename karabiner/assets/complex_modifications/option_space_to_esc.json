@@ -1,0 +1,71 @@
+{
+  "title": "option space ABC",
+  "rules": [
+    {
+      "description": "option space to en_US",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
+                "left_alt"
+              ],
+              "optional": [
+                "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to_after_key_up": [
+            {
+              "select_input_source": {
+                "input_source_id": "com.apple.keylayout.US",
+                "language": "en"
+              }
+            },
+            {
+                "key_code": "spacebar",
+                "modifiers": [
+                    "left_alt"
+                ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "option space to ABC",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
+                "left_alt"
+              ],
+              "optional": [
+                "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to_after_key_up": [
+            {
+              "select_input_source": {
+                "input_source_id": "com.apple.keylayout.ABC",
+                "language": "en"
+              }
+            },
+            {
+                "key_code": "spacebar",
+                "modifiers": [
+                    "left_alt"
+                ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
