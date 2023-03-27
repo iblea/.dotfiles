@@ -523,10 +523,11 @@ function rmdimg() {
 
     # parse img path
     # ![] () remove
-    content=$(grep -E "\!.*\]\(.*$imgdir/img_[^\/]*\)" $filename)
+    # content=$(grep -E "\!.*\]\(.*$imgdir/img_[^\/]*\)" $filename 2>/dev/null)
+    content=$(grep -E "!.*\]\(.*$imgdir/img_[^\/]*\)" $filename)
     content=$(echo "$content" | sed "s/\![^!]*](//g")
     # <img src= > remove
-    content2=$(grep -E "<img src=\".*$imgdir/img_[^\/]*\"" $filename)
+    content2=$(grep -E "<img src=\".*$imgdir/img_[^\/]*\"" $filename 2>/dev/null)
     content2=$(echo "$content2" | sed "s/<img[^\<]*src=\"//g")
     content2=$(echo "$content2" | sed "s/\"[^\>]*>/|/g")
     content=`echo "$content"; echo "$content2"`
