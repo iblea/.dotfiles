@@ -1,8 +1,8 @@
 {
-  "title": "ctrl space to esc",
+  "title": "ctrl space to esc_old",
   "rules": [
     {
-      "description": "ctrl space to esc en_US",
+      "description": "ctrl space to esc en_US_old",
       "manipulators": [
         {
           "type": "basic",
@@ -17,6 +17,11 @@
             },
             "key_code": "spacebar"
           },
+          "to_if_alone": [
+            {
+              "key_code": "escape"
+            }
+          ],
           "to_after_key_up": [
             {
               "select_input_source": {
@@ -32,7 +37,7 @@
       ]
     },
     {
-      "description": "ctrl space to esc ABC",
+      "description": "ctrl space to esc ABC_old",
       "manipulators": [
         {
           "type": "basic",
@@ -47,6 +52,11 @@
             },
             "key_code": "spacebar"
           },
+          "to_if_alone": [
+            {
+              "key_code": "escape"
+            }
+          ],
           "to_after_key_up": [
             {
               "select_input_source": {
