@@ -18,7 +18,12 @@ fi
 if ! grep -q "/opt/homebrew/opt/openssl@1.1/bin" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
 fi
+
 if ! grep -q "/opt/homebrew/opt/grep/libexec/gnubin" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
+fi
+
+if ! grep -q "/opt/homebrew/opt/gnu-sed/libexec/gnubin" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 fi
 
