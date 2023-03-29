@@ -48,6 +48,9 @@ if isdirectory($HOME."/.vim/pack/airline")
 endif
 nnoremap <c-l> :suspend<CR>
 noremap . <Plug>Sneak_s
+
+set shell=/bin/bash
+
 set laststatus=2    "항상 파일명 표시
 set nobackup        "백업파일 만들지 않는다.
 set ts=4            "탭을 4칸으로
@@ -179,13 +182,15 @@ func! Prev_window()
     execute l:curnr." wincmd w"
 endfunc
 
+colorscheme default
+
 hi! Search term=reverse cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
 highlight! StatusLine ctermfg=231 ctermbg=23 guifg=#ffffff guibg=#002b2b cterm=NONE
 highlight! WildMenu ctermfg=0 ctermbg=36 guifg=#ffffff guibg=#005252
 hi Pmenu ctermbg=yellow ctermfg=black guibg=yellow guifg=black
 hi PmenuSel ctermbg=darkgrey ctermfg=lightgrey guibg=darkgrey ctermfg=lightgrey
 hi PmenuSbar ctermbg=grey guibg=grey
-" highlight link EchoDocPopup Pmenu
+" khighlight link EchoDocPopup Pmenu
 
 func! WinEnterFunction()
     silent! execute 'cd' expand('%:p:h')
