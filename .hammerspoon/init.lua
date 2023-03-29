@@ -37,7 +37,7 @@ end
 --- quick open applications
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
 hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
-hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Iterm"))
+hs.hotkey.bind({"option", "control"}, "F", appLaunchOrFocus("Iterm"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
 hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("Visual Studio Code"))
@@ -56,8 +56,8 @@ hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Mail"))
 hs.hotkey.bind({"option", "control"}, "O", appLaunchOrFocus("Microsoft Outlook"))
 
 --- one hand key
-hs.hotkey.bind({"option", "control"}, "z", appLaunchOrFocus("DuelKakaoTalk"))
-hs.hotkey.bind({"option", "control"}, "c", appLaunchOrFocus("KakaoTalk"))
+hs.hotkey.bind({"option", "control"}, "V", appLaunchOrFocus("DuelKakaoTalk"))
+hs.hotkey.bind({"option", "control"}, "C", appLaunchOrFocus("KakaoTalk"))
 
 --- Messenger
 hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocus("TeamUP"))
