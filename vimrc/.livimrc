@@ -14,7 +14,6 @@ endif
 
 
 " RealVim realvim
-set bg=light
 ca w!! w !sudo tee "%" > /dev/null
 
 
@@ -183,6 +182,7 @@ func! Prev_window()
 endfunc
 
 colorscheme default
+set bg=light
 
 hi! Search term=reverse cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
 highlight! StatusLine ctermfg=231 ctermbg=23 guifg=#ffffff guibg=#002b2b cterm=NONE

@@ -6,7 +6,7 @@ if !empty(glob($HOME."/dotfiles/vimrc/.livimrc"))
 	source $HOME/dotfiles/vimrc/.livimrc
 endif
 
-if has ("gui_macvim")
+if has("gui_macvim")
 	source $HOME/dotfiles/vimrc/.macvimrc
 endif
 
