@@ -14,6 +14,9 @@ fi
 ln -s $HOME/$SETTINGS_DIR/.zshrc
 ln -s $HOME/$SETTINGS_DIR/.zsh/.p10k.zsh $HOME/.zsh/.p10k.zsh
 
+# bash
+ln -s $HOME/$SETTINGS_DIR/.bashrc
+
 
 # vim
 ln -s $HOME/$SETTINGS_DIR/vimrc/.vimrc
