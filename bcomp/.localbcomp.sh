@@ -24,6 +24,51 @@ if [[ $1 == "" ]]; then
     exit 1
 fi
 
+if [ $# -lt 2 ]; then
+    echo "argument is not enough"
+    exit 1
+fi
+
+if [ $# -gt 4 ]; then
+    echo "argument is too many"
+    exit 1
+fi
+
+
+CP_PATH=/tmp/meldcp
+CP_PATH=/Users/jdh/.bcomptmp
+# CP_PATH clean up =================================
+if [ ! -d $CP_PATH ]; then
+    mkdir -p $CP_PATH
+fi
+
+file_count=`ls -l $CP_PATH | grep ^- | wc -l`
+# $file_count > 30
+if [ $file_count -gt 30 ]; then
+    rm -rf $CP_PATH
+    mkdir -p $CP_PATH
+fi
+
+dir_size=`du -shk $CP_PATH | awk -F ' ' ' { print $1 } '`
+# dir_size > 10M
+if [ $dir_size -gt 10240 ]; then
+    rm -rf $CP_PATH
+    mkdir -p $CP_PATH
+fi
+# ==================================================
+function sleep_rm()
+{
+    if [[ "$1" == "" ]]; then
+        return
+    fi
+    sleep 5
+    if [ -f $1 ]; then
+        rm -f $1
+    fi
+}
+# ==================================================
+
+
 
 # 파일의 절대경로 얻는 법
 # $(dirname $(realpath $0))
@@ -52,6 +97,26 @@ else
     if [[ ${D2:0} != "/" ]]; then
         D2=`$GETLINK -e "${2}"`
     fi
+
+    # if tmp file
+    if [ -d /Applications/ ]; then
+        if grep -q "^/private/var/folders/" <<<"$D2"; then
+            if grep -q "/clipboard_" <<<"$D2"; then
+                cp -r $D2 $CP_PATH
+                d2_basename=`basename $D2`
+                rm -f $D2
+                D2=$CP_PATH/$d2_basename
+            fi
+        fi
+    else
+        if grep -q "^/tmp/" <<<"$D2"; then
+            cp -r $D2 $CP_PATH
+            d2_basename=`basename $D2`
+            rm -f $D2
+            D2=$CP_PATH/$d2_basename
+        fi
+    fi
+
     if [ $OS -eq 2 ]; then
         DIFF_2="${D2}"
     else
@@ -66,7 +131,7 @@ fi
 DIFF_3=""
 DIFF_COMMAND=""
 
-if [[ $# == 3 ]]; then
+if [ $# -eq 3 ]; then
     if [[ $3 == "" ]]; then
         if [ $OS -eq 2 ]; then
             DIFF_COMMAND="\"${DIFF_1}\" \"${DIFF_2}\""
@@ -78,6 +143,26 @@ if [[ $# == 3 ]]; then
         if [[ ${D3:0} != "/" ]]; then
             D3=`$GETLINK -e "${3}"`
         fi
+
+        # if tmp file
+        if [ -d /Applications/ ]; then
+            if grep -q "^/private/var/folders/" <<<"$D3"; then
+                if grep -q "/clipboard_" <<<"$D3"; then
+                    cp -r $D3 $CP_PATH
+                    d3_basename=`basename $D3`
+                    rm -f $D3
+                    D3=$CP_PATH/$d3_basename
+                fi
+            fi
+        else
+            if grep -q "^/tmp/" <<<"$D3"; then
+                cp -r $D3 $CP_PATH
+                d2_basename=`basename $D3`
+                rm -f $D3
+                D3=$CP_PATH/$d2_basename
+            fi
+        fi
+
         if [ $OS -eq 2 ]; then
             DIFF_3="${D3}"
         else
@@ -98,6 +183,55 @@ else
         DIFF_COMMAND="${DIFF_1} ${DIFF_2}"
     fi
 fi
+
+DIFF_4=""
+if [ $# -eq 4 ]; then
+    if [[ $4 == "" ]]; then
+        if [ $OS -eq 2 ]; then
+            DIFF_COMMAND="\"${DIFF_1}\" \"${DIFF_2}\" \"${DIFF_3}\""
+        else
+            DIFF_COMMAND="${DIFF_1} ${DIFF_2} ${DIFF_3}"
+        fi
+    else
+        D4=$3
+        if [[ ${D4:0} != "/" ]]; then
+            D4=`$GETLINK -e "${4}"`
+        fi
+
+        # if tmp file
+        if [ -d /Applications/ ]; then
+            if grep -q "^/private/var/folders/" <<<"$D4"; then
+                if grep -q "/clipboard_" <<<"$D4"; then
+                    cp -r $D4 $CP_PATH
+                    d4_basename=`basename $D4`
+                    rm -f $D4
+                    D4=$CP_PATH/$d4_basename
+                fi
+            fi
+        else
+            if grep -q "^/tmp/" <<<"$D4"; then
+                cp -r $D4 $CP_PATH
+                d4_basename=`basename $D4`
+                rm -f $D4
+                D4=$CP_PATH/$d4_basename
+            fi
+        fi
+
+        if [ $OS -eq 2 ]; then
+            DIFF_4="${D4}"
+        else
+            DIFF_4="\"${D4:1}\""
+        fi
+        DIFF_COMMAND="${DIFF_1} ${DIFF_2} ${DIFF_3} ${DIFF_4}"
+        if [ $OS -eq 2 ]; then
+            DIFF_COMMAND="\"${DIFF_1}\" \"${DIFF_2}\" \"${DIFF_3}\" \"${DIFF_4}\""
+        else
+            DIFF_COMMAND="${DIFF_1} ${DIFF_2} ${DIFF_3} ${DIFF_4}"
+        fi
+    fi
+fi
+
+
 
 
 # echo "${DIFF_COMMAND}"
