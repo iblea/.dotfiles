@@ -36,6 +36,7 @@ end
 
 --- quick open applications
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
+hs.hotkey.bind({"option", "control"}, "Q", appLaunchOrFocus("Stickies"))
 hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
 hs.hotkey.bind({"option", "control"}, "F", appLaunchOrFocus("Iterm"))
 
