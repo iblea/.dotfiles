@@ -19,11 +19,12 @@ if ! grep -q "/opt/homebrew/opt/openssl@1.1/bin" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
 fi
 
-if ! grep -q "/opt/homebrew/opt/grep/libexec/gnubin" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/grep/libexec/gnubin:$PATH"
-fi
+gnubin_list=("grep" "gnu-sed" "coreutils")
 
-if ! grep -q "/opt/homebrew/opt/gnu-sed/libexec/gnubin" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-fi
+for gnu_path in ${gnubin_list[@]}; do
+	if grep -q "/opt/homebrew/opt/$gnu_path/libexec/gnubin" <<< "$PATH"; then
+		continue
+	fi
+	export PATH="/opt/homebrew/opt/$gnu_path/libexec/gnubin:$PATH"
+done
 
