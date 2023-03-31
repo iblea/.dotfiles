@@ -24,14 +24,14 @@ cd $HOME/$SETTINGS_DIR
 if [ -d ./.vim/ ]; then
 	rm -rf ./.vim/
 fi
-tar -zxf vim.tgz > /dev/null
+tar -zxvf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
 cd $HOME
 ln -s $HOME/$SETTINGS_DIR/.vim
 
 
 # envpath
-ln -s /$HOME/$SETTINGS_DIR/.envpath
+ln -s $HOME/$SETTINGS_DIR/.envpath
 
 
 # alias
