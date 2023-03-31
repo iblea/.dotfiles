@@ -9,6 +9,7 @@ case $- in
 esac
 
 SHELL=/bin/bash
+export SSLKEYLOGFILE=$HOME/sslkeylog.log
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -116,6 +117,13 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+
+# environment path (envpath)
+if [ -f $HOME/.envpath ]; then
+	. ~/.envpath
+fi
+
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like

@@ -202,6 +202,13 @@ if [[ ! -v POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS ]]; then
 	# [[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
 fi
 
+
+# environment path (envpath)
+if [ -f $HOME/.envpath ]; then
+	. ~/.envpath
+fi
+
+
 # ### install fd
 # https://github.com/sharkdp/fd/releases
 # wget --no-check-certificate -O fd_pkg.deb <url>
@@ -274,7 +281,4 @@ unsetopt menucomplete
 
 export CLICOLOR=1
 
-if [ -f $HOME/.envpath ]; then
-	. ~/.envpath
-fi
 
