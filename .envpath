@@ -15,7 +15,11 @@ if ! grep -q "/opt/homebrew/opt/openssl@1.1/lib/" <<< "$LIBRARY_PATH"; then
 	fi
 fi
 
-if ! grep -q "/opt/homebrew/opt/openssl@1.1/bin" <<< "$PATH"; then
+if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+fi
+
+if ! grep -q "/opt/homebrew/opt/openssl@1.1/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
 fi
 
