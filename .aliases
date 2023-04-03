@@ -16,8 +16,8 @@ function function_exist_check() {
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ] || [ -d /Applications ]; then
-	if [ -x /usr/bin/dircolors ]; then
-		test -r $HOME/.dircolors && eval "$(dircolors -b $HOME/.dircolors)" || eval "$(dircolors -b)"
+    if [ -x /usr/bin/dircolors ]; then
+        test -r $HOME/.dircolors && eval "$(dircolors -b $HOME/.dircolors)" || eval "$(dircolors -b)"
     # elif [ -x /opt/homebrew/opt/coreutils/bin/gdircolors ]; then
     #     eval "$(/opt/homebrew/opt/coreutils/bin/gdircolors -b)"
     else
@@ -26,7 +26,7 @@ if [ -x /usr/bin/dircolors ] || [ -d /Applications ]; then
         export LS_COLORS
         [[ "$SHELL" = "/bin/zsh" ]] && zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
-	fi
+    fi
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
@@ -67,7 +67,7 @@ alias makef='make -j8'
 
 # add export path
 if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
-	export PATH="$PATH:$HOME/.local/.bin"
+    export PATH="$PATH:$HOME/.local/.bin"
 fi
 
 
@@ -125,16 +125,20 @@ if [ -d /mnt/c/Users/ ]; then
     [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
 # mac command
 elif [ -d /Users/ ]; then
-	# alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
-	export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    # alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
+    export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     # alias diffb='~/.bcomp'
 
-	# macos
+    # macos
     alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
     alias which="$(/bin/bash -c 'which which')"
     alias ldd="otool -L"
     alias vii='mvim'
     alias mvi='mvim'
+
+    alias gosrc="cd $HOME/src"
+    # cd practice directory
+    alias gotest="cd $HOME/src/testsrc"
 else
     alias diffb='~/.bcomp.sh'
 fi
@@ -630,7 +634,36 @@ function wnfind() {
 
 
 
+# docker alias ==============================
+function dockersh() {
+    if [ $# -eq 1 ]; then
+        docker exec -u 0 -it "$1" bash
+    elif [ $# -eq 2 ]; then
+        docker exec -u $2 -it "$1" bash
+    else
+        echo "wrong argument"
+        exit
+    fi
+}
+
+function dockerzsh() {
+    if [ $# -eq 1 ]; then
+        docker exec -u 0 -it "$1" zsh
+    elif [ $# -eq 2 ]; then
+        docker exec -u $2 -it "$1" zsh
+    else
+        echo "wrong argument"
+        exit
+    fi
+}
+
+
+
+
+
 # git alias ==============================
+
+alias git="LANG=en_US.UTF-8 git"
 
 alias delspace="sed -i 's/\s\+$//g'"
 alias delspaceall="grep -rlI . | xargs -d '\n' -I{} sed -i 's/\s\+$//g' {}"
