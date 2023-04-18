@@ -70,6 +70,7 @@ hs.hotkey.bind({"option", "control"}, "L", appLaunchOrFocus("Discord"))
 --- hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Messages"))
 
 hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Beyond Compare"))
+hs.hotkey.bind({"option", "control"}, "P", appLaunchOrFocus("Activity Monitor"))
 
 
 
