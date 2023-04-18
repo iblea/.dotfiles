@@ -7,6 +7,11 @@ export JAVA_HOME_14=$(/usr/libexec/java_home -v14)
 # 14버전을 사용하고자 하는 경우 아래 주석(#)을 해제하고 위에 11버전을 주석처리 하면된다.
 export JAVA_HOME=$JAVA_HOME_14
 
+# if homebrew exist
+if [ ! -d "/opt/homebrew/" ]; then
+	exit 0
+fi
+
 if ! grep -q "/opt/homebrew/opt/openssl@1.1/lib/" <<< "$LIBRARY_PATH"; then
 	if [ "$LIBRARY_PATH" = "" ]; then
 		export LIBRARY_PATH=/opt/homebrew/opt/openssl@1.1/lib/
@@ -23,12 +28,19 @@ if ! grep -q "/opt/homebrew/opt/openssl@1.1/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
 fi
 
-gnubin_list=("grep" "gnu-sed" "coreutils")
+gnubin_list=("grep" "gnu-sed")
 
 for gnu_path in ${gnubin_list[@]}; do
 	if grep -q "/opt/homebrew/opt/$gnu_path/libexec/gnubin" <<< "$PATH"; then
-		continue
+		# remove old path
+		export PATH=$(echo "$PATH" | sed "s/\/opt\/homebrew\/opt\/$gnu_path\/libexec\/gnubin://")
 	fi
+	# create new path
 	export PATH="/opt/homebrew/opt/$gnu_path/libexec/gnubin:$PATH"
 done
 
+# coreutils
+if grep -q "/opt/homebrew/opt/coreutils/libexec/gnubin" <<< "$PATH"; then
+	export PATH=$(echo "$PATH" | sed "s/\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin://")
+fi
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
