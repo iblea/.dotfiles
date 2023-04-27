@@ -803,15 +803,23 @@ function gitsvnrevb() {
     if [[ "$@" = "" ]]; then
         return
     fi
-    git svn find-rev $(git log remotes/origin/$@ --max-count 1 --pretty=format:%H)
+    if [ $# -eq 2 ]; then
+        git svn find-rev $(git log remotes/$1/$2 --max-count 1 --pretty=format:%H)
+    else
+        git svn find-rev $(git log remotes/origin/$@ --max-count 1 --pretty=format:%H)
+    fi
 }
 
 alias gital='alias | grep "^g.*git"'
 
 # 모든 변경사항 pull
 function pullall() {
-    git branch -r | grep -v "\->" | while read remote; do git branch --track "${remote#origin/}" "$remote"; done
-    git branch -r | grep -v "\->" | while read remote; do git branch --set-upstream-to="$remote" "${remote#origin/}"; done
+    local branch=origin
+    if [ $# -eq 1 ]; then
+        branch=$1
+    fi
+    git branch -r | grep -v "\->" | while read remote; do git branch --track "${remote#${branch}/}" "$remote"; done
+    git branch -r | grep -v "\->" | while read remote; do git branch --set-upstream-to="$remote" "${remote#${branch}/}"; done
     git fetch --all
     git pull --all
 }
