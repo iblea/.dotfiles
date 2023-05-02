@@ -163,7 +163,7 @@ function grepn() {
     fi
     # grep --color=always -rnIH ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
-    grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2"
+    # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2"
     grep --color=always -rnIH ${search_str[@]} | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 }
 
