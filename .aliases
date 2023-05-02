@@ -164,6 +164,7 @@ function grepn() {
     # grep --color=always -rnIH ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
     grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2"
+    grep --color=always -rnIH ${search_str[@]} | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 }
 
 function grepm() {
@@ -172,7 +173,8 @@ function grepm() {
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
     # grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
-    grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2"
+    # grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2"
+    grep --color=always -rnIHF ${search_str[@]} | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 }
 
 # absolute path grep
@@ -186,7 +188,8 @@ function agrepn() {
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
-    grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
+    # grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
+    grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
 }
 function agrepm() {
     local curpwd=$(pwd);
@@ -198,7 +201,8 @@ function agrepm() {
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
     # grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
-    grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
+    # grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
+    grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
 }
 
 # fzfcode
