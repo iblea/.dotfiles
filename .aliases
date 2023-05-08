@@ -161,6 +161,10 @@ function grepn() {
     if [[ "$1" = "exai" ]]; then
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
     # grep --color=always -rnIH ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2"
@@ -172,6 +176,10 @@ function grepm() {
     if [[ "$1" = "exai" ]]; then
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
     # grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
     # grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2"
     grep --color=always -rnIHF ${search_str[@]} | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
@@ -187,6 +195,10 @@ function agrepn() {
     if [[ "$1" = "exai" ]]; then
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
     grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
@@ -200,6 +212,10 @@ function agrepm() {
     if [[ "$1" = "exai" ]]; then
         search_str=("--exclude-dir=ailib" "${@:2}")
     fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
     # grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
     # grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
     grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
