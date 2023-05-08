@@ -70,6 +70,9 @@ if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
     export PATH="$PATH:$HOME/.local/.bin"
 fi
 
+if [ "$(command -v 'code-insiders')" != "" ]; then
+    alias code='code-insiders'
+fi
 
 # =======================================================================
 
@@ -256,6 +259,7 @@ if [ "$(command -v fzf)" != "" ]; then
     {
         local codepath=vi
         [ "$(command -v code)" != "" ] && codepath=code
+        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
         local WHICH_IS=$(/bin/bash -c "which which")
         local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
@@ -329,6 +333,7 @@ else
     {
         local codepath=vi
         [ "$(command -v code)" != "" ] && codepath=code
+        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
         # local FZF_BIN_PATH=$(/bin/which fzf)
         # argument 가 2개 이상일 경우
         if [ $# -ge 2 ]; then
@@ -612,6 +617,9 @@ function gdbs() {
     [ "$(pidof gdbserver)" != "" ] && pkill -f gdbserver
     gdbserver :9091 $1 &
 }
+
+alias kgdb='pkill -f gdbserver'
+
 
 function cpdown() {
     cp -r $@ ~/download/
