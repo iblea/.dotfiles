@@ -592,6 +592,11 @@ function killdbgprocess() {
     echo ""
 }
 
+function gdbs() {
+    [ "$(pidof gdbserver)" != "" ] && pkill -f gdbserver
+    gdbserver :9091 $1 &
+}
+
 function cpdown() {
     cp -r $@ ~/download/
 }
@@ -815,6 +820,14 @@ function gitsvnrevb() {
 }
 
 alias gital='alias | grep "^g.*git"'
+
+alias gitup='git update-index --assume-unchanged'
+alias gitupa='git update-index --really-refresh'
+function gitupall() {
+git status -s | awk -F ' ' '{print $2}' | xargs git update-index --assume-unchanged
+git update-index --really-refresh
+# git status -s | awk -F ' ' '{print $2}' | xargs git update-index --really-refresh
+}
 
 # 모든 변경사항 pull
 function pullall() {
