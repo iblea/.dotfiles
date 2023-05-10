@@ -70,7 +70,7 @@ if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
     export PATH="$PATH:$HOME/.local/.bin"
 fi
 
-if [ "$(command -v 'code-insiders')" != "" ]; then
+if [[ "$(command -v 'code-insiders')" != "" ]]; then
     alias code='code-insiders'
 fi
 
@@ -614,9 +614,18 @@ function killdbgprocess() {
 }
 
 function gdbs() {
-    [ "$(pidof gdbserver)" != "" ] && pkill -f gdbserver
-    gdbserver :9091 $1 &
+    [[ "$(pidof gdbserver)" != "" ]] && pkill -f gdbserver
+    if [[ "$@" != "" ]]; then
+        if [[ "$@" = "httpgw" ]]; then
+            . ../.vscode/debugger.sh httpgw 0
+            # source ../.vscode/debugger.sh httpgw 0
+        fi
+        gdbserver :9091 ./"$@" &
+    else
+        echo "no argument"
+    fi
 }
+
 
 function cpdown() {
     cp -r $@ ~/download/
