@@ -618,9 +618,6 @@ function gdbs() {
     gdbserver :9091 $1 &
 }
 
-alias kgdb='pkill -f gdbserver'
-
-
 function cpdown() {
     cp -r $@ ~/download/
 }
@@ -833,11 +830,10 @@ function gitsvnrev() {
 #     fetch = :refs/remotes/origin/main
 
 function gitsvnrevb() {
-    if [[ "$@" = "" ]]; then
-        return
-    fi
-    if [ $# -eq 2 ]; then
-        git svn find-rev $(git log remotes/$1/$2 --max-count 1 --pretty=format:%H)
+    if [ $# -le 1 ]; then
+        git svn find-rev $@ $(git rev-parse --abbrev-ref HEAD)
+    elif [ $# -eq 2 ]; then
+        git svn find-rev $1 $2
     else
         git svn find-rev $(git log remotes/origin/$@ --max-count 1 --pretty=format:%H)
     fi
