@@ -613,6 +613,7 @@ function killdbgprocess() {
     echo ""
 }
 
+AGO_SFTP_DEBUG_PROCESS=""
 function gdbs() {
     [[ "$(pidof gdbserver)" != "" ]] && pkill -f gdbserver
     if [[ "$@" != "" ]]; then
@@ -621,10 +622,20 @@ function gdbs() {
             # source ../.vscode/debugger.sh httpgw 0
         fi
         gdbserver :9091 ./"$@" &
+        AGO_SFTP_DEBUG_PROCESS="$@"
     else
-        echo "no argument"
+        if [ "$AGO_SFTP_DEBUG_PROCESS" != "" ]; then
+		    if [[ "$AGO_SFTP_DEBUG_PROCESS" = "httpgw" ]]; then
+                . ../.vscode/debugger.sh httpgw 0
+                # source ../.vscode/debugger.sh httpgw 0
+            fi
+            gdbserver :9091 ./"$AGO_SFTP_DEBUG_PROCESS" &
+        else
+            echo "no argument"
+        fi
     fi
 }
+alias kd='pkill -f gdbserver'
 
 
 function cpdown() {
