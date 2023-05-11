@@ -133,6 +133,9 @@ elif [ -d /Users/ ]; then
     # alias diffb='~/.bcomp'
 
     # macos
+    if [ -d "/Applications/Hex Fiend.app" ]; then
+        alias hxd='open -a /Applications/Hex\ Fiend.app'
+    fi
     alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
     alias which="$(/bin/bash -c 'which which')"
     alias ldd="otool -L"
