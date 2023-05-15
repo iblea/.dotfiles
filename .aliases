@@ -628,7 +628,7 @@ function gdbs() {
         AGO_SFTP_DEBUG_PROCESS="$@"
     else
         if [ "$AGO_SFTP_DEBUG_PROCESS" != "" ]; then
-		    if [[ "$AGO_SFTP_DEBUG_PROCESS" = "httpgw" ]]; then
+            if [[ "$AGO_SFTP_DEBUG_PROCESS" = "httpgw" ]]; then
                 . ../.vscode/debugger.sh httpgw 0
                 # source ../.vscode/debugger.sh httpgw 0
             fi
@@ -689,22 +689,40 @@ function wnfind() {
 
 
 # docker alias ==============================
-function dockersh() {
+# sh - docker - origin
+function shda() {
     if [ $# -eq 1 ]; then
-        docker exec -u 0 -it "$1" bash
+        homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u 0 -w $homedir -it "$1" bash
     elif [ $# -eq 2 ]; then
-        docker exec -u $2 -it "$1" bash
+        homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u $2 -w $homedir -it "$1" bash
     else
         echo "wrong argument"
         exit
     fi
 }
 
-function dockerzsh() {
+# sh - docker
+function shd() {
     if [ $# -eq 1 ]; then
-        docker exec -u 0 -it "$1" zsh
+        homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u 0 -w $homedir -it "$1" zsh
     elif [ $# -eq 2 ]; then
-        docker exec -u $2 -it "$1" zsh
+        homedir=$(docker exec -u $2 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u $2 -w $homedir -it "$1" zsh
     else
         echo "wrong argument"
         exit
