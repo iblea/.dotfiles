@@ -146,6 +146,9 @@ elif [ -d /Users/ ]; then
     alias gosrc="cd $HOME/src"
     # cd practice directory
     alias gotest="cd $HOME/src/testsrc"
+
+    alias cua="/Users/jdh/curltest/.aaa_testcurl.sh"
+    alias cuq="/Users/jdh/curltest/.qqq_testcurl.sh"
 else
     alias diffb='~/.bcomp.sh'
 fi
@@ -690,7 +693,7 @@ function wnfind() {
 
 # docker alias ==============================
 # sh - docker - origin
-function shda() {
+function docbash() {
     if [ $# -eq 1 ]; then
         homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
         if [[ "$homedir" = "" ]]; then
@@ -710,7 +713,7 @@ function shda() {
 }
 
 # sh - docker
-function shd() {
+function docsh() {
     if [ $# -eq 1 ]; then
         homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
         if [[ "$homedir" = "" ]]; then
