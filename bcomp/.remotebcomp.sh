@@ -162,6 +162,8 @@ if [ $WIN_SSH == 0 ]; then
             DIFF_4="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D4}\""
             DIFF_COMMAND="${BCOMP_PATH} ${DIFF_1} ${DIFF_2} ${DIFF_3} ${DIFF_4}"
         fi
+    else
+        DIFF_COMMAND="${BCOMP_PATH} ${DIFF_1} ${DIFF_2} ${DIFF_3}"
     fi
 
     # echo "${DIFF_COMMAND}"
