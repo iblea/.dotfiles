@@ -35,8 +35,8 @@ if [ $# -gt 4 ]; then
 fi
 
 
-CP_PATH=/tmp/meldcp
-CP_PATH=/Users/jdh/.bcomptmp
+# CP_PATH=/tmp/meldcp
+CP_PATH=$HOME/.bcomptmp
 # CP_PATH clean up =================================
 if [ ! -d $CP_PATH ]; then
     mkdir -p $CP_PATH
@@ -79,6 +79,25 @@ if [[ ${D1:0} != "/" ]]; then
     D1=`$GETLINK -e "${1}"`
 fi
 
+# if tmp file
+if [ -d /Applications/ ]; then
+    if grep -q "^/private/var/folders/" <<<"$D1"; then
+        # if grep -q "/clipboard_" <<<"$D1"; then
+        d1_basename=$(basename $D1)
+        cp -r $D1 $CP_PATH/1_$d1_basename
+        rm -f $D1
+        D1=$CP_PATH/1_$d1_basename
+        # fi
+    fi
+else
+    if grep -q "^/tmp/" <<<"$D1"; then
+        d1_basename=$(basename $D1)
+        cp -r $D1 $CP_PATH/1_$d1_basename
+        rm -f $D1
+        D1=$CP_PATH/1_$d1_basename
+    fi
+fi
+
 if [ $OS -eq 2 ]; then
     DIFF_1="${D1}"
 else
@@ -101,19 +120,19 @@ else
     # if tmp file
     if [ -d /Applications/ ]; then
         if grep -q "^/private/var/folders/" <<<"$D2"; then
-            if grep -q "/clipboard_" <<<"$D2"; then
-                cp -r $D2 $CP_PATH
-                d2_basename=`basename $D2`
-                rm -f $D2
-                D2=$CP_PATH/$d2_basename
-            fi
+            # if grep -q "/clipboard_" <<<"$D2"; then
+            d2_basename=$(basename $D2)
+            cp -r $D2 $CP_PATH/2_$d2_basename
+            rm -f $D2
+            D2=$CP_PATH/2_$d2_basename
+            # fi
         fi
     else
         if grep -q "^/tmp/" <<<"$D2"; then
-            cp -r $D2 $CP_PATH
-            d2_basename=`basename $D2`
+            d2_basename=$(basename $D2)
+            cp -r $D2 $CP_PATH/2_$d2_basename
             rm -f $D2
-            D2=$CP_PATH/$d2_basename
+            D2=$CP_PATH/2_$d2_basename
         fi
     fi
 
@@ -147,19 +166,19 @@ if [ $# -eq 3 ]; then
         # if tmp file
         if [ -d /Applications/ ]; then
             if grep -q "^/private/var/folders/" <<<"$D3"; then
-                if grep -q "/clipboard_" <<<"$D3"; then
-                    cp -r $D3 $CP_PATH
-                    d3_basename=`basename $D3`
-                    rm -f $D3
-                    D3=$CP_PATH/$d3_basename
-                fi
+                # if grep -q "/clipboard_" <<<"$D3"; then
+                d3_basename=$(basename $D3)
+                cp -r $D3 $CP_PATH/3_$d3_basename
+                rm -f $D3
+                D3=$CP_PATH/3_$d3_basename
+                # fi
             fi
         else
             if grep -q "^/tmp/" <<<"$D3"; then
-                cp -r $D3 $CP_PATH
-                d2_basename=`basename $D3`
+                d3_basename=$(basename $D3)
+                cp -r $D3 $CP_PATH/3_$d3_basename
                 rm -f $D3
-                D3=$CP_PATH/$d2_basename
+                D3=$CP_PATH/3_$d3_basename
             fi
         fi
 
@@ -201,19 +220,19 @@ if [ $# -eq 4 ]; then
         # if tmp file
         if [ -d /Applications/ ]; then
             if grep -q "^/private/var/folders/" <<<"$D4"; then
-                if grep -q "/clipboard_" <<<"$D4"; then
-                    cp -r $D4 $CP_PATH
-                    d4_basename=`basename $D4`
-                    rm -f $D4
-                    D4=$CP_PATH/$d4_basename
-                fi
+                # if grep -q "/clipboard_" <<<"$D4"; then
+                d4_basename=$(basename $D4)
+                cp -r $D4 $CP_PATH/4_$d4_basename
+                rm -f $D4
+                D4=$CP_PATH/4_$d4_basename
+                # fi
             fi
         else
             if grep -q "^/tmp/" <<<"$D4"; then
-                cp -r $D4 $CP_PATH
-                d4_basename=`basename $D4`
+                d4_basename=$(basename $D4)
+                cp -r $D4 $CP_PATH/4_$d4_basename
                 rm -f $D4
-                D4=$CP_PATH/$d4_basename
+                D4=$CP_PATH/4_$d4_basename
             fi
         fi
 

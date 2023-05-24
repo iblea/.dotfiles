@@ -88,10 +88,10 @@ if [ $WIN_SSH == 0 ]; then
     fi
     # if tmp file
     if grep -q "^/tmp/" <<<"$D1"; then
-        cp -r $D1 $CP_PATH
-        d2_basename=`basename $D1`
+        d1_basename=$(basename $D1)
+        cp -r $D1 $CP_PATH/1_$d1_basename
         rm -f $D1
-        D1=$CP_PATH/$d2_basename
+        D1=$CP_PATH/1_$d1_basename
     fi
 
     DIFF_1="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D1}\""
@@ -107,10 +107,10 @@ if [ $WIN_SSH == 0 ]; then
         fi
         # if tmp file
         if grep -q "^/tmp/" <<<"$D2"; then
-            cp -r $D2 $CP_PATH
-            d2_basename=`basename $D2`
+            d2_basename=$(basename $D2)
+            cp -r $D2 $CP_PATH/2_$d2_basename
             rm -f $D2
-            D2=$CP_PATH/$d2_basename
+            D2=$CP_PATH/2_$d2_basename
         fi
         DIFF_2="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D2}\""
     fi
@@ -132,10 +132,10 @@ if [ $WIN_SSH == 0 ]; then
             fi
             # if tmp file
             if grep -q "^/tmp/" <<<"$D3"; then
-                cp -r $D3 $CP_PATH
-                d2_basename=`basename $D3`
+                d3_basename=$(basename $D3)
+                cp -r $D3 $CP_PATH/3_$d3_basename
                 rm -f $D3
-                D3=$CP_PATH/$d2_basename
+                D3=$CP_PATH/3_$d3_basename
             fi
             DIFF_3="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D3}\""
             DIFF_COMMAND="${BCOMP_PATH} ${DIFF_1} ${DIFF_2} ${DIFF_3}"
@@ -154,10 +154,10 @@ if [ $WIN_SSH == 0 ]; then
             fi
             # if tmp file
             if grep -q "^/tmp/" <<<"$D4"; then
-                cp -r $D4 $CP_PATH
-                d2_basename=`basename $D4`
+                d4_basename=$(basename $D4)
+                cp -r $D4 $CP_PATH/4_$d4_basename
                 rm -f $D4
-                D4=$CP_PATH/$d2_basename
+                D4=$CP_PATH/4_$d4_basename
             fi
             DIFF_4="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D4}\""
             DIFF_COMMAND="${BCOMP_PATH} ${DIFF_1} ${DIFF_2} ${DIFF_3} ${DIFF_4}"
@@ -196,10 +196,10 @@ else
     fi
     # if tmp file
     if grep -q "^/tmp/" <<<"$D1"; then
-        cp -r $D1 $CP_PATH
-        d2_basename=`basename $D1`
+        d1_basename=$(basename $D1)
+        cp -r $D1 $CP_PATH/1_$d1_basename
         rm -f $D1
-        D1=$CP_PATH/$d2_basename
+        D1=$CP_PATH/1_$d1_basename
     fi
 
     DIFF_1="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D1}\""
@@ -215,10 +215,10 @@ else
         fi
         # if tmp file
         if grep -q "^/tmp/" <<<"$D2"; then
-            cp -r $D2 $CP_PATH
-            d2_basename=`basename $D2`
+            d2_basename=$(basename $D2)
+            cp -r $D2 $CP_PATH/2_$d2_basename
             rm -f $D2
-            D2=$CP_PATH/$d2_basename
+            D2=$CP_PATH/2_$d2_basename
         fi
         DIFF_2="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D2}\""
     fi
@@ -240,10 +240,10 @@ else
             fi
             # if tmp file
             if grep -q "^/tmp/" <<<"$D3"; then
-                cp -r $D3 $CP_PATH
-                d2_basename=`basename $D3`
+                d3_basename=$(basename $D3)
+                cp -r $D3 $CP_PATH/3_$d3_basename
                 rm -f $D3
-                D3=$CP_PATH/$d2_basename
+                D3=$CP_PATH/3_$d3_basename
             fi
             DIFF_3="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D3}\""
             DIFF_COMMAND="\"${BCOMP_PATH}\" ${DIFF_1} ${DIFF_2} ${DIFF_3}"
@@ -262,10 +262,10 @@ else
             fi
             # if tmp file
             if grep -q "^/tmp/" <<<"$D4"; then
-                cp -r $D4 $CP_PATH
-                d2_basename=`basename $D4`
+                d4_basename=$(basename $D4)
+                cp -r $D4 $CP_PATH/4_$d4_basename
                 rm -f $D4
-                D4=$CP_PATH/$d2_basename
+                D4=$CP_PATH/4_$d4_basename
             fi
             DIFF_4="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D4}\""
             DIFF_COMMAND="\"${BCOMP_PATH}\" ${DIFF_1} ${DIFF_2} ${DIFF_3} ${DIFF_4}"
