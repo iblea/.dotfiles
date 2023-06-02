@@ -12,11 +12,12 @@ fi
 # if homebrew exist
 if [ -d "/opt/homebrew/" ]; then
 
-if ! grep -q "/opt/homebrew/opt/openssl@1.1/lib/" <<< "$LIBRARY_PATH"; then
+openssl_brew_version=3
+if ! grep -q "/opt/homebrew/opt/openssl@$openssl_brew_version/lib" <<< "$LIBRARY_PATH"; then
 	if [ "$LIBRARY_PATH" = "" ]; then
-		export LIBRARY_PATH=/opt/homebrew/opt/openssl@1.1/lib/
+		export LIBRARY_PATH=/opt/homebrew/opt/openssl@$openssl_brew_version/lib
 	else
-		export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/openssl@1.1/lib/
+		export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/openssl@$openssl_brew_version/lib
 	fi
 fi
 
@@ -24,9 +25,19 @@ if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 fi
 
-if ! grep -q "/opt/homebrew/opt/openssl@1.1/bin/" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
+if ! grep -q "/opt/homebrew/opt/openssl@$openssl_brew_version/bin/" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/openssl@$openssl_brew_version/bin:$PATH"
 fi
+
+
+if ! grep -q "/opt/homebrew/opt/libnet/lib" <<< "$PATH"; then
+	export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/libnet/lib
+fi
+
+if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/libnet/bin:$PATH"
+fi
+
 
 gnubin_list=("grep" "gnu-sed")
 
@@ -46,3 +57,7 @@ fi
 export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
 fi
+
+unset openssl_brew_version
+unset gnubin_list
+
