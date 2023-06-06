@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SETTINGS_DIR=dotfiles
+SETTINGS_DIR=.dotfiles
 # current path
 SCRIPT_PATH=$(dirname $(realpath $0))
 
