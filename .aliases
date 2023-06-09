@@ -148,8 +148,8 @@ elif [ -d /Users/ ]; then
     # cd practice directory
     alias gotest="cd $HOME/src/testsrc"
 
-    alias cua="/Users/jdh/curltest/.aaa_testcurl.sh"
-    alias cuq="/Users/jdh/curltest/.qqq_testcurl.sh"
+    alias cua="/$HOME/curltest/.aaa_testcurl.sh"
+    alias cuq="/$HOME/curltest/.qqq_testcurl.sh"
 else
     alias diffb='~/.bcomp.sh'
 fi
@@ -949,7 +949,7 @@ function gconflictundo()
 # git svn fetch v5.0
 # git checkout waf50
 # git merge --hard origin/waf50   or   git reset --merge orogin/waf50   or   git rebase remotes/origin/waf50
-# git svn dcommit --username jhhwang
+# git svn dcommit --username username
 
 # ==============================================================================
 

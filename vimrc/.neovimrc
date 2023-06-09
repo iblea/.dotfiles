@@ -1,9 +1,9 @@
 " neovim $MYVIMRC init script (in Windows)
 " " input ~\AppData\Local\nvim\
 "
-" "set runtimepath+=~\Downloads\vimsetjhh\.vim,~\Downloads\vimsetjhh\.vim\after
+" "set runtimepath+=~\Downloads\vimsetjdh\.vim,~\Downloads\vimsetjdh\.vim\after
 " set runtimepath+=~\.vim,~\.vim\after
-" "set packpath+=~\Downloads\vimsetjhh\.vim
+" "set packpath+=~\Downloads\vimsetjdh\.vim
 " set packpath+=~\.vim
 " source ~\.nvimrc
 "

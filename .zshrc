@@ -168,8 +168,8 @@ fi
 
 
 # git ssh (passwd modify user)
-# git config --global core.sshCommand "ssh -i /home/jhh/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-# gitssh_path=/home/jhh/.ssh/.gitssh.sh
+# git config --global core.sshCommand "ssh -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+# gitssh_path=$HOME/.ssh/.gitssh.sh
 #
 # if [[ ! -f $gitssh_path ]]; then
 # 	touch $gitssh_path
@@ -183,7 +183,7 @@ fi
 # fi
 
 # export GIT_SSH=$gitssh_path
-# GIT_SSH_COMMAND='ssh -i /home/jhh/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+# GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
 
 # oh-my-zsh options
 DISABLE_MAGIC_FUNCTIONS=true
