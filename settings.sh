@@ -55,6 +55,10 @@ else
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.remotebcomp.sh $HOME/.bcomp.sh
 fi
 
+# hammerspoon
+# ln -s $HOME/.dotfiles/.hammerspoon $HOME/.hammerspoon
+# ln -s $HOME/$SETTINGS_DIR/.hammerspoon $HOME/.hammerspoon
+
 
 
 # gdbinit
