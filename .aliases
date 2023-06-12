@@ -818,6 +818,7 @@ fuunalias_alias 'gu' 'git push'
 fuunalias_alias 'gp' 'git pull'
 # merge no commit no ff (squash - no commit)
 fuunalias_alias 'gmn' 'git merge --no-commit --no-ff'
+fuunalias_alias 'gmns' 'git merge --squash --no-commit'
 fuunalias_alias 'gl' ''
 
 function gl() {
