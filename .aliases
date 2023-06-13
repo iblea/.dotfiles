@@ -144,6 +144,7 @@ elif [ -d /Users/ ]; then
     alias mvi='mvim'
 
     function godown() { cd $HOME/Downloads/$@; }
+    function goissue() { cd $HOME/issue/$@; }
     alias gosrc="cd $HOME/src"
     # cd practice directory
     alias gotest="cd $HOME/src/testsrc"
