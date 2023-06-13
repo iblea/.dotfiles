@@ -242,8 +242,8 @@ inoremap <c-i> <ESC>O
 nnoremap ^ `
 vnoremap ^ `
 noremap ` m
-" nnoremap ! ^
-" vnoremap ! ^
+nnoremap @ ^
+vnoremap @ ^
 nnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@########\|\|\|; <CR>zz
 vnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@########\|\|\|; <CR>zz
 " nnoremap ' <ESC>:noh<CR>
