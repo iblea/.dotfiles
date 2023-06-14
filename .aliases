@@ -64,7 +64,14 @@ alias l='ls -CF'
 alias j='ls -CF'
 alias psf='ps -aef'
 alias makef='make -j8'
-alias makeb='bear make -j8 --print-directory'
+function makeb() {
+    result=./compile_commands.json
+    if [ -f $result ]; then
+        rm -rf $result
+    fi
+    make clean;
+    bear make -j8 --print-directory
+}
 
 # add export path
 if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
