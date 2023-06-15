@@ -819,6 +819,9 @@ fuunalias_alias 'gs' 'git status'
 fuunalias_alias 'gst' 'git status'
 fuunalias_alias 'gsti' 'git stash'
 fuunalias_alias 'gstiku' 'git stash -k -u'
+fuunalias_alias 'gstmp' ''
+fuunalias_alias 'gstai' ''
+fuunalias_alias 'gstl' 'git stash list'
 fuunalias_alias 'gstia' 'git stash -k -u'
 fuunalias_alias 'gsm' 'git submodule'
 fuunalias_alias 'gbv' 'git branch -vv'
@@ -828,6 +831,32 @@ fuunalias_alias 'gp' 'git pull'
 fuunalias_alias 'gmn' 'git merge --no-commit --no-ff'
 fuunalias_alias 'gmns' 'git merge --squash --no-commit'
 fuunalias_alias 'gl' ''
+
+
+
+function gstai() {
+    if [[ "$@" = "" ]]; then
+        git stash apply
+    else
+        git stash apply stash@{$@}
+    fi
+}
+
+# 가장 최근에 저장된 stash의 번호는 0번이다.
+function gstmp() {
+    if [[ "$@" = "" ]]; then
+        git stash push -k -u
+    else
+        git stash push -k -u $@
+    fi
+    git stash apply stash@{0}
+
+    echo ""
+    echo ""
+    echo "stash list"
+    git stash list
+    echo ""
+}
 
 function gl() {
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
@@ -845,14 +874,6 @@ function gld() {
         else
             git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
         fi
-    fi
-}
-
-function gstai() {
-    if [[ "$@" = "" ]]; then
-        git stash apply
-    else
-        git stash apply stash@{$@}
     fi
 }
 
