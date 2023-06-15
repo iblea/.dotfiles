@@ -63,7 +63,6 @@ set foldopen-=undo
 set foldopen-=search
 set diffopt=filler,foldcolumn:0
 set noea
-set scrolloff=5
 set wildmenu
 set fileencodings=utf-8,cp949,euc-kr
 set encoding=utf-8

@@ -9,6 +9,7 @@ set hlsearch
 set nu
 set rnu
 set noic
+set scrolloff=5
 
 noremap s <nop>
 noremap S <nop>
