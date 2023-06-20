@@ -820,6 +820,10 @@ fuunalias_alias 'gcfl' 'git config --list'
 fuunalias_alias 'gs' 'git status'
 fuunalias_alias 'gst' 'git status'
 fuunalias_alias 'gsti' 'git stash'
+# push stash untracked file
+fuunalias_alias 'gstiu' 'git stash -u'
+# keep staging file
+fuunalias_alias 'gstik' 'git stash -k'
 fuunalias_alias 'gstiku' 'git stash -k -u'
 fuunalias_alias 'gstmp' ''
 fuunalias_alias 'gstai' ''
