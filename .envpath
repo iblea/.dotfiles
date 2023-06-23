@@ -61,3 +61,9 @@ fi
 unset openssl_brew_version
 unset gnubin_list
 
+
+# link homebrew
+# brew unlink <pkg>; brew link <pkg> --force
+# cd /opt/homebrew/bin/
+# ln -s ../Cellar/<pkg>/<version>/<path>/<binary> <binary>
+# ln -s ../Cellar/arping/2.23/sbin/arping arpin
