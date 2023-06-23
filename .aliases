@@ -953,6 +953,7 @@ function gitsvnrevb() {
 
 alias gital='alias | grep "^g.*git"'
 
+# git svn fetch error (untracked file)
 alias gitup='git update-index --assume-unchanged'
 alias gitupa='git update-index --really-refresh'
 function gitupall() {
