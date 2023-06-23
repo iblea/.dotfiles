@@ -272,6 +272,7 @@ if [ "$(command -v fzf)" != "" ]; then
 
     # alias di='fzfoutput=$(fzf); [ "$fzfoutput" != "" ] && code $fzfoutput; unset fzfoutput'
     # code+vi = di
+    # fzf di
     function di()
     {
         local codepath=vi
@@ -282,6 +283,17 @@ if [ "$(command -v fzf)" != "" ]; then
         # argument 가 2개 이상일 경우
         if [ $# -ge 2 ]; then
             local search_path=()
+            if [ "$1" = "touch" ]; then
+                for arg in "${@:2}"; do
+                    if [ -d "$arg" ]; then
+                        echo "\"$arg\" is directory (so skip)"
+                        continue
+                    fi
+                    search_path+=("$arg")
+                done
+                $codepath "${search_path[@]}"
+                return ;
+            fi
             for arg in "$@"; do
                 if [ -d "$arg" ]; then
                     echo "\"$arg\" is directory (so skip)"
@@ -294,7 +306,7 @@ if [ "$(command -v fzf)" != "" ]; then
                 search_path+=("$arg")
             done
             $codepath "${search_path[@]}"
-            return;
+            return ;
         fi
         # argument가 1개일 경우
         if [ $# -eq 1 ]; then
@@ -303,8 +315,22 @@ if [ "$(command -v fzf)" != "" ]; then
                 cd $@
             else
                 if [ ! -e "$@" ]; then
-                    echo "file not found. create new file? (ctrl-c to stop)"
-                    read $anykey
+                    fzfres=""
+                    getname=$(echo "$@" | awk -F '/' '{ print $NF }')
+                    if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
+                        tmpcmd="fd \"$getname\" --type file --follow --hidden --no-ignore -X grep -lI ."
+                    else
+                        tmpcmd="find . -name \"$getname\" -type f -exec grep -lI . {} \;"
+                    fi
+                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH --height 40% --layout=reverse --preview 'cat {}')
+                    # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
+                    if [ "$fzfres" != "" ]; then
+                        $codepath $fzfres
+                    fi
+                    return ;
+                    # skip new file
+                    # echo "file not found. create new file? (ctrl-c to stop)"
+                    # read $anykey
                 fi
                 # 1개이고 디렉토리가 아니면 바로 실행
                 $codepath $@
@@ -327,16 +353,16 @@ if [ "$(command -v fzf)" != "" ]; then
         local fzfres=""
         # pipeline으로 입력이 들어온 경우
         if [ -p /dev/stdin ]; then
-            cat < /dev/stdin > $HOME/dotfiles/.fzfinput
+            cat < /dev/stdin > $HOME/.dotfiles/.fzfinput
             sleep 0.05
-            fzfres=$(cat $HOME/dotfiles/.fzfinput | $FZF_BIN_PATH --height 40% --layout=reverse)
-            [ -f $HOME/dotfiles/.fzfinput ] && rm -f $HOME/dotfiles/.fzfinput
+            fzfres=$(cat $HOME/.dotfiles/.fzfinput | $FZF_BIN_PATH --height 40% --layout=reverse  --preview 'cat {}')
+            [ -f $HOME/.dotfiles/.fzfinput ] && rm -f $HOME/.dotfiles/.fzfinput
             if [ -d "$fzfres" ]; then
                 echo "$fzfres is directory (so skip)"
                 return
             fi
         else
-            fzfres=$($FZF_BIN_PATH --height 40% --layout=reverse)
+            fzfres=$($FZF_BIN_PATH --height 40% --layout=reverse  --preview 'cat {}')
         fi
         if [ "$fzfres" != "" ]; then
             $codepath $fzfres
@@ -346,6 +372,7 @@ if [ "$(command -v fzf)" != "" ]; then
         [ $# -eq 1 ] && cd - > /dev/null
     }
 else
+    # no fzf di
     function di()
     {
         local codepath=vi
@@ -356,6 +383,10 @@ else
         if [ $# -ge 2 ]; then
             local search_path=()
             for arg in "$@"; do
+                if [ "$1" = "touch" ]; then
+                    $codepath "${2}"
+                    return ;
+                fi
                 if [ -d "$arg" ]; then
                     echo "\"$arg\" is directory (so skip)"
                     continue
