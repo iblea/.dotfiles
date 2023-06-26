@@ -465,6 +465,43 @@ function afindsrc() {
     sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
 }
 
+function findexa() {
+    local curpwd=$(pwd)
+    if [ $# -lt 2 ]; then
+        echo "wrong argument"
+        return ;
+    fi
+    if [[ "$curpwd" != "/" ]]; then
+        curpwd="${curpwd}/"
+    fi
+    keyword="${@[$#]}"
+    # local ext="\($1"
+    # fd - no \ char
+    local ext="($1"
+
+    local exts=()
+    for _ext in "$@"; do
+        exts+=("$_ext")
+    done
+    unset "exts[${#exts[@]}]"
+    exts=("${exts[@]:1}")
+
+    # local ext="\(c\|h\|y\|l\|py\)"
+    for (( i=1; i<${#exts[@]}; i++ )); do
+        # ext+="\|${exts[$i]}"
+        ext+="|${exts[$i]}"
+    done
+    unset exts
+    # ext+="\)$"
+    ext+=")$"
+
+    # find . -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$keyword" {} \; |
+    fd --regex ".*\.$ext" --type file --color=never --follow --hidden --no-ignore -X grep -lI . |
+    xargs -d '\n' -I{} grep -Hn --color=always "$keyword" {} |
+
+    sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
+}
+
 function findall() { find . -name "*" -type f -exec grep -Hn --color "$@" {} \; ; }
 function svndiff() {
     local SVN_REV=0
