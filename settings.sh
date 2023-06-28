@@ -42,7 +42,11 @@ complex_path=karabiner/assets/complex_modifications
 if [ -d $HOME/.config/$complex_path ]; then
 	rm -rf $HOME/.config/$complex_path
 fi
-ln -s $HOME/$SETTINGS_DIR/$complex_path  $HOME/.config/$complex_path
+if [ -d $HOME/.config ]; then
+	ln -s $HOME/$SETTINGS_DIR/$complex_path  $HOME/.config/$complex_path
+else
+	echo "no directory $HOME/.config"
+fi
 
 
 # bcomp (beyond compare command)
