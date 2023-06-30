@@ -422,6 +422,15 @@ else
     }
 fi
 
+# alias direj="di $(find . -name '*.rej' -type f | head -n 1 | sed 's/....$//') $(find . -name '*.rej' -type f | head -n 1)"
+function direj()
+{
+	rej_file=$(find . -name '*.rej' -type f | head -n 1)
+    org_file=$(echo "$rej_file" | sed 's/....$//')
+    echo "$rej_file"
+	di "$rej_file" "$org_file"
+}
+
 function toucha() { touch $@; chmod 755 $@; }
 
 function makectags() { ctags --tag-relative --langmap=C:.c.h.l.y --c-kinds=+p+l --languages=C --fields=+l $@ -f .tags --sort=foldcase -R ./*; }
