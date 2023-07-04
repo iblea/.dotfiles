@@ -172,6 +172,24 @@ fi
 
 
 
+# diffdirectory - diffdir
+function diffdir()
+{
+    directory_1="v5.0"
+    directory_2="v5.0.2_2"
+
+    file1="$directory_1/$@"
+    file2="$directory_2/$@"
+    if [ ! -f $file1 ]; then
+        echo "$file1 not exist"
+        return
+    elif [ ! -f $file2 ]; then
+        echo "$file2 not exist"
+        return
+    fi
+
+    diffb "$file1" "$file2"
+}
 
 # absolute path
 alias abs='readlink -e'
