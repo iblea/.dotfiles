@@ -814,7 +814,7 @@ function docbash() {
         docker exec -u $2 -w $homedir -it "$1" bash
     else
         echo "wrong argument"
-        exit
+        return
     fi
 }
 
@@ -834,7 +834,7 @@ function docsh() {
         docker exec -u $2 -w $homedir -it "$1" zsh
     else
         echo "wrong argument"
-        exit
+        return
     fi
 }
 
