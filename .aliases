@@ -145,7 +145,7 @@ elif [ -d /Users/ ]; then
         alias hxd='open -a /Applications/Hex\ Fiend.app'
     fi
     alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
-    alias which="$(/bin/bash -c 'which which')"
+    alias which="$(/bin/bash -c 'which which' 2>/dev/null)"
     alias ldd="otool -L"
     alias vii='mvim'
     alias mvi='mvim'
@@ -296,7 +296,7 @@ if [ "$(command -v fzf)" != "" ]; then
         local codepath=vi
         [ "$(command -v code)" != "" ] && codepath=code
         [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
-        local WHICH_IS=$(/bin/bash -c "which which")
+        local WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
         local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
         if [ $# -ge 2 ]; then
