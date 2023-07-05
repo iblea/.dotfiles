@@ -2,7 +2,7 @@
   "title": "option_shift_hjkl_to_arrow",
   "rules": [
     {
-      "description": "option_shift_hjkl_to_arrow",
+      "description": "ctrl_opt_shift_hjkl_to_arrow",
       "manipulators": [
         {
           "type": "basic",
@@ -10,6 +10,7 @@
             "key_code": "h",
             "modifiers": {
               "mandatory": [
+                "left_control",
                 "left_option",
                 "left_shift"
               ],
@@ -30,6 +31,7 @@
             "key_code": "j",
             "modifiers": {
               "mandatory": [
+                "left_control",
                 "left_option",
                 "left_shift"
               ],
@@ -50,6 +52,7 @@
             "key_code": "k",
             "modifiers": {
               "mandatory": [
+                "left_control",
                 "left_option",
                 "left_shift"
               ],
@@ -70,6 +73,7 @@
             "key_code": "l",
             "modifiers": {
               "mandatory": [
+                "left_control",
                 "left_option",
                 "left_shift"
               ],
@@ -81,26 +85,6 @@
           "to": [
             {
               "key_code": "right_arrow"
-            }
-          ]
-        },
-        {
-          "type": "basic",
-          "from": {
-            "key_code": "j",
-            "modifiers": {
-              "mandatory": [
-                "left_option",
-                "left_shift"
-              ],
-              "optional": [
-                "any"
-              ]
-            }
-          },
-          "to": [
-            {
-              "key_code": "down_arrow"
             }
           ]
         }
@@ -115,6 +99,7 @@
             "key_code": "k",
             "modifiers": {
               "mandatory": [
+                "left_control",
                 "left_option",
                 "left_shift"
               ],
