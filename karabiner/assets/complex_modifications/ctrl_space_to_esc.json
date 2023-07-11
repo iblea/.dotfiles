@@ -9,10 +9,31 @@
           "from": {
             "modifiers": {
               "mandatory": [
-                "left_control"
+                "left_control",
+                "left_command"
               ],
               "optional": [
                 "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to": [
+            {
+              "key_code": "spacebar",
+              "modifiers": [
+                "left_control",
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
+                "left_control"
               ]
             },
             "key_code": "spacebar"
@@ -39,10 +60,31 @@
           "from": {
             "modifiers": {
               "mandatory": [
-                "left_control"
+                "left_control",
+                "left_command"
               ],
               "optional": [
                 "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to": [
+            {
+              "key_code": "spacebar",
+              "modifiers": [
+                "left_control",
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
+                "left_control"
               ]
             },
             "key_code": "spacebar"
