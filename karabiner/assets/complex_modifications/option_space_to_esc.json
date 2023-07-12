@@ -10,9 +10,6 @@
             "modifiers": {
               "mandatory": [
                 "left_alt"
-              ],
-              "optional": [
-                "any"
               ]
             },
             "key_code": "spacebar"
@@ -43,9 +40,6 @@
             "modifiers": {
               "mandatory": [
                 "left_alt"
-              ],
-              "optional": [
-                "any"
               ]
             },
             "key_code": "spacebar"
