@@ -39,6 +39,17 @@ fi
 CP_PATH=/tmp/meldcp
 # CP_PATH=$HOME/.difftmp
 
+
+CUSTOM_FILE=$HOME/.dotfiles/env_custom/bcomp_config
+if [ -f $CUSTOM_FILE ]; then
+    . $CUSTOM_FILE
+fi
+
+
+
+
+
+
 # CP_PATH clean up =================================
 if [ ! -d $CP_PATH ]; then
     mkdir -p $CP_PATH

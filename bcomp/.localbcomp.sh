@@ -4,6 +4,10 @@
 BCOMP_PATH=""
 GETLINK=""
 OS=0
+
+# CP_PATH=/tmp/meldcp
+CP_PATH=$HOME/.bcomptmp
+
 if [ -d "/mnt/c/Program Files/" ]; then
 	# wsl
 	BCOMP_PATH="/mnt/c/Program Files/Beyond Compare 4/BComp.exe"
@@ -20,6 +24,13 @@ else
 	exit 1
 fi
 
+CUSTOM_FILE=$HOME/.dotfiles/env_custom/bcomp_config
+if [ -f $CUSTOM_FILE ]; then
+    . $CUSTOM_FILE
+fi
+
+
+
 if [[ $1 == "" ]]; then
     exit 1
 fi
@@ -35,8 +46,6 @@ if [ $# -gt 4 ]; then
 fi
 
 
-# CP_PATH=/tmp/meldcp
-CP_PATH=$HOME/.bcomptmp
 # CP_PATH clean up =================================
 if [ ! -d $CP_PATH ]; then
     mkdir -p $CP_PATH
