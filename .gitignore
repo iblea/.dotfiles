@@ -3,3 +3,7 @@
 .fzfinput
 
 .envpath
+
+env_custom/*
+env_custom/**/*
+

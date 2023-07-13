@@ -208,6 +208,13 @@ if [ -f $HOME/.envpath ]; then
 	. ~/.envpath
 fi
 
+if [ -d $HOME/.dotfiles/env_custom/ ]; then
+	local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
+	for file in $files; do
+		. $file
+	done
+fi
+
 
 # ### install fd
 # https://github.com/sharkdp/fd/releases
