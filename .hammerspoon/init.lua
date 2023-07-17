@@ -43,7 +43,8 @@ hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("Iterm"))
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
 hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Visual Studio Code"))
 
-hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Google Chrome"))
+hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Safari"))
+hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Google Chrome"))
 
 --- hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("Youtube"))
 
