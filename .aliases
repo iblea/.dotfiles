@@ -477,7 +477,7 @@ function clearsslkeylog() {
 # find . ! \( -type d \( -path "./test1" -o -path "./test2" \) -prune \) -type f -and ! -name "LICENSE.txt" -and ! -name "readme.txt" -and -name "*.txt"
 # alias findsrc='fualias() { find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.\(c\|h\|y\|l\|py\)" -type f -exec grep -Hn --color "$@" {} \; ; }; fuinit'
 function findsrc() {
-    local ext="\(c\|h\|y\|l\|py\)"
+    local ext="\(c\|cpp\|h\|y\|l\|py\)"
     find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$@" {} \; |
     sed -e "s/\:\[m\[K\s*/ |[m[K /2"
     # sed -e "s/\:/ | /2" -e "s| \| \[m\[K\s*| \| [m[K|"
@@ -488,7 +488,7 @@ function afindsrc() {
     if [[ "$curpwd" != "/" ]]; then
         curpwd="${curpwd}/"
     fi
-    local ext="\(c\|h\|y\|l\|py\)"
+    local ext="\(c\|cpp\|h\|y\|l\|py\)"
     find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$@" {} \; |
     sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
     # sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\n\[m\[K\s*|\n[m[K|"
@@ -515,7 +515,7 @@ function findex() {
     unset "exts[${#exts[@]}]"
     exts=("${exts[@]:1}")
 
-    # local ext="\(c\|h\|y\|l\|py\)"
+    # local ext="\(c\|cpp\|h\|y\|l\|py\)"
     for (( i=1; i<${#exts[@]}; i++ )); do
         # ext+="\|${exts[$i]}"
         ext+="|${exts[$i]}"
@@ -552,7 +552,7 @@ function findexa() {
     unset "exts[${#exts[@]}]"
     exts=("${exts[@]:1}")
 
-    # local ext="\(c\|h\|y\|l\|py\)"
+    # local ext="\(c\|cpp\|h\|y\|l\|py\)"
     for (( i=1; i<${#exts[@]}; i++ )); do
         # ext+="\|${exts[$i]}"
         ext+="|${exts[$i]}"
