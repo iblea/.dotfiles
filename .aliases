@@ -1176,6 +1176,7 @@ function gconflictundo()
 
 # ==============================================================================
 
+alias dateunix='date "+%s"'
 
 alias ㅣㅣ='ls -lhF'
 alias ㅣㅣㅁ='ls -alhF'
