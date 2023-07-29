@@ -9,6 +9,32 @@
           "from": {
             "modifiers": {
               "mandatory": [
+                "left_control"
+              ],
+              "optional": [
+                "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to_after_key_up": [
+            {
+              "select_input_source": {
+                "input_source_id": "com.apple.keylayout.US",
+                "language": "en"
+              }
+            },
+            {
+              "key_code": "escape",
+              "lazy": false
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
                 "left_control",
                 "left_command"
               ],
@@ -25,28 +51,6 @@
                 "left_control",
                 "left_command"
               ]
-            }
-          ]
-        },
-        {
-          "type": "basic",
-          "from": {
-            "modifiers": {
-              "mandatory": [
-                "left_control"
-              ]
-            },
-            "key_code": "spacebar"
-          },
-          "to_after_key_up": [
-            {
-              "select_input_source": {
-                "input_source_id": "com.apple.keylayout.US",
-                "language": "en"
-              }
-            },
-            {
-              "key_code": "escape"
             }
           ]
         }
@@ -85,11 +89,14 @@
             "modifiers": {
               "mandatory": [
                 "left_control"
+              ],
+              "optional": [
+                "any"
               ]
             },
             "key_code": "spacebar"
           },
-          "to_after_key_up": [
+          "to": [
             {
               "select_input_source": {
                 "input_source_id": "com.apple.keylayout.ABC",
@@ -97,7 +104,8 @@
               }
             },
             {
-              "key_code": "escape"
+              "key_code": "escape",
+              "lazy": false
             }
           ]
         }
