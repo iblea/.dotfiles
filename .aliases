@@ -443,10 +443,38 @@ fi
 # alias direj="di $(find . -name '*.rej' -type f | head -n 1 | sed 's/....$//') $(find . -name '*.rej' -type f | head -n 1)"
 function direj()
 {
-	rej_file=$(find . -name '*.rej' -type f | head -n 1)
+    find_result=$(find . -name '*.rej' -type f)
+	rej_file=$(echo "$find_result" | head -n 1)
     org_file=$(echo "$rej_file" | sed 's/....$//')
     echo "$rej_file"
+    remains=$(echo "$find_result" | wc -l)
+    echo "remain : $remains"
 	di "$rej_file" "$org_file"
+}
+
+function mvrej()
+{
+	rej_file=$(find . -name '*.rej' -type f | head -n 1)
+    echo "$rej_file"
+    if [ ! -d $HOME/rej ]; then
+        mkdir $HOME/rej/
+    fi
+    cp --parents $rej_file $HOME/rej/
+	rm -f "$rej_file"
+}
+
+# rollback rej
+function rbrej()
+{
+    res=$(find $HOME/rej -type f -printf "%T@ %p\n" | sort -n | tail -n1 | cut -d" " -f2-)
+    if [ "$rej" = "" ]; then
+        echo "empty in rej"
+        return ;
+    fi
+    resto=."$(echo "$res" | sed "s|$HOME/rej||")"
+    rb_path="$(dirname $resto)"
+    echo $res
+    mv "$res" "$rb_path"
 }
 
 function toucha() { touch $@; chmod 755 $@; }
