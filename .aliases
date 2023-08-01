@@ -13,7 +13,6 @@ function function_exist_check() {
 }
 
 
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ] || [ -d /Applications ]; then
     if [ -x /usr/bin/dircolors ]; then
@@ -149,6 +148,11 @@ elif [ -d /Users/ ]; then
     alias ldd="otool -L"
     alias vii='mvim'
     alias mvi='mvim'
+
+    # brew install findutils
+    if [ -f /opt/homebrew/bin/gxargs ]; then
+        alias xargs="/opt/homebrew/bin/gxargs"
+    fi
 
     function godown() { cd $HOME/Downloads/$@; }
     function goissue() { cd $HOME/issue/$@; }
@@ -1166,6 +1170,14 @@ function gconflictundo()
     fi
     # git status -s $con_path | grep "^AA " | awk -F '\''AA '\'' '\'' { print $2 } '\'' | xargs -I {} echo {}
     git status -s $con_path | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
+}
+
+# git reset conflict
+function grsco()
+{
+    merge_list=$(gst --short | grep UU | sed 's/^UU //')
+    echo "$merge_list"
+    echo "$merge_list" | xargs -I {} git reset {}
 }
 
 # git status -s . | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
