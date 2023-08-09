@@ -207,6 +207,7 @@ function grepn() {
         search_str=("--exclude=parse.tab.c" "${@:2}")
     fi
 
+    # -P option : perl regex
     # grep --color=always -rnIH ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2"
@@ -448,23 +449,23 @@ fi
 function direj()
 {
     find_result=$(find . -name '*.rej' -type f)
-	rej_file=$(echo "$find_result" | head -n 1)
+    rej_file=$(echo "$find_result" | head -n 1)
     org_file=$(echo "$rej_file" | sed 's/....$//')
     echo "$rej_file"
     remains=$(echo "$find_result" | wc -l)
     echo "remain : $remains"
-	di "$rej_file" "$org_file"
+    di "$rej_file" "$org_file"
 }
 
 function mvrej()
 {
-	rej_file=$(find . -name '*.rej' -type f | head -n 1)
+    rej_file=$(find . -name '*.rej' -type f | head -n 1)
     echo "$rej_file"
     if [ ! -d $HOME/rej ]; then
         mkdir $HOME/rej/
     fi
     cp --parents $rej_file $HOME/rej/
-	rm -f "$rej_file"
+    rm -f "$rej_file"
 }
 
 # rollback rej
@@ -971,7 +972,7 @@ fuunalias_alias()
 {
     local alias_name=$1
     local cmd=$2
-    local is_cmd=`alias | grep "\<$alias_name\>"`
+    local is_cmd=`alias | grep "\<$alias_name\>="`
     if [[ "$is_cmd" != "" ]]; then
         unalias $alias_name
     fi
@@ -992,6 +993,7 @@ fuunalias_alias 'gstiu' 'git stash push -u'
 fuunalias_alias 'gstik' 'git stash push -k'
 fuunalias_alias 'gstiku' 'git stash push -k -u'
 fuunalias_alias 'gstmp' ''
+fuunalias_alias 'gsta' ''
 fuunalias_alias 'gstai' ''
 fuunalias_alias 'gstl' 'git stash list'
 fuunalias_alias 'gstia' 'git stash push -k -u'
@@ -1004,6 +1006,10 @@ fuunalias_alias 'gmn' 'git merge --no-commit --no-ff'
 fuunalias_alias 'gmns' 'git merge --squash --no-commit'
 fuunalias_alias 'gl' ''
 fuunalias_alias 'gsi' ''
+fuunalias_alias 'gpf' ''
+fuunalias_alias 'gpsh' 'git push'
+fuunalias_alias 'gpshfl' 'git push --force-with-lease'
+fuunalias_alias 'gpshfc' 'git push --force'
 
 
 
@@ -1014,6 +1020,7 @@ function gstai() {
         git stash apply stash@{$@}
     fi
 }
+alias gsta='gstai'
 
 # 가장 최근에 저장된 stash의 번호는 0번이다.
 function gstmp() {
@@ -1035,6 +1042,13 @@ function gl() {
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
     git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
 }
+
+function glr() {
+    # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
+    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ remotes/origin/$(git rev-parse --abbrev-ref HEAD)
+}
+
+
 
 function gld() {
     if [ $# -eq 0 ]; then
@@ -1222,6 +1236,15 @@ alias ㅣㅣ='ls -lhF'
 alias ㅣㅣㅁ='ls -alhF'
 alias ㅊㅇ='cd'
 alias 퍄='vim'
+
+function idump()
+{
+    if [ ! -f $HOME/inetdump ]; then
+        echo "cannot find $HOME/inetdump"
+        return
+    fi
+    $HOME/inetdump
+}
 
 # alias
 [ -f $HOME/.alias_waf ] && source ~/.alias_waf
