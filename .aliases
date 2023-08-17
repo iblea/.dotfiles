@@ -70,6 +70,13 @@ function makeb() {
     fi
     make clean;
     bear make -j8 --print-directory
+    if [ -f $result ]; then
+        if [ -d ./.vscode ]; then
+            mv $result ./.vscode/
+            echo "mv $result"
+        fi
+    fi
+    echo "bear compile done"
 }
 
 # add export path
