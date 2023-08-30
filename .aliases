@@ -848,6 +848,45 @@ function pytest() {
     fi
 }
 
+function splitlog() {
+    logpath=""
+    split_name=""
+    line=100000
+    if [ "$(command -v split)" = "" ]; then
+        echo "split command not exist"
+        return
+    fi
+
+    if [ $# -eq 0 ] || [ $# -gt 3 ];then
+        echo "wrong argument"
+        return
+    fi
+
+    if [ $# -eq 1 ]; then
+        logpath="$1"
+        split_name=$(basename "$logpath")
+    elif [ $# -eq 2 ]; then
+        line=$1
+        logpath="$2"
+        split_name=$(basename "$logpath")
+    elif [ $# -eq 3 ]; then
+        line=$1
+        logpath="$2"
+        split_name="$3"
+    fi
+    if [ ! -f "$logpath" ]; then
+        echo "file not exist"
+        return
+    fi
+
+    if [ -d "spdir_${split_name}" ]; then
+        echo "already split content exist"
+        return
+    fi
+    mkdir "spdir_${split_name}"
+    split -l $line -d --additional-suffix=.log "$logpath" "spdir_${split_name}/${split_name}_"
+}
+
 
 # wiki alias =============================
 
