@@ -82,6 +82,10 @@ set splitright
 set incsearch
 set magic
 
+set nofixeol
+set nofixendofline
+set noeol
+
 set previewheight=16
 set pastetoggle=<c-n><c-p>
 
