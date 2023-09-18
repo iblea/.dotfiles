@@ -491,6 +491,11 @@ function rbrej()
 
 function toucha() { touch $@; chmod 755 $@; }
 
+function psv() {
+    ps -aef | head -n 1
+    ps -aef | grep "$@" | grep -v "grep --color=auto $@" | grep "$@"
+}
+
 function makectags() { ctags --tag-relative --langmap=C:.c.h.l.y --c-kinds=+p+l --languages=C --fields=+l $@ -f .tags --sort=foldcase -R ./*; }
 function makepytags() { ctags --tag-relative --langmap=Python:.py --languages=Python --fields=+l $@ --sort=foldcase -R ./*; }
 alias guifiles='vim -c :UpdateTypesFileOnly -c :q'
@@ -1282,6 +1287,7 @@ alias ㅣㅣ='ls -lhF'
 alias ㅣㅣㅁ='ls -alhF'
 alias ㅊㅇ='cd'
 alias 퍄='vim'
+alias ㄷ턋='exit'
 
 function idump()
 {
