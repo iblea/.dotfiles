@@ -454,6 +454,27 @@ else
     }
 fi
 
+function didiff() {
+    local codepath=vimdiff
+    local codeopt=""
+    [ "$(command -v code)" != "" ] && codepath=code && codeopt="--diff"
+    [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders && codeopt="--diff"
+    if [ $# -ne 2 ]; then
+        echo "wrong argument"
+        return;
+    fi
+    if [ ! -f "$1" ];then
+        echo "'$1' file is not exist"
+        return
+    fi
+    if [ ! -f "$2" ];then
+        echo "'$2' file is not exist"
+        return
+    fi
+    $codepath $codeopt "$1" "$2"
+}
+
+
 # alias direj="di $(find . -name '*.rej' -type f | head -n 1 | sed 's/....$//') $(find . -name '*.rej' -type f | head -n 1)"
 function direj()
 {
