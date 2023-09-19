@@ -166,6 +166,7 @@ elif [ -d /Users/ ]; then
     alias gosrc="cd $HOME/src"
     # cd practice directory
     alias gotest="cd $HOME/src/testsrc"
+    alias gocert="cd $HOME/Documents/cert"
 
     alias cua="/$HOME/curltest/.aaa_testcurl.sh"
     alias cuq="/$HOME/curltest/.qqq_testcurl.sh"
