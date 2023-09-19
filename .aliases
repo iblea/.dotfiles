@@ -306,8 +306,9 @@ if [ "$(command -v fzf)" != "" ]; then
     function di()
     {
         local codepath=vi
-        [ "$(command -v code)" != "" ] && codepath=code
-        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
+        local codeopt=""
+        [ "$(command -v code)" != "" ] && codepath=code && codeopt="--goto"
+        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders && codeopt="--goto"
         local WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
         local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
@@ -321,7 +322,7 @@ if [ "$(command -v fzf)" != "" ]; then
                     fi
                     search_path+=("$arg")
                 done
-                $codepath "${search_path[@]}"
+                $codepath $codeopt "${search_path[@]}"
                 return ;
             fi
             for arg in "$@"; do
@@ -335,7 +336,7 @@ if [ "$(command -v fzf)" != "" ]; then
                 fi
                 search_path+=("$arg")
             done
-            $codepath "${search_path[@]}"
+            $codepath $codeopt "${search_path[@]}"
             return ;
         fi
         # argument가 1개일 경우
@@ -355,7 +356,7 @@ if [ "$(command -v fzf)" != "" ]; then
                     fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH --height 40% --layout=reverse --preview 'cat {}')
                     # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                     if [ "$fzfres" != "" ]; then
-                        $codepath $fzfres
+                        $codepath $codeopt $fzfres
                     fi
                     return ;
                     # skip new file
@@ -363,7 +364,7 @@ if [ "$(command -v fzf)" != "" ]; then
                     # read $anykey
                 fi
                 # 1개이고 디렉토리가 아니면 바로 실행
-                $codepath $@
+                $codepath $codeopt $@
                 return
             fi
         fi
@@ -395,7 +396,7 @@ if [ "$(command -v fzf)" != "" ]; then
             fzfres=$($FZF_BIN_PATH --height 40% --layout=reverse  --preview 'cat {}')
         fi
         if [ "$fzfres" != "" ]; then
-            $codepath $fzfres
+            $codepath $codeopt $fzfres
         fi
         export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
         # 디렉토리 이동했을 경우 원래 디렉토리로 이동
@@ -406,15 +407,16 @@ else
     function di()
     {
         local codepath=vi
-        [ "$(command -v code)" != "" ] && codepath=code
-        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
+        local codeopt=""
+        [ "$(command -v code)" != "" ] && codepath=code && codeopt="--goto"
+        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders && codeopt="--goto"
         # local FZF_BIN_PATH=$(/bin/which fzf)
         # argument 가 2개 이상일 경우
         if [ $# -ge 2 ]; then
             local search_path=()
             for arg in "$@"; do
                 if [ "$1" = "touch" ]; then
-                    $codepath "${2}"
+                    $codepath $codeopt "${2}"
                     return ;
                 fi
                 if [ -d "$arg" ]; then
@@ -427,7 +429,7 @@ else
                 fi
                 search_path+=("$arg")
             done
-            $codepath "${search_path[@]}"
+            $codepath $codeopt "${search_path[@]}"
             return;
         fi
         # argument가 1개일 경우
@@ -442,7 +444,7 @@ else
                     read $anykey
                 fi
                 # 1개이고 디렉토리가 아니면 바로 실행
-                $codepath $@
+                $codepath $codeopt $@
                 return
             fi
         fi
