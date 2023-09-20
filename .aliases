@@ -136,8 +136,8 @@ if [ -d /mnt/c/Users/ ]; then
     # alias diffb='"/mnt/c/Program Files/Beyond Compare 4/BComp.exe"'
     alias diffb='~/.bcomp.sh'
 
-    alias shcurl="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
-    alias shhcurl="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
+    alias curlaa="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
+    alias curlqq="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
 
     [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
 # mac command
@@ -168,8 +168,8 @@ elif [ -d /Users/ ]; then
     alias gotest="cd $HOME/src/testsrc"
     alias gocert="cd $HOME/Documents/cert"
 
-    alias cua="/$HOME/curltest/.aaa_testcurl.sh"
-    alias cuq="/$HOME/curltest/.qqq_testcurl.sh"
+    alias curlaa="$HOME/curltest/.aaa_testcurl.sh"
+    alias curlqq="$HOME/curltest/.qqq_testcurl.sh"
     alias dockoff="defaults write com.apple.dock autohide-delay -float 1000; killall Dock"
     alias dockon="defaults delete com.apple.dock autohide-delay; killall Dock"
 else
