@@ -308,8 +308,8 @@ if [ "$(command -v fzf)" != "" ]; then
     {
         local codepath=vi
         local codeopt=""
-        [ "$(command -v code)" != "" ] && codepath=code && codeopt="--goto"
-        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders && codeopt="--goto"
+        [ "$(command -v code)" != "" ] && codepath=code
+        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
         local WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
         local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
@@ -326,14 +326,35 @@ if [ "$(command -v fzf)" != "" ]; then
                 $codepath $codeopt "${search_path[@]}"
                 return ;
             fi
+            is_first=1
             for arg in "$@"; do
+                if [ $is_first -eq 1 ]; then
+                    is_first=0
+                    if [[ "$codepath" = "vi" ]]; then
+                        continue
+                    fi
+                    if [[ "$arg" = "-g" ]] || [[ "$arg" = "--goto" ]]; then
+                        codeopt="--goto"
+                        continue
+                    fi
+                fi
                 if [ -d "$arg" ]; then
                     echo "\"$arg\" is directory (so skip)"
                     continue
                 fi
                 if [ ! -e "$arg" ]; then
-                    echo "file not found. create new file? (ctrl-c to stop)"
-                    read $anykey
+                    onlyfile=""
+                    if [ "$codepath" != "vi" ]; then
+                        onlyfile=$(echo "$arg" | sed 's/:[0-9]*$//')
+                        # onlyfile="${arg%:*}"
+                        # onlyfile=$(echo "$arg" | awk -F":" '{NF=NF-1}1' OFS=":")
+                    fi
+                    if [ -e "$onlyfile" ]; then
+                        codeopt="--goto"
+                    else
+                        echo "file not found. create new file? (ctrl-c to stop)"
+                        read $anykey
+                    fi
                 fi
                 search_path+=("$arg")
             done
@@ -347,6 +368,14 @@ if [ "$(command -v fzf)" != "" ]; then
                 cd $@
             else
                 if [ ! -e "$@" ]; then
+                    if [ "$codepath" != "vi" ]; then
+                        onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
+                        if [ -e "$onlyfile" ]; then
+                            codeopt="--goto"
+                            $codepath $codeopt $@
+                            return
+                        fi
+                    fi
                     fzfres=""
                     getname=$(echo "$@" | awk -F '/' '{ print $NF }')
                     if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
@@ -359,7 +388,7 @@ if [ "$(command -v fzf)" != "" ]; then
                     if [ "$fzfres" != "" ]; then
                         $codepath $codeopt $fzfres
                     fi
-                    return ;
+                    return
                     # skip new file
                     # echo "file not found. create new file? (ctrl-c to stop)"
                     # read $anykey
@@ -409,30 +438,80 @@ else
     {
         local codepath=vi
         local codeopt=""
-        [ "$(command -v code)" != "" ] && codepath=code && codeopt="--goto"
-        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders && codeopt="--goto"
+        [ "$(command -v code)" != "" ] && codepath=code
+        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
         # local FZF_BIN_PATH=$(/bin/which fzf)
         # argument 가 2개 이상일 경우
+        # if [ $# -ge 2 ]; then
+        #     local search_path=()
+        #     for arg in "$@"; do
+        #         if [ "$1" = "touch" ]; then
+        #             $codepath $codeopt "${2}"
+        #             return ;
+        #         fi
+        #         if [ -d "$arg" ]; then
+        #             echo "\"$arg\" is directory (so skip)"
+        #             continue
+        #         fi
+        #         if [ ! -e "$@" ]; then
+        #             echo "file not found. create new file? (ctrl-c to stop)"
+        #             read $anykey
+        #         fi
+        #         search_path+=("$arg")
+        #     done
+        #     $codepath $codeopt "${search_path[@]}"
+        #     return;
+        # fi
         if [ $# -ge 2 ]; then
             local search_path=()
+            if [ "$1" = "touch" ]; then
+                for arg in "${@:2}"; do
+                    if [ -d "$arg" ]; then
+                        echo "\"$arg\" is directory (so skip)"
+                        continue
+                    fi
+                    search_path+=("$arg")
+                done
+                $codepath $codeopt "${search_path[@]}"
+                return ;
+            fi
+            is_first=1
             for arg in "$@"; do
-                if [ "$1" = "touch" ]; then
-                    $codepath $codeopt "${2}"
-                    return ;
+                if [ $is_first -eq 1 ]; then
+                    is_first=0
+                    if [[ "$codepath" = "vi" ]]; then
+                        continue
+                    fi
+                    if [[ "$arg" = "-g" ]] || [[ "$arg" = "--goto" ]]; then
+                        codeopt="--goto"
+                        continue
+                    fi
                 fi
                 if [ -d "$arg" ]; then
                     echo "\"$arg\" is directory (so skip)"
                     continue
                 fi
-                if [ ! -e "$@" ]; then
-                    echo "file not found. create new file? (ctrl-c to stop)"
-                    read $anykey
+                if [ ! -e "$arg" ]; then
+                    onlyfile=""
+                    if [ "$codepath" != "vi" ]; then
+                        onlyfile=$(echo "$arg" | sed 's/:[0-9]*$//')
+                        # onlyfile="${arg%:*}"
+                        # onlyfile=$(echo "$arg" | awk -F":" '{NF=NF-1}1' OFS=":")
+                    fi
+                    if [ -e "$onlyfile" ]; then
+                        codeopt="--goto"
+                    else
+                        echo "file not found. create new file? (ctrl-c to stop)"
+                        read $anykey
+                    fi
                 fi
                 search_path+=("$arg")
             done
             $codepath $codeopt "${search_path[@]}"
-            return;
+            return ;
         fi
+
+
         # argument가 1개일 경우
         if [ $# -eq 1 ]; then
             if [ -d "$@" ]; then
@@ -441,6 +520,14 @@ else
                 return
             else
                 if [ ! -e "$@" ]; then
+                    if [ "$codepath" != "vi" ]; then
+                        onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
+                        if [ -e "$onlyfile" ]; then
+                            codeopt="--goto"
+                            $codepath $codeopt $@
+                            return
+                        fi
+                    fi
                     echo "file not found. create new file? (ctrl-c to stop)"
                     read $anykey
                 fi
