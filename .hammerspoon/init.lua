@@ -34,6 +34,13 @@ function appLaunchOrFocus(name)
     end
 end
 
+function appLaunchOrFocusBundle(bundleID)
+    return function()
+        hs.application.launchOrFocusByBundleID(bundleID)
+    end
+end
+
+
 --- quick open applications
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
 hs.hotkey.bind({"option", "control"}, "Z", appLaunchOrFocus("Stickies"))
@@ -62,7 +69,9 @@ hs.hotkey.bind({"option", "control"}, "V", appLaunchOrFocus("DuelKakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "C", appLaunchOrFocus("KakaoTalk"))
 
 --- Messenger
-hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocus("TeamUP"))
+hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("TeamUP"))
+hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocus(os.getenv("HOME").."/Applications/Chrome Apps.localized/Messages.app"))
+-- hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocusBundle("com.google.Chrome.app.hpfldicfbfomlpcikngkocigghgafkph"))
 hs.hotkey.bind({"option", "control"}, "J", appLaunchOrFocus("DuelKakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "K", appLaunchOrFocus("KakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "L", appLaunchOrFocus("Discord"))
