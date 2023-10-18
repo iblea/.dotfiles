@@ -797,20 +797,21 @@ function killvscode() {
     echo -e "ps -aef | grep vscode" >> ./kill_vsc_tmp_script.sh
     echo -e "" >> ./kill_vsc_tmp_script.sh
 
+    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tsleep 1" >> ./kill_vsc_tmp_script.sh
     echo -e "while true" >> ./kill_vsc_tmp_script.sh
     echo -e "do" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tpkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tsleep 1" >> ./kill_vsc_tmp_script.sh
     # local ps_vscode=`ps -ef | grep "vscode" | grep -v --color ".*\sgrep\s.*vscode.*"`
-    echo -e "\tps_vscode=\`ps -ef | grep \"vscode\" | grep -v \".*\sgrep\s.*vscode.*\"\`" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tps_vscode=\`ps -ef | grep \"vscode\" | grep -v \".*\sgrep\s.*vscode.*\" | awk -F ' ' '{ print \$2 }' | head -n 1\`" >> ./kill_vsc_tmp_script.sh
     # if [[ "$ps_vscode" = "" ]]; then
     echo -e "\tif [ \"\$ps_vscode\" = \"\" ]; then" >> ./kill_vsc_tmp_script.sh
     echo -e "\t\tbreak" >> ./kill_vsc_tmp_script.sh
     echo -e "\tfi" >> ./kill_vsc_tmp_script.sh
+    echo -e "\tkill -9 \$ps_vscode" >> ./kill_vsc_tmp_script.sh
     echo -e "done" >> ./kill_vsc_tmp_script.sh
     echo -e "" >> ./kill_vsc_tmp_script.sh
 
@@ -1185,6 +1186,21 @@ function gstai() {
     fi
 }
 alias gsta='gstai'
+function gstac() {
+    if [ $# -eq 0 ]; then
+        echo "wrong argument"
+        return
+    fi
+    if [ $# -eq 1 ]; then
+        git checkout stash@{0} "$1"
+        return
+    fi
+
+    for arg in "${@:2}"; do
+        git checkout stash@{$1} "$arg"
+    done
+
+}
 
 # 가장 최근에 저장된 stash의 번호는 0번이다.
 function gstmp() {
