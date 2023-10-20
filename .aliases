@@ -1104,6 +1104,9 @@ if [ ! -f ~/.gitconfig ]; then
     git config --global fetch.prune true
     git config --global push.default current
     git config --global pull.rebase true
+    # encoding
+    git config --global i18n.commitencoding "UTF-8"
+    git config --global i18n.logoutputencoding "UTF-8"
 
     git config --global core.sshCommand "ssh -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o StrictHostKeyChecking=no"
 
