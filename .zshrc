@@ -5,9 +5,15 @@ if [ -d /opt/homebrew ]; then
 fi
 
 # into /etc/zsh/zshrc (vscode terminal)
-# if [[ "$TERM_PROGRAM" = "vscode" ]]; then
-#     . $HOME/.zshrc
+# # Useful support for interacting with Terminal.app or other terminal programs
+# if [ -r "/etc/zsh/zshrc_$TERM_PROGRAM" ]; then
+#     . "/etc/zsh/zshrc_$TERM_PROGRAM"
+# else
+#     . "/etc/zsh/zshrc_default"
 # fi
+
+# /etc/zsh/zshrc_default / zshrc_vscode
+# source $HOME/.zshrc
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
