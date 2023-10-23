@@ -1337,6 +1337,8 @@ function gsi() {
 
 alias gital='alias | grep "^g.*git"'
 
+alias gdd='git diff | grep "\<printf\>"'
+
 # git svn fetch error (untracked file)
 alias gitup='git update-index --assume-unchanged'
 alias gitupa='git update-index --really-refresh'
