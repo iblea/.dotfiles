@@ -62,6 +62,12 @@ alias la='ls -A'
 alias l='ls -CF'
 alias j='ls -CF'
 alias psf='ps -aef'
+
+function psg() {
+	process_name="$@"
+	ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+}
+
 alias makef='make -j8'
 function makeb() {
     result=./compile_commands.json
