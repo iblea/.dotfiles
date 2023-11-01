@@ -9,11 +9,12 @@ if [[ "$sleep_stat" = "1" ]]; then
 	sudo pmset -a disablesleep 0;
 	sudo pmset -b disablesleep 0;
 	sudo pmset -c disablesleep 0;
+    echo "turn on sleep"
 # already sleep on
 elif [[ "$sleep_stat" = "0" ]]; then
 	# change sleep mode off
 	sudo pmset -a disablesleep 1;
 	sudo pmset -b disablesleep 1;
 	sudo pmset -c disablesleep 1;
+    echo "turn off sleep"
 fi
-
