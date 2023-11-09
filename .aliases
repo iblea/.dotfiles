@@ -65,6 +65,7 @@ alias psf='ps -aef'
 
 function psg() {
 	process_name="$@"
+    ps -aef | head -n1
 	ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
 }
 
@@ -1109,7 +1110,7 @@ if [ ! -f ~/.gitconfig ]; then
     # Git 원격 저장소에서 삭제된 branch를 로컬 저장소에서 자동으로 지우기
     git config --global fetch.prune true
     git config --global push.default current
-    git config --global pull.rebase true
+    git config --global pull.rebase false
     # encoding
     git config --global i18n.commitencoding "UTF-8"
     git config --global i18n.logoutputencoding "UTF-8"
@@ -1430,6 +1431,7 @@ alias ㅣㅣㅁ='ls -alhF'
 alias ㅊㅇ='cd'
 alias 퍄='vim'
 alias ㄷ턋='exit'
+alias 야='di'
 
 function idump()
 {
