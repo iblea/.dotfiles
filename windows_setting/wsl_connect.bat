@@ -19,13 +19,24 @@ exit /b
 echo "Success to get admin permission"
 echo.
 
+REM powershell.exe "$env:APPDATA\..\wsl_connect.ps1"
+if exist "%APPDATA%\..\wsl_connect.ps1" (
 powershell.exe "%APPDATA%\..\wsl_connect.ps1"
 powershell.exe "Start-Service sshd"
 
-
 "C:\Windows\System32\bash.exe" -c "sudo service ssh start"
-REM "C:\Windows\System32\bash.exe" -c "sudo service nginx start"
-REM "C:\Windows\System32\bash.exe" -c "sudo service php7.2-fpm start"
+"C:\Windows\System32\bash.exe" -c "sudo service nginx start"
+"C:\Windows\System32\bash.exe" -c "sudo service php7.2-fpm start"
+) else (
+echo "not found wsl_connect.ps1 script"
+)
+
+REM windows defender off
+if exist "%homepath%\defender_disable.reg" (
+regedit.exe /S %homepath%\defender_disable.reg
+) else (
+echo "not found defender_disable.reg"
+)
 
 
 exit /b
