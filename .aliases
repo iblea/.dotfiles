@@ -64,9 +64,9 @@ alias j='ls -CF'
 alias psf='ps -aef'
 
 function psg() {
-	process_name="$@"
+    process_name="$@"
     ps -aef | head -n1
-	ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+    ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
 }
 
 alias makef='make -j8'
@@ -169,6 +169,10 @@ elif [ -d /Users/ ]; then
     fi
 
     function godown() { cd $HOME/Downloads/$@; }
+    # go google drive
+    function gogd() { cd "/Users/jdh/Google Drive/내 드라이브/$@"; }
+    function godrive() { cd "/Users/jdh/Google Drive/내 드라이브/$@"; }
+    function goicloud() { cd "/Users/jdh/Library/Mobile Documents/com~apple~CloudDocs/$@"; }
     function goissue() { cd $HOME/issue/$@; }
 
     # ppk to pem
