@@ -170,6 +170,34 @@ elif [ -d /Users/ ]; then
 
     function godown() { cd $HOME/Downloads/$@; }
     function goissue() { cd $HOME/issue/$@; }
+
+    # ppk to pem
+    function ppktopem() {
+        if [ "$(command -v puttygen)" = "" ]; then
+            echo "install putty first"
+            echo "brew install putty"
+            return
+        fi
+        filename=$@
+        extname="${filename:$(expr ${#filename} - 4)}"
+        if [[ "$extname" != ".ppk" ]]; then
+            echo "not ppk file"
+            return
+        fi
+        pemname=$(echo "$filename" | sed 's/.ppk$/.pem/')
+        puttygen "$filename" -O private-openssh -o "$pemname"
+    }
+
+    function pemtoppk() {
+        if [ "$(command -v puttygen)" = "" ]; then
+            echo "install putty first"
+            echo "brew install putty"
+            return
+        fi
+        filename=$@
+        puttygen "$filename" -o "${filename}.ppk"
+    }
+
     alias gosrc="cd $HOME/src"
     # cd practice directory
     alias gotest="cd $HOME/src/testsrc"
