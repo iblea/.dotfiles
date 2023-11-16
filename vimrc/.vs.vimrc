@@ -44,7 +44,7 @@ noremap j gj
 noremap k gk
 
 
-nnoremap <C-Y> <ESC>:e!<CR>G
+nnoremap <C-y> <ESC>:e!<CR>G
 nnoremap Q @
 
 "fold key
@@ -85,32 +85,32 @@ noremap q <nop>
 " lnoremap <C-space> <ESC>
 " cnoremap <C-space> <C-C>
 
-inoremap <C-J> <DOWN>
-inoremap <C-K> <UP>
-inoremap <C-L> <RIGHT>
-inoremap <C-H> <LEFT>
-inoremap <C-N> <BS>
-"inoremap <C-F> <C-P>
-xnoremap <C-J> <DOWN>
-xnoremap <C-K> <UP>
-xnoremap <C-L> <RIGHT>
-xnoremap <C-H> <LEFT>
-xnoremap <C-N> <BS>
-snoremap <C-J> <DOWN>
-snoremap <C-K> <UP>
-snoremap <C-L> <RIGHT>
-snoremap <C-H> <LEFT>
-snoremap <C-N> <BS>
-onoremap <C-J> <DOWN>
-onoremap <C-K> <UP>
-onoremap <C-L> <RIGHT>
-onoremap <C-H> <LEFT>
-onoremap <C-N> <BS>
-cnoremap <C-J> <DOWN>
-cnoremap <C-K> <UP>
-cnoremap <C-L> <RIGHT>
-cnoremap <C-H> <LEFT>
-cnoremap <C-N> <BS>
+inoremap <C-j> <DOWN>
+inoremap <C-k> <UP>
+inoremap <C-l> <RIGHT>
+inoremap <C-h> <LEFT>
+inoremap <C-n> <BS>
+"inoremap <C-f> <C-P>
+xnoremap <C-j> <DOWN>
+xnoremap <C-k> <UP>
+xnoremap <C-l> <RIGHT>
+xnoremap <C-h> <LEFT>
+xnoremap <C-n> <BS>
+snoremap <C-j> <DOWN>
+snoremap <C-k> <UP>
+snoremap <C-l> <RIGHT>
+snoremap <C-h> <LEFT>
+snoremap <C-n> <BS>
+onoremap <C-j> <DOWN>
+onoremap <C-k> <UP>
+onoremap <C-l> <RIGHT>
+onoremap <C-h> <LEFT>
+onoremap <C-n> <BS>
+cnoremap <C-j> <DOWN>
+cnoremap <C-k> <UP>
+cnoremap <C-l> <RIGHT>
+cnoremap <C-h> <LEFT>
+cnoremap <C-n> <BS>
 
 nnoremap ; :
 vnoremap ; :
@@ -127,7 +127,7 @@ noremap + <c-a>
 
 
 " 오름차순 1,2,3,4,5
-" nnoremap <C-M> <C-e>
+" nnoremap <C-m> <C-e>
 " nnoremap , ;
 " nnoremap . ;
 nnoremap ye <ESC>hebye<ESC>
@@ -146,18 +146,18 @@ nnoremap t ge
 nnoremap T gE
 vnoremap t ge
 vnoremap T gE
-nnoremap f <C-W><C-W>
-nnoremap F <C-W><C-W>
-" nnoremap <c-f> <C-W><C-W>
+nnoremap f <C-w><C-w>
+nnoremap F <C-w><C-w>
+" nnoremap <c-f> <C-w><C-w>
 
-" nnoremap <Leader>g <C-W>-
-" vnoremap <Leader>g <C-W>-
-" nnoremap <Leader>h <C-W>+
-" vnoremap <Leader>h <C-W>+
-nnoremap <Leader>r <C-W>-
-vnoremap <Leader>r <C-W>-
-nnoremap <Leader>t <C-W>+
-vnoremap <Leader>t <C-W>+
+" nnoremap <Leader>g <C-w>-
+" vnoremap <Leader>g <C-w>-
+" nnoremap <Leader>h <C-w>+
+" vnoremap <Leader>h <C-w>+
+nnoremap <Leader>r <C-w>-
+vnoremap <Leader>r <C-w>-
+nnoremap <Leader>t <C-w>+
+vnoremap <Leader>t <C-w>+
 nnoremap <Leader>, <C-w><
 vnoremap <Leader>, <C-w><
 nnoremap <Leader>. <C-w>>
@@ -190,15 +190,15 @@ vmap <Tab>e $
 vmap <Tab>r 0
 vmap <Tab>3 $h
 
-nnoremap <C-D> 15<C-E>
-nnoremap <C-A> 15<C-Y>
-vnoremap <C-D> 15<C-E>j
-vnoremap <C-A> 15<C-Y>k
+nnoremap <C-d> 15<C-e>
+nnoremap <C-a> 15<C-y>
+vnoremap <C-d> 15<C-e>j
+vnoremap <C-a> 15<C-y>k
 
-nnoremap <Leader>a <C-U>
-nnoremap <Leader>d <C-D>
-vnoremap <Leader>a <C-U>
-vnoremap <Leader>d <C-D>
+nnoremap <Leader>a <C-u>
+nnoremap <Leader>d <C-d>
+vnoremap <Leader>a <C-u>
+vnoremap <Leader>d <C-d>
 
 
 nnoremap <c-k> H
@@ -218,10 +218,10 @@ noremap <s-l> $
 " nnoremap H M
 " nnoremap K H
 " nnoremap J L
-" nnoremap H <C-W><C-H>
-" nnoremap J <C-W><C-J>
-" nnoremap K <C-W><C-K>
-" nnoremap L <C-W><C-L>
+" nnoremap H <C-w><C-h>
+" nnoremap J <C-w><C-j>
+" nnoremap K <C-w><C-k>
+" nnoremap L <C-w><C-l>
 
 " inoremap <c-a> <ESC>^i
 " inoremap <c-d> <ESC>$a
