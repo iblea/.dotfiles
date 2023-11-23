@@ -811,6 +811,14 @@ function sdfile() {
     svn status | grep "^M" --color=never;
 }
 
+function svnconflict() {
+    if [ "$#" -ne 1 ]; then
+        echo "wrong argument"
+    fi
+    svn remove --force "$@"
+    svn resolve --accept=working "$@"
+}
+
 alias cc='clear'
 
 function rmvimtmp() {
