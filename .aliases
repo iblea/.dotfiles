@@ -407,6 +407,10 @@ if [ "$(command -v fzf)" != "" ]; then
             if [ -d "$@" ]; then
                 # 해당 디렉토리로 이동하여 검색
                 cd $@
+            elif [[ "$@" = "-" ]]; then
+                codeopt="--goto"
+                $codepath $codeopt $@
+                return
             else
                 if [ ! -e "$@" ]; then
                     if [ "$codepath" != "vi" ]; then
@@ -558,6 +562,10 @@ else
             if [ -d "$@" ]; then
                 # 해당 디렉토리로 이동하여 검색
                 echo "\"$@\" is directory (so skip)"
+                return
+            elif [[ "$@" = "-" ]]; then
+                codeopt="--goto"
+                $codepath $codeopt $@
                 return
             else
                 if [ ! -e "$@" ]; then
