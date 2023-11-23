@@ -195,6 +195,8 @@ nnoremap <C-a> 15<C-y>
 vnoremap <C-d> 15<C-e>j
 vnoremap <C-a> 15<C-y>k
 
+noremap <C-x> <nop>
+
 nnoremap <Leader>a <C-u>
 nnoremap <Leader>d <C-d>
 vnoremap <Leader>a <C-u>
