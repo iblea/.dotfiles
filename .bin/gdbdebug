@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source $HOME/.alias_waf
+
+taildebug

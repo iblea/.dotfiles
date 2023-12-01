@@ -4,6 +4,13 @@ if [ -d /opt/homebrew ]; then
 	fi
 fi
 
+if [ -d $HOME/.dotfiles/.bin/ ]; then
+	if ! grep -q "$HOME/.dotfiles/.bin" <<< "$PATH"; then
+		export PATH=$HOME/.dotfiles/.bin:$PATH
+	fi
+fi
+
+
 # into /etc/zsh/zshrc (vscode terminal)
 # # Useful support for interacting with Terminal.app or other terminal programs
 # if [ -r "/etc/zsh/zshrc_$TERM_PROGRAM" ]; then
