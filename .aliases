@@ -1235,6 +1235,8 @@ fuunalias_alias 'gpf' ''
 fuunalias_alias 'gpsh' 'git push'
 fuunalias_alias 'gpshfl' 'git push --force-with-lease'
 fuunalias_alias 'gpshfc' 'git push --force'
+fuunalias_alias 'gcpick' 'git cherry-pick'
+fuunalias_alias 'gcpicknci' 'git cherry-pick --no-commit'
 
 
 
