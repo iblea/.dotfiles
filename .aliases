@@ -1344,6 +1344,8 @@ function gitsvnrevb() {
 }
 
 # git size
+# git 커밋 사이즈 계산
+# git diff --cached --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'
 function gsi() {
     # https://github.com/baekdev/git-stat
     # git add -A && git diff --cached --numstat | awk '{
