@@ -169,6 +169,9 @@ elif [ -d /Users/ ]; then
     fi
 
     function godown() { cd $HOME/Downloads/$@; }
+    function godoc() { cd $HOME/Documents/$@; }
+    function gonote() { cd $HOME/.notepad/$@; }
+    function gont() { cd $HOME/.notepad/$@; }
     # go google drive
     function gogd() { cd "/Users/jdh/Google Drive/내 드라이브/$@"; }
     function godrive() { cd "/Users/jdh/Google Drive/내 드라이브/$@"; }
