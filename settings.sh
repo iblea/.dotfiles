@@ -28,6 +28,7 @@ tar -zxvf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
 
 # vim plugin
+echo "setting vim plugin to download in github"
 ./.vim/vimplugin.sh
 
 cd $HOME
