@@ -26,6 +26,10 @@ if [ -d ./.vim/ ]; then
 fi
 tar -zxvf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
+
+# vim plugin
+./.vim/copiot.sh
+
 cd $HOME
 ln -s $HOME/$SETTINGS_DIR/.vim
 
