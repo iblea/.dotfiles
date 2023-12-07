@@ -1,12 +1,16 @@
 
 
-# Java Paths
+# Java Paths with java_home
 if [ -f /usr/libexec/java_home ]; then
-# Java 14
+# export JAVA_HOME_11=$(/usr/libexec/java_home -v11)
 export JAVA_HOME_14=$(/usr/libexec/java_home -v14)
+# export JAVA_HOME_17=$(/usr/libexec/java_home -v17)
+else
+# export JAVA_HOME_11=""
+export JAVA_HOME_14=""
+# export JAVA_HOME_17=""
 fi
 
-# 14버전을 사용하고자 하는 경우 아래 주석(#)을 해제하고 위에 11버전을 주석처리 하면된다.
 if [[ "$(command -v java)" != "" ]]; then
 	export JAVA_HOME=$JAVA_HOME_14
 fi
