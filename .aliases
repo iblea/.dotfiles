@@ -1207,6 +1207,12 @@ fuunalias_alias()
     fi
 }
 
+
+fuunalias_alias 'gb' 'git branch'
+fuunalias_alias 'gba' 'git branch --all'
+fuunalias_alias 'gco' 'git checkout'
+fuunalias_alias 'gsh' 'git reset'
+fuunalias_alias 'grs' 'git restore'
 fuunalias_alias 'gci' 'git commit'
 fuunalias_alias 'gcf' 'git config'
 fuunalias_alias 'gcfl' 'git config --list'
@@ -1410,6 +1416,15 @@ function gitupall() {
 git status -s | awk -F ' ' '{print $2}' | xargs git update-index --assume-unchanged
 git update-index --really-refresh
 # git status -s | awk -F ' ' '{print $2}' | xargs git update-index --really-refresh
+}
+
+function gsvnup() {
+    if [ "$(git config --list | grep svn)" = "" ]; then
+        return
+    fi
+    rev="$@"
+    rev_hash=$(git svn find-rev "$rev" $(git rev-parse --abbrev-ref HEAD))
+    git checkout "$rev_hash"
 }
 
 # 모든 변경사항 pull
