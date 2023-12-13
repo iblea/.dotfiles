@@ -897,8 +897,12 @@ function rmdimg() {
         echo "wrong argument"
         return
     fi
-    local filename=$1
-    local imgdir=mdresources/dir_$1_img
+    local fullpath="$1"
+    local filename=$(basename "$fullpath")
+    local curpwd=$(pwd)
+    local filepath=$(dirname $(readlink -e "$fullpath"))
+    cd "$filepath" > /dev/null 2>&1
+    local imgdir="mdresources/dir_${filename}_img"
     local imgrealpath=""
     if [ $# -eq 1 ]; then
         imgrealpath=./$imgdir
@@ -908,10 +912,12 @@ function rmdimg() {
 
     if [[ ! -f $filename ]]; then
         echo "file not exist"
+        cd "$pwd" > /dev/null 2>&1
         return
     fi
     if [ ! -d $imgrealpath ]; then
         echo "img dir not exist"
+        cd "$pwd" > /dev/null 2>&1
         return
     fi
 
@@ -955,6 +961,7 @@ function rmdimg() {
     fi
 
     echo "remove ${rm_index} files."
+    cd "$pwd" > /dev/null 2>&1
 }
 
 function killdbgprocess() {
