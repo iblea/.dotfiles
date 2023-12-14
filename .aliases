@@ -912,12 +912,12 @@ function rmdimg() {
 
     if [[ ! -f $filename ]]; then
         echo "file not exist"
-        cd "$pwd" > /dev/null 2>&1
+        cd "$curpwd" > /dev/null 2>&1
         return
     fi
     if [ ! -d $imgrealpath ]; then
         echo "img dir not exist"
-        cd "$pwd" > /dev/null 2>&1
+        cd "$curpwd" > /dev/null 2>&1
         return
     fi
 
@@ -961,7 +961,7 @@ function rmdimg() {
     fi
 
     echo "remove ${rm_index} files."
-    cd "$pwd" > /dev/null 2>&1
+    cd "$curpwd" > /dev/null 2>&1
 }
 
 function killdbgprocess() {
