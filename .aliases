@@ -1510,6 +1510,29 @@ alias 퍄='vim'
 alias ㄷ턋='exit'
 alias 야='di'
 
+function td()
+{
+	if [ -z "$td_iface" ]; then
+		echo "not $td_iface set"
+		td_iface="eth0"
+	fi
+
+	if [ $# -eq 0 ]; then
+		echo "wrong argument tcpdump"
+		echo "current show iface : $td_iface"
+		return 1
+	elif [ $# -eq 1 ]; then
+		tcpdump -nn -vv -i "$td_iface" port $@
+	elif [ $# -eq 2 ] && [[ "$1" = "set" ]]; then
+		echo "set td_iface=$2"
+		td_iface="$2"
+		return 0
+	else
+		local opt=( $(echo "$@" | cut -c5- ) )
+		tcpdump -nn -vv -i "$td_iface" $1 port ${opt[@]}
+	fi
+}
+
 function idump()
 {
     if [ ! -f $HOME/inetdump ]; then
