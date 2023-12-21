@@ -810,7 +810,15 @@ function gitdiff() {
         return 0
     fi
 
-    local logs=$(git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short -2 $@)
+    # --name-only
+    local opts=( )
+    local diffci="$@"
+    if [ $# -ge 2 ]; then
+        local array=( ${@} )
+        local opts=( $(echo "${array[@]:0:${#array[@]}-1}") )
+        diffci=${@[-1]}
+    fi
+    local logs=$(git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short -2 "$diffci" )
     local commits=$(echo "$logs" | awk -F ' ' '{ print $2 }')
     local head_commit=$(echo "$commits" | head -n 1)
     local tail_commit=$(echo "$commits" | tail -n 1)
@@ -818,7 +826,7 @@ function gitdiff() {
         echo "diff failed"
         return 1
     fi
-    git diff "${tail_commit}..${head_commit}"
+    git diff ${opts[@]} "${tail_commit}..${head_commit}"
 }
 
 # echo $SSH_CONNECTION
