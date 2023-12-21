@@ -802,6 +802,25 @@ function svndiff() {
     svn diff -r$AGO_REV:$SVN_REV --summarize | sort;
 }
 
+function gitdiff() {
+    if [ $# -eq 0 ]; then
+        git diff
+        echo "================================================================"
+        git diff --cached
+        return 0
+    fi
+
+    local logs=$(git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short -2 $@)
+    local commits=$(echo "$logs" | awk -F ' ' '{ print $2 }')
+    local head_commit=$(echo "$commits" | head -n 1)
+    local tail_commit=$(echo "$commits" | tail -n 1)
+    if [ -z "$head_commit" ] || [ -z "$tail_commit" ]; then
+        echo "diff failed"
+        return 1
+    fi
+    git diff "${tail_commit}..${head_commit}"
+}
+
 # echo $SSH_CONNECTION
 
 
