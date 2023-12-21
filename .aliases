@@ -812,20 +812,46 @@ function gitdiff() {
 
     # --name-only
     local opts=( )
-    local diffci="$@"
+    local commit="$@"
     if [ $# -ge 2 ]; then
         local array=( ${@} )
         local opts=( $(echo "${array[@]:0:${#array[@]}-1}") )
-        diffci=${@[-1]}
+        commit=${@[-1]}
     fi
-    local logs=$(git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short -2 "$diffci" )
-    local commits=$(echo "$logs" | awk -F ' ' '{ print $2 }')
-    local head_commit=$(echo "$commits" | head -n 1)
-    local tail_commit=$(echo "$commits" | tail -n 1)
+
+    if [ -z "$commit" ]; then
+        echo "commit argument is empty"
+        return 1
+    fi
+
+    # commits=$(echo "$commit" | tr ' ' '\n')
+    commits=$(echo "$commit" | sed 's/\.\./\n/')
+    commit_wcl=$(echo "$commits" | wc -l)
+
+    local head_commit=""
+    local tail_commit=""
+
+    if [ $commit_wcl -eq 1 ]; then
+        local logs=$(git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short -2 "$commit" )
+        commits=$(echo "$logs" | awk -F ' ' '{ print $2 }')
+        head_commit=$(echo "$commits" | head -n 1)
+        tail_commit=$(echo "$commits" | tail -n 1)
+    elif [ $commit_wcl -eq 2 ]; then
+        # gitdiff "aaa..bbb"
+        head_commit=$(echo "$commits" | tail -n 1) # bbb
+        tail_commit=$(echo "$commits" | head -n 1) # aaa
+    else
+        echo "wrong diff hash argument (only 1 or 2)"
+        return 1
+    fi
+
     if [ -z "$head_commit" ] || [ -z "$tail_commit" ]; then
         echo "diff failed"
         return 1
     fi
+
+    echo "diff $tail_commit -> $head_commit (diff : $(git rev-list --count ${tail_commit}..${head_commit}))"
+    echo "\n"
     git diff ${opts[@]} "${tail_commit}..${head_commit}"
 }
 
