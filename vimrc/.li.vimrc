@@ -185,7 +185,7 @@ func! Prev_window()
 endfunc
 
 colorscheme default
-set bg=light
+set bg=dark
 
 hi! Search term=reverse cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
 highlight! StatusLine ctermfg=231 ctermbg=23 guifg=#ffffff guibg=#002b2b cterm=NONE
@@ -193,6 +193,7 @@ highlight! WildMenu ctermfg=0 ctermbg=36 guifg=#ffffff guibg=#005252
 hi Pmenu ctermbg=yellow ctermfg=black guibg=yellow guifg=black
 hi PmenuSel ctermbg=darkgrey ctermfg=lightgrey guibg=darkgrey ctermfg=lightgrey
 hi PmenuSbar ctermbg=grey guibg=grey
+hi! comment ctermfg=72
 " khighlight link EchoDocPopup Pmenu
 
 func! WinEnterFunction()
@@ -202,4 +203,3 @@ endfunc
 if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
 endif
-

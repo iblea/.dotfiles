@@ -1,7 +1,7 @@
 set guifont=FantasqueSansMono\ Nerd\ Font\ Mono:h16
 
 colorscheme default
-set bg=light
+set bg=dark
 
 hi! Search term=reverse cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
 highlight! StatusLine ctermfg=231 ctermbg=23 guifg=#ffffff guibg=#002b2b cterm=NONE
@@ -14,4 +14,4 @@ hi PmenuSbar ctermbg=grey guibg=grey
 highlight! Normal ctermbg=black guibg=black
 highlight LineNr ctermfg=130 guifg=Brown guibg=black
 
-highlight Comment guifg=#1E1EF0
+highlight Comment ctermfg=72 guifg=#5FAF87
