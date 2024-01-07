@@ -54,7 +54,8 @@ if [ ! -d $ZSH/custom/plugins/zsh-autosuggestions/ ]; then
 fi
 
 if [ ! -d $ZSH/custom/plugins/git-open/ ]; then
-    git clone https://github.com/paulirish/git-open.git $ZSH/custom/plugins/git-open/
+    # git clone https://github.com/paulirish/git-open.git $ZSH/custom/plugins/git-open/
+    git clone https://github.com/jdh9232/git-open.git $ZSH/custom/plugins/git-open/
 fi
 
 
