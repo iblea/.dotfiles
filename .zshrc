@@ -1,13 +1,13 @@
 if [ -d /opt/homebrew ]; then
-	if ! grep -q "/opt/homebrew//bin" <<< "$PATH"; then
-		export PATH=/opt/homebrew/bin:$PATH
-	fi
+    if ! grep -q "/opt/homebrew//bin" <<< "$PATH"; then
+        export PATH=/opt/homebrew/bin:$PATH
+    fi
 fi
 
 if [ -d $HOME/.dotfiles/.bin/ ]; then
-	if ! grep -q "$HOME/.dotfiles/.bin" <<< "$PATH"; then
-		export PATH=$HOME/.dotfiles/.bin:$PATH
-	fi
+    if ! grep -q "$HOME/.dotfiles/.bin" <<< "$PATH"; then
+        export PATH=$HOME/.dotfiles/.bin:$PATH
+    fi
 fi
 
 
@@ -26,7 +26,7 @@ fi
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-	source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # If you come from bash you might have to change your $PATH.
@@ -45,12 +45,12 @@ export TERM=xterm-256color
 
 # zsh-syntax-highlighting plugin
 if [ ! -d $ZSH/custom/plugins/zsh-syntax-highlighting/ ]; then
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH/custom/plugins/zsh-syntax-highlighting
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH/custom/plugins/zsh-syntax-highlighting
 fi
 
 # zsh-autosuggestions plugin
 if [ ! -d $ZSH/custom/plugins/zsh-autosuggestions/ ]; then
-	git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions/
+    git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions/
 fi
 
 if [ ! -d $ZSH/custom/plugins/git-open/ ]; then
@@ -165,7 +165,7 @@ plugins=(
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 if [ ! -d $HOME/.zsh/zcomp/ ]; then
-	mkdir -p $HOME/.zsh/zcomp/
+    mkdir -p $HOME/.zsh/zcomp/
 fi
 export ZDOTDIR="$HOME/.zsh/zcomp"
 
@@ -174,10 +174,10 @@ export HISTFILE="$HOME/.zsh/.zsh_history"
 export LESS=-FRX
 
 if [ -d /mnt/c/Users/ghkd0 ]; then
-	export WINHOME=/mnt/c/Users/ghkd0
-	export SSLKEYLOGFILE=$WINHOME/sslkeylog.log
+    export WINHOME=/mnt/c/Users/ghkd0
+    export SSLKEYLOGFILE=$WINHOME/sslkeylog.log
 else
-	export SSLKEYLOGFILE=$HOME/sslkeylog.log
+    export SSLKEYLOGFILE=$HOME/sslkeylog.log
 fi
 
 # ruby
@@ -212,7 +212,7 @@ DISABLE_MAGIC_FUNCTIONS=true
 
 # oh-my-zsh
 if ! (declare -f -F "is_plugin" > /dev/null); then
-	source $ZSH/oh-my-zsh.sh
+    source $ZSH/oh-my-zsh.sh
 fi
 
 # remove oh-my-zsh options variables
@@ -220,21 +220,21 @@ unset DISABLE_MAGIC_FUNCTIONS
 
 # p10k
 if [[ ! -v POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS ]]; then
-	[[ -f ~/.zsh/.p10k.zsh ]] && source ~/.zsh/.p10k.zsh
-	# [[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
+    [[ -f ~/.zsh/.p10k.zsh ]] && source ~/.zsh/.p10k.zsh
+    # [[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
 fi
 
 
 # environment path (envpath)
 if [ -f $HOME/.envpath ]; then
-	. ~/.envpath
+    . ~/.envpath
 fi
 
 if [ -d $HOME/.dotfiles/env_custom/ ]; then
-	local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
-	for file in $files; do
-		. $file
-	done
+    local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
+    for file in $files; do
+        . $file
+    done
 fi
 
 
@@ -248,45 +248,45 @@ fi
 # ~/.zsh/.fzf/install
 # ---------
 if [ "$(command -v fzf)" = "" ]; then
-	if [ -d $HOME/.zsh/.fzf/ ]; then
-		# if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then fi
-		if ! grep -q "$HOME/.zsh/.fzf/bin" <<< "$PATH"; then
-			export PATH="$HOME/.zsh/.fzf/bin:$PATH"
-		fi
-	fi
+    if [ -d $HOME/.zsh/.fzf/ ]; then
+        # if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then fi
+        if ! grep -q "$HOME/.zsh/.fzf/bin" <<< "$PATH"; then
+            export PATH="$HOME/.zsh/.fzf/bin:$PATH"
+        fi
+    fi
 fi
 if [ "$(command -v fzf)" != "" ]; then
-	# Auto-completion
-	# ---------------
-	if [ -d $HOME/.zsh/.fzf/ ]; then
-		[[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
-		# Key bindings
-		source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
-	elif [ -d /opt/homebrew/ ]; then
-		WHICH_CMD=$(/bin/bash -c "which which")
-		fzf_bin_path=$($WHICH_CMD "fzf")
-		fzf_sympath=$(greadlink -f $fzf_bin_path)
-		fzf_realpath=$(dirname $(dirname $fzf_sympath))
+    # Auto-completion
+    # ---------------
+    if [ -d $HOME/.zsh/.fzf/ ]; then
+        [[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
+        # Key bindings
+        source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
+    elif [ -d /opt/homebrew/ ]; then
+        WHICH_CMD=$(/bin/bash -c "which which")
+        fzf_bin_path=$($WHICH_CMD "fzf")
+        fzf_sympath=$(greadlink -f $fzf_bin_path)
+        fzf_realpath=$(dirname $(dirname $fzf_sympath))
 
-		[[ $- == *i* ]] && source "$fzf_realpath/shell/completion.zsh" 2> /dev/null
-		# Key bindings
-		source "$fzf_realpath/shell/key-bindings.zsh"
-	fi
+        [[ $- == *i* ]] && source "$fzf_realpath/shell/completion.zsh" 2> /dev/null
+        # Key bindings
+        source "$fzf_realpath/shell/key-bindings.zsh"
+    fi
 
-	# fzf file search command
-	# -----------------------
-	if [ "$(command -v fd)" != "" ]; then
-		# export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore'
-		export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore -X grep -lI .'
-		# .git 디렉토리를 제외하고 검색
-		# export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --exclude .git'
-		# export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --color=always --exclude .git'
-	else
-		# export FZF_DEFAULT_COMMAND=''
-		# export FZF_DEFAULT_COMMAND='find . -type f'
-		export FZF_DEFAULT_COMMAND='find . -type f -exec grep -lI . {} \;'
-	fi
-	export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    # fzf file search command
+    # -----------------------
+    if [ "$(command -v fd)" != "" ]; then
+        # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore'
+        export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore -X grep -lI .'
+        # .git 디렉토리를 제외하고 검색
+        # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --exclude .git'
+        # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --color=always --exclude .git'
+    else
+        # export FZF_DEFAULT_COMMAND=''
+        # export FZF_DEFAULT_COMMAND='find . -type f'
+        export FZF_DEFAULT_COMMAND='find . -type f -exec grep -lI . {} \;'
+    fi
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
 
@@ -294,9 +294,9 @@ fi
 
 # alias file
 if ! (declare -f -F "fualias" > /dev/null); then
-	if [ -f ~/.aliases ]; then
-		. ~/.aliases
-	fi
+    if [ -f ~/.aliases ]; then
+        . ~/.aliases
+    fi
 fi
 
 
