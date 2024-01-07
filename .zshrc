@@ -53,6 +53,12 @@ if [ ! -d $ZSH/custom/plugins/zsh-autosuggestions/ ]; then
 	git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions/
 fi
 
+if [ ! -d $ZSH/custom/plugins/git-open/ ]; then
+    git clone https://github.com/paulirish/git-open.git $ZSH/custom/plugins/git-open/
+fi
+
+
+
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -120,10 +126,13 @@ export ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+
 plugins=(
-	git
-	zsh-syntax-highlighting
-	zsh-autosuggestions
+    "git"
+    "git-open"
+    "zsh-syntax-highlighting"
+    "zsh-autosuggestions"
 )
 
 
