@@ -143,8 +143,9 @@ if [ -d /mnt/c/Users/ ]; then
     # alias diffb='"/mnt/c/Program Files/Beyond Compare 4/BComp.exe"'
     alias diffb='~/.bcomp.sh'
 
-    alias curlaa="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
-    alias curlqq="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
+    alias curla="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
+    alias curlq="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
+    alias curls="/mnt/c/Users/ghkd0/Videos/.rrr_testcurl.sh"
 
     [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
 # mac command
@@ -210,10 +211,12 @@ elif [ -d /Users/ ]; then
     alias gotest="cd $HOME/src/testsrc"
     alias gocert="cd $HOME/Documents/cert"
 
-    alias curlaa="$HOME/curltest/.aaa_testcurl.sh"
-    alias curlqq="$HOME/curltest/.qqq_testcurl.sh"
-    alias curlaavi="vim $HOME/curltest/.aaa_testcurl.sh"
-    alias curlqqvi="vim $HOME/curltest/.qqq_testcurl.sh"
+    alias curla="$HOME/curltest/.aaa_testcurl.sh"
+    alias curlq="$HOME/curltest/.qqq_testcurl.sh"
+    alias curlr="$HOME/curltest/.rrr_testcurl.sh"
+    alias curlavi="vim $HOME/curltest/.aaa_testcurl.sh"
+    alias curlqvi="vim $HOME/curltest/.qqq_testcurl.sh"
+    alias curlrvi="vim $HOME/curltest/.rrr_testcurl.sh"
     alias dockoff="defaults write com.apple.dock autohide-delay -float 1000; killall Dock"
     alias dockon="defaults delete com.apple.dock autohide-delay; killall Dock"
 else
