@@ -820,11 +820,15 @@ function gitapplymacro()
     # apply diff
     git apply --reject ${git_diff_path}
 
-    echo "\n\n"
-    echo "========== reject file list ==========\n"
+    echo "\n"
+    echo "check /tmp/gitapplymacro.diff last content"
+
+    echo "\n\n" >> ${git_diff_path}
+    echo "========== reject file list ==========\n" >> ${git_diff_path}
     # find merge conflict file
-    find . -name "*.rej" -type f
-    echo ""
+    find . -name "*.rej" -type f >> ${git_diff_path}
+    echo "" >> ${git_diff_path}
+
 }
 
 
