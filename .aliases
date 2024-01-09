@@ -803,16 +803,16 @@ function svndiff() {
 }
 
 # 관계가 없는 두 브랜치를 머지할 때 사용
-# gitapplymacro "abcdefab" "12345678" "main"
+# gitapplymacro "abcdefab..12345678" "main"
 function gitapplymacro()
 {
-    commit_between_A="$1"
-    commit_between_B="$2"
-    apply_branch="$3"
+    commit_between="$1"
+    apply_branch="$2"
     git_diff_path="/tmp/gitapplymacro.diff"
+    rm -f "$git_diff_path"
 
     # diff beetween a and b
-    git diff ${commit_between_A}..${commit_between_B} > ${git_diff_path}
+    git diff ${commit_between} > ${git_diff_path}
 
     # checkout apply branch
     git checkout ${apply_branch}
@@ -824,6 +824,10 @@ function gitapplymacro()
     find . -name "*.rej" -type f
 }
 
+
+# gitdiff <option> <commit>
+# gitdiff --name-only 12345678
+# gitdiff --name-only 12345678..abcdefab
 function gitdiff() {
     if [ $# -eq 0 ]; then
         git diff
