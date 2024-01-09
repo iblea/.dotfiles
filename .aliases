@@ -1599,6 +1599,9 @@ alias 퍄='vim'
 alias ㄷ턋='exit'
 alias 야='di'
 
+# td set eth1
+# td 80
+# td 80 tcp -w packet.pcap
 function td()
 {
     if [ -z "$td_iface" ]; then
@@ -1611,14 +1614,21 @@ function td()
         echo "current show iface : '$td_iface'"
         return 1
     elif [ $# -eq 1 ]; then
-        tcpdump -nn -vv -i "$td_iface" port $@
+        tcpdump -nn -vv -i "$td_iface" tcp port $@
     elif [ $# -eq 2 ] && [[ "$1" = "set" ]]; then
         echo "set td_iface=$2"
         td_iface="$2"
         return 0
     else
-        local opt=( $(echo "$@" | cut -c5- ) )
-        tcpdump -nn -vv -i "$td_iface" $1 port ${opt[@]}
+        # 5문자 뒤 문자를 출력 (ex. "qwertyasdf" -> "yasdf")
+        # local opt=( $(echo "$@" | cut -c5- ) )
+        # ' ' 문자를 기준으로 3번째부터 출력 ("a b c d" -> "c d")
+        # local opt=$(echo "$@" | cut -d ' ' -f 3-)
+        # 3번째부터 출력 : bash나 zsh나 동일
+        for arg in "${@:3}"; do
+            opt+=("$arg")
+        done
+        tcpdump -nn -vv -i "$td_iface" $2 port $1 ${opt[@]}
     fi
 }
 
