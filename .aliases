@@ -820,8 +820,11 @@ function gitapplymacro()
     # apply diff
     git apply --reject ${git_diff_path}
 
+    echo "\n\n"
+    echo "========== reject file list ==========\n"
     # find merge conflict file
     find . -name "*.rej" -type f
+    echo ""
 }
 
 
