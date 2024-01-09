@@ -1297,7 +1297,7 @@ fuunalias_alias 'gp' 'git pull'
 fuunalias_alias 'gmn' 'git merge --no-commit --no-ff'
 fuunalias_alias 'gmns' 'git merge --squash --no-commit'
 # fatal: refusing to merge unrelated histories - 관련 기록이 없는 두 이질적인 프로젝트 병합
-fuunalias_alias 'gmnsa' 'git merge --squash --no-commit -allow-unrelated-histories'
+fuunalias_alias 'gmnsah' 'git merge --squash --no-commit --allow-unrelated-histories'
 fuunalias_alias 'gl' ''
 fuunalias_alias 'gsi' ''
 fuunalias_alias 'gpf' ''
