@@ -617,6 +617,27 @@ function didiff() {
     $codepath $codeopt "$1" "$2"
 }
 
+function encoding_ls()
+{
+    find . -type f -exec grep -I -q . {} \; -print | xargs -I{} file -i {}
+}
+
+function encoding_euckr_to_utf8()
+{
+    # euc_krs=( $(find . -name "*" -type f -exec file -i {} \; | grep "iso-8859-1" | awk -F ":" '{print $1}') )
+    # get not binary file list
+    # euckrs=( $(find . -type f -exec grep -I -q . {} \; -print) )
+    euc_krs=( $(find . -type f -exec grep -I -q . {} \; -print | xargs -I{} file -i {} | grep "iso-8859-1" | awk -F ":" '{print $1}') )
+    for file in "${euc_krs[@]}" ; do
+        echo "Converting $file to UTF-8"
+        # euc-kr -> utf-8, save to test.c.new
+        iconv -c -f euc-kr -t utf-8 "$file" > "$file.new"
+        # remove test.c
+        rm -f "$file"
+        # mv test.c.new test.c
+        mv "$file.new" "$file"
+    done
+}
 
 # alias direj="di $(find . -name '*.rej' -type f | head -n 1 | sed 's/....$//') $(find . -name '*.rej' -type f | head -n 1)"
 function direj()
