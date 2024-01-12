@@ -219,6 +219,10 @@ elif [ -d /Users/ ]; then
     alias curlrvi="vim $HOME/curltest/.rrr_testcurl.sh"
     alias dockoff="defaults write com.apple.dock autohide-delay -float 1000; killall Dock"
     alias dockon="defaults delete com.apple.dock autohide-delay; killall Dock"
+
+    # explorer
+    alias epl="open ."
+    alias expl="open ."
 else
     alias diffb='~/.bcomp.sh'
 fi
