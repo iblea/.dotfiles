@@ -25,6 +25,8 @@ while [ : ] ; do
 		continue;
 	fi
 
+	# Wait until Docker is completely running.
+	sleep 5
 	echo "docker start"
 	docker start volado
 	break;
