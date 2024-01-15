@@ -78,3 +78,8 @@ fi
 # 	ln -s $HOME/$SETTINGS_DIR/.alias_waf
 # fi
 
+
+# google_drive linking
+# googlemail="test@gmail.com"
+# ln -s "$HOME/Library/CloudStorage/GoogleDrive-$(googlemail)/내 드라이브" "GoogleDrive"
+
