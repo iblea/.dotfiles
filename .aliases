@@ -174,8 +174,8 @@ elif [ -d /Users/ ]; then
     function gonote() { cd $HOME/.notepad/$@; }
     function gont() { cd $HOME/.notepad/$@; }
     # go google drive
-    function gogd() { cd "/Users/jdh/Google Drive/내 드라이브/$@"; }
-    function godrive() { cd "/Users/jdh/Google Drive/내 드라이브/$@"; }
+    function gogd() { cd "/Users/jdh/GoogleDrive/$@"; }
+    function godrive() { cd "/Users/jdh/GoogleDrive/$@"; }
     function goicloud() { cd "/Users/jdh/Library/Mobile Documents/com~apple~CloudDocs/$@"; }
     function goissue() { cd $HOME/issue/$@; }
 
@@ -205,6 +205,28 @@ elif [ -d /Users/ ]; then
         filename=$@
         puttygen "$filename" -o "${filename}.ppk"
     }
+
+    function ddns_set() {
+        ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_google.sh"
+        if [ ! -x $ddns_script_path ]; then
+            echo "$ddns_script_path"
+            echo "not found ddns script path"
+            exit 1
+        fi
+        "$ddns_script_path" "$1" "$2"
+    }
+
+    function ddnsvi() {
+        ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_google.sh"
+        if [ ! -x $ddns_script_path ]; then
+            echo "$ddns_script_path"
+            echo "not found ddns script path"
+            exit 1
+        fi
+        vim "$ddns_script_path"
+    }
+    alias keyvi="vi \"$HOME/GoogleDrive/keys/keys.txt\""
+
 
     alias gosrc="cd $HOME/src"
     # cd practice directory
