@@ -18,16 +18,21 @@ ln -s $HOME/$SETTINGS_DIR/.zsh/.p10k.zsh $HOME/.zsh/.p10k.zsh
 ln -s $HOME/$SETTINGS_DIR/.bashrc
 
 
-# vim
+# vimrc
 ln -s $HOME/$SETTINGS_DIR/vimrc/.vimrc
 cd $HOME/$SETTINGS_DIR
 if [ -d ./.vim/ ]; then
 	rm -rf ./.vim/
 fi
-# tar -zxvf vim.tgz > /dev/null
-# tar -zcvf vim.tgz .vim/
+
 
 # .vim setting
+
+# tar -zxvf vim.tgz > /dev/null
+# tar -zcvf vim.tgz .vim/
+# cd $HOME
+# ln -s $HOME/$SETTINGS_DIR/.vim
+
 if [ ! -d $HOME/.vim ]; then
 	mkdir $HOME/.vim/
 fi
@@ -38,9 +43,6 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 fi
 
 echo "Please open vim and :PlugInstall first"
-
-cd $HOME
-ln -s $HOME/$SETTINGS_DIR/.vim
 
 
 # envpath
