@@ -24,7 +24,8 @@ if has("gui_running")
     cnoremap <C-V> <nop>
     " silent! set guifont=FantasqueSansMono\ NFM:h12:cDEFAULT
     " silent! set guifontwide=D2Coding:h12:cDEFAULT
-    au VimEnter * execute "GuiFont! FantasqueSansMono NFM:h12"
+    " au VimEnter * execute "GuiFont! FantasqueSansMono Nerd Font Mono:h12"
+    au VimEnter * execute "GuiFont! WindowsCommandPrompt Nerd Font:h12"
 
     if has('win64')
         let &shell='bash.exe'
