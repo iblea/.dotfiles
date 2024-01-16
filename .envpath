@@ -38,12 +38,16 @@ fi
 
 if ! grep -q "/opt/homebrew/opt/libnet/lib" <<< "$PATH"; then
 	export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/libnet/lib
-fi
-
-if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/libnet/bin:$PATH"
 fi
 
+if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+fi
+
+if ! grep -q "/opt/homebrew/opt/ruby/bin/" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+fi
 
 gnubin_list=("grep" "gnu-sed")
 
@@ -64,6 +68,7 @@ export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
 fi
 
+
 unset openssl_brew_version
 unset gnubin_list
 
@@ -73,3 +78,5 @@ unset gnubin_list
 # cd /opt/homebrew/bin/
 # ln -s ../Cellar/<pkg>/<version>/<path>/<binary> <binary>
 # ln -s ../Cellar/arping/2.23/sbin/arping arpin
+
+
