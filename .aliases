@@ -1314,6 +1314,7 @@ if [ ! -f ~/.gitconfig ]; then
 
     # diff, merge
     git config --global diff.tool bcompare
+    git config --global diff.euckr.textconv "iconv -f euc-kr -t utf-8"
     git config --global merge.tool bcompare
     git config --global difftool.bcompare.cmd "$HOME"/'.bcomp.sh "$LOCAL" "$REMOTE"'
     git config --global difftool.bcompare.trustExitCode true
