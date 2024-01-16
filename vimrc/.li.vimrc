@@ -43,8 +43,12 @@ if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/v
     let g:miniBufExplMapWindowNavArrows = 1
     let g:miniBufExplMapCTabSwitchBufs = 1
     let g:miniBufExplModSelTarget = 1
-
 endif
+
+if !isdirectory($HOME."/.vim/plugged/vim-surround")
+	noremap S s
+endif
+
 nnoremap <c-l> :suspend<CR>
 noremap . <Plug>Sneak_s
 

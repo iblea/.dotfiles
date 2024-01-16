@@ -12,6 +12,7 @@ call plug#begin($HOME.'/.vim/plugged')
 	Plug 'easymotion/vim-easymotion'
 	Plug 'preservim/vim-indent-guides'
 	Plug 'mtth/scratch.vim'
+	Plug 'tpope/vim-surround'
 	Plug 'justinmk/vim-sneak'
 	Plug 'vim-scripts/TagHighlight'
 	Plug 'vim-scripts/EasyColour'
