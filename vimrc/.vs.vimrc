@@ -12,10 +12,10 @@ set noic
 set scrolloff=5
 
 noremap s <nop>
-noremap S <nop>
+nnoremap S <nop>
 let mapleader='q'
 noremap \ <nop>
-map S s
+" map S s
 
 
 "nnoremap o $a<CR>
