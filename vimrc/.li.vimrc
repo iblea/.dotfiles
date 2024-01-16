@@ -189,9 +189,26 @@ func! Prev_window()
     execute l:curnr." wincmd w"
 endfunc
 
+
+" get SynColor(SynGroup) in cursor
+" call SynStack() or call SynGroup()
+function! SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
+
+function! SynGroup()
+    let l:s = synID(line('.'), col('.'), 1)
+    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+endfun
+
+
 set bg=dark
 if isdirectory($HOME."/.vim/plugged/vim-github-theme")
     colorscheme github_dark
+    " colorscheme default
 else
     colorscheme default
 endif
@@ -217,3 +234,5 @@ endfunc
 if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
 endif
+
+
