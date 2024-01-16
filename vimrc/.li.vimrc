@@ -19,12 +19,12 @@ ca w!! w !sudo tee "%" > /dev/null
 
 let g:open_path = getcwd()
 
-if isdirectory($HOME."/.vim/pack/autopair")
+if isdirectory($HOME."/.vim/pack/autopair") || isdirectory($HOME."/.vim/plugged/autopair")
     " Autopair Disable
     let g:AutoPairsLoaded = 0
 endif
 
-if isdirectory($HOME."/.vim/pack/airline")
+if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/vim-airline")
     " 버퍼 목록 켜기
     let g:airline#extensions#tabline#enabled = 1
     " 파일명만 출력
@@ -126,7 +126,7 @@ endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <s-tab> <c-r>=InsertSTabWrapper()<cr>
 " Acp
-if !empty(glob($HOME."/.vim/plugin/acp.vim"))
+if (!empty(glob($HOME."/.vim/plugin/acp.vim"))) || isdirectory($HOME."/.vim/plugged/AutoComplPop")
     let g:acp_enableAtStartup = 1
     let g:acp_mappingDriven = 0
     let g:acp_completeOption = '.,w,b,u,i'
@@ -142,7 +142,7 @@ if !empty(glob($HOME."/.vim/plugin/acp.vim"))
     let g:acp_behaviorCssOmniValueLength = -1
 endif
 " EasyMotion
-if !empty(glob($HOME."/.vim/pack/easymotion"))
+if (!empty(glob($HOME."/.vim/pack/easymotion"))) || isdirectory($HOME."/.vim/plugged/vim-easymotion")
     let g:EasyMotion_smartcase = 0
     let g:EasyMotion_use_smartsign_us = 0
     nnoremap s <Plug>(easymotion-s2)

@@ -24,12 +24,20 @@ cd $HOME/$SETTINGS_DIR
 if [ -d ./.vim/ ]; then
 	rm -rf ./.vim/
 fi
-tar -zxvf vim.tgz > /dev/null
+# tar -zxvf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
 
-# vim plugin
-echo "setting vim plugin to download in github"
-./.vim/vimplugin.sh
+# .vim setting
+if [ ! -d $HOME/.vim ]; then
+	mkdir $HOME/.vim/
+fi
+
+if [ ! -f $HOME/.vim/autoload/plug.vim ]; then
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+
+echo "Please open vim and :PlugInstall first"
 
 cd $HOME
 ln -s $HOME/$SETTINGS_DIR/.vim

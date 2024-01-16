@@ -1,3 +1,21 @@
+call plug#begin()
+	Plug 'preservim/nerdtree'
+	Plug 'vim-scripts/AutoComplPop'
+	Plug 'vim-airline/vim-airline'
+	Plug 'vim-airline/vim-airline-themes'
+	Plug 'jlanzarotta/bufexplorer'
+	Plug 'vim-scripts/BufOnly.vim'
+	Plug 'kien/ctrlp.vim'
+	Plug 'wincent/ferret'
+	Plug 'github/copilot.vim'
+	Plug 'easymotion/vim-easymotion'
+	Plug 'preservim/vim-indent-guides'
+	Plug 'mtth/scratch.vim'
+	Plug 'justinmk/vim-sneak'
+	Plug 'vim-scripts/TagHighlight'
+	Plug 'vim-scripts/EasyColour'
+call plug#end()
+
 if !empty(glob($HOME."/.dotfiles/vimrc/.vs.vimrc"))
 	source $HOME/.dotfiles/vimrc/.vs.vimrc
 endif
