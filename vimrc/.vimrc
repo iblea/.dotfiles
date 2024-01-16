@@ -14,6 +14,11 @@ call plug#begin()
 	Plug 'justinmk/vim-sneak'
 	Plug 'vim-scripts/TagHighlight'
 	Plug 'vim-scripts/EasyColour'
+
+	" Plug 'akiicat/vim-github-theme'
+	Plug 'jdh9232/vim-github-theme'
+	" only use neovim
+	" Plug 'projekt0n/github-nvim-theme'
 call plug#end()
 
 if !empty(glob($HOME."/.dotfiles/vimrc/.vs.vimrc"))
