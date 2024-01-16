@@ -161,8 +161,9 @@ elif [ -d /Users/ ]; then
     alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
     alias which="$(/bin/bash -c 'which which' 2>/dev/null)"
     alias ldd="otool -L"
-    alias vii='mvim'
-    alias mvi='mvim'
+    alias vii='nvim'
+    alias mvi='nvim'
+    alias vir="open -a /Applications/VimR.app/"
 
     # brew install findutils
     if [ -f /opt/homebrew/bin/gxargs ]; then

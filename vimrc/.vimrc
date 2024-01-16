@@ -29,9 +29,11 @@ if has("gui_macvim")
 	source $HOME/.dotfiles/vimrc/.mac.vimrc
 endif
 
-" if !empty(glob($HOME."/.dotfiles/.neo.vimrc"))
-" 	source $HOME/.dotfiles/.neo.vimrc
-" endif
+if has("nvim")
+	if !empty(glob($HOME."/.dotfiles/.neo.vimrc"))
+		source $HOME/.dotfiles/.neo.vimrc
+	endif
+endif
 
 if isdirectory("/opt/homebrew/")
 	set clipboard=unnamed

@@ -16,10 +16,10 @@
 
 
 " nvim command neovim nvimrc   (:e $MYVIMRC)
-if exists("*stdpath")
+if has("gui_running")
     set clipboard^=unnamed,unnamedplus
     hi! Normal guibg=black guifg=#BBBBBB
-    set mouse=a
+    set mouse-=a
     cnoremap <C-Y> <C-V>
     cnoremap <C-V> <nop>
     " silent! set guifont=FantasqueSansMono\ NFM:h12:cDEFAULT
