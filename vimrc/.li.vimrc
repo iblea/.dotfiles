@@ -73,8 +73,13 @@ set showmode
 set notitle
 " set csprg=/usr/bin/cscope
 " set csto=0
-set cst
-set nocsverb
+" only vim
+
+if !has("nvim")
+    set cst
+    set nocsverb
+endif
+
 " split
 set splitbelow
 set splitright
