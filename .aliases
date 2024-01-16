@@ -164,6 +164,11 @@ elif [ -d /Users/ ]; then
     alias vii='nvim'
     alias nvi='nvim'
     alias vir="open -a /Applications/VimR.app/"
+    # vim -> nvim
+    if [ -n "$(which nvim)" ]; then
+        alias vi='nvim'
+        alias vim='nvim'
+    fi
 
     # brew install findutils
     if [ -f /opt/homebrew/bin/gxargs ]; then
