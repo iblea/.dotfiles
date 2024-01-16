@@ -162,7 +162,7 @@ elif [ -d /Users/ ]; then
     alias which="$(/bin/bash -c 'which which' 2>/dev/null)"
     alias ldd="otool -L"
     alias vii='nvim'
-    alias mvi='nvim'
+    alias nvi='nvim'
     alias vir="open -a /Applications/VimR.app/"
 
     # brew install findutils
