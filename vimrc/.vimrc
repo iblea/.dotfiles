@@ -1,5 +1,9 @@
+
 " ${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/"
-call plug#begin($HOME.'/.vim/plugged')
+
+if !empty(glob($HOME."/.vim/autoload/plug.vim"))
+	call plug#begin($HOME.'/.vim/plugged')
+
 	Plug 'preservim/nerdtree'
 	Plug 'vim-scripts/AutoComplPop'
 	Plug 'vim-airline/vim-airline'
@@ -16,12 +20,14 @@ call plug#begin($HOME.'/.vim/plugged')
 	Plug 'justinmk/vim-sneak'
 	Plug 'vim-scripts/TagHighlight'
 	Plug 'vim-scripts/EasyColour'
-
+	
 	" Plug 'akiicat/vim-github-theme'
 	Plug 'jdh9232/vim-github-theme'
 	" only use neovim
 	" Plug 'projekt0n/github-nvim-theme'
-call plug#end()
+
+	call plug#end()
+endif
 
 if !empty(glob($HOME."/.dotfiles/vimrc/.vs.vimrc"))
 	source $HOME/.dotfiles/vimrc/.vs.vimrc
