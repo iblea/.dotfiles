@@ -69,7 +69,7 @@ hs.hotkey.bind({"option", "control"}, "V", appLaunchOrFocus("DuelKakaoTalk"))
 hs.hotkey.bind({"option", "control"}, "C", appLaunchOrFocus("KakaoTalk"))
 
 --- Messenger
-hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("TeamUP"))
+hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("AIWorks-Messenger"))
 hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocus(os.getenv("HOME").."/Applications/Chrome Apps.localized/Messages.app"))
 -- hs.hotkey.bind({"option", "control"}, "H", appLaunchOrFocusBundle("com.google.Chrome.app.hpfldicfbfomlpcikngkocigghgafkph"))
 hs.hotkey.bind({"option", "control"}, "J", appLaunchOrFocus("DuelKakaoTalk"))
