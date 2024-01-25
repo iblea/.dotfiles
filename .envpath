@@ -79,7 +79,7 @@ unset gnubin_list
 # ln -s ../Cellar/<pkg>/<version>/<path>/<binary> <binary>
 # ln -s ../Cellar/arping/2.23/sbin/arping arpin
 
-
+if [[ "$SHELL" = "zsh" ]] && [[ "$(command -v typeset)" != "" ]]; then
 # ignore scm tracking - specific path
 p10k_gitscm_track_ignore_path=(
 	"*/AILIB402"
@@ -94,4 +94,6 @@ typeset -g POWERLEVEL9K_VCS_DISABLED_DIR_PATTERN="${scm_ignore_path}(|/*)"
 unset scm_ignore_path
 unset scm_path
 unset p10k_gitscm_track_ignore_path
+
+fi
 
