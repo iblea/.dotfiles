@@ -45,7 +45,7 @@ end
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
 hs.hotkey.bind({"option", "control"}, "Z", appLaunchOrFocus("Stickies"))
 hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
-hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("Iterm"))
+hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("WezTerm"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
 hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Visual Studio Code"))
