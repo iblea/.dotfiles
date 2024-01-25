@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 
 return {
-    disable_default_key_bindings = true,
+    disable_default_key_bindings = false,
     -- https://wezfurlong.org/wezterm/config/lua/keyassignment/index.html
     keys = {
         -- {

@@ -20,10 +20,10 @@ local wezterm_font_config = wezterm.font_with_fallback {
 
 return {
     window_close_confirmation = "NeverPrompt",
+    window_background_opacity = 1.0,
     enable_tab_bar = true,
     scrollback_lines = 35000,
     use_fancy_tab_bar = false,
-    window_background_opacity = 0.7,
     -- font = wezterm.font 'WindowsCommandPrompt Nerd Font'
 
     freetype_load_target = 'HorizontalLcd',
