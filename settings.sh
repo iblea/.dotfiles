@@ -97,6 +97,7 @@ fi
 
 
 # google_drive linking
-# googlemail="test@gmail.com"
-# ln -s "$HOME/Library/CloudStorage/GoogleDrive-$(googlemail)/내 드라이브" "GoogleDrive"
+# google drive linking
+# gmail="test@gmail.com"
+# ln -s "$HOME/Library/CloudStorage/GoogleDrive-$(gmail)/내 드라이브" "GoogleDrive"
 
