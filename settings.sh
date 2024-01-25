@@ -74,6 +74,13 @@ else
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.remotebcomp.sh $HOME/.bcomp.sh
 fi
 
+# wezterm
+if [ -n "$(command -v wezterm)" ]; then
+	ln -s $HOME/.dotfiles/wezterm/ $HOME/.config
+	ln -s $HOME/$SETTINGS_DIR/wezterm/wezterm.lua $HOME/.wezterm.lua
+fi
+
+
 # hammerspoon
 # ln -s $HOME/.dotfiles/.hammerspoon $HOME/.hammerspoon
 # ln -s $HOME/$SETTINGS_DIR/.hammerspoon $HOME/.hammerspoon
