@@ -5,8 +5,8 @@ local mux = wezterm.mux
 wezterm.on('gui-startup', function(cmd)
     -- allow `wezterm start -- something` to affect what we spawn
     -- in our initial window
-    local args = {}
-    if cmd then args = cmd.args end
+    -- local args = {}
+    -- if cmd then args = cmd.args end
 
     -- local home = wezterm.home_dir
 
@@ -18,10 +18,10 @@ wezterm.on('gui-startup', function(cmd)
     -- stats_pane:send_text('btop\n')
     -- stats_tab:set_title('stats')
 
-    local dotfiles_tab = window:spawn_tab({
-        args = args,
-        -- cwd = home .. '/.dotfiles'
-    })
+    -- local dotfiles_tab = window:spawn_tab({
+    --     args = args,
+    --     -- cwd = home .. '/.dotfiles'
+    -- })
     -- dotfiles_tab:set_title('dotfiles')
     -- local frontend_tab = window:spawn_tab({cwd = home .. '/me/reporter'})
     -- frontend_tab:set_title('RIP')
@@ -55,11 +55,11 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
 end)
 
 
-wezterm.on('update-right-status', function(window)
-    local date = wezterm.strftime '%Y-%m-%d %H:%M:%S'
-    window:set_right_status({Foreground = {Color = '#cad3f5'}},
-                            wezterm.format {{Text = ' ' .. date .. ' '}})
-end)
+-- wezterm.on('update-right-status', function(window)
+--     local date = wezterm.strftime '%Y-%m-%d %H:%M:%S'
+--     window:set_right_status({Foreground = {Color = '#cad3f5'}},
+--                             wezterm.format {{Text = ' ' .. date .. ' '}})
+-- end)
 
 wezterm.on('user-var-changed', function(window, pane, name, value)
     wezterm.log_info('user-var-changed', name, value)

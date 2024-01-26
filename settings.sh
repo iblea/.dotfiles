@@ -76,8 +76,8 @@ fi
 
 # wezterm
 if [ -n "$(command -v wezterm)" ]; then
-	ln -s $HOME/.dotfiles/wezterm/ $HOME/.config
-	ln -s $HOME/$SETTINGS_DIR/wezterm/wezterm.lua $HOME/.wezterm.lua
+	ln -s $HOME/.dotfiles/wezterm_config/wezterm $HOME/.config
+	ln -s $HOME/$SETTINGS_DIR/wezterm_config/wezterm/wezterm.lua $HOME/.wezterm.lua
 fi
 
 
