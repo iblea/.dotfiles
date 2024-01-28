@@ -241,9 +241,11 @@ elif [ -d /Users/ ]; then
 
     alias curla="$HOME/curltest/.aaa_testcurl.sh"
     alias curlq="$HOME/curltest/.qqq_testcurl.sh"
+    alias curle="$HOME/curltest/.eee_testcurl.sh"
     alias curlr="$HOME/curltest/.rrr_testcurl.sh"
     alias curlavi="vim $HOME/curltest/.aaa_testcurl.sh"
     alias curlqvi="vim $HOME/curltest/.qqq_testcurl.sh"
+    alias curlevi="vim $HOME/curltest/.eee_testcurl.sh"
     alias curlrvi="vim $HOME/curltest/.rrr_testcurl.sh"
     alias dockoff="defaults write com.apple.dock autohide-delay -float 1000; killall Dock"
     alias dockon="defaults delete com.apple.dock autohide-delay; killall Dock"
