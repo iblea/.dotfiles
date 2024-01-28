@@ -42,8 +42,8 @@ return {
     -- initial_rows = 35,
     -- -- 2560x1440 144hz
     font_size = 19.0,
-    initial_cols = 100,
-    initial_rows = 25,
+    initial_cols = 110,
+    initial_rows = 30,
     line_height = 1.3,
     cell_width = 0.85,
     underline_thickness = 0,
