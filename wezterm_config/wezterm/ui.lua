@@ -18,6 +18,8 @@ local wezterm_font_config = wezterm.font_with_fallback {
     },
 }
 
+-- https://github.com/wez/wezterm/issues/4096
+
 return {
     window_close_confirmation = "NeverPrompt",
     window_background_opacity = 1.0,
@@ -32,13 +34,16 @@ return {
     -- freetype_load_target = 'Normal',
     -- freetype_render_target = 'Normal',
 
-    dpi = 144.0,
+    -- dpi = 144.0,
+    -- dpi = 72.0,
+    -- -- 1920x1080 144hz
     -- font_size = 10.0,
     -- initial_cols = 140,
     -- initial_rows = 35,
+    -- -- 2560x1440 144hz
     font_size = 19.0,
-    initial_cols = 80,
-    initial_rows = 18,
+    initial_cols = 100,
+    initial_rows = 25,
     line_height = 1.3,
     cell_width = 0.85,
     underline_thickness = 0,
