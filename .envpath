@@ -82,8 +82,7 @@ is_zsh=$( echo "$SHELL" | grep "zsh$" )
 if [[ -n "$is_zsh" ]] && [[ "$(command -v typeset)" != "" ]]; then
 	# ignore scm tracking - specific path
 	p10k_gitscm_track_ignore_path=(
-		"*/export_dir"
-		"*/asdf"
+		# "*/export_dir"
 	)
 	if (( ${#p10k_gitscm_track_ignore_path[@]} )); then
 		scm_ignore_path="("
