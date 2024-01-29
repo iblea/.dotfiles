@@ -1632,7 +1632,7 @@
   # Show information for the first network interface whose name matches this regular expression.
   # Run `ifconfig` or `ip -4 a show` to see the names of all network interfaces.
   # network interface regex
-  typeset -g POWERLEVEL9K_IP_INTERFACE='[ew].*|mgmt|[S].*'
+  typeset -g POWERLEVEL9K_IP_INTERFACE='[ew].*|mgmt'
   # Custom icon.
   # typeset -g POWERLEVEL9K_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
 
