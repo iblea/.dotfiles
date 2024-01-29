@@ -483,10 +483,21 @@
     (( VCS_STATUS_NUM_CONFLICTED )) && res+=" ${conflicted}~${VCS_STATUS_NUM_CONFLICTED}"
     # +42 if have staged changes.
     # (( VCS_STATUS_NUM_STAGED     )) && res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
-    (( VCS_STATUS_NUM_STAGED     )) && res+=" ${modified}+${VCS_STATUS_NUM_STAGED}($(git diff --cached --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'))"
+    if (( VCS_STATUS_NUM_STAGED )); then
+      res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
+      if (( VCS_STATUS_NUM_STAGED <= 100 )); then
+        res+="($(git diff --cached --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'))"
+      fi
+    fi
     # !42 if have unstaged changes.
     # (( VCS_STATUS_NUM_UNSTAGED   )) && res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
-    (( VCS_STATUS_NUM_UNSTAGED   )) && res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}($(git diff --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'))"
+    if (( VCS_STATUS_NUM_UNSTAGED )); then
+      res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
+      if (( VCS_STATUS_NUM_UNSTAGED <= 100 )); then
+        res+="($(git diff --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'))"
+      fi
+    fi
+    # (( VCS_STATUS_NUM_UNSTAGED   )) && res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
     # ?42 if have untracked files. It's really a question mark, your font isn't broken.
     # See POWERLEVEL9K_VCS_UNTRACKED_ICON above if you want to use a different icon.
     # Remove the next line if you don't want to see untracked files at all.
