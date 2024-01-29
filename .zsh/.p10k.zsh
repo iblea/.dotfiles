@@ -397,7 +397,7 @@
       # Styling for up-to-date Git status.
       local       meta='%f'     # default foreground
       local      clean='%76F'   # green foreground
-      local   modified='%178F'  # yellow foreground
+      local   modified='%226F'  # yellow foreground
       local  untracked='%39F'   # blue foreground
       local conflicted='%196F'  # red foreground
     else
@@ -951,7 +951,7 @@
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
   # typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=178
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=1
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=13
   # typeset -g POWERLEVEL9K_CONTEXT_ROOT_BACKGROUND=0
 
   # # Context color in SSH without privileges.
@@ -959,10 +959,10 @@
   # # Default context color (no privileges, no SSH).
   # typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND=180
   # Context color in SSH without privileges.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=3
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=13
   typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_BACKGROUND=0
   # Default context color (no privileges, no SSH).
-  typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND=3
+  typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND=13
   typeset -g POWERLEVEL9K_CONTEXT_BACKGROUND=0
 
   # Context format when running with privileges: bold user@hostname.
