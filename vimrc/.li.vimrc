@@ -30,11 +30,11 @@ if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/v
     " 파일명만 출력
     let g:airline#extensions#tabline#fnamemod = ':t'
     " powerline 폰트가 없는 경우 아래를 uncomment
-    " let g:airline#extensions#tabline#left_sep = ' '
-    " let g:airline#extensions#tabline#left_alt_sep = '|'
+    let g:airline_powerline_fonts = 0
+    let g:airline#extensions#tabline#left_sep = ' '
+    let g:airline#extensions#tabline#left_alt_sep = '|'
 
     let g:airline_theme='luna'
-    let g:airline_powerline_fonts = 1
     let g:svnj_warn_branch_log=0
     "let g:airline_highlighting_cache=1
 
