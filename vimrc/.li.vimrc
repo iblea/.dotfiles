@@ -46,7 +46,7 @@ if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/v
 endif
 
 if !isdirectory($HOME."/.vim/plugged/vim-surround")
-	noremap S s
+    noremap S s
 endif
 
 nnoremap <c-l> :suspend<CR>
@@ -158,11 +158,22 @@ if (!empty(glob($HOME."/.vim/pack/easymotion"))) || isdirectory($HOME."/.vim/plu
 endif
 
 
+function! Get_visual_selection()
+    " Why is this not a built-in Vim script function?!
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    return join(lines, "\n")
+endfunction
+
 " Find Word
 " 오름차순 1,2,3,4,5
 func! N_find_word_asc()
     let l:toplinenum=winsaveview().topline
     call feedkeys("*N\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
+    let @+ = expand('<cword>')
     let @/ = '\<'.expand('<cword>').'\>'
 endfunc
 
@@ -170,13 +181,16 @@ endfunc
 func! N_find_word_desc()
     let l:toplinenum=winsaveview().topline
     call feedkeys("#N\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
+    let @+ = expand('<cword>')
     let @/ = '\<'.expand('<cword>').'\>'
 endfunc
 
 func! V_find_word_asc()
-    let l:toplinenum=winsaveview().topline
-    vnoremap # y/<c-r>"<CR>N
-    call feedkeys("\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
+    let l:newWord = Get_visual_selection()
+    echo l:newWord
+    let @+ = l:newWord
+    let l:newWord = substitute(l:newWord, "\\", "\\\\\\\\", "g")
+    let @/ = l:newWord
 endfunc
 
 nnoremap <silent> # <ESC>:call N_find_word_asc()<CR>
@@ -197,10 +211,10 @@ endfunc
 " get SynColor(SynGroup) in cursor
 " call SynStack() or call SynGroup()
 function! SynStack()
-  if !exists("*synstack")
-    return
-  endif
-  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
 
 function! SynGroup()
