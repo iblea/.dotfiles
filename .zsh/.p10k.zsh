@@ -1641,7 +1641,7 @@
   #   P9K_IP_TX_BYTES_DELTA | number of bytes sent since last prompt
   #   P9K_IP_RX_RATE        | receive rate (since last prompt)
   #   P9K_IP_TX_RATE        | send rate (since last prompt)
-  typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='$P9K_IP_IP${P9K_IP_RX_RATE:+ %70F<$P9K_IP_RX_RATE}${P9K_IP_TX_RATE:+ %215F>$P9K_IP_TX_RATE}'
+  typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='$P9K_IP_INTERFACE $P9K_IP_IP${P9K_IP_RX_RATE:+ %70F<$P9K_IP_RX_RATE}${P9K_IP_TX_RATE:+ %215F>$P9K_IP_TX_RATE}'
   # Show information for the first network interface whose name matches this regular expression.
   # Run `ifconfig` or `ip -4 a show` to see the names of all network interfaces.
   # network interface regex
