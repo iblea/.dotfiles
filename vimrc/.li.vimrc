@@ -173,7 +173,9 @@ endfunction
 func! N_find_word_asc()
     let l:toplinenum=winsaveview().topline
     call feedkeys("*N\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
-    let @+ = expand('<cword>')
+    if has("nvim")
+        let @+ = expand('<cword>')
+    endif
     let @/ = '\<'.expand('<cword>').'\>'
 endfunc
 
@@ -181,14 +183,17 @@ endfunc
 func! N_find_word_desc()
     let l:toplinenum=winsaveview().topline
     call feedkeys("#N\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
-    let @+ = expand('<cword>')
+    if has("nvim")
+        let @+ = expand('<cword>')
+    endif
     let @/ = '\<'.expand('<cword>').'\>'
 endfunc
 
 func! V_find_word_asc()
     let l:newWord = Get_visual_selection()
-    echo l:newWord
-    let @+ = l:newWord
+    if has("nvim")
+        let @+ = expand('<cword>')
+    endif
     let l:newWord = substitute(l:newWord, "\\", "\\\\\\\\", "g")
     let @/ = l:newWord
 endfunc
