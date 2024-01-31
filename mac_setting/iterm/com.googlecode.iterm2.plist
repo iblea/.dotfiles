@@ -4,6 +4,7 @@
 <dict>
 	<key>Coprocess MRU</key>
 	<array>
+		<string>/usr/local/bin/iterm2-zmodem-send</string>
 		<string>/usr/local/bin/iterm2-zmodem-recv</string>
 	</array>
 	<key>Default Bookmark Guid</key>
