@@ -51,7 +51,7 @@
 			<key>Label</key>
 			<string></string>
 			<key>Text</key>
-			<string>445F6EA5-F918-432F-8399-6BDB3B3D8C80</string>
+			<string>CD914813-5BD4-41FD-96E2-FC0801CAAC32</string>
 			<key>Version</key>
 			<integer>1</integer>
 		</dict>
@@ -73,7 +73,7 @@
 			<key>Label</key>
 			<string></string>
 			<key>Text</key>
-			<string>445F6EA5-F918-432F-8399-6BDB3B3D8C80</string>
+			<string>CD914813-5BD4-41FD-96E2-FC0801CAAC32</string>
 			<key>Version</key>
 			<integer>1</integer>
 		</dict>
@@ -161,7 +161,7 @@
 			<key>Label</key>
 			<string></string>
 			<key>Text</key>
-			<string>445F6EA5-F918-432F-8399-6BDB3B3D8C80</string>
+			<string>CD914813-5BD4-41FD-96E2-FC0801CAAC32</string>
 			<key>Version</key>
 			<integer>1</integer>
 		</dict>
@@ -440,7 +440,11 @@
 				<real>0.0</real>
 			</dict>
 			<key>Background Image Location</key>
-			<string></string>
+			<string>/Users/jdh/.dotfiles/images/numpy.png</string>
+			<key>Background Image Mode</key>
+			<integer>3</integer>
+			<key>Blend</key>
+			<real>0.088265681612318847</real>
 			<key>Blinking Cursor</key>
 			<false/>
 			<key>Blur</key>
@@ -1060,12 +1064,49 @@
 	<false/>
 	<key>OpenTmuxWindowsIn</key>
 	<integer>0</integer>
+	<key>PointerActions</key>
+	<dict>
+		<key>Button,1,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kContextMenuPointerAction</string>
+		</dict>
+		<key>Button,2,1,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPasteFromClipboardPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeDown,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPrevWindowPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeLeft,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kPrevTabPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeRight,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kNextTabPointerAction</string>
+		</dict>
+		<key>Gesture,ThreeFingerSwipeUp,,</key>
+		<dict>
+			<key>Action</key>
+			<string>kNextWindowPointerAction</string>
+		</dict>
+	</dict>
+	<key>Print In Black And White</key>
+	<true/>
 	<key>PromptOnQuit</key>
 	<true/>
 	<key>PromptOnQuitEvenIfThereAreNoWindows</key>
 	<true/>
 	<key>QuitWhenAllWindowsClosed</key>
 	<true/>
+	<key>SeparateStatusBarsPerPane</key>
+	<false/>
 	<key>SeparateWindowTitlePerTab</key>
 	<true/>
 	<key>SoundForEsc</key>
