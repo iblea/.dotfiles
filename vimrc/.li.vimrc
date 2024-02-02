@@ -237,7 +237,13 @@ else
 endif
 
 
-hi! Search term=reverse cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
+hi! Search term=reverse
+" hi! Normal cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
+" Make the background transparent
+hi Normal guibg=NONE ctermbg=NONE
+hi clear LineNr 
+" hi LineNr guibg=NONE ctermbg=NONE
+
 highlight! StatusLine ctermfg=231 ctermbg=23 guifg=#ffffff guibg=#002b2b cterm=NONE
 highlight! WildMenu ctermfg=0 ctermbg=36 guifg=#ffffff guibg=#005252
 hi Pmenu ctermbg=yellow ctermfg=black guibg=yellow guifg=black
