@@ -1303,16 +1303,38 @@ alias delspaceall="grep -rlI . | xargs -d '\n' -I{} sed -i 's/\s\+$//g' {}"
 # git alias
 if [ ! -f ~/.gitconfig ]; then
     git config --global alias.co checkout
+    git config --global alias.bb "\!$HOME/.dotfiles/script/better_branch.sh"
     git config --global alias.br branch
     git config --global alias.ci commit
     git config --global alias.st status
     git config --global alias.last 'log -1 HEAD'
+
     # Git 편집 에디터 변경
     git config --global core.editor "vim"
     # Git 원격 저장소에서 삭제된 branch를 로컬 저장소에서 자동으로 지우기
+
     git config --global fetch.prune true
     git config --global push.default current
     git config --global pull.rebase false
+    git config --global rerere.enabled true
+    git config --global column.ui auto
+    git config --global branch.sort -committerdate
+
+    # signed commit
+    # git config gpg.format ssh
+    # git config user.signingkey ~/.ssh/key.pub
+    # git commit -S
+    # git push --signed
+
+    # git commit-graph write
+    git config --global fetch.writeCommitGraph true
+
+    # git config -global core.untrackedcache true
+    # git config -global core.fsmonitor true
+    # git config --global --filter=blob:none
+    # git config --global --filter=tree:0
+    # git sparse-checkout set build base
+
     # encoding
     git config --global i18n.commitencoding "UTF-8"
     git config --global i18n.logoutputencoding "UTF-8"
