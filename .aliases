@@ -1315,7 +1315,7 @@ if [ ! -f ~/.gitconfig ]; then
 
     git config --global fetch.prune true
     git config --global push.default current
-    git config --global pull.rebase false
+    git config --global pull.rebase true
     git config --global rerere.enabled true
     git config --global column.ui auto
     git config --global branch.sort -committerdate
@@ -1472,8 +1472,13 @@ function gl() {
 }
 
 function glr() {
+    remote_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$remote_branch" = "HEAD" ]]; then
+        echo "failed to get remote branch name"
+        exit 1
+    fi
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
-    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ remotes/origin/$(git rev-parse --abbrev-ref HEAD)
+    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ remotes/origin/$(remote_branch)
 }
 
 
@@ -1585,6 +1590,9 @@ function gsi() {
 alias gital='alias | grep "^g.*git"'
 
 alias gdd='git diff | grep "\<printf\>"'
+
+# gitstatsd - git stats debug
+# zsh -dfxic 'GITSTATUS_ENABLE_LOGGING=1 && source ~/.zsh/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/gitstatus.plugin.zsh && gitstatus_start MY && gitstatus_query MY && cat $GITSTATUS_DAEMON_LOG_M'
 
 # git svn fetch error (untracked file)
 alias gitup='git update-index --assume-unchanged'
