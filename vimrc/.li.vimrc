@@ -249,6 +249,7 @@ highlight! WildMenu ctermfg=0 ctermbg=36 guifg=#ffffff guibg=#005252
 hi Pmenu ctermbg=yellow ctermfg=black guibg=yellow guifg=black
 hi PmenuSel ctermbg=darkgrey ctermfg=lightgrey guibg=darkgrey ctermfg=lightgrey
 hi PmenuSbar ctermbg=grey guibg=grey
+hi Search ctermfg=0 ctermbg=11 guifg=Black guibg=Yellow
 
 if g:colors_name == 'default'
     hi! comment ctermfg=72
