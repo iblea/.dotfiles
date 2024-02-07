@@ -161,11 +161,17 @@ elif [ -d /Users/ ]; then
     alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
     alias which="$(/bin/bash -c 'which which' 2>/dev/null)"
     alias ldd="otool -L"
-    alias vii='nvim'
-    alias nvi='nvim'
-    alias vir="open -a /Applications/VimR.app/"
-    # vim -> nvim
-    if [ -n "$(which nvim)" ]; then
+
+
+    # vim -> mvim, nvim
+    if [ -d "/Applications/MacVim.app/" ]; then
+        alias mvi='/Applications/MacVim.app/Contents/bin/vim'
+        alias mvim='/Applications/MacVim.app/Contents/bin/mvim'
+        alias macvim='/Applications/MacVim.app/Contents/bin/vim'
+        alias vi="/Applications/MacVim.app/Contents/bin/vim"
+        alias vim="/Applications/MacVim.app/Contents/bin/vim"
+    elif [ -n "$(which nvim)" ]; then
+        alias nvi='nvim'
         alias vi='nvim'
         alias vim='nvim'
     fi
@@ -1414,7 +1420,7 @@ fuunalias_alias 'gmn' 'git merge --no-commit --no-ff'
 fuunalias_alias 'gmns' 'git merge --squash --no-commit'
 # fatal: refusing to merge unrelated histories - 관련 기록이 없는 두 이질적인 프로젝트 병합
 fuunalias_alias 'gmnsah' 'git merge --squash --no-commit --allow-unrelated-histories'
-fuunalias_alias 'grvtme' 'git revert --no-edit --no-commit'
+fuunalias_alias 'grevtme' 'git revert --no-edit --no-commit'
 fuunalias_alias 'gl' ''
 fuunalias_alias 'gsi' ''
 fuunalias_alias 'gpf' ''
