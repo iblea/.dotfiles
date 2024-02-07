@@ -4,8 +4,8 @@
 <dict>
 	<key>Coprocess MRU</key>
 	<array>
-		<string>/usr/local/bin/iterm2-zmodem-send</string>
 		<string>/usr/local/bin/iterm2-zmodem-recv</string>
+		<string>/usr/local/bin/iterm2-zmodem-send</string>
 	</array>
 	<key>Default Bookmark Guid</key>
 	<string>CD914813-5BD4-41FD-96E2-FC0801CAAC32</string>
@@ -444,7 +444,7 @@
 			<key>Background Image Mode</key>
 			<integer>3</integer>
 			<key>Blend</key>
-			<real>0.088265681612318847</real>
+			<real>0.11826568161231883</real>
 			<key>Blinking Cursor</key>
 			<false/>
 			<key>Blur</key>
