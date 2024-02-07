@@ -173,9 +173,10 @@ endfunction
 func! N_find_word_asc()
     let l:toplinenum=winsaveview().topline
     call feedkeys("*N\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
-    if has("nvim")
+    if has("clipboard")
         let @+ = expand('<cword>')
     endif
+    let @" = expand('<cword>')
     let @/ = '\<'.expand('<cword>').'\>'
 endfunc
 
@@ -183,9 +184,10 @@ endfunc
 func! N_find_word_desc()
     let l:toplinenum=winsaveview().topline
     call feedkeys("#N\<ESC>:call winrestview({'topline' : ".l:toplinenum."})\<CR>:\<BS>", 'n')
-    if has("nvim")
+    if has("clipboard")
         let @+ = expand('<cword>')
     endif
+    let @" = expand('<cword>')
     let @/ = '\<'.expand('<cword>').'\>'
 endfunc
 
@@ -249,7 +251,7 @@ highlight! WildMenu ctermfg=0 ctermbg=36 guifg=#ffffff guibg=#005252
 hi Pmenu ctermbg=yellow ctermfg=black guibg=yellow guifg=black
 hi PmenuSel ctermbg=darkgrey ctermfg=lightgrey guibg=darkgrey ctermfg=lightgrey
 hi PmenuSbar ctermbg=grey guibg=grey
-hi Search ctermfg=0 ctermbg=11 guifg=Black guibg=Yellow
+hi Search ctermfg=0 ctermbg=184 guifg=Black guibg=Yellow
 
 if g:colors_name == 'default'
     hi! comment ctermfg=72
