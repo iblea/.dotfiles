@@ -49,7 +49,7 @@ if ! grep -q "/opt/homebrew/opt/ruby/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 fi
 
-gnubin_list=("grep" "gnu-sed")
+gnubin_list=("grep" "gnu-sed" "coreutils" "findutils")
 
 for gnu_path in ${gnubin_list[@]}; do
 	if grep -q "/opt/homebrew/opt/$gnu_path/libexec/gnubin" <<< "$PATH"; then
@@ -60,13 +60,8 @@ for gnu_path in ${gnubin_list[@]}; do
 	export PATH="/opt/homebrew/opt/$gnu_path/libexec/gnubin:$PATH"
 done
 
-# coreutils
-if grep -q "/opt/homebrew/opt/coreutils/libexec/gnubin" <<< "$PATH"; then
-	export PATH=$(echo "$PATH" | sed "s/\/opt\/homebrew\/opt\/coreutils\/libexec\/gnubin://")
 fi
-export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 
-fi
 
 
 unset openssl_brew_version
