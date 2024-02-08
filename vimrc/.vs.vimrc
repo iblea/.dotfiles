@@ -95,21 +95,22 @@ xnoremap <C-j> <DOWN>
 xnoremap <C-k> <UP>
 xnoremap <C-l> <RIGHT>
 xnoremap <C-h> <LEFT>
-xnoremap <C-n> <BS>
+" xnoremap <C-n> <BS>
 snoremap <C-j> <DOWN>
 snoremap <C-k> <UP>
 snoremap <C-l> <RIGHT>
 snoremap <C-h> <LEFT>
-snoremap <C-n> <BS>
+" snoremap <C-n> <BS>
 onoremap <C-j> <DOWN>
 onoremap <C-k> <UP>
 onoremap <C-l> <RIGHT>
 onoremap <C-h> <LEFT>
-onoremap <C-n> <BS>
+" onoremap <C-n> <BS>
 cnoremap <C-j> <DOWN>
 cnoremap <C-k> <UP>
 cnoremap <C-l> <RIGHT>
 cnoremap <C-h> <LEFT>
+cnoremap <C-o> <C-n>
 cnoremap <C-n> <BS>
 
 nnoremap ; :
@@ -122,8 +123,8 @@ vnoremap - ^
 " noremap - <nop>
 " nnoremap r R
 
-noremap _ <c-x>
-noremap + <c-a>
+noremap _ <C-x>
+noremap + <C-a>
 
 
 " 오름차순 1,2,3,4,5
@@ -172,11 +173,11 @@ vnoremap <Leader>v <C-W>=
 " nnoremap <Leader>i :bn<CR>
 
 
-nnoremap <c-g> <c-f>
-nnoremap <c-f> <c-y>
-vnoremap <c-f> <c-y>
-nnoremap <c-a> <c-u>
-nnoremap <silent><c-u> <ESC><C-]>
+nnoremap <C-g> <C-f>
+nnoremap <C-f> <C-y>
+vnoremap <C-f> <C-y>
+nnoremap <C-a> <C-u>
+nnoremap <silent><C-u> <ESC><C-]>
 vnoremap q ge
 vnoremap Q gE
 nmap <Tab>q ^
@@ -203,9 +204,9 @@ vnoremap <Leader>a <C-u>
 vnoremap <Leader>d <C-d>
 
 
-nnoremap <c-k> H
-nnoremap <c-j> L
-nnoremap <c-h> M
+nnoremap <C-k> H
+nnoremap <C-j> L
+nnoremap <C-h> M
 " nnoremap <c-l> :suspend<CR>
 
 
@@ -213,10 +214,10 @@ nnoremap U K
 nnoremap L <nop>
 nnoremap H <nop>
 nnoremap M J
-noremap <s-k> {
-noremap <s-j> }
-noremap <s-h> ^
-noremap <s-l> $
+noremap <S-k> {
+noremap <S-j> }
+noremap <S-h> ^
+noremap <S-l> $
 " nnoremap H M
 " nnoremap K H
 " nnoremap J L
@@ -230,15 +231,15 @@ noremap <s-l> $
 " VSCODEVIM 지원 안함
 " inoremap <c-a> <HOME>
 " inoremap <c-d> <End>
-inoremap <c-w> <ESC><right>wi
-inoremap <c-b> <ESC>bi
-inoremap <c-f> <Del>
-inoremap <c-c> <ESC><c-e>a
-inoremap <c-x> <ESC><c-y>a
-inoremap <c-p> <ESC>pa
-inoremap <c-p> <ESC>pa
+inoremap <C-w> <ESC><right>wi
+inoremap <C-b> <ESC>bi
+inoremap <C-f> <Del>
+inoremap <C-c> <ESC><c-e>a
+inoremap <C-x> <ESC><c-y>a
+inoremap <C-p> <ESC>pa
+inoremap <C-p> <ESC>pa
 inoremap <C-o> <ESC>o
-inoremap <c-i> <ESC>O
+inoremap <C-i> <ESC>O
 
 
 " bookmark
@@ -253,6 +254,6 @@ vnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@#######
 " vnoremap ' <ESC>:noh<CR>
 nnoremap & '
 vnoremap & '
-noremap <c-]> q
+noremap <C-]> q
 
 
