@@ -84,6 +84,10 @@ hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Beyond Compare"))
 hs.hotkey.bind({"option", "control"}, "P", appLaunchOrFocus("Activity Monitor"))
 
 
+hs.hotkey.bind({"option", "control"}, "6", appLaunchOrFocus("GrowCastle"))
+
+
+
 
 function setVolumeZero()
     hs.audiodevice.defaultOutputDevice():setVolume(0)
