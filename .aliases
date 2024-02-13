@@ -1609,6 +1609,15 @@ git update-index --really-refresh
 # git status -s | awk -F ' ' '{print $2}' | xargs git update-index --really-refresh
 }
 
+function gitsvnfetchall() {
+    branches=( $(git config --local --list | grep "^svn-remote\..*\.url=.*" | awk -F '.' '{ print $2 }' | sort -u) )
+    for branch in "${branches[@]}"; do
+        echo "fetch branch : \"$branch\""
+        git svn fetch "$branch"
+    done
+    echo "done"
+}
+
 function gsvnup() {
     if [ "$(git config --list | grep svn)" = "" ]; then
         return
