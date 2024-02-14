@@ -1635,7 +1635,12 @@ function gitsvnfetchall() {
         echo "fetch branch : \"$branch\""
         git svn fetch "$branch"
     done
+
+    echo ""
     echo "done"
+    echo ""
+    echo "you can execute the command"
+    echo "git svn rebase"
 }
 
 function gsvnup() {
