@@ -1478,13 +1478,24 @@ function gl() {
 }
 
 function glr() {
-    remote_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ "$remote_branch" = "HEAD" ]]; then
+    local remote_branch="$(git rev-parse --abbrev-ref HEAD)"
+    if [[ "${remote_branch}" = "HEAD" ]]; then
         echo "failed to get remote branch name"
         exit 1
     fi
+
+    local opts=""
+    local remotes="origin"
+    if [[ "${1:0:1}" = "-" ]]; then
+        opts="$@"
+    else
+        for arg in "${@:2}"; do
+            opts+=("$arg")
+        done
+        remotes="$1"
+    fi
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
-    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ remotes/origin/$(remote_branch)
+    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $opts "remotes/${remotes}/${remote_branch}"
 }
 
 
