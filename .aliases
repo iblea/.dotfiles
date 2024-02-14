@@ -1477,6 +1477,9 @@ function gl() {
     git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
 }
 
+# glr
+# glr <option1> <option2>
+# glr <option1> <option2> ... <remote name - ex ) origin>
 function glr() {
     local remote_branch="$(git rev-parse --abbrev-ref HEAD)"
     if [[ "${remote_branch}" = "HEAD" ]]; then
@@ -1485,14 +1488,20 @@ function glr() {
     fi
 
     local opts=""
-    local remotes="origin"
-    if [[ "${1:0:1}" = "-" ]]; then
-        opts="$@"
+    local remotes=""
+    if [ $# -eq 0 ]; then
+        remotes="origin"
     else
-        for arg in "${@:2}"; do
-            opts+=("$arg")
-        done
-        remotes="$1"
+        remotes="${@:${#}:1}"
+        if [[ "${remotes:0:1}" = "-" ]]; then
+            opts=( $@ )
+            remotes="origin"
+        else
+            # $@ 에서 두 번째 인자부터 끝까지 배열로 저장
+            # opts=(${@:2:${#}-1})
+            # $@ 에서 첫 번째 인자부터 끝-1 까지 배열로 저장
+            opts=(${@:1:${#}-1})
+        fi
     fi
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
     git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $opts "remotes/${remotes}/${remote_branch}"
