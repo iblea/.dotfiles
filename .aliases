@@ -61,9 +61,9 @@ alias wf='ls -CF'
 alias la='ls -A'
 alias l='ls -CF'
 alias j='ls -CF'
-alias psf='ps -aef'
+alias psa='ps -aef'
 
-function psg() {
+function psf() {
     process_name="$@"
     ps -aef | head -n1
     ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
