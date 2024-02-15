@@ -172,6 +172,10 @@ vnoremap <Leader>v <C-W>=
 " nnoremap <Leader>u :bp<CR>
 " nnoremap <Leader>i :bn<CR>
 
+nnoremap <C-d> 15<C-e>
+nnoremap <C-a> 15<C-y>
+vnoremap <C-d> 15<C-e>j
+vnoremap <C-a> 15<C-y>k
 
 nnoremap <C-g> <C-f>
 nnoremap <C-f> <C-y>
@@ -190,11 +194,6 @@ vmap <Tab>w %
 vmap <Tab>e $
 vmap <Tab>r 0
 vmap <Tab>3 $h
-
-nnoremap <C-d> 15<C-e>
-nnoremap <C-a> 15<C-y>
-vnoremap <C-d> 15<C-e>j
-vnoremap <C-a> 15<C-y>k
 
 noremap <C-x> <nop>
 
