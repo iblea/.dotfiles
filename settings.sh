@@ -53,22 +53,24 @@ ln -s $HOME/$SETTINGS_DIR/.envpath
 ln -s $HOME/$SETTINGS_DIR/.aliases
 
 # karabiner
-complex_path=karabiner/assets/complex_modifications
-if [ -d $HOME/.config/$complex_path ]; then
-	rm -rf $HOME/.config/$complex_path
-fi
-if [ -d $HOME/.config ]; then
-	ln -s $HOME/$SETTINGS_DIR/$complex_path  $HOME/.config/$complex_path
-else
-	echo "no directory $HOME/.config"
+if [[ "$(uname -s)" = "Darwin" ]]; then
+	complex_path=karabiner/assets/complex_modifications
+	if [ -d $HOME/.config/$complex_path ]; then
+		rm -rf $HOME/.config/$complex_path
+	fi
+	if [ -d $HOME/.config ]; then
+		ln -s $HOME/$SETTINGS_DIR/$complex_path  $HOME/.config/$complex_path
+	else
+		echo "no directory $HOME/.config"
+	fi
 fi
 
 
 # bcomp (beyond compare command)
-if [ -d "/mnt/c/Program Files/" ]; then
+if [ -n "$(uname -r | grep 'WSL')" ]; then
 	# wsl
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
-elif [ -d "/Applications/" ]; then
+elif [[ "$(uname -s)" = "Darwin" ]]; then
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
 else
 	ln -s $HOME/$SETTINGS_DIR/bcomp/.remotebcomp.sh $HOME/.bcomp.sh
@@ -82,8 +84,10 @@ fi
 
 
 # hammerspoon
-# ln -s $HOME/.dotfiles/.hammerspoon $HOME/.hammerspoon
-# ln -s $HOME/$SETTINGS_DIR/.hammerspoon $HOME/.hammerspoon
+if [[ "$(uname -s)" = "Darwin" ]]; then
+	ln -s $HOME/.dotfiles/.hammerspoon $HOME/.hammerspoon
+	ln -s $HOME/$SETTINGS_DIR/.hammerspoon $HOME/.hammerspoon
+fi
 
 
 

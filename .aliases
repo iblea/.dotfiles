@@ -98,7 +98,7 @@ fi
 # =======================================================================
 
 # wsl command
-if [ -d /mnt/c/Users/ ]; then
+if [ -n "$(uname -r | grep 'WSL')" ]; then
     if [ "$(command -v code)" = "" ]; then
         local codepath="/mnt/c/jvscode/Code.exe"
         if [ -f $codepath ] && [ ! -f $HOME/.local/.bin/code ]; then
@@ -149,7 +149,7 @@ if [ -d /mnt/c/Users/ ]; then
 
     [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
 # mac command
-elif [ -d /Users/ ]; then
+elif [[ "$(uname -s)" = "Darwin" ]]; then
     # alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
     export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     # alias diffb='~/.bcomp'
