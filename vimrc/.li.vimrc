@@ -34,7 +34,10 @@ if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/v
     let g:airline#extensions#tabline#left_sep = ' '
     let g:airline#extensions#tabline#left_alt_sep = '|'
 
-    let g:airline_theme='luna'
+    " let g:airline_theme='luna'
+    " let g:airline_theme='violet'
+    " let g:airline_theme='base16_monokai'
+    let g:airline_theme='onedark'
     let g:svnj_warn_branch_log=0
     "let g:airline_highlighting_cache=1
 
