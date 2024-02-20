@@ -6,21 +6,52 @@ SCRIPT_PATH=$(dirname $(realpath $0))
 
 cd $HOME
 
+settings_full_dir=""
+fixed_home=""
+home_last=$(echo "${HOME:${#HOME}-1:1}")
+
+if [ $? -ne 0 ]; then
+	echo "Error: HOME is not set"
+	echo "home evn : '$HOME'"
+	exit 1
+fi
+
+if [ "$home_last" != "/" ]; then
+	settings_full_dir="${HOME}/${SETTINGS_DIR}"
+	fixed_home="$HOME"
+else
+	settings_full_dir="${HOME}${SETTINGS_DIR}"
+	fixed_home="${HOME:0:${#HOME}-1}"
+	if [ $? -ne 0 ]; then
+		echo "Error: HOME is not set"
+		echo "home evn : '$HOME'"
+		exit 1
+	fi
+fi
+
+
+echo "settings_full_dir: $settings_full_dir"
+
+if [ -z "$settings_full_dir" ]; then
+	echo "Error: settings_full_dir is not set"
+	exit 1
+fi
+
 
 # zsh
-if [ ! -d $HOME/.zsh ]; then
-	mkdir $HOME/.zsh/
+if [ ! -d $fixed_home/.zsh ]; then
+	mkdir $fixed_home/.zsh/
 fi
-ln -s $HOME/$SETTINGS_DIR/.zshrc
-ln -s $HOME/$SETTINGS_DIR/.zsh/.p10k.zsh $HOME/.zsh/.p10k.zsh
+ln -s $settings_full_dir/.zshrc
+ln -s $settings_full_dir/.zsh/.p10k.zsh $fixed_home/.zsh/.p10k.zsh
 
 # bash
-ln -s $HOME/$SETTINGS_DIR/.bashrc
+ln -s $settings_full_dir/.bashrc
 
 
 # vimrc
-ln -s $HOME/$SETTINGS_DIR/vimrc/.vimrc
-cd $HOME/$SETTINGS_DIR
+ln -s $settings_full_dir/vimrc/.vimrc
+cd $settings_full_dir
 if [ -d ./.vim/ ]; then
 	rm -rf ./.vim/
 fi
@@ -31,13 +62,13 @@ fi
 # tar -zxvf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
 # cd $HOME
-# ln -s $HOME/$SETTINGS_DIR/.vim
+# ln -s $settings_full_dir/.vim
 
-if [ ! -d $HOME/.vim ]; then
-	mkdir $HOME/.vim/
+if [ ! -d $fixed_home/.vim ]; then
+	mkdir $fixed_home/.vim/
 fi
 
-if [ ! -f $HOME/.vim/autoload/plug.vim ]; then
+if [ ! -f $fixed_home/.vim/autoload/plug.vim ]; then
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
@@ -46,22 +77,24 @@ echo "Please open vim and :PlugInstall first"
 
 
 # envpath
-ln -s $HOME/$SETTINGS_DIR/.envpath
+cd $HOME
+ln -s $settings_full_dir/.envpath
 
 
 # alias
-ln -s $HOME/$SETTINGS_DIR/.aliases
+ln -s $settings_full_dir/.aliases
+
 
 # karabiner
 if [[ "$(uname -s)" = "Darwin" ]]; then
 	complex_path=karabiner/assets/complex_modifications
-	if [ -d $HOME/.config/$complex_path ]; then
-		rm -rf $HOME/.config/$complex_path
+	if [ -d $fixed_home/.config/$complex_path ]; then
+		rm -rf $fixed_home/.config/$complex_path
 	fi
-	if [ -d $HOME/.config ]; then
-		ln -s $HOME/$SETTINGS_DIR/$complex_path  $HOME/.config/$complex_path
+	if [ -d $fixed_home/.config ]; then
+		ln -s $settings_full_dir/$complex_path  $fixed_home/.config/$complex_path
 	else
-		echo "no directory $HOME/.config"
+		echo "no directory $fixed_home/.config"
 	fi
 fi
 
@@ -69,39 +102,39 @@ fi
 # bcomp (beyond compare command)
 if [ -n "$(uname -r | grep 'WSL')" ]; then
 	# wsl
-	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
+	ln -s $settings_full_dir/bcomp/.localbcomp.sh $fixed_home/.bcomp.sh
 elif [[ "$(uname -s)" = "Darwin" ]]; then
-	ln -s $HOME/$SETTINGS_DIR/bcomp/.localbcomp.sh $HOME/.bcomp.sh
+	ln -s $settings_full_dir/bcomp/.localbcomp.sh $fixed_home/.bcomp.sh
 else
-	ln -s $HOME/$SETTINGS_DIR/bcomp/.remotebcomp.sh $HOME/.bcomp.sh
+	ln -s $settings_full_dir/bcomp/.remotebcomp.sh $fixed_home/.bcomp.sh
 fi
 
 # wezterm
 if [ -n "$(command -v wezterm)" ]; then
-	ln -s $HOME/.dotfiles/wezterm_config/wezterm $HOME/.config
-	ln -s $HOME/$SETTINGS_DIR/wezterm_config/wezterm/wezterm.lua $HOME/.wezterm.lua
+	ln -s $fixed_home/.dotfiles/wezterm_config/wezterm $fixed_home/.config
+	ln -s $settings_full_dir/wezterm_config/wezterm/wezterm.lua $fixed_home/.wezterm.lua
 fi
 
 
 # hammerspoon
 if [[ "$(uname -s)" = "Darwin" ]]; then
-	ln -s $HOME/.dotfiles/.hammerspoon $HOME/.hammerspoon
-	ln -s $HOME/$SETTINGS_DIR/.hammerspoon $HOME/.hammerspoon
+	ln -s $fixed_home/.dotfiles/.hammerspoon $fixed_home/.hammerspoon
+	ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
 fi
 
 
 
 # gdbinit
-# ln -s $HOME/$SETTINGS_DIR/.gdbinit
+# ln -s $settings_full_dir/.gdbinit
 
 # only linux workspace
 # if [ "$1" == "linux" ]; then
-# 	ln -s $HOME/$SETTINGS_DIR/.alias_waf
+# 	ln -s $settings_full_dir/.alias_waf
 # fi
 
 
 # google_drive linking
 # google drive linking
 # gmail="test@gmail.com"
-# ln -s "$HOME/Library/CloudStorage/GoogleDrive-$(gmail)/내 드라이브" "GoogleDrive"
+# ln -s "$fixed_home/Library/CloudStorage/GoogleDrive-$(gmail)/내 드라이브" "GoogleDrive"
 
