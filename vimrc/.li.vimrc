@@ -234,7 +234,9 @@ endfun
 
 
 set bg=dark
-if isdirectory($HOME."/.vim/plugged/vim-github-theme")
+if isdirectory($HOME."/.vim/plugged/vim-monokai")
+    colorscheme monokai
+elseif isdirectory($HOME."/.vim/plugged/vim-github-theme")
     colorscheme github_dark
     " colorscheme default
 else
