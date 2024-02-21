@@ -1074,6 +1074,10 @@
 	</dict>
 	<key>Default Bookmark Guid</key>
 	<string>CD914813-5BD4-41FD-96E2-FC0801CAAC32</string>
+	<key>DimBackgroundWindows</key>
+	<false/>
+	<key>DimOnlyText</key>
+	<false/>
 	<key>GlobalKeyMap</key>
 	<dict>
 		<key>0x19-0x60000-0x0</key>
@@ -1583,8 +1587,6 @@
 				<key>Red Component</key>
 				<real>0.0</real>
 			</dict>
-			<key>Background Image Location</key>
-			<string>/Users/jdh/.dotfiles/images/numpy.png</string>
 			<key>Background Image Mode</key>
 			<integer>3</integer>
 			<key>Badge Color</key>
@@ -1601,11 +1603,13 @@
 				<real>1</real>
 			</dict>
 			<key>Blend</key>
-			<real>0.11826568161231883</real>
+			<real>0.1210354393115942</real>
 			<key>Blinking Cursor</key>
 			<false/>
 			<key>Blur</key>
 			<false/>
+			<key>Blur Radius</key>
+			<real>0.10000000000000001</real>
 			<key>Bold Color</key>
 			<dict>
 				<key>Alpha Component</key>
@@ -1695,6 +1699,8 @@
 			</dict>
 			<key>Guid</key>
 			<string>CD914813-5BD4-41FD-96E2-FC0801CAAC32</string>
+			<key>Hide After Opening</key>
+			<false/>
 			<key>Horizontal Spacing</key>
 			<real>1</real>
 			<key>Idle Code</key>
@@ -2012,8 +2018,14 @@
 			<true/>
 			<key>Normal Font</key>
 			<string>WindowsCommandPromptNF-Regular 19</string>
+			<key>Only The Default BG Color Uses Transparency</key>
+			<false/>
+			<key>Open Toolbelt</key>
+			<false/>
 			<key>Option Key Sends</key>
 			<integer>0</integer>
+			<key>Prevent Opening in a Tab</key>
+			<false/>
 			<key>Prompt Before Closing 2</key>
 			<false/>
 			<key>Right Option Key Sends</key>
@@ -2226,7 +2238,7 @@
 			<key>Thin Strokes</key>
 			<integer>3</integer>
 			<key>Transparency</key>
-			<real>0.0</real>
+			<real>0.29606050531914896</real>
 			<key>Triggers</key>
 			<array>
 				<dict>
@@ -2260,6 +2272,10 @@
 			<false/>
 			<key>Use Bright Bold</key>
 			<true/>
+			<key>Use Custom Tab Title</key>
+			<false/>
+			<key>Use Custom Window Title</key>
+			<false/>
 			<key>Use Italic Font</key>
 			<false/>
 			<key>Use Non-ASCII Font</key>
@@ -2286,6 +2302,8 @@
 	<false/>
 	<key>OpenTmuxWindowsIn</key>
 	<integer>0</integer>
+	<key>PerPaneBackgroundImage</key>
+	<false/>
 	<key>PointerActions</key>
 	<dict>
 		<key>Button,1,1,,</key>
@@ -2330,6 +2348,8 @@
 	<key>SeparateStatusBarsPerPane</key>
 	<false/>
 	<key>SeparateWindowTitlePerTab</key>
+	<true/>
+	<key>ShowPaneTitles</key>
 	<true/>
 	<key>SoundForEsc</key>
 	<false/>
