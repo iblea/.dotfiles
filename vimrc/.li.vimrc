@@ -236,6 +236,7 @@ endfun
 set bg=dark
 if isdirectory($HOME."/.vim/plugged/vim-monokai")
     colorscheme monokai
+    hi Normal ctermfg=231 guifg=#f8f8f2
 elseif isdirectory($HOME."/.vim/plugged/vim-github-theme")
     colorscheme github_dark
     " colorscheme default
@@ -247,7 +248,9 @@ endif
 hi! Search term=reverse
 " hi! Normal cterm=NONE ctermfg=0 ctermbg=184 gui=NONE guifg=#000000 guibg=#d7d700
 " Make the background transparent
-hi Normal guibg=NONE ctermbg=NONE
+" hi Normal cleared
+" hi Normal ctermfg=252 ctermbg=NONE guifg=#C9D1D9 guibg=#0D1117
+hi Normal ctermfg=252 ctermbg=NONE guifg=#C9D1D9 guibg=#000000
 hi clear LineNr 
 " hi LineNr guibg=NONE ctermbg=NONE
 
