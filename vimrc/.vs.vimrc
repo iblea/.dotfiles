@@ -89,7 +89,7 @@ inoremap <C-j> <DOWN>
 inoremap <C-k> <UP>
 inoremap <C-l> <RIGHT>
 inoremap <C-h> <LEFT>
-inoremap <C-n> <BS>
+" inoremap <C-n> <BS>
 "inoremap <C-f> <C-P>
 xnoremap <C-j> <DOWN>
 xnoremap <C-k> <UP>
@@ -111,7 +111,7 @@ cnoremap <C-k> <UP>
 cnoremap <C-l> <RIGHT>
 cnoremap <C-h> <LEFT>
 cnoremap <C-o> <C-n>
-cnoremap <C-n> <BS>
+" cnoremap <C-n> <BS>
 
 nnoremap ; :
 vnoremap ; :
@@ -232,13 +232,16 @@ noremap <S-l> $
 " inoremap <c-d> <End>
 inoremap <C-w> <ESC><right>wi
 inoremap <C-b> <ESC>bi
-inoremap <C-f> <Del>
-inoremap <C-c> <ESC><c-e>a
-inoremap <C-x> <ESC><c-y>a
+inoremap <C-e> <ESC><right>ea
+inoremap <C-t> <ESC>gei
+inoremap <C-f> <ESC><c-e>a
+inoremap <C-y> <ESC><c-y>a
 inoremap <C-p> <ESC>pa
 inoremap <C-p> <ESC>pa
 inoremap <C-o> <ESC>o
 inoremap <C-i> <ESC>O
+inoremap <C-x> <Del>
+inoremap <C-c> <BS>
 
 
 " bookmark
