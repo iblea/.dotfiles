@@ -103,15 +103,15 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
     fi
 
     # windows + explorer
-    function winer() {
+    function epl() {
         if [[ "$@" = "" ]]; then
             /mnt/c/WINDOWS/explorer.exe .
             return
         fi
         if [ -d "$@" ]; then
-            cd "$@"
+            builtin cd "$@"
             /mnt/c/WINDOWS/explorer.exe .
-            cd - > /dev/null
+            builtin cd - > /dev/null
             return
         fi
         /mnt/c/WINDOWS/explorer.exe .
@@ -142,7 +142,7 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
     alias curlq="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
     alias curls="/mnt/c/Users/ghkd0/Videos/.rrr_testcurl.sh"
 
-    [[ "$TERM_PROGRAM" != "vscode" ]] && cd $HOME
+    [[ "$TERM_PROGRAM" != "vscode" ]] && (builtin cd $HOME)
 # mac command
 elif [[ "$(uname -s)" = "Darwin" ]]; then
     # alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
@@ -374,9 +374,9 @@ if [ "$(command -v fzf)" != "" ]; then
                 echo "$@ not directory"
                 return
             fi
-            cd $@
+            builtin cd $@
             fzf --height 40% --layout=reverse
-            cd - > /dev/null
+            builtin cd - > /dev/null
             return
         fi
         fzf --height 40% --layout=reverse
@@ -447,7 +447,7 @@ if [ "$(command -v fzf)" != "" ]; then
         if [ $# -eq 1 ]; then
             if [ -d "$@" ]; then
                 # 해당 디렉토리로 이동하여 검색
-                cd $@
+                builtin cd $@
             elif [[ "$@" = "-" ]]; then
                 codeopt="--goto"
                 $codepath $codeopt $@
@@ -516,7 +516,7 @@ if [ "$(command -v fzf)" != "" ]; then
         fi
         export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
         # 디렉토리 이동했을 경우 원래 디렉토리로 이동
-        [ $# -eq 1 ] && cd - > /dev/null
+        [ $# -eq 1 ] && builtin cd - > /dev/null
     }
 else
     # no fzf di
@@ -1046,7 +1046,7 @@ function rmdimg() {
     local filename=$(basename "$fullpath")
     local curpwd=$(pwd)
     local filepath=$(dirname $(readlink -e "$fullpath"))
-    cd "$filepath" > /dev/null 2>&1
+    builtin cd "$filepath" > /dev/null 2>&1
     local imgdir="mdresources/dir_${filename}_img"
     local imgrealpath=""
     if [ $# -eq 1 ]; then
@@ -1057,12 +1057,12 @@ function rmdimg() {
 
     if [[ ! -f $filename ]]; then
         echo "file not exist"
-        cd "$curpwd" > /dev/null 2>&1
+        builtin cd "$curpwd" > /dev/null 2>&1
         return
     fi
     if [ ! -d $imgrealpath ]; then
         echo "img dir not exist"
-        cd "$curpwd" > /dev/null 2>&1
+        builtin cd "$curpwd" > /dev/null 2>&1
         return
     fi
 
@@ -1106,7 +1106,7 @@ function rmdimg() {
     fi
 
     echo "remove ${rm_index} files."
-    cd "$curpwd" > /dev/null 2>&1
+    builtin cd "$curpwd" > /dev/null 2>&1
 }
 
 function killdbgprocess() {
@@ -1230,9 +1230,9 @@ function wifind() {
         echo "no blog dir"
         return
     fi
-    cd $blog_dir;
+    builtin cd $blog_dir;
     grep --color=always -rnIH --include="*.md" $@ ./ | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
-    cd - > /dev/null ;
+    builtin cd - > /dev/null ;
 }
 
 function wnfind() {
