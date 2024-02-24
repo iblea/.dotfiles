@@ -1722,6 +1722,9 @@ alias ㅊㅇ='cd'
 alias 퍄='vim'
 alias ㄷ턋='exit'
 alias 야='di'
+alias ㄴ헷='sgpt'
+alias sgptc='sgpt --code'
+alias ㄴ헷ㅊ='sgpt --code'
 
 # td set eth1
 # td 80
