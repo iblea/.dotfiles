@@ -12,6 +12,7 @@ if [ -n "$(command -v java)" ]; then
 	else
 		# custom java home path
 		export JAVA_HOME=""
+		# export JAVA_HOME="/usr/lib/jvm/java-xx-openjdk-axx64"
 	fi
 fi
 
