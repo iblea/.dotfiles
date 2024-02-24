@@ -122,6 +122,17 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 	ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
 fi
 
+if [ -n "$(command -v sgpt)" ]; then
+	SHELL_GPT_DIR=$HOME/.config/shell_gpt
+	if [ ! -d $SHELL_GPT_DIR/ ]; then
+		mkdir -p $SHELL_GPT_DIR/
+	fi
+	if [ ! -f $SHELL_GPT_DIR/.sgptrc ]; then
+		cp -rfp $settings_full_dir/.sgptrc $SHELL_GPT_DIR/.sgptrc
+		echo "Please set openai api key"
+	fi
+fi
+
 
 
 # gdbinit
