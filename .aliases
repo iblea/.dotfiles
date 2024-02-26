@@ -1292,7 +1292,9 @@ function docsh() {
 
 # git alias ==============================
 
-alias git="LANG=en_US.UTF-8 git"
+if [ "$(locale -a | grep 'en_US.UTF-8')" ]; then
+    alias git="LANG=en_US.UTF-8 git"
+fi
 
 alias delspace="sed -i 's/\s\+$//g'"
 alias delspaceall="grep -rlI . | xargs -d '\n' -I{} sed -i 's/\s\+$//g' {}"
@@ -1470,7 +1472,12 @@ function gstmp() {
 
 function gl() {
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
-    LC_ALL=ko_KR.UTF-8 git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+    local AGO_LC_ALL="$LC_ALL"
+    if [ "$(locale -a | grep 'ko_KR.UTF-8')" ]; then
+        export LC_ALL=ko_KR.UTF-8
+    fi
+    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+    export LC_ALL="$AGO_LC_ALL"
 }
 
 # glr
@@ -1499,24 +1506,36 @@ function glr() {
             opts=(${@:1:${#}-1})
         fi
     fi
+    local AGO_LC_ALL="$LC_ALL"
+    if [ "$(locale -a | grep 'ko_KR.UTF-8')" ]; then
+        export LC_ALL=ko_KR.UTF-8
+    fi
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
-    LC_ALL=ko_KR.UTF-8 git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $opts "remotes/${remotes}/${remote_branch}"
+    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $opts "remotes/${remotes}/${remote_branch}"
+    export LC_ALL="$AGO_LC_ALL"
 }
 
 
 
 function gld() {
+    local AGO_LC_ALL="$LC_ALL"
+    if [ "$(locale -a | grep 'ko_KR.UTF-8')" ]; then
+        export LC_ALL=ko_KR.UTF-8
+    fi
+
     if [ $# -eq 0 ]; then
-        LC_ALL=ko_KR.UTF-8 git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ./
+        git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ./
     else
         if [[ "$1" = "/" ]]; then
-            LC_ALL=ko_KR.UTF-8 git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ${@:2}
+            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ${@:2}
         elif [[ "${1:0:1}" = "-" ]]; then
-            LC_ALL=ko_KR.UTF-8 git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ ./
+            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ ./
         else
-            LC_ALL=ko_KR.UTF-8 git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
         fi
     fi
+
+    export LC_ALL="$AGO_LC_ALL"
 }
 
 alias gitsync='git remote update origin --prune'
