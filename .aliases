@@ -1292,8 +1292,10 @@ function docsh() {
 
 # git alias ==============================
 
-if [ "$(locale -a | grep 'en_US.UTF-8')" ]; then
+if [ -n "$(locale -a 2>/dev/null | grep 'en_US.UTF-8')" ]; then
     alias git="LANG=en_US.UTF-8 git"
+elif [ -n "$(locale -a 2>/dev/null | grep 'en_US.utf8')" ]; then
+    alias git="LANG=en_US.utf8 git"
 fi
 
 alias delspace="sed -i 's/\s\+$//g'"
@@ -1473,8 +1475,10 @@ function gstmp() {
 function gl() {
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
     local AGO_LC_ALL="$LC_ALL"
-    if [ "$(locale -a | grep 'ko_KR.UTF-8')" ]; then
+    if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
         export LC_ALL=ko_KR.UTF-8
+    elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+        export LC_ALL=ko_KR.utf8
     fi
     git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
     export LC_ALL="$AGO_LC_ALL"
@@ -1507,8 +1511,10 @@ function glr() {
         fi
     fi
     local AGO_LC_ALL="$LC_ALL"
-    if [ "$(locale -a | grep 'ko_KR.UTF-8')" ]; then
+    if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
         export LC_ALL=ko_KR.UTF-8
+    elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+        export LC_ALL=ko_KR.utf8
     fi
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
     git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $opts "remotes/${remotes}/${remote_branch}"
@@ -1519,8 +1525,10 @@ function glr() {
 
 function gld() {
     local AGO_LC_ALL="$LC_ALL"
-    if [ "$(locale -a | grep 'ko_KR.UTF-8')" ]; then
+    if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
         export LC_ALL=ko_KR.UTF-8
+    elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+        export LC_ALL=ko_KR.utf8
     fi
 
     if [ $# -eq 0 ]; then
@@ -1792,3 +1800,7 @@ function idump()
 
 # alias
 [ -f $HOME/.alias_waf ] && source ~/.alias_waf
+
+
+return 0
+
