@@ -449,8 +449,9 @@ if [ "$(command -v fzf)" != "" ]; then
                 # 해당 디렉토리로 이동하여 검색
                 builtin cd $@
             elif [[ "$@" = "-" ]]; then
+                rm -f /tmp/code-stdin-*
                 codeopt="--goto"
-                $codepath $codeopt $@
+                $codepath $codeopt $@ &
                 return
             else
                 if [ ! -e "$@" ]; then
