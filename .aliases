@@ -1706,6 +1706,15 @@ function grsco()
     echo "$merge_list" | xargs -I {} git reset {}
 }
 
+
+function greverts()
+{
+    revert_list=( "${@}" )
+    for revert_hash in "${revert_list[@]}"; do
+        git revert --no-edit --no-commit "$revert_hash"
+    done
+}
+
 # git status -s . | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
 
 # git note =====================================================================
