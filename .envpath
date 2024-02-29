@@ -1,6 +1,11 @@
 
 # java version
+
+echo -n ""
 if [ -n "$(command -v java)" ]; then
+	java --version 2>/dev/null
+fi
+if [ $? -eq 0 ]; then
 	# Java Paths with java_home
 	if [ -f /usr/libexec/java_home ]; then
 		# java 11
