@@ -3,7 +3,7 @@
 
 echo -n ""
 if [ -n "$(command -v java)" ]; then
-	java --version >/dev/null 2&>1
+	java --version >/dev/null 2>&1
 fi
 if [ $? -eq 0 ]; then
 	if [[ "$(uname -s)" = "Darwin" ]]; then
