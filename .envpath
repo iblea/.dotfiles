@@ -3,17 +3,12 @@
 
 echo -n ""
 if [ -n "$(command -v java)" ]; then
-	java --version 2>/dev/null
+	java --version >/dev/null 2&>1
 fi
 if [ $? -eq 0 ]; then
-	# Java Paths with java_home
-	if [ -f /usr/libexec/java_home ]; then
-		# java 11
-		# export JAVA_HOME=$(/usr/libexec/java_home -v11)
-		# java 14
-		export JAVA_HOME=$(/usr/libexec/java_home -v14)
-		# java 17
-		# export JAVA_HOME=$(/usr/libexec/java_home -v17)
+	if [[ "$(uname -s)" = "Darwin" ]]; then
+		export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+		export JAVA_HOME="$(/usr/libexec/java_home -v17)"
 	else
 		# custom java home path
 		export JAVA_HOME=""
