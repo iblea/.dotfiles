@@ -118,7 +118,6 @@ fi
 
 # hammerspoon
 if [[ "$(uname -s)" = "Darwin" ]]; then
-	ln -s $fixed_home/.dotfiles/.hammerspoon $fixed_home/.hammerspoon
 	ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
 fi
 
