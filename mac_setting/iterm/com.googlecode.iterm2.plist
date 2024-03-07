@@ -2262,6 +2262,8 @@
 					<string>\*\*B00000000000000</string>
 				</dict>
 			</array>
+			<key>Triggers Use Interpolated Strings</key>
+			<false/>
 			<key>Unicode Normalization</key>
 			<integer>1</integer>
 			<key>Unicode Version</key>
@@ -2279,7 +2281,7 @@
 			<key>Use Italic Font</key>
 			<false/>
 			<key>Use Non-ASCII Font</key>
-			<true/>
+			<false/>
 			<key>Vertical Spacing</key>
 			<real>1.2</real>
 			<key>Visual Bell</key>
