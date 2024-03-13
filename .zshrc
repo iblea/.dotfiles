@@ -300,6 +300,11 @@ if ! (declare -f -F "fualias" > /dev/null); then
     fi
 fi
 
+# wgetrc - --no-check-certificate option default
+if [ ! -f $HOME/.wgetrc ]; then
+	echo "check_certificate = off" >> ~/.wgetrc
+fi
+
 
 bindkey -M menuselect '^M' .accept-line
 
