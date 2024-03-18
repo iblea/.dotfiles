@@ -996,43 +996,41 @@ function killvscode() {
     touch kill_vsc_tmp_script.sh
     chmod 755 kill_vsc_tmp_script.sh
     echo "make command"
-    echo -e "#/bin/bash" >> ./kill_vsc_tmp_script.sh
-    echo -e "" >> ./kill_vsc_tmp_script.sh
+    cat << EOF > ./kill_vsc_tmp_script.sh
+#!/bin/bash
 
-    echo -e "echo \"before kill vscode process\"" >> ./kill_vsc_tmp_script.sh
-    echo -e "ps -aef | grep vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "" >> ./kill_vsc_tmp_script.sh
+echo "before kill vscode process"
+ps -aef | grep vscode
 
-    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "pkill -f vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tsleep 1" >> ./kill_vsc_tmp_script.sh
-    echo -e "while true" >> ./kill_vsc_tmp_script.sh
-    echo -e "do" >> ./kill_vsc_tmp_script.sh
-    # local ps_vscode=`ps -ef | grep "vscode" | grep -v --color ".*\sgrep\s.*vscode.*"`
-    echo -e "\tps_vscode=\`ps -ef | grep \"vscode\" | grep -v \".*\sgrep\s.*vscode.*\" | awk -F ' ' '{ print \$2 }' | head -n 1\`" >> ./kill_vsc_tmp_script.sh
-    # if [[ "$ps_vscode" = "" ]]; then
-    echo -e "\tif [ \"\$ps_vscode\" = \"\" ]; then" >> ./kill_vsc_tmp_script.sh
-    echo -e "\t\tbreak" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tfi" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tkill -9 \$ps_vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "done" >> ./kill_vsc_tmp_script.sh
-    echo -e "" >> ./kill_vsc_tmp_script.sh
+pkill -f vscode
+pkill -f vscode
+pkill -f vscode
+pkill -f vscode
+pkill -f vscode
 
-    echo -e "echo \"after kill vscode process\"" >> ./kill_vsc_tmp_script.sh
-    echo -e "ps -aef | grep vscode" >> ./kill_vsc_tmp_script.sh
-    echo -e "" >> ./kill_vsc_tmp_script.sh
+sleep 1
 
-    echo -e "if [ \"\$1\" = \"1\" ]; then" >> ./kill_vsc_tmp_script.sh
-    echo -e "\trm -rf ./kill_vsc_tmp_script.sh" >> ./kill_vsc_tmp_script.sh
-    echo -e "else" >> ./kill_vsc_tmp_script.sh
+while true
+do
+	ps_vscode=\$(ps -ef | grep "vscode" | grep -v ".*\sgrep\s.*vscode.*" | awk -F ' ' '{ print $2 }' | head -n 1)
+	if [ -z "\$ps_vscode" ]; then
+		break
+	fi
+	kill -9 \$ps_vscode
+done
 
-    echo -e "\tsleep 2" >> ./kill_vsc_tmp_script.sh
-    echo -e "\tnohup /bin/bash ./kill_vsc_tmp_script.sh 1 1>/dev/null 2>&1 &" >> ./kill_vsc_tmp_script.sh
-    echo -e "fi" >> ./kill_vsc_tmp_script.sh
+echo "after kill vscode process"
+ps -aef | grep vscode
 
+if [ "\$1" = "1" ]; then
+	rm -rf ./kill_vsc_tmp_script.sh
+else
+	sleep 2
+	nohup /bin/bash ./kill_vsc_tmp_script.sh 1 1>/dev/null 2>&1 &
+fi
+
+EOF
+    return
 
     echo "execute this file"
     nohup /bin/bash ./kill_vsc_tmp_script.sh 1>/dev/null 2>&1 &
