@@ -485,16 +485,20 @@
     # (( VCS_STATUS_NUM_STAGED     )) && res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
     if (( VCS_STATUS_NUM_STAGED )); then
       res+=" ${modified}+${VCS_STATUS_NUM_STAGED}"
-      if (( VCS_STATUS_NUM_STAGED <= 100 )); then
+      if (( VCS_STATUS_NUM_STAGED <= 30 )); then
         res+="($(git diff --cached --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'))"
+      else
+        res+="(...)"
       fi
     fi
     # !42 if have unstaged changes.
     # (( VCS_STATUS_NUM_UNSTAGED   )) && res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
     if (( VCS_STATUS_NUM_UNSTAGED )); then
       res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
-      if (( VCS_STATUS_NUM_UNSTAGED <= 100 )); then
+      if (( VCS_STATUS_NUM_UNSTAGED <= 30 )); then
         res+="($(git diff --numstat  | awk '{ plus+=$1; minus+=$2; } END { sum = plus + minus; printf sum; }'))"
+      else
+        res+="(...)"
       fi
     fi
     # (( VCS_STATUS_NUM_UNSTAGED   )) && res+=" ${modified}!${VCS_STATUS_NUM_UNSTAGED}"
