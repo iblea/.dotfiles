@@ -608,8 +608,9 @@ else
                 echo "\"$@\" is directory (so skip)"
                 return
             elif [[ "$@" = "-" ]]; then
+                rm -f /tmp/code-stdin-*
                 codeopt="--goto"
-                $codepath $codeopt $@
+                $codepath $codeopt $@ &
                 return
             else
                 if [ ! -e "$@" ]; then
