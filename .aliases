@@ -1323,7 +1323,7 @@ if [ ! -f ~/.gitconfig ]; then
     git config --global push.default current
     git config --global pull.rebase true
     git config --global rerere.enabled true
-    git config --global column.ui auto
+    git config --global column.ui never
     git config --global branch.sort -committerdate
 
     # signed commit
