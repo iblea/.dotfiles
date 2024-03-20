@@ -392,7 +392,7 @@ if [ "$(command -v fzf)" != "" ]; then
         local codeopt=""
         [ "$(command -v code)" != "" ] && codepath=code
         [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
-        [ "$(command -v cursor)" != "" ] && codepath=cursor
+        # [ "$(command -v cursor)" != "" ] && codepath=cursor
         local WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
         local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
@@ -528,7 +528,7 @@ else
         local codeopt=""
         [ "$(command -v code)" != "" ] && codepath=code
         [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
-        [ "$(command -v cursor)" != "" ] && codepath=cursor
+        # [ "$(command -v cursor)" != "" ] && codepath=cursor
         # local FZF_BIN_PATH=$(/bin/which fzf)
         # argument 가 2개 이상일 경우
         # if [ $# -ge 2 ]; then
