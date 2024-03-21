@@ -1222,12 +1222,12 @@ function splitlog() {
 # wiki alias =============================
 
 alias dotfiles='cd $HOME/.dotfiles'
-alias jtodo='di $HOME/jdh9232.github.io/wiki/jtodo.md'
-function gowiki() { cd ~/jdh9232.github.io/wiki/$@; }
-function gomantis() { cd ~/jdh9232.github.io/wiki/issue/issue_note/mantis/$@; }
-# alias wifind='fualias() { find ~/jdh9232.github.io/wiki/ -name "*.md" -type f -exec grep --color=always -Hn $@ {} \; | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p" }; fuinit'
+alias jtodo='di $HOME/jfhib.github.io/wiki/jtodo.md'
+function gowiki() { cd ~/jfhib.github.io/wiki/$@; }
+function gomantis() { cd ~/jfhib.github.io/wiki/issue/issue_note/mantis/$@; }
+# alias wifind='fualias() { find ~/jfhib.github.io/wiki/ -name "*.md" -type f -exec grep --color=always -Hn $@ {} \; | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p" }; fuinit'
 function wifind() {
-    local blog_dir=~/jdh9232.github.io/wiki/
+    local blog_dir=~/jfhib.github.io/wiki/
     if [ ! -d $blog_dir ]; then
         echo "no blog dir"
         return
@@ -1238,7 +1238,7 @@ function wifind() {
 }
 
 function wnfind() {
-    local blog_dir=~/jdh9232.github.io/wiki/
+    local blog_dir=~/jfhib.github.io/wiki/
     test -d $blog_dir && find $blog_dir -type f -name "*.md" | grep "$@"
 }
 

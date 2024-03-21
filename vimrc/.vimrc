@@ -25,7 +25,7 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	Plug 'ku1ik/vim-monokai'
 	
 	" Plug 'akiicat/vim-github-theme'
-	Plug 'jdh9232/vim-github-theme'
+	Plug 'jfhib/vim-github-theme'
 	" only use neovim
 	" Plug 'projekt0n/github-nvim-theme'
 
