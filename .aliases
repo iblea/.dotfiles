@@ -181,9 +181,9 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     function gonote() { cd $HOME/.notepad/$@; }
     function gont() { cd $HOME/.notepad/$@; }
     # go google drive
-    function gogd() { cd "/Users/jdh/GoogleDrive/$@"; }
-    function godrive() { cd "/Users/jdh/GoogleDrive/$@"; }
-    function goicloud() { cd "/Users/jdh/Library/Mobile Documents/com~apple~CloudDocs/$@"; }
+    function gogd() { cd "$HOME/GoogleDrive/$@"; }
+    function godrive() { cd "$HOME/GoogleDrive/$@"; }
+    function goicloud() { cd "$HOME/Library/Mobile Documents/com~apple~CloudDocs/$@"; }
     function goissue() { cd $HOME/issue/$@; }
 
     # ppk to pem
