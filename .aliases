@@ -179,6 +179,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     function godown() { cd $HOME/Downloads/$@; }
     function godoc() { cd $HOME/Documents/$@; }
     function gonote() { cd $HOME/.notepad/$@; }
+    alias notecode="code $HOME/.notepad/"
     function gont() { cd $HOME/.notepad/$@; }
     # go google drive
     function gogd() { cd "$HOME/GoogleDrive/$@"; }
