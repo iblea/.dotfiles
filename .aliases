@@ -1033,7 +1033,6 @@ else
 fi
 
 EOF
-    return
 
     echo "execute this file"
     nohup /bin/bash ./kill_vsc_tmp_script.sh 1>/dev/null 2>&1 &
