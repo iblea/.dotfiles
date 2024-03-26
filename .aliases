@@ -86,7 +86,7 @@ if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
     export PATH="$PATH:$HOME/.local/.bin"
 fi
 
-if [[ "$(command -v 'code-insiders')" != "" ]]; then
+if [ -n "$(command -v 'code-insiders')" ]; then
     alias code='code-insiders'
 fi
 
@@ -180,6 +180,8 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     function godoc() { cd $HOME/Documents/$@; }
     function gonote() { cd $HOME/.notepad/$@; }
     alias notecode="code $HOME/.notepad/"
+    function notemv() {
+    }
     function gont() { cd $HOME/.notepad/$@; }
     # go google drive
     function gogd() { cd "$HOME/GoogleDrive/$@"; }
@@ -358,7 +360,7 @@ function agrepm() {
 }
 
 # fzfcode
-if [ "$(command -v fzf)" != "" ]; then
+if [ -n "$(command -v fzf)" ]; then
     if (alias fzf >/dev/null 2>&1); then
         unalias fzf
     fi
@@ -393,9 +395,9 @@ if [ "$(command -v fzf)" != "" ]; then
     {
         local codepath=vi
         local codeopt=""
-        [ "$(command -v code)" != "" ] && codepath=code
-        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
-        # [ "$(command -v cursor)" != "" ] && codepath=cursor
+        [ -n "$(command -v code)" ] && codepath=code
+        [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+        # [ -n "$(command -v cursor)" ] && codepath=cursor
         local WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
         local FZF_BIN_PATH=$($WHICH_IS fzf)
         # argument 가 2개 이상일 경우
@@ -476,7 +478,7 @@ if [ "$(command -v fzf)" != "" ]; then
                     fi
                     fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH --height 40% --layout=reverse --preview 'cat {}')
                     # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
-                    if [ "$fzfres" != "" ]; then
+                    if [ -n "$fzfres" ]; then
                         $codepath $codeopt $fzfres
                     fi
                     return
@@ -516,7 +518,7 @@ if [ "$(command -v fzf)" != "" ]; then
         else
             fzfres=$($FZF_BIN_PATH --height 40% --layout=reverse  --preview 'cat {}')
         fi
-        if [ "$fzfres" != "" ]; then
+        if [ -n "$fzfres" ]; then
             $codepath $codeopt $fzfres
         fi
         export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
@@ -529,9 +531,9 @@ else
     {
         local codepath=vi
         local codeopt=""
-        [ "$(command -v code)" != "" ] && codepath=code
-        [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders
-        # [ "$(command -v cursor)" != "" ] && codepath=cursor
+        [ -n "$(command -v code)" ] && codepath=code
+        [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+        # [ -n "$(command -v cursor)" ] && codepath=cursor
         # local FZF_BIN_PATH=$(/bin/which fzf)
         # argument 가 2개 이상일 경우
         # if [ $# -ge 2 ]; then
@@ -642,8 +644,8 @@ fi
 function didiff() {
     local codepath=vimdiff
     local codeopt=""
-    [ "$(command -v code)" != "" ] && codepath=code && codeopt="--diff"
-    [ "$(command -v 'code-insiders')" != "" ] && codepath=code-insiders && codeopt="--diff"
+    [ -n "$(command -v code)" ] && codepath=code && codeopt="--diff"
+    [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders && codeopt="--diff"
     if [ $# -ne 2 ]; then
         echo "wrong argument"
         return;
@@ -777,7 +779,8 @@ function findex() {
     if [[ "$curpwd" != "/" ]]; then
         curpwd="${curpwd}/"
     fi
-    keyword="${@[$#]}"
+    # argument get last index value
+    keyword="${@:${#}:1}"
     # local ext="\($1"
     # fd - no \ char
     local ext="($1"
@@ -814,7 +817,7 @@ function findexa() {
     if [[ "$curpwd" != "/" ]]; then
         curpwd="${curpwd}/"
     fi
-    keyword="${@[$#]}"
+    keyword="${@:${#}:1}"
     # local ext="\($1"
     # fd - no \ char
     local ext="($1"
@@ -1054,17 +1057,17 @@ function rmdimg() {
     local imgdir="mdresources/dir_${filename}_img"
     local imgrealpath=""
     if [ $# -eq 1 ]; then
-        imgrealpath=./$imgdir
+        imgrealpath="./${imgdir}"
     else
-        imgrealpath=$2/$imgdir
+        imgrealpath="$2/${imgdir}"
     fi
 
-    if [[ ! -f $filename ]]; then
+    if [ ! -f "$filename" ]; then
         echo "file not exist"
         builtin cd "$curpwd" > /dev/null 2>&1
         return
     fi
-    if [ ! -d $imgrealpath ]; then
+    if [ ! -d "$imgrealpath" ]; then
         echo "img dir not exist"
         builtin cd "$curpwd" > /dev/null 2>&1
         return
@@ -1072,7 +1075,7 @@ function rmdimg() {
 
     # get file list in imgdir
     # local imgfiles=$(ls $imgrealpath/*.{png,jpg,gif,jpeg,webp})
-    local imgfiles=$(ls $imgrealpath)
+    local imgfiles=$(ls "$imgrealpath")
     filearray=(`echo $imgfiles | tr " " "\n"`)
     # echo "${filearray[@]}"
 
@@ -1098,15 +1101,15 @@ function rmdimg() {
     local rm_index=0
     for imgfile in "${filearray[@]}"
     do
-        if [[ "$imgfile" != "" ]]; then
-            rm -f $imgrealpath/$imgfile
+        if [ -n "$imgfile" ]; then
+            rm -f "$imgrealpath/$imgfile"
             rm_index=$(expr $rm_index + 1)
         fi
     done
 
     if test -n "$(find "$imgrealpath" -maxdepth 0 -type d -empty)" ; then
-        echo "directory empty, remove it ($imgrealpath)"
-        rmdir $imgrealpath
+        echo "directory empty, remove it [${imgrealpath}]"
+        rmdir "${imgrealpath}"
     fi
 
     echo "remove ${rm_index} files."
@@ -1137,7 +1140,7 @@ function killdbgprocess() {
 
 AGO_SFTP_DEBUG_PROCESS=""
 function gdbs() {
-    [[ "$(pidof gdbserver)" != "" ]] && pkill -f gdbserver
+    [ -n "$(pidof gdbserver)" ] && pkill -f gdbserver
     if [[ "$@" != "" ]]; then
         if [[ "$@" = "httpgw" ]]; then
             . ../.vscode/debugger.sh httpgw 0
@@ -1146,7 +1149,7 @@ function gdbs() {
         gdbserver :9091 ./"$@" &
         AGO_SFTP_DEBUG_PROCESS="$@"
     else
-        if [ "$AGO_SFTP_DEBUG_PROCESS" != "" ]; then
+        if [ -n "$AGO_SFTP_DEBUG_PROCESS" ]; then
             if [[ "$AGO_SFTP_DEBUG_PROCESS" = "httpgw" ]]; then
                 . ../.vscode/debugger.sh httpgw 0
                 # source ../.vscode/debugger.sh httpgw 0
@@ -1382,10 +1385,10 @@ fuunalias_alias()
     local alias_name=$1
     local cmd=$2
     local is_cmd=`alias | grep "\<$alias_name\>="`
-    if [[ "$is_cmd" != "" ]]; then
+    if [ -n "$is_cmd" ]; then
         unalias $alias_name
     fi
-    if [[ "$cmd" != "" ]]; then
+    if [ -n "$cmd" ]; then
         alias $alias_name="$cmd"
     fi
 }
