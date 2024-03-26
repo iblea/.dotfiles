@@ -1116,6 +1116,49 @@ function rmdimg() {
     builtin cd "$curpwd" > /dev/null 2>&1
 }
 
+function mvmd() {
+
+    if [ $# -lt 2 ]; then
+        echo "mvmd wrong argument"
+    fi
+
+    dstpath="${@:${#}:1}"
+
+    if [ ! -d "${dstpath}" ]; then
+        echo "no such directory [${dstpath}]"
+        return 1
+    fi
+
+    src_file_count=$(expr ${#} - 1)
+
+    for (( i=1; i <= $src_file_count ; i++ )); do
+        srcpath="${@:${i}:1}"
+        if [ ! -f "${srcpath}" ]; then
+            echo "cannot find file [${srcpath}]"
+            continue
+        fi
+
+        mv "${srcpath}" "${dstpath}"
+        filename=$(basename "${srcpath}")
+        src_dir=$(dirname "${srcpath}")
+
+        mdresources_dir="${src_dir}/mdresources/dir_${filename}_img"
+
+        if [ -d "${mdresources_dir}" ]; then
+            if [ ! -d "${dstpath}/mdresources" ]; then
+                mkdir "${dstpath}/mdresources"
+            fi
+            mv "${mdresources_dir}" "${dstpath}/mdresources"
+        fi
+
+        if test -n "$(find "${src_dir}/mdresources" -maxdepth 0 -type d -empty)" ; then
+            echo "directory empty, remove it [${src_dir}/mdresources]"
+            rmdir "${src_dir}/mdresources"
+        fi
+    done
+}
+
+
 function killdbgprocess() {
     echo "health check process"
     ps -aef | grep health_check
