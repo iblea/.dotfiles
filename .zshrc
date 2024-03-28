@@ -317,3 +317,5 @@ unsetopt menucomplete
 export CLICOLOR=1
 
 
+typeset -g GITSTATUS_NUM_THREADS=8
+
