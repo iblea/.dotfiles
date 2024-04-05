@@ -62,6 +62,11 @@ function psf() {
     process_name="$@"
     ps -aef | head -n1
     ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+    if [ $# -eq 0 ]; then
+        ps -aef
+    else
+        ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+    fi
 }
 
 alias makef='make -j8'
