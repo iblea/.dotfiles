@@ -193,8 +193,6 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     function godoc() { cd $HOME/Documents/$@; }
     function gonote() { cd $HOME/.notepad/$@; }
     alias notecode="code $HOME/.notepad/"
-    function notemv() {
-    }
     function gont() { cd $HOME/.notepad/$@; }
     # go google drive
     function gogd() { cd "$HOME/GoogleDrive/$@"; }
@@ -1044,7 +1042,7 @@ sleep 1
 
 while true
 do
-	ps_vscode=\$(ps -ef | grep "vscode" | grep -v ".*\sgrep\s.*vscode.*" | awk -F ' ' '{ print $2 }' | head -n 1)
+	ps_vscode=\$(ps -ef | grep "vscode" | grep -v ".*\sgrep\s.*vscode.*" | awk -F ' ' '{ print \$2 }' | head -n 1)
 	if [ -z "\$ps_vscode" ]; then
 		break
 	fi
@@ -1055,6 +1053,8 @@ echo "after kill vscode process"
 ps -aef | grep vscode
 
 if [ "\$1" = "1" ]; then
+	curpath=\$(dirname "\$(realpath \$0)")
+	cd "\$curpath"
 	rm -rf ./kill_vsc_tmp_script.sh
 else
 	sleep 2
