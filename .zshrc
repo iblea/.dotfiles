@@ -302,7 +302,7 @@ fi
 
 # wgetrc - --no-check-certificate option default
 if [ ! -f $HOME/.wgetrc ]; then
-	echo "check_certificate = off" >> ~/.wgetrc
+    echo "check_certificate = off" >> ~/.wgetrc
 fi
 
 
