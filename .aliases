@@ -43,7 +43,14 @@ function cd() {
 
     # Get the absolute path of where normal `cd <arg1>` would take us.
     local dir=${${:-"$PWD"/"$1"}:A}
-    echo "$dir"
+
+    if [ -z $(ls -A "$dir") ]; then
+        builtin cd "$@"
+        ls --color=auto -AF
+        echo ""
+        pwd
+        return
+    fi
 
     # List the children of that dir.
     local -a children=( $dir/* )
