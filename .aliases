@@ -44,7 +44,7 @@ function cd() {
     # Get the absolute path of where normal `cd <arg1>` would take us.
     local dir=${${:-"$PWD"/"$1"}:A}
 
-    if [ -z $(ls -A "$dir") ]; then
+    if [ -z "$(ls -A $dir)" ]; then
         builtin cd "$@"
         ls --color=auto -AF
         echo ""
@@ -54,17 +54,42 @@ function cd() {
 
     # List the children of that dir.
     local -a children=( $dir/* )
+    # local -a children=( $(ls -1A $dir) )
 
     if [[ "$1" = ".." ]] || [[ "$1" = "../" ]]; then
         # Keep going up until we find a dir with more than one child.
         while [[ $#dir -gt 1 && $#children -eq 1 ]]; do
             dir=$dir:h
+            if [ -z "$(ls -A $dir)" ]; then
+                break
+            fi
             children=( $dir/* )
         done
+    elif [[ "${1:0:2}" = "./" ]]; then
+        builtin cd "$dir"
+        ls --color=auto -AF
+        echo ""
+        pwd
+        return
     else
+        if [[ "${1:0:2}" = ".." ]]; then
+            fullpath="$1"
+            fullpath="${fullpath//./}"
+            fullpath="${fullpath//\//}"
+            if [ -z "$fullpath" ]; then
+                builtin cd "$dir"
+                ls --color=auto -AF
+                echo ""
+                pwd
+                return
+            fi
+        fi
         # Keep going down as long as we find exactly one child and it's a dir.
         while [[ $#children -eq 1 && -d $children ]]; do
             dir=$children
+            if [ -z "$(ls -A $dir)" ]; then
+                break
+            fi
             children=( $dir/* )
         done
     fi
@@ -162,11 +187,12 @@ fi
 # wsl command
 if [ -n "$(uname -r | grep 'WSL')" ]; then
     if [ "$(command -v code)" = "" ]; then
-        local codepath="/mnt/c/jvscode/Code.exe"
+        codepath="/mnt/c/jvscode/Code.exe"
         if [ -f $codepath ] && [ ! -f $HOME/.local/.bin/code ]; then
             [ ! -d $HOME/.local/.bin/ ] && mkdir -p $HOME/.local/.bin/
             ln -s $codepath $HOME/.local/.bin/code
         fi
+        unset codepath
     fi
 
     # windows + explorer
@@ -1503,7 +1529,7 @@ fi
 # grs -> git restore
 
 
-fuunalias_alias()
+function fuunalias_alias()
 {
     local alias_name=$1
     local cmd=$2
