@@ -1455,6 +1455,7 @@ if [ ! -f ~/.gitconfig ]; then
 
     # git commit-graph write
     git config --global fetch.writeCommitGraph true
+    git config --global core.quotepath false
 
     # git config -global core.untrackedcache true
     # git config -global core.fsmonitor true
