@@ -350,6 +350,25 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     # explorer
     alias epl="open ."
     alias expl="open ."
+
+    function aidi() {
+        $HOME/.dotfiles/aider.sh
+    }
+
+    function aidic() {
+        rm -f $HOME/.config/aider/history.input.md
+    }
+
+    function aidicc() {
+        rm -f $HOME/.config/aider/history.chat.md
+    }
+
+    function aidica() {
+        rm -f $HOME/.config/aider/history.chat.md
+        rm -f $HOME/.config/aider/history.input.md
+    }
+
+
 else
     alias diffb='~/.bcomp.sh'
 fi
