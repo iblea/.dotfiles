@@ -1359,7 +1359,7 @@
 	<array>
 		<dict>
 			<key>ASCII Anti Aliased</key>
-			<false/>
+			<true/>
 			<key>ASCII Ligatures</key>
 			<false/>
 			<key>Ambiguous Double Width</key>
@@ -2017,7 +2017,7 @@
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>MorePerfectDOSVGANF 19</string>
+			<string>MorePerfectDOSVGAOYNF 19</string>
 			<key>Only The Default BG Color Uses Transparency</key>
 			<false/>
 			<key>Open Toolbelt</key>
