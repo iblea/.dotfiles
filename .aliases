@@ -44,7 +44,7 @@ function cd() {
     # Get the absolute path of where normal `cd <arg1>` would take us.
     local dir=${${:-"$PWD"/"$1"}:A}
 
-    if [ -z "$(ls -A $dir)" ]; then
+    if [ -z "$(ls $dir)" ]; then
         builtin cd "$@"
         ls --color=auto -AF
         echo ""
@@ -60,7 +60,7 @@ function cd() {
         # Keep going up until we find a dir with more than one child.
         while [[ $#dir -gt 1 && $#children -eq 1 ]]; do
             dir=$dir:h
-            if [ -z "$(ls -A $dir)" ]; then
+            if [ -z "$(ls $dir)" ]; then
                 break
             fi
             children=( $dir/* )
@@ -87,7 +87,7 @@ function cd() {
         # Keep going down as long as we find exactly one child and it's a dir.
         while [[ $#children -eq 1 && -d $children ]]; do
             dir=$children
-            if [ -z "$(ls -A $dir)" ]; then
+            if [ -z "$(ls $dir)" ]; then
                 break
             fi
             children=( $dir/* )
