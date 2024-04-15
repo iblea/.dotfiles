@@ -1,20 +1,22 @@
 
 # locale settings
-#
-if [[ "$(uname -s)" = "Darwin" ]]; then
 
-	if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+# if wrong LC_ALL, change empty set
+if [ -z $(locale -a 2>/dev/null | grep "$LC_ALL") ]; then
+	unset LC_ALL
+fi
+
+if [[ "$(uname -s)" = "Darwin" ]]; then
+	if [ -n "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
 		export LC_ALL=ko_KR.UTF-8
 		export LANG=ko_KR.UTF-8
-	elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+	elif [ -n "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
 		export LC_ALL=ko_KR.utf8
-		export LANG=ko_KR.UTF-8
+		export LANG=ko_KR.utf8
 	fi
 fi
 
 # java version
-
-echo -n ""
 if [ -n "$(command -v java)" ]; then
 	java --version >/dev/null 2>&1
 fi
