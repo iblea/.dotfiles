@@ -2,8 +2,10 @@
 # locale settings
 
 # if wrong LC_ALL, change empty set
-if [ -z $(locale -a 2>/dev/null | grep "$LC_ALL") ]; then
-	unset LC_ALL
+if [ -n "$LC_ALL" ]; then
+	if [ -z "$(locale -a 2>/dev/null | grep '${LC_ALL}')" ]; then
+		unset LC_ALL
+	fi
 fi
 
 if [[ "$(uname -s)" = "Darwin" ]]; then
