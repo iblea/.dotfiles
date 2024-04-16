@@ -1459,7 +1459,7 @@ function docsh() {
     fi
 }
 
-function conps {
+function docps {
     docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}" $@
 }
 
