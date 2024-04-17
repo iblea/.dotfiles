@@ -126,15 +126,14 @@ fi
 # some more ls aliases
 alias ll='ls -lhF'
 alias lla='ls -alhF'
-alias lf='ls -alhF'
-alias jl='ls -lhF'
-alias af='ls -lhF'
-alias sf='ls -CF'
-alias ef='ls -alhF'
-alias wf='ls -CF'
-alias la='ls -A'
+alias af='ls -CF'
+alias fa='ls -aCF'
+alias sf='ls -1F'
+alias fs='ls -a1'
+alias ef='ls -lhF'
+alias fe='ls -alhF'
+alias la='ls -AF'
 alias l='ls -CF'
-alias j='ls -CF'
 alias psa='ps -aef'
 
 function psf() {
