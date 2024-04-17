@@ -1999,6 +1999,16 @@ function idump()
     $HOME/inetdump
 }
 
+function cputop()
+{
+    top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}'
+}
+
+function cpuproc()
+{
+    grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage "%"}'
+}
+
 # alias
 [ -f $HOME/.alias_waf ] && source ~/.alias_waf
 
