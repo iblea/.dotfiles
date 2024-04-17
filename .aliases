@@ -1999,15 +1999,68 @@ function idump()
     $HOME/inetdump
 }
 
-function cputop()
+function cpuload()
 {
-    top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}'
+    local sleep_time=0.2
+    if [ $# -ge 1 ]; then
+        sleep_time=$1
+    fi
+
+    local loc_u1=""
+    local loc_s1=""
+    local loc_i1=""
+    local loc_u2=""
+    local loc_s2=""
+    local loc_i2=""
+    read loc_u1 loc_s1 loc_i1 <<< $(grep 'cpu ' /proc/stat | awk '{print $2" "$4" "$5}' )
+    sleep $sleep_time
+    read loc_u2 loc_s2 loc_i2 <<< $(grep 'cpu ' /proc/stat | awk '{print $2" "$4" "$5}' )
+    local u=$(echo "scale=4;$loc_u2-$loc_u1" | bc)
+    local s=$(echo "scale=4;$loc_s2-$loc_s1" | bc)
+    local i=$(echo "scale=4;$loc_i2-$loc_i1" | bc)
+    local cpu=$(echo "scale=4;($u+$s)*100/($u+$s+$i)" | bc)
+    echo "${cpu}%"
 }
 
-function cpuproc()
+function cpuload2()
 {
-    grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage "%"}'
+    local sleep_time=0.2
+    if [ $# -ge 1 ]; then
+        sleep_time=$1
+    fi
+
+    # Read /proc/stat file (for first datapoint)
+    local loc_cpu=""
+    local loc_user=""
+    local loc_nice=""
+    local loc_system=""
+    local loc_idle=""
+    local loc_iowait=""
+    local loc_irq=""
+    local loc_softirq=""
+    local loc_steal=""
+    local loc_guest=""
+    read loc_cpu loc_user loc_nice loc_system loc_idle loc_iowait loc_irq loc_softirq loc_steal loc_guest< /proc/stat
+
+    # compute active and total utilizations
+    local cpu_active_prev=$((loc_user+loc_system+loc_nice+loc_softirq+loc_steal))
+    local cpu_total_prev=$((loc_user+loc_system+loc_nice+loc_softirq+loc_steal+loc_idle+loc_iowait))
+
+    sleep $sleep_time
+
+    # Read /proc/stat file (for second datapoint)
+    read loc_cpu loc_user loc_nice loc_system loc_idle loc_iowait loc_irq loc_softirq loc_steal loc_guest< /proc/stat
+
+    # compute active and total utilizations
+    local cpu_active_cur=$((loc_user+loc_system+loc_nice+loc_softirq+loc_steal))
+    local cpu_total_cur=$((loc_user+loc_system+loc_nice+loc_softirq+loc_steal+loc_idle+loc_iowait))
+
+    # compute CPU utilization (%)
+    local cpu_util=$((100*( cpu_active_cur-cpu_active_prev ) / (cpu_total_cur-cpu_total_prev) ))
+
+    printf "Current CPU Utilization : %s%%\n" "$cpu_util"
 }
+
 
 # alias
 [ -f $HOME/.alias_waf ] && source ~/.alias_waf
