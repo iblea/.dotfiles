@@ -43,8 +43,6 @@ function cd() {
 
     # Get the absolute path of where normal `cd <arg1>` would take us.
     local dir=${${:-"$PWD"/"$1"}:A}
-    echo "dir : ${dir}"
-
     local finder=$(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print -quit 2>/dev/null)
     if [ -z "${finder}" ]; then
         builtin cd "$@"
