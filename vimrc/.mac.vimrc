@@ -1,8 +1,8 @@
 
 " set guifont=FantasqueSansMono\ Nerd\ Font\ Mono:h16
 " set guifont=FantasqueSansM\ Nerd\ Font\ Mono:h16
-" set guifont=OperatorMono\ Nerd\ Font:h16
-set guifont=MorePerfectDOSVGAVYNF
+set guifont=MorePerfectDOSVGAVYNF:h20
+" set guifont=MorePerfectDOSVGAVYNF
 " set guifont=CaskaydiaCove\ Nerd\ Font:h16
 hi Cursor guibg=#008800 guifg=#ffffff
 " set guifont=WindowsCommandPrompt\ Nerd\ Font:h16
