@@ -25,8 +25,8 @@ function function_exist_check() {
 
 function cdb() {
     builtin cd "$@"
-    ls --color=auto -AF
-    echo ""
+    # ls --color=auto -AF
+    # echo ""
     pwd
 }
 
@@ -35,69 +35,84 @@ function cd() {
     if ! [[ $# -eq 1 && -d "$PWD"/"$1" ]]; then
         # ...then just use the default behavior.
         builtin cd "$@"
-        ls --color=auto -AF
-        echo ""
+        # ls --color=auto -AF
+        # echo ""
         pwd
         return
     fi
 
     # Get the absolute path of where normal `cd <arg1>` would take us.
     local dir=${${:-"$PWD"/"$1"}:A}
+    echo "dir : ${dir}"
 
-    if [ -z "$(ls $dir)" ]; then
+    local finder=$(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print -quit 2>/dev/null)
+    if [ -z "${finder}" ]; then
         builtin cd "$@"
-        ls --color=auto -AF
-        echo ""
+        # ls --color=auto -AF
+        # echo ""
         pwd
         return
     fi
 
-    # List the children of that dir.
-    local -a children=( $dir/* )
-    # local -a children=( $(ls -1A $dir) )
-
     if [[ "$1" = ".." ]] || [[ "$1" = "../" ]]; then
+        # List the children of that dir.
+        # local -a children=( $dir/* )
+        # local -a children=( $(ls -1A $dir) )
+        local -a children=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print 2>/dev/null) )
+
         # Keep going up until we find a dir with more than one child.
-        while [[ $#dir -gt 1 && $#children -eq 1 ]]; do
+        while [[ ${#dir} -gt 1 && ${#children[@]} -eq 1 ]]; do
             dir=$dir:h
-            if [ -z "$(ls $dir)" ]; then
+            finder=$(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print -quit 2>/dev/null)
+            if [ -z "${finder}" ]; then
                 break
             fi
-            children=( $dir/* )
+            # children=( $dir/* )
+            children=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -type d -print 2>/dev/null) )
+            children+=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -type f -print -quit 2>/dev/null) )
         done
     elif [[ "${1:0:2}" = "./" ]]; then
         builtin cd "$dir"
-        ls --color=auto -AF
-        echo ""
+        # ls --color=auto -AF
+        # echo ""
         pwd
         return
     else
+        # check ../../../
         if [[ "${1:0:2}" = ".." ]]; then
             fullpath="$1"
             fullpath="${fullpath//./}"
             fullpath="${fullpath//\//}"
             if [ -z "$fullpath" ]; then
                 builtin cd "$dir"
-                ls --color=auto -AF
-                echo ""
+                # ls --color=auto -AF
+                # echo ""
                 pwd
                 return
             fi
         fi
+        # List the children of that dir.
+        # local -a children=( $dir/* )
+        # local -a children=( $(ls -1A $dir) )
+        local -a children=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print 2>/dev/null) )
+
         # Keep going down as long as we find exactly one child and it's a dir.
-        while [[ $#children -eq 1 && -d $children ]]; do
+        while [[ ${#children[@]} -eq 1 && -d $children ]]; do
             dir=$children
-            if [ -z "$(ls $dir)" ]; then
+            finder=$(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print -quit 2>/dev/null)
+            if [ -z "${finder}" ]; then
                 break
             fi
-            children=( $dir/* )
+            # children=( $dir/* )
+            children=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -type d -print 2>/dev/null) )
+            children+=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -type f -print -quit 2>/dev/null) )
         done
     fi
 
     # Pass the resulting path to `cd`.
     builtin cd "$dir"
-    ls --color=auto -AF
-    echo ""
+    # ls --color=auto -AF
+    # echo ""
     pwd
 }
 
@@ -126,11 +141,13 @@ fi
 # some more ls aliases
 alias ll='ls -lhF'
 alias lla='ls -alhF'
-alias af='ls -CF'
-alias fa='ls -aCF'
-alias sf='ls -1F'
-alias fs='ls -a1'
+alias af='ls -shCF -w 60'
+alias fa='ls -shaCF -w 60'
+alias sf='ls -shF1'
+alias fs='ls -sha1'
 alias ef='ls -lhF'
+alias fe='ls -alhF'
+alias wf='ls -ohF'
 alias fe='ls -alhF'
 alias la='ls -AF'
 alias l='ls -CF'
