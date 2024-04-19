@@ -1343,7 +1343,7 @@ function gdbs() {
         fi
     fi
 }
-alias kd='pkill -f gdbserver'
+alias kgdb='pkill -f gdbserver'
 
 
 function cpdown() {
