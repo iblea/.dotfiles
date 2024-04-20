@@ -148,6 +148,7 @@ alias fe='ls -alhF'
 alias wf='ls -ohF'
 alias fe='ls -alhF'
 alias la='ls -AF'
+alias kd='ls -shCF -w 60'
 alias l='ls -CF'
 alias psa='ps -aef'
 
