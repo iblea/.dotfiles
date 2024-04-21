@@ -149,7 +149,7 @@ alias wf='ls -ohF'
 alias fe='ls -alhF'
 alias la='ls -AF'
 alias kd='ls -shCF -w 60'
-alias l='ls -CF'
+alias l='ls -shCF -w 60'
 alias psa='ps -aef'
 
 function psf() {
