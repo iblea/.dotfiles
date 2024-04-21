@@ -1948,6 +1948,7 @@ function greverts()
 
 alias dateunix='date "+%s"'
 
+alias ㅣ='ls -shCF -w 60'
 alias ㅣㅣ='ls -lhF'
 alias ㅣㅣㅁ='ls -alhF'
 alias ㅊㅇ='cd'
