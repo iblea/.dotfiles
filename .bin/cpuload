@@ -67,7 +67,7 @@ if [ ! -f /proc/stat ]; then
 	exit 1
 fi
 
-cpuload
+cpuload1
 
 # watch -n1 cpuload
 
