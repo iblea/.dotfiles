@@ -123,8 +123,9 @@ elif [ -f $HOME/.shell_color.sh ]; then
     . $HOME/.shell_color.sh
 fi
 
-alias grepi="grep --color=auto -rnIH"
-alias grepapi="grep --color=auto --exclude-dir=hmapi -rnIH"
+alias grepo="grep --color=auto -rnIH"
+alias grepi="grep --color=auto -rnIHP"
+alias grepapi="grep --color=auto --exclude-dir=hmapi -rnIHP"
 alias grepf="grep --color=auto -rnIHF"
 
 
@@ -420,7 +421,7 @@ function diffdir()
 # absolute path
 alias abs='readlink -e'
 
-function grepn() {
+function grepno() {
     local search_str=("$@")
     if [[ "$1" = "exai" ]]; then
         search_str=("--exclude-dir=ailib" "${@:2}")
@@ -435,7 +436,21 @@ function grepn() {
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s/:/ | /2"
     grep --color=always -rnIH ${search_str[@]} | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 }
+function grepn() {
+    local search_str=("$@")
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
 
+    # -P option : perl regex
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2"
+    grep --color=always -rnIHP ${search_str[@]} | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
+}
 function grepm() {
     local search_str=("$@")
     if [[ "$1" = "exai" ]]; then
@@ -451,7 +466,7 @@ function grepm() {
 }
 
 # absolute path grep
-function agrepn() {
+function agrepno() {
     local curpwd=$(pwd);
     local search_str=("$@")
     if [[ "$curpwd" != "/" ]]; then
@@ -467,6 +482,23 @@ function agrepn() {
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
     # grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
     grep --color=always -rnIH ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
+}
+function agrepn() {
+    local curpwd=$(pwd);
+    local search_str=("$@")
+    if [[ "$curpwd" != "/" ]]; then
+        curpwd="${curpwd}/"
+    fi
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
+    grep --color=always -rnIHP ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
 }
 function agrepm() {
     local curpwd=$(pwd);
@@ -881,7 +913,7 @@ function clearsslkeylog() {
 # alias findsrc='fualias() { find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.\(c\|h\|y\|l\|py\)" -type f -exec grep -Hn --color "$@" {} \; ; }; fuinit'
 function findsrc() {
     local ext="\(c\|cpp\|h\|y\|l\|py\)"
-    find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$@" {} \; |
+    find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$@" {} \; |
     sed -e "s/\:\[m\[K\s*/ |[m[K /2"
     # sed -e "s/\:/ | /2" -e "s| \| \[m\[K\s*| \| [m[K|"
 }
@@ -892,7 +924,7 @@ function afindsrc() {
         curpwd="${curpwd}/"
     fi
     local ext="\(c\|cpp\|h\|y\|l\|py\)"
-    find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$@" {} \; |
+    find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$@" {} \; |
     sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
     # sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\n\[m\[K\s*|\n[m[K|"
 }
@@ -928,9 +960,9 @@ function findex() {
     # ext+="\)$"
     ext+=")$"
 
-    # find . -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$keyword" {} \; |
+    # find . -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$keyword" {} \; |
     fd --regex ".*\.$ext" --type file --color=never --follow --hidden --no-ignore -X grep -lI . |
-    xargs -d '\n' -I{} grep -Hn --color=always "$keyword" {} |
+    xargs -d '\n' -I{} grep -HnP --color=always "$keyword" {} |
     sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 }
 
@@ -965,14 +997,14 @@ function findexa() {
     # ext+="\)$"
     ext+=")$"
 
-    # find . -regex ".*\.$ext" -type f -exec grep -Hn --color=always "$keyword" {} \; |
+    # find . -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$keyword" {} \; |
     fd --regex ".*\.$ext" --type file --color=never --follow --hidden --no-ignore -X grep -lI . |
-    xargs -d '\n' -I{} grep -Hn --color=always "$keyword" {} |
+    xargs -d '\n' -I{} grep -HnP --color=always "$keyword" {} |
 
     sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
 }
 
-function findall() { find . -name "*" -type f -exec grep -Hn --color "$@" {} \; ; }
+function findall() { find . -name "*" -type f -exec grep -HnP --color "$@" {} \; ; }
 
 
 function catcrlf() {
@@ -1414,7 +1446,7 @@ alias dotfiles='cd $HOME/.dotfiles'
 alias jtodo='di $HOME/jfhib.github.io/wiki/jtodo.md'
 function gowiki() { cd ~/jfhib.github.io/wiki/$@; }
 function gomantis() { cd ~/jfhib.github.io/wiki/issue/issue_note/mantis/$@; }
-# alias wifind='fualias() { find ~/jfhib.github.io/wiki/ -name "*.md" -type f -exec grep --color=always -Hn $@ {} \; | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p" }; fuinit'
+# alias wifind='fualias() { find ~/jfhib.github.io/wiki/ -name "*.md" -type f -exec grep --color=always -HnP $@ {} \; | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p" }; fuinit'
 function wifind() {
     local blog_dir=~/jfhib.github.io/wiki/
     if [ ! -d $blog_dir ]; then
@@ -1422,7 +1454,7 @@ function wifind() {
         return
     fi
     builtin cd $blog_dir;
-    grep --color=always -rnIH --include="*.md" $@ ./ | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
+    grep --color=always -rnIHP --include="*.md" $@ ./ | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
     builtin cd - > /dev/null ;
 }
 
