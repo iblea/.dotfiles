@@ -16,24 +16,26 @@ REMOTE_PORT=22
 # BCOMP_PATH="C:\Program Files\Beyond Compare 4\BCompare.exe"
 # BCOMP_PATH="/mnt/c/Program\\ Files/Beyond\\ Compare\\ 4/BCompare.exe"
 BCOMP_PATH="\"/Applications/Beyond Compare.app/Contents/MacOS/bComp\""
+SSH_CMD=""
 
 
 
 
 
-
-
-SSH_CMD="ssh"
-if [[ $USER == "root" ]]; then
-	SSH_CMD="ssh -F /root/.ssh/config -i /root/.ssh/id_rsa"
-else
-	SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa"
-	# kif [ "${BCOMP_PATH:0:14}" = "/Applications/" ]; then
-	# k	SSH_CMD="ssh -F /Users/$USER/.ssh/config -i /Users/$USER/.ssh/id_rsa"
-	# kelse
-	# k	SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa"
-	# kfi
+if [ -z "$SSH_CMD" ]; then
+    echo "user : $USER"
+    if [[ "$USER" == "root" ]]; then
+        SSH_CMD="ssh -F /root/.ssh/config -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    else
+        SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+        # kif [ "${BCOMP_PATH:0:14}" = "/Applications/" ]; then
+        # k	SSH_CMD="ssh -F /Users/$USER/.ssh/config -i /Users/$USER/.ssh/id_rsa"
+        # kelse
+        # k	SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa"
+        # kfi
+    fi
 fi
+echo $SSH_CMD
 
 
 CP_PATH=/tmp/meldcp
@@ -43,6 +45,10 @@ CP_PATH=/tmp/meldcp
 CUSTOM_FILE=$HOME/.dotfiles/env_custom/bcomp_config
 if [ -f $CUSTOM_FILE ]; then
     . $CUSTOM_FILE
+else
+    echo "not bcomp file"
+    echo "create $CUSTOM_FILE and set first"
+    exit 1
 fi
 
 
