@@ -629,7 +629,11 @@ if [ -n "$(command -v fzf)" ]; then
                         fi
                     fi
                     fzfres=""
+                    getdir=$(dirname "$@")
                     getname=$(echo "$@" | awk -F '/' '{ print $NF }')
+                    if [[ "$getdir" != "." ]]; then
+                        builtin cd "$getdir"
+                    fi
                     if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
                         tmpcmd="fd \"$getname\" --type file --follow --hidden --no-ignore -X grep -lI ."
                     else
@@ -639,6 +643,14 @@ if [ -n "$(command -v fzf)" ]; then
                     # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                     if [ -n "$fzfres" ]; then
                         $codepath $codeopt $fzfres
+                    fi
+                    if [[ "$getdir" != "." ]]; then
+                        builtin cd - > /dev/null
+                        popd -1
+                        if [ $(dirs -v | wc -l ) -gt 1 ]; then
+                            builtin cd -1 > /dev/null
+                            builtin cd - > /dev/null
+                        fi
                     fi
                     return
                     # skip new file
@@ -682,6 +694,14 @@ if [ -n "$(command -v fzf)" ]; then
         fi
         export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
         # 디렉토리 이동했을 경우 원래 디렉토리로 이동
+        if [ $# -eq 1]; then
+            builtin cd - > /dev/null
+            popd -1
+            if [ $(dirs -v | wc -l ) -gt 1 ]; then
+                builtin cd -1 > /dev/null
+                builtin cd - > /dev/null
+            fi
+        fi
         [ $# -eq 1 ] && builtin cd - > /dev/null
     }
 else
