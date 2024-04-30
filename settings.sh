@@ -118,7 +118,9 @@ fi
 
 # hammerspoon
 if [[ "$(uname -s)" = "Darwin" ]]; then
-	ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
+	if [ ! -d "$fixed_home/.hammerspoon" ]; then
+		ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
+	fi
 fi
 
 if [ -n "$(command -v sgpt)" ]; then
