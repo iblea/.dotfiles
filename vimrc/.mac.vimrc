@@ -1,7 +1,7 @@
 
 " set guifont=FantasqueSansMono\ Nerd\ Font\ Mono:h16
 " set guifont=FantasqueSansM\ Nerd\ Font\ Mono:h16
-set guifont=MorePerfectDOSVGAVYNF:h20
+set guifont=MorePerfectDOSVGAVYNF:h19
 set linespace=7
 " set guifont=MorePerfectDOSVGAVYNF
 " set guifont=CaskaydiaCove\ Nerd\ Font:h16
