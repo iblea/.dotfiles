@@ -694,7 +694,7 @@ if [ -n "$(command -v fzf)" ]; then
         fi
         export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
         # 디렉토리 이동했을 경우 원래 디렉토리로 이동
-        if [ $# -eq 1]; then
+        if [ $# -eq 1 ]; then
             builtin cd - > /dev/null
             popd -1
             if [ $(dirs -v | wc -l ) -gt 1 ]; then
