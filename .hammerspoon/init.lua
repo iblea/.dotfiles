@@ -45,15 +45,15 @@ end
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
 hs.hotkey.bind({"option", "control"}, "Z", appLaunchOrFocus("Stickies"))
 hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
-hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("iTerm"))
+hs.hotkey.bind({"option", "control"}, "N", appLaunchOrFocus("iTerm"))
 -- hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("WezTerm"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
-hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Visual Studio Code"))
+hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Visual Studio Code"))
 --- hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Cursor"))
 
-hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Safari"))
-hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Google Chrome"))
+--- hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Safari"))
+hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Google Chrome"))
 
 --- hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("Youtube"))
 
@@ -65,10 +65,6 @@ hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Google Chrome"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Mail"))
 --- hs.hotkey.bind({"option", "control"}, "O", appLaunchOrFocus("Microsoft Outlook"))
-
---- one hand key
-hs.hotkey.bind({"option", "control"}, "V", appLaunchOrFocus("DuelKakaoTalk"))
-hs.hotkey.bind({"option", "control"}, "C", appLaunchOrFocus("KakaoTalk"))
 
 --- Messenger
 hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("AIWorks-Messenger"))
@@ -82,7 +78,7 @@ hs.hotkey.bind({"option", "control"}, "O", appLaunchOrFocus("Discord"))
 --- hs.hotkey.bind({"option", "control"}, "S", appLaunchOrFocus("Slack"))
 --- hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Messages"))
 
-hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Beyond Compare"))
+hs.hotkey.bind({"option", "control"}, "B", appLaunchOrFocus("Beyond Compare"))
 hs.hotkey.bind({"option", "control"}, "P", appLaunchOrFocus("Activity Monitor"))
 
 
