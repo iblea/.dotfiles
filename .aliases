@@ -635,9 +635,9 @@ if [ -n "$(command -v fzf)" ]; then
                         builtin cd "$getdir"
                     fi
                     if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
-                        tmpcmd="fd \"$getname\" --type file --follow --hidden --no-ignore -X grep -lI ."
+                        tmpcmd="fd -g \"*${getname}*\" --type file --follow --hidden --no-ignore -X grep -lI ."
                     else
-                        tmpcmd="find . -name \"$getname\" -type f -exec grep -lI . {} \;"
+                        tmpcmd="find . -name \"*${getname}*\" -type f -exec grep -lI . {} \;"
                     fi
                     fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH --height 40% --layout=reverse --preview 'cat {}')
                     # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
