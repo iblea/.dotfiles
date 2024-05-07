@@ -59,7 +59,7 @@ function cd() {
         local -a children=( $(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print 2>/dev/null) )
 
         # Keep going up until we find a dir with more than one child.
-        while [[ ${#dir} -gt 1 && ${#children[@]} -eq 1 ]]; do
+        while [[ ${#dir} -gt 1 ]] && [[ ${#children[@]} -eq 1 ]] && [[ -d "${children[@]}" ]]; do
             dir=$dir:h
             finder=$(find "${dir}" -mindepth 1 -maxdepth 1 -not -path '*/\.*' -print -quit 2>/dev/null)
             if [ -z "${finder}" ]; then
