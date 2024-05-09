@@ -82,7 +82,7 @@ function cd() {
             fullpath="${fullpath//./}"
             fullpath="${fullpath//\//}"
             if [ -z "$fullpath" ]; then
-                builtin cd "$dir"
+                builtin cd "$1"
                 # ls --color=auto -AF
                 # echo ""
                 pwd
