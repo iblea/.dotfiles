@@ -43,17 +43,19 @@ end
 
 --- quick open applications
 --- https://zhiye.li/hammerspoon-use-the-keyboard-shortcuts-to-launch-apps-a7c59ab3d92
-hs.hotkey.bind({"option", "control"}, "Z", appLaunchOrFocus("Stickies"))
 hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
 hs.hotkey.bind({"option", "control"}, "N", appLaunchOrFocus("iTerm"))
+hs.hotkey.bind({"option", "control"}, "E", appLaunchOrFocus("iTerm"))
 -- hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("WezTerm"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
 hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Visual Studio Code"))
+hs.hotkey.bind({"option", "control"}, "Q", appLaunchOrFocus("Visual Studio Code"))
 --- hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Cursor"))
 
 --- hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Safari"))
-hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Google Chrome"))
+-- hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Google Chrome"))
+hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Arcbrowser"))
 
 --- hs.hotkey.bind({"option", "control"}, "Y", appLaunchOrFocus("Youtube"))
 
