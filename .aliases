@@ -1645,7 +1645,7 @@ fuunalias_alias 'gcf' 'git config'
 fuunalias_alias 'gcfl' 'git config --list'
 fuunalias_alias 'gs' 'git status'
 fuunalias_alias 'gst' 'git status'
-fuunalias_alias 'gsti' 'git stash'
+fuunalias_alias 'gsti' 'git stash push'
 # push stash untracked file
 fuunalias_alias 'gstiu' 'git stash push -u'
 # keep staging file
