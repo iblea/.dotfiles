@@ -5,7 +5,7 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	call plug#begin($HOME.'/.vim/plugged')
 
 	Plug 'preservim/nerdtree'
-	Plug 'vim-scripts/AutoComplPop'
+	Plug 'jfhib/AutoComplPop'
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
 	Plug 'jlanzarotta/bufexplorer'
