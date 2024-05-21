@@ -330,7 +330,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         if [ ! -x $ddns_script_path ]; then
             echo "$ddns_script_path"
             echo "not found ddns script path"
-            exit 1
+            return 1
         fi
         "$ddns_script_path" "$1" "$2"
     }
@@ -340,7 +340,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         if [ ! -x $ddns_script_path ]; then
             echo "$ddns_script_path"
             echo "not found ddns script path"
-            exit 1
+            return 1
         fi
         vim "$ddns_script_path"
     }
