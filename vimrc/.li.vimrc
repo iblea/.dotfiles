@@ -1,9 +1,9 @@
 " ===== man page 설정 =====
 
-d 파일 인코딩을 한국어로
-if $LANG[0]=='k' && $LANG[1]=='o'
-    set fileencoding=korea
-endif
+" " 파일 인코딩을 한국어로
+" if $LANG[0]=='k' && $LANG[1]=='o'
+"     set fileencoding=korea
+" endif
 
 syntax enable
 " 구문 강조 사용
