@@ -306,12 +306,17 @@ if [ ! -f $HOME/.wgetrc ]; then
 fi
 
 if [ -n "$(which nvim)" ]; then
-	local nvim_tmp=$(nvim -V1 -v | grep "\$VIM:" | awk -F '\\$VIM: ' '{ print $2 }')
-	nvim_tmp=$(echo "${nvim_tmp::$(expr ${#nvim_tmp} - 1)}")
-	nvim_tmp=$(echo ${nvim_tmp:1})
-	if [ -n "$nvim_tmp" ]; then
-		export VIMPATH=$nvim_tmp
-	fi
+    local nvim_tmp=$(nvim -V1 -v | grep "\$VIM:" | awk -F '\\$VIM: ' '{ print $2 }')
+    if [ -z "$nvim_tmp" ]; then
+        nvim_tmp=$(echo "${nvim_tmp:1:$(expr ${#nvim_tmp} - 2)}")
+        if [ -n "$nvim_tmp" ]; then
+            export VIMPATH=$nvim_tmp
+        fi
+    fi
+    nvim_tmp=$(echo "${nvim_tmp:1:$(expr ${#nvim_tmp} - 2)}")
+    if [ -n "$nvim_tmp" ]; then
+        export VIMPATH=$nvim_tmp
+    fi
 fi
 
 
