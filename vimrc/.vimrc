@@ -23,7 +23,7 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 
 	" Monokai
 	Plug 'ku1ik/vim-monokai'
-	
+
 	" Plug 'akiicat/vim-github-theme'
 	Plug 'jfhib/vim-github-theme'
 	" only use neovim
@@ -41,15 +41,20 @@ if !empty(glob($HOME."/.dotfiles/vimrc/.li.vimrc"))
 endif
 
 " /Applications/MacVim.app/Contents/Resources/vim/gvimrc
-if has("gui_macvim")
-	source $HOME/.dotfiles/vimrc/.mac.vimrc
-endif
+" if has("gui_macvim")
+" 	source $HOME/.dotfiles/vimrc/gui.vimrc
+" endif
 
-if has("nvim")
-	if !empty(glob($HOME."/.dotfiles/.neo.vimrc"))
-		source $HOME/.dotfiles/.neo.vimrc
-	endif
-endif
+" if has("nvim")
+" 	if !empty(glob($HOME."/.dotfiles/.neo.vimrc"))
+" 		source $HOME/.dotfiles/vimrc/neovim/neovim.vimrc
+" 		lua require
+" 	endif
+"
+" 	if has("gui_running")
+" 		source $HOME/.dotfiles/vimrc/gui.vimrc
+" 	endif
+" endif
 
 if isdirectory("/opt/homebrew/")
 	set clipboard=unnamed

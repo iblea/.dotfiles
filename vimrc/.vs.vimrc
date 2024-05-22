@@ -242,6 +242,7 @@ inoremap <C-o> <ESC>o
 inoremap <C-i> <ESC>O
 inoremap <C-x> <Del>
 inoremap <C-c> <BS>
+inoremap <Tab> <Tab>
 
 
 " bookmark

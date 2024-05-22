@@ -51,6 +51,17 @@ ln -s $settings_full_dir/.bashrc
 
 # vimrc
 ln -s $settings_full_dir/vimrc/.vimrc
+
+if [ -n $(which nvim) ]; then
+	echo "neovim settings"
+	cd $fixed_home/.config
+	if [ ! -d $fixed_home/.config/nvim ]; then
+		ln -s $settings_full_dir/vimrc/neovim nvim
+	fi
+	cd $HOME
+fi
+
+
 cd $settings_full_dir
 if [ -d ./.vim/ ]; then
 	rm -rf ./.vim/
