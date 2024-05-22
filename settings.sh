@@ -52,15 +52,18 @@ ln -s $settings_full_dir/.bashrc
 # vimrc
 ln -s $settings_full_dir/vimrc/.vimrc
 
+# https://github.com/neovim/neovim-releases (GLIBC 2.27 official unsupported)
 if [ -n $(which nvim) ]; then
-	echo "neovim settings"
-	cd $fixed_home/.config
-	if [ ! -d $fixed_home/.config/nvim ]; then
-		ln -s $settings_full_dir/vimrc/neovim nvim
-	fi
-	cd $HOME
+    echo "neovim settings"
+    if [ ! -d "$fixed_home/.config" ]; then
+        mkdir -p "$fixed_home/.config/"
+    fi
+    cd "$fixed_home/.config"
+    if [ ! -d "$fixed_home/.config/nvim" ]; then
+        ln -s $settings_full_dir/vimrc/neovim nvim
+    fi
+    cd $HOME
 fi
-
 
 cd $settings_full_dir
 if [ -d ./.vim/ ]; then
