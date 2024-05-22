@@ -114,6 +114,13 @@ function cd() {
     pwd
 }
 
+if [ -n "$(which nvim)" ]; then
+    alias nvi='nvim'
+    alias vi='nvim'
+    alias vim='nvim'
+	alias ovim="$(which vim)"
+fi
+
 
 
 # enable color support of ls and also add handy aliases
@@ -276,11 +283,6 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         alias macvim='/Applications/MacVim.app/Contents/bin/vim'
         # alias vi="/Applications/MacVim.app/Contents/bin/vim"
         # alias vim="/Applications/MacVim.app/Contents/bin/vim"
-    fi
-    if [ -n "$(which nvim)" ]; then
-        alias nvi='nvim'
-        alias vi='nvim'
-        alias vim='nvim'
     fi
 	if [ -n "$(which nvim-qt)" ]; then
 		alias gvim='nvim-qt'
