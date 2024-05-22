@@ -1,5 +1,5 @@
 if [ -d /opt/homebrew ]; then
-    if ! grep -q "/opt/homebrew//bin" <<< "$PATH"; then
+    if ! grep -q "/opt/homebrew/bin" <<< "$PATH"; then
         export PATH=/opt/homebrew/bin:$PATH
     fi
 fi
@@ -303,6 +303,15 @@ fi
 # wgetrc - --no-check-certificate option default
 if [ ! -f $HOME/.wgetrc ]; then
     echo "check_certificate = off" >> ~/.wgetrc
+fi
+
+if [ -n "$(which nvim)" ]; then
+	local nvim_tmp=$(nvim -V1 -v | grep "\$VIM:" | awk -F '\\$VIM: ' '{ print $2 }')
+	nvim_tmp=$(echo "${nvim_tmp::$(expr ${#nvim_tmp} - 1)}")
+	nvim_tmp=$(echo ${nvim_tmp:1})
+	if [ -n "$nvim_tmp" ]; then
+		export VIMPATH=$nvim_tmp
+	fi
 fi
 
 
