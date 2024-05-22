@@ -1,6 +1,6 @@
 " ===== man page 설정 =====
 
-" 파일 인코딩을 한국어로
+d 파일 인코딩을 한국어로
 if $LANG[0]=='k' && $LANG[1]=='o'
     set fileencoding=korea
 endif
@@ -22,6 +22,10 @@ let g:open_path = getcwd()
 if isdirectory($HOME."/.vim/pack/autopair") || isdirectory($HOME."/.vim/plugged/autopair")
     " Autopair Disable
     let g:AutoPairsLoaded = 0
+endif
+
+if isdirectory($HOME."/.vim/pack/nerdtree") || isdirectory($HOME."/.vim/plugged/nerdtree")
+	let NERDTreeShowHidden=1
 endif
 
 if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/vim-airline")
