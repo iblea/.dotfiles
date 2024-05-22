@@ -13,6 +13,6 @@ return {
         -- "ray-x/lsp_signature.nvim",
     },
     config = function()
-        -- require("modules.lsp")
+        require("modules.lsp")
     end
 }

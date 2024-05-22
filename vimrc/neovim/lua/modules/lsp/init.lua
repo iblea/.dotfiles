@@ -80,7 +80,9 @@ local on_attach = function(client, bufnr)
   end
 
   if client.server_capabilities.inlayHintProvider then
-    vim.lsp.inlay_hint.enable(0, true)
+    -- vim.lsp.inlay_hint.enable(0, true)
+    -- vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    vim.lsp.inlay_hint.enable(bufnr, false)
   end
 
   require("illuminate").on_attach(client)
@@ -92,34 +94,6 @@ end
 local servers = vim.api.nvim_get_var("lsp_servers")
 
 for _, server_name in ipairs(servers) do
-  if server_name == "rust_analyzer" then
-    local ok, rt = pcall(require, "rust-tools")
-    if not ok then
-      goto continue
-    end
-
-    rt.setup({
-      server = {
-        standalone = false,
-        on_attach = on_attach,
-        capabilities = capabilities,
-        settings = {
-          ["rust-analyzer"] = {
-            checkOnSave = {
-              command = "clippy",
-            },
-            hover = {
-              links = {
-                enable = false,
-              },
-            },
-          },
-        },
-      },
-    })
-
-    goto continue
-  end
 
   local server = "modules.lsp." .. server_name
   require(server).setup(on_attach, capabilities)
