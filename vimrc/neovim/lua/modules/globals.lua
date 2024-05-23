@@ -4,9 +4,9 @@ local api = vim.api
 api.nvim_set_var("lsp_servers", {
   -- "bashls",
   -- "cssls",
-  "clangd",
+  -- "clangd",
   "lua_ls",
-  "pylsp"
+  -- "pylsp"
 })
 
 api.nvim_set_var("lsp_linters", {
