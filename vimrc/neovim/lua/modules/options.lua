@@ -10,6 +10,10 @@ vim.opt.clipboard = "unnamed,unnamedplus"
 
 vim.opt.laststatus=2
 vim.opt.backup = false
+vim.opt.swapfile = true
+vim.opt.backupdir = '.,/tmp'
+vim.opt.undodir = '.,/tmp'
+vim.opt.directory = '.,/tmp'
 
 vim.opt.tabstop = indent
 vim.opt.shiftwidth = indent
@@ -20,7 +24,7 @@ vim.opt.smartindent = true
 vim.opt.expandtab = et_stat
 
 local custom_setlocal_stat = true
-
+ 
 
 
 vim.opt.foldmethod = "manual"
@@ -55,9 +59,9 @@ vim.opt.splitright = true
 vim.opt.incsearch = true
 vim.opt.magic = true
 
-vim.opt.fixeol = false
-vim.opt.fixendofline = false
-vim.opt.eol = false
+-- vim.opt.fixeol = false
+-- vim.opt.fixendofline = false
+-- vim.opt.eol = true
 
 -- local lang_env = vim.api.nvim_command('echo $LANG')
 -- if lang_env[0] == 'k' && lang_env[1] == 'o' then
@@ -68,5 +72,7 @@ vim.opt.eol = false
 -- vim.opt.previewheight = 16
 -- vim.opt.pastetoggle = "<c-n><c-p>"
 
+
+vim.opt.autochdir = false     -- :cd 명령어와 다를 것이 없다.
 
 

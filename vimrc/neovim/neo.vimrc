@@ -6,15 +6,17 @@ vim.g.ts_highlight_lua = true
 EOF
 let g:vimsyn_embed = 'lPr'  " support embedded lua, python and ruby
 
-lua << EOF
-package.path = package.path .. ';' .. os.getenv("HOME") .. '/.dotfiles/vimrc/neovim/?.lua'
-require('luainit')
-EOF
-
 " 구문 강조 사용
 if has("syntax")
     syntax on
 endif
+
+set directory=.
+
+lua << EOF
+package.path = package.path .. ';' .. os.getenv("HOME") .. '/.dotfiles/vimrc/neovim/?.lua'
+require('luainit')
+EOF
 
 
 if !empty(glob($HOME."/.dotfiles/vimrc/.vs.vimrc"))
@@ -79,6 +81,7 @@ nnoremap <silent> # <ESC>:call N_find_word_asc()<CR>
 vnoremap <silent> # <ESC>:call V_find_word_asc()<CR>
 nnoremap <silent> * <ESC>:call N_find_word_desc()<CR>
 nnoremap F <ESC>:call Prev_window()<CR>
+
 func! Prev_window()
     let l:curnr=winnr()
     if l:curnr==1
@@ -103,6 +106,11 @@ function! SynGroupVim()
     echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 
+func! WinEnterFunction()
+    silent! execute 'cd' expand('%:p:h')
+endfunc
 
-source $HOME/.dotfiles/vimrc/neovim/lua/themes/init.vimrc
+if has("autocmd")
+    au BufWinEnter,WinEnter * call WinEnterFunction()
+endif
 

@@ -49,11 +49,14 @@ require("lazy").setup("plugins", {
   },
 })
 
+
 require("modules.utils")
 -- require("modules.keymappings")
 require("modules.options")
 -- require("modules.autocmd")
--- require("themes")
+require("themes")
+
+vim.cmd('colorscheme monokai-pro-classic')
 
 -- require("cmp-tw2css").setup()
 -- require("classy").setup()
