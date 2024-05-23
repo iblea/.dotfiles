@@ -104,3 +104,5 @@ function! SynGroupVim()
 endfun
 
 
+source $HOME/.dotfiles/vimrc/neovim/lua/themes/init.vimrc
+
