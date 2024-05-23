@@ -118,7 +118,7 @@ if [ -n "$(which nvim)" ]; then
     alias nvi='nvim'
     alias vi='nvim'
     alias vim='nvim'
-	alias ovim="$(which vim)"
+	alias ovim="$(/bin/bash -c 'which vim')"
 fi
 
 
