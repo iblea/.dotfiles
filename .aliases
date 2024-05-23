@@ -120,6 +120,7 @@ if [ -n "$(which nvim)" ]; then
     alias vim='nvim'
 	alias ovim="$(/bin/bash -c 'which vim')"
 fi
+alias vit="vi -c ':term'"
 
 
 
