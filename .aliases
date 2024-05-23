@@ -114,7 +114,7 @@ function cd() {
     pwd
 }
 
-if [ -n "$(which nvim)" ]; then
+if [ -n "$(command -v nvim)" ]; then
     alias nvi='nvim'
     alias vi='nvim'
     alias vim='nvim'
@@ -285,7 +285,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         # alias vi="/Applications/MacVim.app/Contents/bin/vim"
         # alias vim="/Applications/MacVim.app/Contents/bin/vim"
     fi
-	if [ -n "$(which nvim-qt)" ]; then
+	if [ -n "$(command -v nvim-qt)" ]; then
 		alias gvim='nvim-qt'
 		alias gi='nvim-qt'
 	fi

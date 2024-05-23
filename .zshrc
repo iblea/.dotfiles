@@ -305,7 +305,7 @@ if [ ! -f $HOME/.wgetrc ]; then
     echo "check_certificate = off" >> ~/.wgetrc
 fi
 
-if [ -n "$(which nvim)" ]; then
+if [ -n "$(command -v nvim)" ]; then
     local nvim_tmp=$(nvim -V1 -v | grep "\$VIM:" | awk -F '\\$VIM: ' '{ print $2 }')
     if [ -z "$nvim_tmp" ]; then
         nvim_tmp=$(echo "${nvim_tmp:1:$(expr ${#nvim_tmp} - 2)}")
