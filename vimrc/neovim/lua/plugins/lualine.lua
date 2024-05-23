@@ -2,7 +2,9 @@ return {
   "nvim-lualine/lualine.nvim",
   event = "VimEnter",
   dependencies = {
-    { "nvim-tree/nvim-web-devicons" },
+    { "nvim-tree/nvim-web-devicons",
+	  "loctvl842/monokai-pro.nvim"
+	},
   },
   config = function()
     local lualine = require("lualine")
@@ -34,7 +36,8 @@ return {
         -- theme = "onedark",
         -- theme = "molokai",
         -- theme = "codedark",
-        theme = "molokai-pro-classic",
+        -- theme = "molokai-pro",
+        theme = "auto",
         section_separators = "",
         -- section_separators = { left = "", right = "" },
         component_separators = "",
