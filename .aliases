@@ -526,6 +526,131 @@ function agrepm() {
     grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
 }
 
+function grepnz() {
+    if [ -z "$(command -v fzf)" ]; then
+        agrepn "$@"
+        return
+    fi
+    if [ -z "$(command -v code)" ]; then
+        agrepn "$@"
+        return
+    fi
+    local search_str=("$@")
+    local current_pwd="$(pwd)"
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
+    # -P option : perl regex
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
+
+    ORG_IFS=$IFS
+    output_array=()
+    output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+    # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
+    if grep -q "/zsh" <<< "$SHELL"; then
+        IFS=$'\n' read -r -d '' -A output_array <<< "$output"
+    else
+        IFS=$'\n' read -r -d '' -a output_array <<< "$output"
+    fi
+    IFS=$ORG_IFS
+
+    local results=""
+    if grep -q "/zsh" <<< "$SHELL"; then
+        for line in "${output_array[@]}"; do
+            if [ -z "$line" ]; then
+                continue
+            fi
+            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
+            # 출력 공백 제거
+            context=$(echo "${grep_output[2]}" | sed 's/\[K[ \t]*/\[K/g')
+            results=$(echo "$results\n${context}    | ${grep_output[1]}")
+            # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
+        done
+    else
+        for line in "${output_array[@]}"; do
+            if [ -z "$line" ]; then
+                continue
+            fi
+            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
+            # 출력 공백 제거
+            context=$(echo "${grep_output[1]}" | sed 's/\[K[ \t]*/\[K/g')
+            results=$(echo "${results}\n${context}    | ${grep_output[0]}")
+            # results=$(echo "${results}\n${grep_output[1]}    | ${grep_output[0]}")
+        done
+    fi
+    # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
+    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse --bind "ctrl-m:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})" --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
+    #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
+}
+
+function grepmz() {
+    if [ -z "$(command -v fzf)" ]; then
+        agrepm "$@"
+        return
+    fi
+    if [ -z "$(command -v code)" ]; then
+        agrepn "$@"
+        return
+    fi
+    local search_str=("$@")
+    local current_pwd="$(pwd)"
+    if [[ "$1" = "exai" ]]; then
+        search_str=("--exclude-dir=ailib" "${@:2}")
+    fi
+    if [[ "$1" = "extab" ]]; then
+        search_str=("--exclude=parse.tab.c" "${@:2}")
+    fi
+
+    # -P option : perl regex
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
+    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
+
+    ORG_IFS=$IFS
+    output_array=()
+    # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+    output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
+    if grep -q "/zsh" <<< "$SHELL"; then
+        IFS=$'\n' read -r -d '' -A output_array <<< "$output"
+    else
+        IFS=$'\n' read -r -d '' -a output_array <<< "$output"
+    fi
+    IFS=$ORG_IFS
+
+    local results=""
+    if grep -q "/zsh" <<< "$SHELL"; then
+        for line in "${output_array[@]}"; do
+            if [ -z "$line" ]; then
+                continue
+            fi
+            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
+            # 출력 공백 제거
+            context=$(echo "${grep_output[2]}" | sed 's/\[K[ \t]*/\[K/g')
+            results=$(echo "$results\n${context}    | ${grep_output[1]}")
+            # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
+        done
+    else
+        for line in "${output_array[@]}"; do
+            if [ -z "$line" ]; then
+                continue
+            fi
+            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
+            # 출력 공백 제거
+            context=$(echo "${grep_output[1]}" | sed 's/\[K[ \t]*/\[K/g')
+            results=$(echo "${results}\n${context}    | ${grep_output[0]}")
+            # results=$(echo "${results}\n${grep_output[1]}    | ${grep_output[0]}")
+        done
+    fi
+    # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
+    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse --bind "ctrl-m:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})" --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
+    #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
+}
+
+
 # fzfcode
 if [ -n "$(command -v fzf)" ]; then
     if (alias fzf >/dev/null 2>&1); then
