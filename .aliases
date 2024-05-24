@@ -615,8 +615,8 @@ function grepff() {
         echo "cannot find '$@'"
         return
     fi
-    # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
-    echo "${results:1}" | fzf -e --ansi --height 60% --layout=reverse \
+    # echo "${results:2}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
+    echo "${results:2}" | fzf -e --ansi --height 60% --layout=reverse \
         --bind "ctrl-a:half-page-up" \
         --bind "ctrl-d:half-page-down" \
         --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
