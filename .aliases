@@ -526,6 +526,22 @@ function agrepm() {
     grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
 }
 
+# 반복문에서 echo 및 sed 시 성능이 너무 떨어짐
+# agrepn 단독 사용 시 0.04sec 걸리는 명령어가 grepnz 사용 시 3.5sec 까지 늘어남.
+# 따라서 반복문 내에서 echo 와 sed 사용을 최소화
+# for line in "${output_array[@]}"; do
+#     if [ -z "$line" ]; then
+#         continue
+#     fi
+#     # results+=("${line}")
+#     # results=$(echo "$results\n${line}")
+#     # IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
+#     # 출력 공백 제거
+#     # context=$(echo "${grep_output[2]}" | sed 's/\[K[ \t]*/\[K/g')
+#     # results=$(echo "$results\n${context}    | ${grep_output[1]}")
+#     # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
+# done
+
 function grepnz() {
     if [ -z "$(command -v fzf)" ]; then
         agrepn "$@"
@@ -550,7 +566,9 @@ function grepnz() {
 
     ORG_IFS=$IFS
     output_array=()
-    output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+    # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/\n/2")
+    output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    # echo "$output"
     # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
     if grep -q "/zsh" <<< "$SHELL"; then
         IFS=$'\n' read -r -d '' -A output_array <<< "$output"
@@ -561,30 +579,26 @@ function grepnz() {
 
     local results=""
     if grep -q "/zsh" <<< "$SHELL"; then
-        for line in "${output_array[@]}"; do
-            if [ -z "$line" ]; then
+        for (( i=1; i<=${#output_array[@]}; i+=2 )); do
+            if [ -z "${output_array[$i]}" ]; then
                 continue
             fi
-            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
-            # 출력 공백 제거
-            context=$(echo "${grep_output[2]}" | sed 's/\[K[ \t]*/\[K/g')
-            results=$(echo "$results\n${context}    | ${grep_output[1]}")
-            # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
+            results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
         done
     else
-        for line in "${output_array[@]}"; do
-            if [ -z "$line" ]; then
+        for (( i=0; i<${#output_array[@]}; i+=2 )); do
+            if [ -z "${output_array[$i]}" ]; then
                 continue
             fi
-            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
-            # 출력 공백 제거
-            context=$(echo "${grep_output[1]}" | sed 's/\[K[ \t]*/\[K/g')
-            results=$(echo "${results}\n${context}    | ${grep_output[0]}")
-            # results=$(echo "${results}\n${grep_output[1]}    | ${grep_output[0]}")
+            results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
         done
     fi
-    # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
-    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse \
+    if [ -z "$results" ]; then
+        echo "cannot find '$@'"
+        return
+    fi
+    # echo "${results:2}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
+    echo "${results:2}" | fzf -e --ansi --height 70% --layout=reverse \
         --bind "ctrl-a:half-page-up" \
         --bind "ctrl-d:half-page-down" \
         --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
@@ -626,30 +640,26 @@ function grepmz() {
 
     local results=""
     if grep -q "/zsh" <<< "$SHELL"; then
-        for line in "${output_array[@]}"; do
-            if [ -z "$line" ]; then
+        for (( i=1; i<=${#output_array[@]}; i+=2 )); do
+            if [ -z "${output_array[$i]}" ]; then
                 continue
             fi
-            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
-            # 출력 공백 제거
-            context=$(echo "${grep_output[2]}" | sed 's/\[K[ \t]*/\[K/g')
-            results=$(echo "$results\n${context}    | ${grep_output[1]}")
-            # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
+            results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
         done
     else
-        for line in "${output_array[@]}"; do
-            if [ -z "$line" ]; then
+        for (( i=0; i<${#output_array[@]}; i+=2 )); do
+            if [ -z "${output_array[$i]}" ]; then
                 continue
             fi
-            IFS=$'\n' grep_output=( $(echo "$line" | sed 's/ | /\n/') )
-            # 출력 공백 제거
-            context=$(echo "${grep_output[1]}" | sed 's/\[K[ \t]*/\[K/g')
-            results=$(echo "${results}\n${context}    | ${grep_output[0]}")
-            # results=$(echo "${results}\n${grep_output[1]}    | ${grep_output[0]}")
+            results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
         done
     fi
+    if [ -z "$results" ]; then
+        echo "cannot find '$@'"
+        return
+    fi
     # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
-    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse \
+    echo "${results:1}" | fzf -e --ansi --height 70% --layout=reverse \
         --bind "ctrl-a:half-page-up" \
         --bind "ctrl-d:half-page-down" \
         --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
