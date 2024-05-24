@@ -572,13 +572,16 @@ function grepff() {
     local output=""
     if [[ "$1" = "-f" ]]; then
         # echo "-f option"
-        output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
+        # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
+        output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     elif [[ "$1" = "-n" ]]; then
         # echo "-n option"
-        output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+        # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+        output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     else
         # echo "other option"
-        output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+        # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+        output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     fi
 
     if [ -z "$output" ]; then
