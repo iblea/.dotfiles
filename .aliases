@@ -585,8 +585,8 @@ function grepnz() {
     fi
     # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
     echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse \
-        --bind "ctrl-a:half-page-up)" \
-        --bind "ctrl-d:half-page-down)" \
+        --bind "ctrl-a:half-page-up" \
+        --bind "ctrl-d:half-page-down" \
         --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
     #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
 }
