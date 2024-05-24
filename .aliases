@@ -584,7 +584,10 @@ function grepnz() {
         done
     fi
     # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
-    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse --bind "ctrl-m:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})" --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
+    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse \
+        --bind "ctrl-a:half-page-up)" \
+        --bind "ctrl-d:half-page-down)" \
+        --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
     #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
 }
 
@@ -646,7 +649,10 @@ function grepmz() {
         done
     fi
     # echo "${results:1}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
-    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse --bind "ctrl-m:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})" --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
+    echo "${results:1}" | fzf -e --ansi --height 90% --layout=reverse \
+        --bind "ctrl-a:half-page-up" \
+        --bind "ctrl-d:half-page-down" \
+        --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
     #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
 }
 
@@ -656,7 +662,7 @@ if [ -n "$(command -v fzf)" ]; then
     if (alias fzf >/dev/null 2>&1); then
         unalias fzf
     fi
-    alias fzf="fzf --height 40% --layout=reverse"
+    alias fzf="fzf -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down'"
     # if (declare -f -F "$@" > /dev/null); then
     #     unset -f fzf
     # fi
@@ -672,11 +678,11 @@ if [ -n "$(command -v fzf)" ]; then
                 return
             fi
             builtin cd $@
-            fzf --height 40% --layout=reverse
+            fzf -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down'
             builtin cd - > /dev/null
             return
         fi
-        fzf --height 40% --layout=reverse
+        fzf -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down'
     }
     # 기존 alias 가 있을 경우 삭제
 
@@ -772,7 +778,7 @@ if [ -n "$(command -v fzf)" ]; then
                     else
                         tmpcmd="find . -name \"*${getname}*\" -type f -exec grep -lI . {} \;"
                     fi
-                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH --height 40% --layout=reverse --preview 'cat {}')
+                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
                     # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                     if [ -n "$fzfres" ]; then
                         $codepath $codeopt $fzfres
@@ -813,14 +819,14 @@ if [ -n "$(command -v fzf)" ]; then
         if [ -p /dev/stdin ]; then
             cat < /dev/stdin > $HOME/.dotfiles/.fzfinput
             sleep 0.05
-            fzfres=$(cat $HOME/.dotfiles/.fzfinput | $FZF_BIN_PATH --height 40% --layout=reverse  --preview 'cat {}')
+            fzfres=$(cat $HOME/.dotfiles/.fzfinput | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
             [ -f $HOME/.dotfiles/.fzfinput ] && rm -f $HOME/.dotfiles/.fzfinput
             if [ -d "$fzfres" ]; then
                 echo "$fzfres is directory (so skip)"
                 return
             fi
         else
-            fzfres=$($FZF_BIN_PATH --height 40% --layout=reverse  --preview 'cat {}')
+            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
         fi
         if [ -n "$fzfres" ]; then
             $codepath $codeopt $fzfres
