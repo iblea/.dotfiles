@@ -156,9 +156,11 @@ alias ef='ls -lhF'
 alias fe='ls -alhF'
 alias wf='ls -ohF'
 alias fe='ls -alhF'
-alias la='ls -AF'
+alias lw='ls -shCF -w 60'
+alias la='ls -1ashF'
 alias kd='ls -shCF -w 60'
-alias l='ls -shCF -w 60'
+# alias l='ls -shCF -w 60'
+alias l='ls -1shF'
 alias psa='ps -aef'
 
 function psf() {
