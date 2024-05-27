@@ -1399,9 +1399,9 @@ function rmdimg() {
     do
         if grep -q "$imgfile" <<<"$content"; then
             echo "exist : $imgfile"
-            filearray="${filearray[@]}"
-            # filearray=$(echo "${filearray[@]}" | sed 's/%20/ /g')
-            filearray=( ${filearray/$imgfile} )
+            # filearray="${filearray[@]}"
+            # filearray=( $(echo "${filearray[@]}" | sed 's/%20/ /g') )
+            filearray=( ${filearray[@]/$imgfile} )
         fi
     done
 
