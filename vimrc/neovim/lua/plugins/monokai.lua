@@ -6,6 +6,8 @@ return {
         require("monokai-pro").setup({
             theme = 'monokai-pro-classic',
             filter = "classic"
+            -- theme = 'monokai-pro',
+            -- filter = "pro"
         })
         override = function()
             return {

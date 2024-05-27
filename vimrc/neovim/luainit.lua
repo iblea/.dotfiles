@@ -57,6 +57,7 @@ require("modules.options")
 require("themes")
 
 vim.cmd('colorscheme monokai-pro-classic')
+-- vim.cmd('colorscheme monokai-pro')
 
 -- require("cmp-tw2css").setup()
 -- require("classy").setup()
