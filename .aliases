@@ -23,6 +23,8 @@ function function_exist_check() {
 #     pwd
 # }
 
+# zsh 아니면 cd 명령어는 기존대로 처리
+if grep -q "/zsh" <<< "$SHELL"; then
 function cdb() {
     builtin cd "$@"
     # ls --color=auto -AF
@@ -113,6 +115,7 @@ function cd() {
     # echo ""
     pwd
 }
+fi
 
 if [ -n "$(command -v nvim)" ]; then
     alias nvi='nvim'
@@ -553,6 +556,10 @@ function grepff() {
         agrepn "$@"
         return
     fi
+    # code -s > /dev/null
+    # if [ $? -ne 0 ]; then
+    #     return
+    # fi
     local exclude_dirs=( ".git" ".svn" "node_modules" "__pycache__" )
     local search_str=()
     for exclude_dir in "${exclude_dirs[@]}"; do
