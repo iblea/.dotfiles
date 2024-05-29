@@ -4,27 +4,31 @@ SETTINGS_DIR=.dotfiles
 # current path
 SCRIPT_PATH=$(dirname $(realpath $0))
 
-cd $HOME
+# PARENT_DIR="$HOME"
+PARENT_DIR=$(dirname "$(SCRIPT_PATH)")
+
+cd "$PARENT_DIR"
+
 
 settings_full_dir=""
 fixed_home=""
-home_last=$(echo "${HOME:${#HOME}-1:1}")
+home_last=$(echo "${PARENT_DIR:${#PARENT_DIR}-1:1}")
 
 if [ $? -ne 0 ]; then
 	echo "Error: HOME is not set"
-	echo "home evn : '$HOME'"
+	echo "home evn : '$PARENT_DIR'"
 	exit 1
 fi
 
 if [ "$home_last" != "/" ]; then
-	settings_full_dir="${HOME}/${SETTINGS_DIR}"
-	fixed_home="$HOME"
+	settings_full_dir="${PARENT_DIR}/${SETTINGS_DIR}"
+	fixed_home="$PARENT_DIR"
 else
-	settings_full_dir="${HOME}${SETTINGS_DIR}"
-	fixed_home="${HOME:0:${#HOME}-1}"
+	settings_full_dir="${PARENT_DIR}${SETTINGS_DIR}"
+	fixed_home="${PARENT_DIR:0:${#PARENT_DIR}-1}"
 	if [ $? -ne 0 ]; then
 		echo "Error: HOME is not set"
-		echo "home evn : '$HOME'"
+		echo "home evn : '$PARENT_DIR'"
 		exit 1
 	fi
 fi
@@ -62,7 +66,7 @@ if [ -n $(which nvim) ]; then
     if [ ! -d "$fixed_home/.config/nvim" ]; then
         ln -s $settings_full_dir/vimrc/neovim nvim
     fi
-    cd $HOME
+    cd "$PARENT_DIR"
 fi
 
 cd $settings_full_dir
@@ -75,7 +79,7 @@ fi
 
 # tar -zxvf vim.tgz > /dev/null
 # tar -zcvf vim.tgz .vim/
-# cd $HOME
+# cd $PARENT_DIR
 # ln -s $settings_full_dir/.vim
 
 if [ ! -d $fixed_home/.vim ]; then
@@ -91,7 +95,7 @@ echo "Please open vim and :PlugInstall first"
 
 
 # envpath
-cd $HOME
+cd "$PARENT_DIR"
 ln -s $settings_full_dir/.envpath
 
 
@@ -138,7 +142,7 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 fi
 
 if [ -n "$(command -v sgpt)" ]; then
-	SHELL_GPT_DIR=$HOME/.config/shell_gpt
+	SHELL_GPT_DIR="$PARENT_DIR/.config/shell_gpt"
 	if [ ! -d $SHELL_GPT_DIR/ ]; then
 		mkdir -p $SHELL_GPT_DIR/
 	fi
