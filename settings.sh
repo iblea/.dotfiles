@@ -5,7 +5,7 @@ SETTINGS_DIR=.dotfiles
 SCRIPT_PATH=$(dirname $(realpath $0))
 
 # PARENT_DIR="$HOME"
-PARENT_DIR=$(dirname "$(SCRIPT_PATH)")
+PARENT_DIR=$(dirname "${SCRIPT_PATH}")
 
 cd "$PARENT_DIR"
 
