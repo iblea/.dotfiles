@@ -1,5 +1,5 @@
 {
-  "ToolVersion" : "1.3.0.0",
+  "TypeNumber" : "PD-KB800W",
   "DipSwitch" : [
     false,
     true,
@@ -200,7 +200,7 @@
       32,
       31,
       30,
-      41,
+      53,
       0,
       0,
       0,
@@ -271,5 +271,5 @@
     ]
   },
   "KeyboardLayout" : 1,
-  "TypeNumber" : "PD-KB800BS"
+  "ToolVersion" : "1.3.0.0"
 }
