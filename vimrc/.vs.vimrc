@@ -48,20 +48,25 @@ nnoremap <C-y> <ESC>:e!<CR>G
 nnoremap Q @
 
 "fold key
-nnoremap ,f zf
-vnoremap ,f zf
+nnoremap ,a zf
+vnoremap ,a zf
 " nnoremap <leader>f zf
 " vnoremap <leader>f zf
-nnoremap ,i za
-vnoremap ,i za
-nnoremap ,o zA
-vnoremap ,o zA
+noremap ,f za
+noremap ,o zo
+noremap ,d zd
+" noremap ,o zA
 " nnoremap <Leader>o zA
 " vnoremap <Leader>o zA
 nnoremap ,u zd
 vnoremap ,u zd
 nnoremap ,U zD
 vnoremap ,U zD
+
+noremap za zf
+noremap zf za
+noremap zk za
+noremap zi za
 " nnoremap <Leader>e zd
 " vnoremap <Leader>e zd
 " nnoremap <Leader>E zD
