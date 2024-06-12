@@ -451,7 +451,10 @@
 
     # Show tracking branch name if it differs from local branch.
     if [[ -n ${VCS_STATUS_REMOTE_BRANCH:#$VCS_STATUS_LOCAL_BRANCH} ]]; then
-      res+="${meta}:${clean}${(V)VCS_STATUS_REMOTE_BRANCH//\%/%%}"
+      local remote_branch=${(V)VCS_STATUS_REMOTE_BRANCH}
+      (( $#remote_branch > 15 )) && remote_branch[4,-10]=".."  # <-- this line
+      # res+="${meta}:::${clean}${(V)VCS_STATUS_REMOTE_BRANCH//\%/%%}"
+      res+="${meta}:${clean}${remote_branch//\%/%%}"
     fi
 
     # Display "wip" if the latest commit's summary contains "wip" or "WIP".
