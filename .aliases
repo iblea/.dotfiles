@@ -622,25 +622,35 @@ function grepff() {
             if [ -z "${output_array[$i]}" ]; then
                 continue
             fi
-            results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
+            # results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
+            results+="${output_array[$i]}\n${output_array[$i+1]}\n\0"
+            # results+="${output_array[$i]}\n${output_array[$i+1]}\0"
         done
     else
         for (( i=0; i<${#output_array[@]}; i+=2 )); do
             if [ -z "${output_array[$i]}" ]; then
                 continue
             fi
-            results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
+            # results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
+            results+="${output_array[$i]}\n${output_array[$i+1]}\n\0"
+            # results+="${output_array[$i]}\n${output_array[$i+1]}\0"
         done
     fi
     if [ -z "$results" ]; then
         echo "cannot find '$@'"
         return
     fi
+
+    results=${results:0:${#results}-4}
     # echo "${results:2}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
-    echo "${results:2}" | fzf -e --ansi --height 60% --layout=reverse \
+    # echo "${results}" | fzf -e --ansi --height 60% --layout=reverse --read0 --cycle --info=inline  \
+    echo "${results}" | fzf -e --ansi --read0 --cycle --info=inline  \
+        --marker '═' --marker-multi-line '╔║╚' \
         --bind "ctrl-a:half-page-up" \
         --bind "ctrl-d:half-page-down" \
-        --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
+        --bind "enter:execute-silent(echo {} | head -n 1 | xargs -I{} code --goto ${current_pwd}/{})"
+        # --bind "enter:execute-silent(echo {} | awk -F '\n' '{ print \$1 }' | xargs -I{} code --goto ${current_pwd}/{})"
+    # --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
     #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
 }
 
