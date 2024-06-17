@@ -5,7 +5,7 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	call plug#begin($HOME.'/.vim/plugged')
 
 	Plug 'preservim/nerdtree'
-	Plug 'jfhib/AutoComplPop'
+	Plug 'iblea/AutoComplPop'
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
 	Plug 'jlanzarotta/bufexplorer'
@@ -25,7 +25,7 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	Plug 'ku1ik/vim-monokai'
 
 	" Plug 'akiicat/vim-github-theme'
-	Plug 'jfhib/vim-github-theme'
+	Plug 'iblea/vim-github-theme'
 	" only use neovim
 	" Plug 'projekt0n/github-nvim-theme'
 
