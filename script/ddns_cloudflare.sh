@@ -28,6 +28,36 @@ Proxied=false
 
 
 
+
+# if [ $# -le 1 ] || [ $# -ge 4 ]; then
+#     echo "Wrong Argument"
+#     echo ""
+#     echo "Usage ddns_cloudflare.sh \"[RECORD]\" \"[CHANGED_IP]\" \"[RECORD_TYPE] (default A)\""
+#     echo "Example : ./ddns_cloudflare.sh \"private.test.com\" \"10.0.0.1\""
+#     echo "Example : ./ddns_cloudflare.sh \"text.test.com\" \"text_test\" \"TXT\""
+#     echo ""
+#
+#     exit 1
+# fi
+#
+# if [ $# -eq 2 ]; then
+#     RECORD="$1"
+#     CHANGED_IP="$2"
+#     RECORD_TYPE="A"
+# else
+#     RECORD="$1"
+#     CHANGED_IP="$2"
+#     RECORD_TYPE="$3"
+# fi
+
+
+
+
+
+
+
+
+
 # H1="-HX-Auth-Email:$Login_Email"
 # H2="-HX-Auth-Key:$Global_API_Key"
 # H3="-HContent-Type:application/json"
