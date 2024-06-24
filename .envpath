@@ -81,6 +81,10 @@ done
 
 fi
 
+if [ -d "/Applications/IntelliJ IDEA.app" ]; then
+	export PATH="$PATH:/Applications/IntelliJ IDEA.app/Contents/MacOS"
+fi
+
 
 
 unset openssl_brew_version
