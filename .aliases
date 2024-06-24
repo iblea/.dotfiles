@@ -345,17 +345,17 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     }
 
     function ddns_set() {
-        ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_google.sh"
+        ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_cloudflare.sh"
         if [ ! -x $ddns_script_path ]; then
             echo "$ddns_script_path"
             echo "not found ddns script path"
             return 1
         fi
-        "$ddns_script_path" "$1" "$2"
+        "$ddns_script_path" $@
     }
 
     function ddnsvi() {
-        ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_google.sh"
+        ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_cloudflare.sh"
         if [ ! -x $ddns_script_path ]; then
             echo "$ddns_script_path"
             echo "not found ddns script path"
