@@ -62,7 +62,7 @@ return {
       desc = "Telescope find files",
     },
     {
-      "<leader>gr",
+      "<leader>gl",
       ":Telescope live_grep<CR>",
       desc = "Telescope live grep",
     },
