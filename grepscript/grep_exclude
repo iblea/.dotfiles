@@ -1,6 +1,8 @@
 
 exclude_str=(
-    --exclude-dir='node_modules'
     --exclude-dir='.git'
+    --exclude-dir='.svn'
+    --exclude-dir='node_modules'
+    --exclude-dir='__pycache__'
     --exclude='parse.tab.c'
 )

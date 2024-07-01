@@ -14,12 +14,10 @@ function grepfzf_function() {
     # fi
 
     local current_pwd="$(pwd)"
-    local exclude_dirs=( ".git" ".svn" "node_modules" "__pycache__" )
 
-    local search_str=()
-    for exclude_dir in "${exclude_dirs[@]}"; do
-        search_str+=( "--exclude-dir='${exclude_dir}'" )
-    done
+    source $HOME/.dotfiles/grepscript/grep_exclude
+    local search_str=( )
+    IFS='' search_str+=( ${exclude_str[@]} )
 
     IFS='' search_str+=( "$@" )
 
@@ -31,13 +29,9 @@ function grepfzf_function() {
         return
     fi
 
-
-    local ORG_IFS=$IFS
     local output_array=()
-
     IFS=$'\n' output_array=( $(echo "$output" ) )
 
-    IFS=$ORG_IFS
     local results=""
 
     for (( i=0; i<${#output_array[@]}; i+=2 )); do
@@ -54,7 +48,7 @@ function grepfzf_function() {
         return
     fi
 
-    echo -e "${results}"
+    echo -n -e "${results}"
 
 }
 
