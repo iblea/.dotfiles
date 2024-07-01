@@ -562,6 +562,9 @@ function grepff() {
         agrepn "$@"
         return
     fi
+
+    local CURRENT_SHELL=$(ps -p $$ -o 'comm=')
+
     # code -s > /dev/null
     # if [ $? -ne 0 ]; then
     #     return
@@ -574,14 +577,20 @@ function grepff() {
 
     local search_string=""
     if [[ "$1" = "-f" ]]; then
-        search_string="${@:2}"
+        IFS='' search_str+=( "${@:2}" )
     elif [[ "$1" = "-n" ]]; then
-        search_string="${@:2}"
+        IFS='' search_str+=( "${@:2}" )
     else
-        search_string="${@}"
+        IFS='' search_str+=( "${@}" )
     fi
-    IFS='' search_str+=( "$search_string" )
     local current_pwd="$(pwd)"
+
+    if grep -q "zsh" <<< "$CURRENT_SHELL"; then
+        search_string=$(echo "${search_str[${#search_str[@]+1}]}")
+    else
+        search_string=$(echo "${search_str[${#search_str[@]}-1]}")
+    fi
+
 
     # -P option : perl regex
     # grep --color=always -rnIHP ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
@@ -610,7 +619,6 @@ function grepff() {
     fi
 
     local output_array=()
-    local CURRENT_SHELL=$(ps -p $$ -o 'comm=')
 
     local ORG_IFS=$IFS
     IFS=$'\n' output_array=( $(echo "$output" ) )
@@ -618,7 +626,7 @@ function grepff() {
 
     local results=""
 
-    if grep -q "/zsh" <<< "$CURRENT_SHELL"; then
+    if grep -q "zsh" <<< "$CURRENT_SHELL"; then
         for (( i=1; i<=${#output_array[@]}; i+=2 )); do
             if [ -z "${output_array[$i]}" ]; then
                 continue

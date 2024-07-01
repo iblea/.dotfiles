@@ -68,7 +68,7 @@ function grepfzf_function() {
     IFS=$ORG_IFS
     local results=""
 
-    if grep -q "/zsh" <<< "$CURRENT_SHELL"; then
+    if grep -q "zsh" <<< "$CURRENT_SHELL"; then
         for (( i=1; i<=${#output_array[@]}; i+=2 )); do
             if [ -z "${output_array[$i]}" ]; then
                 continue
