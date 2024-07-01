@@ -63,7 +63,7 @@ fzf \
     --bind "change:reload:${rg_prefix} {q} || true" \
     --bind "ctrl-a:half-page-up" \
     --bind "ctrl-d:half-page-down" \
-    --prompt 'ripgrep> ' \
+    --prompt 'grepnfzf> ' \
     --delimiter '\n' \
     --preview "${preview_prefix} '{1}' {q}" \
     --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
