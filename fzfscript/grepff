@@ -120,7 +120,7 @@ function grepfzf_function() {
         --prompt 'grepff> ' \
         --delimiter '\n' \
         --preview "${preview_script} '{1}' '$search_string'" \
-        --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
+        --preview-window 'up,40%:wrap' \
         --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
 
 
