@@ -571,13 +571,16 @@ function grepff() {
     for exclude_dir in "${exclude_dirs[@]}"; do
         search_str+=( "--exclude-dir='${exclude_dir}'" )
     done
+
+    local search_string=""
     if [[ "$1" = "-f" ]]; then
-        IFS='' search_str+=( "${@:2}" )
+        search_string="${@:2}"
     elif [[ "$1" = "-n" ]]; then
-        IFS='' search_str+=( "${@:2}" )
+        search_string="${@:2}"
     else
-        IFS='' search_str+=( "$@" )
+        search_string="${@}"
     fi
+    IFS='' search_str+=( "$search_string" )
     local current_pwd="$(pwd)"
 
     # -P option : perl regex
@@ -585,10 +588,12 @@ function grepff() {
     # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
     # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
     local output=""
+    local preview_script="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
     if [[ "$1" = "-f" ]]; then
         # echo "-f option"
         # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
         output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+        preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
     elif [[ "$1" = "-n" ]]; then
         # echo "-n option"
         # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
@@ -604,20 +609,16 @@ function grepff() {
         return
     fi
 
-    local ORG_IFS=$IFS
     local output_array=()
-    # if grep -q "/zsh" <<< "$SHELL"; then
-    if [ -n "$ZSH" ]; then
-        IFS=$'\n' read -r -d '' -A output_array <<< "$output"
-    else
-        # IFS=$'\n' output_array=( $(echo "$output") )
-        IFS=$'\n' read -r -d '' -a output_array <<< "$output"
-    fi
+    local CURRENT_SHELL=$(ps -p $$ -o 'comm=')
+
+    local ORG_IFS=$IFS
+    IFS=$'\n' output_array=( $(echo "$output" ) )
     IFS=$ORG_IFS
 
     local results=""
-    # if grep -q "/zsh" <<< "$SHELL"; then
-    if [ -n "$ZSH" ]; then
+
+    if grep -q "/zsh" <<< "$CURRENT_SHELL"; then
         for (( i=1; i<=${#output_array[@]}; i+=2 )); do
             if [ -z "${output_array[$i]}" ]; then
                 continue
@@ -644,15 +645,34 @@ function grepff() {
     results=${results:0:${#results}-4}
     # echo "${results:2}" | fzf -e --ansi --height 80% --layout=reverse | awk -F '    | ' '{print $NF}' | xargs -I{} echo "${current_pwd}/{}"
     # echo "${results}" | fzf -e --ansi --height 60% --layout=reverse --read0 --cycle --info=inline  \
-    echo "${results}" | fzf -e --ansi --read0 --cycle --info=inline  \
+
+    echo "${results}" | fzf \
+        --color hl+:underline \
+        -e --ansi --read0 --cycle --info=inline  \
         --marker '═' --marker-multi-line '╔║╚' \
         --bind "ctrl-a:half-page-up" \
         --bind "ctrl-d:half-page-down" \
-        --bind "enter:execute-silent(echo {} | head -n 1 | xargs -I{} code --goto ${current_pwd}/{})"
-        # --bind "enter:execute-silent(echo {} | awk -F '\n' '{ print \$1 }' | xargs -I{} code --goto ${current_pwd}/{})"
-    # --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
-    #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
+        --prompt 'grepff> ' \
+        --delimiter '\n' \
+        --preview "${preview_script} '{1}' $search_string" \
+        --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
+        --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+
+
+    # echo "${results}" | fzf -e --ansi --read0 --cycle --info=inline  \
+    #     --marker '═' --marker-multi-line '╔║╚' \
+    #     --bind "ctrl-a:half-page-up" \
+    #     --bind "ctrl-d:half-page-down" \
+    #     --bind "enter:execute-silent(echo {} | head -n 1 | xargs -I{} code --goto ${current_pwd}/{})"
+    #     # --bind "enter:execute-silent(echo {} | awk -F '\n' '{ print \$1 }' | xargs -I{} code --goto ${current_pwd}/{})"
+    #     # --bind "enter:execute-silent(echo {} | awk -F '    | ' '{print \$NF}' | xargs -I{} code --goto ${current_pwd}/{})"
+    #     #  | fzf -e --ansi --color=hl:#5FA392 --bind "ctrl-m:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)" --bind "enter:execute-silent(echo {} | cut -f -2 -d ':' | xargs code --goto)"
 }
+
+alias gnf="$HOME/.dotfiles/fzfscript/grepfzf"
+alias gff="$HOME/.dotfiles/fzfscript/grepfzf"
+alias gmf="$HOME/.dotfiles/fzfscript/grepmfzf"
+alias gmff="$HOME/.dotfiles/fzfscript/grepmfzf"
 
 
 # fzfcode
