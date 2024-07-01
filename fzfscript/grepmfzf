@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# grepfzf ''
+# exit 0
+
+current_pwd="$(pwd)"
+# grep_prefix='grepfzf'
+# rg_prefix='rg --column --line-number --no-heading --color=always --smart-case'
+# rg_prefix='grepfzf'
+# rg_prefix="$HOME/.dotfiles/fzfscript/grepnfzf.sh"
+rg_prefix="$HOME/.dotfiles/fzfscript/grepmfzf.sh"
+preview_prefix="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
+# preview_prefix="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
+
+
+
+# /Users/ible/.dotfiles/grepfzf.sh "$@"
+# exit 0
+
+
+	# --bind "start:reload:echo -n -e $(grepfzf 'test')" \
+	# --bind "change:reload:echo -n -e \"$(grepfzf {q})\" || true" \
+    # --color hl:underline \
+
+fzf \
+    --color hl+:underline \
+    -e --ansi --read0 --cycle --info=inline  \
+    --marker '═' --marker-multi-line '╔║╚' \
+    --bind "start:reload:${rg_prefix} '*:-' " \
+    --bind "change:reload:${rg_prefix} {q} || true" \
+    --bind "ctrl-a:half-page-up" \
+    --bind "ctrl-d:half-page-down" \
+    --prompt 'ripgrep> ' \
+    --delimiter '\n' \
+    --preview "${preview_prefix} '{1}' '{q}'" \
+    --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
+    --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+
+    # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+
+
+
