@@ -11,9 +11,10 @@ line=$(echo "$1" | awk -F ':' '{print $2}')
 
 file_end_line=$(wc -l "$filename" | awk '{print $1}')
 
+preview_len=7
 
-startline=$(expr $line - 10)
-endline=$(expr $line + 10)
+startline=$(expr $line - $preview_len)
+endline=$(expr $line + $preview_len)
 
 if [ $startline -le 0 ]; then
     startline=1
@@ -24,35 +25,30 @@ if [ $endline -ge $file_end_line ]; then
 fi
 
 # sed -n "${startline},${endline}p" ${filename}
-echo "$2"
 
 if [[ "$line" = "$startline" ]]; then
-    endline=$(expr $line + 20)
+
+    endline=$(expr $line + $preview_len + $preview_len)
     endline_start=$(expr $line + 1)
 
     sed -n "${line}p" ${filename} | grep --color=always -P "$2"
     sed -n "${endline_start},${endline}p" ${filename}
 
-    exit 0
-fi
+elif [[ "$line" = "$endline" ]]; then
 
-
-if [[ "$line" = "$endline" ]]; then
-    startline=$(expr $line - 20)
+    startline=$(expr $line - $preview_len - $preview_len)
     startline_end=$(expr $line - 1)
 
     sed -n "${startline},${startline_end}p" ${filename}
     sed -n "${line}p" ${filename} | grep --color=always -P "$2"
 
-    exit 0
+else
+
+    startline_end=$(expr $line - 1)
+    endline_start=$(expr $line + 1)
+
+    sed -n "${startline},${startline_end}p" ${filename}
+    sed -n "${line}p" ${filename} | grep --color=always -P "$2"
+    sed -n "${endline_start},${endline}p" ${filename}
+
 fi
-
-
-startline_end=$(expr $line - 1)
-endline_start=$(expr $line + 1)
-
-sed -n "${startline},${startline_end}p" ${filename}
-sed -n "${line}p" ${filename} | grep --color=always -P "$2"
-sed -n "${endline_start},${endline}p" ${filename}
-
-
