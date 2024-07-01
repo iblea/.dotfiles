@@ -12,28 +12,19 @@ function grepfzf_function() {
     # if [ $? -ne 0 ]; then
     #     return
     # fi
+
+    local current_pwd="$(pwd)"
     local exclude_dirs=( ".git" ".svn" "node_modules" "__pycache__" )
+
     local search_str=()
     for exclude_dir in "${exclude_dirs[@]}"; do
         search_str+=( "--exclude-dir='${exclude_dir}'" )
     done
-    if [[ "$1" = "-f" ]]; then
-        IFS='' search_str+=( "${@:2}" )
-    elif [[ "$1" = "-n" ]]; then
-        IFS='' search_str+=( "${@:2}" )
-    else
-        IFS='' search_str+=( "$@" )
-    fi
-    local current_pwd="$(pwd)"
 
-    # -P option : perl regex
-    # grep --color=always -rnIHP ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
-    # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
-    # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
+    IFS='' search_str+=( "$@" )
 
     local output=""
     output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
-
 
     if [ -z "$output" ]; then
         echo "grep result is empty"
@@ -43,9 +34,6 @@ function grepfzf_function() {
 
     local ORG_IFS=$IFS
     local output_array=()
-
-    # current shell
-    local CURRENT_SHELL=$(ps -p $$ -o 'comm=')
 
     IFS=$'\n' output_array=( $(echo "$output" ) )
 
