@@ -1,5 +1,16 @@
 #!/bin/bash
 
+
+if [ -z "$(command -v fzf)" ]; then
+    agrepm "$@"
+    exit 1
+fi
+if [ -z "$(command -v code)" ]; then
+    agrepn "$@"
+    exit 1
+fi
+
+
 # grepfzf ''
 # exit 0
 
@@ -22,21 +33,41 @@ preview_prefix="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
 	# --bind "change:reload:echo -n -e \"$(grepfzf {q})\" || true" \
     # --color hl:underline \
 
+if [ -z "$@" ]; then
+
 fzf \
     --color hl+:underline \
-    -e --ansi --read0 --cycle --info=inline  \
+    --disabled \
+    --literal --ansi --read0 --cycle --info=inline  \
     --marker '═' --marker-multi-line '╔║╚' \
-    --bind "start:reload:${rg_prefix} '*:-' " \
+    --bind "start:reload:${rg_prefix} '' " \
     --bind "change:reload:${rg_prefix} {q} || true" \
     --bind "ctrl-a:half-page-up" \
     --bind "ctrl-d:half-page-down" \
     --prompt 'ripgrep> ' \
     --delimiter '\n' \
-    --preview "${preview_prefix} '{1}' '{q}'" \
+    --preview "${preview_prefix} '{1}' {q}" \
     --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
     --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
-
     # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
 
+else
 
+fzf \
+    --color hl+:underline \
+    --disabled \
+    --literal --ansi --read0 --cycle --info=inline  \
+    --marker '═' --marker-multi-line '╔║╚' \
+    --query "$@" \
+    --bind "start:reload:${rg_prefix} '$@' " \
+    --bind "change:reload:${rg_prefix} {q} || true" \
+    --bind "ctrl-a:half-page-up" \
+    --bind "ctrl-d:half-page-down" \
+    --prompt 'ripgrep> ' \
+    --delimiter '\n' \
+    --preview "${preview_prefix} '{1}' {q}" \
+    --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
+    --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+    # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
 
+fi

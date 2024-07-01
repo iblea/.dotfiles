@@ -3,12 +3,8 @@
 
 function grepfzf_function() {
 
-    if [ -z "$(command -v fzf)" ]; then
-        agrepm "$@"
-        return
-    fi
-    if [ -z "$(command -v code)" ]; then
-        agrepn "$@"
+    if [ -z "$@" ]; then
+        echo "no input"
         return
     fi
 
