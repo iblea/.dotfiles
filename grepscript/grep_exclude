@@ -1,0 +1,6 @@
+
+exclude_str=(
+    --exclude-dir='node_modules'
+    --exclude-dir='.git'
+    --exclude='parse.tab.c'
+)

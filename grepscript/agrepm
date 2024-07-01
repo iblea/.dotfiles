@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+curpwd=$(pwd)
+
+if [[ "$curpwd" != "/" ]]; then
+    curpwd="${curpwd}/"
+fi
+
+opts=( )
+keyword="$@"
+if [ $# -ge 2 ]; then
+    IFS='' array=( $@ )
+    IFS='' opts=( $(echo "${array[@]:0:${#array[@]}-1}") )
+    keyword=${array[((${#array[@]}-1))]}
+fi
+
+
+source $HOME/.dotfiles/grepscript/grep_exclude
+
+# grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\[m\[K\s*|[m[K|g"
+# grep --color=always -rnIHF ${search_str[@]} | sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2"
+grep --color=always -rnIHF ${exclude_str[@]} ${opts[@]} "$keyword" | sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
