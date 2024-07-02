@@ -22,7 +22,7 @@ end
 local lazypath = get_lazy_path()
 vim.opt.rtp:prepend(lazypath)
 
-vim.g.mapleader = "q"
+vim.g.mapleader = "s"
 
 -- General settings
 require("modules.globals")

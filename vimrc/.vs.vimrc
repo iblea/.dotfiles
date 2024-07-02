@@ -11,9 +11,9 @@ set rnu
 set noic
 set scrolloff=5
 
-noremap s <nop>
-nnoremap S <nop>
-let mapleader='q'
+noremap q <nop>
+nnoremap Q <nop>
+let mapleader='s'
 noremap \ <nop>
 " map S s
 
