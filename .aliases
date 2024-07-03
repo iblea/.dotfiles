@@ -175,20 +175,20 @@ alias psa='ps -aef'
 function psf() {
     process_name="$@"
     ps -aef | head -n1
-    ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+    # ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
     if [ $# -eq 0 ]; then
         ps -aef
         return 0
     fi
 
-    process_names=( $@ )
-    processes=$(ps -aef)
+    IFS='' process_names=( $@ )
+    processes="$(ps -aef)"
 
     for process_name in "${process_names[@]}" ; do
-        processes=$(echo "$processes" | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name")
+        # bash -c "echo -e \"${processes}\" | grep --color=always \"$process_name\" | grep -v \"grep --color.*always.*$process_name\""
+        echo -e "${processes}" | grep -a --color=always "$process_name" | grep -a -v "grep --color.*always.*$process_name"
     done
 
-    echo "$processes"
 }
 
 alias makef='make -j8'
