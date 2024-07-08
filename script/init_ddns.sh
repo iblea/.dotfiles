@@ -17,7 +17,7 @@ DOMAIN="domain.com"
 RECORD_TYPE="A"
 # RECORD_TYPE="TXT"
 RECORD="test.domain.com"
-CHANGED_IP="192.168.0.1"
+CHANGED_IP=""
 TTL=600
 Proxied=false
 ZN="" # ZONEID 직접입력
@@ -30,28 +30,52 @@ ZN="" # ZONEID 직접입력
 
 
 
-if [ $# -le 1 ] || [ $# -ge 4 ]; then
-    echo "Wrong Argument"
-    echo ""
-    echo "Usage ddns_cloudflare.sh \"[RECORD]\" \"[CHANGED_IP]\" \"[RECORD_TYPE] (default A)\""
-    echo "Example : ./ddns_cloudflare.sh \"private.test.com\" \"10.0.0.1\""
-    echo "Example : ./ddns_cloudflare.sh \"text.test.com\" \"text_test\" \"TXT\""
-    echo ""
+# if [ $# -le 1 ] || [ $# -ge 4 ]; then
+#     echo "Wrong Argument"
+#     echo ""
+#     echo "Usage ddns_cloudflare.sh \"[RECORD]\" \"[CHANGED_IP]\" \"[RECORD_TYPE] (default A)\""
+#     echo "Example : ./ddns_cloudflare.sh \"private.test.com\" \"10.0.0.1\""
+#     echo "Example : ./ddns_cloudflare.sh \"text.test.com\" \"text_test\" \"TXT\""
+#     echo ""
+#
+#     exit 1
+# fi
+#
+# if [ $# -eq 2 ]; then
+#     RECORD="$1"
+#     CHANGED_IP="$2"
+#     RECORD_TYPE="A"
+# else
+#     RECORD="$1"
+#     CHANGED_IP="$2"
+#     RECORD_TYPE="$3"
+# fi
 
+
+# retry 3 times
+if [ -z "$(command -v curl)" ]; then
+    echo "curl is not installed"
     exit 1
 fi
 
-if [ $# -eq 2 ]; then
-    RECORD="$1"
-    CHANGED_IP="$2"
-    RECORD_TYPE="A"
-else
-    RECORD="$1"
-    CHANGED_IP="$2"
-    RECORD_TYPE="$3"
+for (( i = 1; i <= 3; i++ )); do
+    CHANGED_IP=$(curl --max-time 5 -sk --request POST --url "https://ifconfig.me/ip" 2>/dev/null)
+    if [[ "$?" != "0" ]]; then
+        continue
+    fi
+
+    if [ -n "$CHANGED_IP" ]; then
+        break
+    fi
+    CHANGED_IP=""
+done
+
+echo "CHANGED_IP: $CHANGED_IP"
+
+if [ -z "$CHANGED_IP" ]; then
+    echo "Failed to get the IP address"
+    exit 1
 fi
-
-
 
 
 
