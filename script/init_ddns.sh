@@ -59,7 +59,7 @@ if [ -z "$(command -v curl)" ]; then
 fi
 
 for (( i = 1; i <= 3; i++ )); do
-    CHANGED_IP=$(curl --max-time 5 -sk --request POST --url "https://ifconfig.me/ip" 2>/dev/null)
+    CHANGED_IP=$(curl --max-time 5 -sk --request GET --url "https://ifconfig.me/ip" 2>/dev/null)
     if [[ "$?" != "0" ]]; then
         continue
     fi
