@@ -16,7 +16,7 @@ CLOUD_FLARE_API_KEY="CLOUDFLARE_API_KEY (https://developers.cloudflare.com/funda
 DOMAIN="domain.com"
 RECORD_TYPE="A"
 # RECORD_TYPE="TXT"
-RECORD="test.domain.com"
+RECORDS=( "test.domain.com" )
 CHANGED_IP=""
 TTL=600
 Proxied=false
@@ -120,31 +120,31 @@ if [ -z "$ZN" ]; then
     exit 1
 fi
 
-AIDARY=$(AID)
-# echo "AIDARY: $AIDARY"
+for RECORD in "${RECORDS[@]}"; do
 
-if [ -n "$AIDARY" ]; then
-    # update
+    AIDARY=$(AID)
+    # echo "AIDARY: $AIDARY"
 
-    echo "domain is already exist, update it"
-    curl -sk --request PUT \
-        --url "$V4/$ZN/dns_records/${AIDARY}" \
-        -H "$H1" -H "$H2" \
-        --data "{\"type\":\"${RECORD_TYPE}\",\"name\":\"${RECORD}\",\"content\":\"${CHANGED_IP}\",\"proxied\":$Proxied,\"ttl\":$TTL}" \
-        | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
+    if [ -n "$AIDARY" ]; then
+        # update
+        echo "domain is already exist, update it"
+        curl -sk --request PUT \
+            --url "$V4/$ZN/dns_records/${AIDARY}" \
+            -H "$H1" -H "$H2" \
+            --data "{\"type\":\"${RECORD_TYPE}\",\"name\":\"${RECORD}\",\"content\":\"${CHANGED_IP}\",\"proxied\":$Proxied,\"ttl\":$TTL}" \
+            | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
 
-    exit 0
-fi
+    else
+        # add
+        echo "domain is not exist, create it"
+        curl -sk --request POST \
+            --url "$V4/$ZN/dns_records" \
+            -H "$H1" -H "$H2" \
+            --data "{\"type\":\"${RECORD_TYPE}\",\"name\":\"${RECORD}\",\"content\":\"${CHANGED_IP}\",\"proxied\":$Proxied,\"ttl\":$TTL}" \
+            | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
+    fi
 
-
-echo "domain is not exist, create it"
-curl -sk --request POST \
-    --url "$V4/$ZN/dns_records" \
-    -H "$H1" -H "$H2" \
-    --data "{\"type\":\"${RECORD_TYPE}\",\"name\":\"${RECORD}\",\"content\":\"${CHANGED_IP}\",\"proxied\":$Proxied,\"ttl\":$TTL}" \
-    | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
-
-
+done
 
 
 
