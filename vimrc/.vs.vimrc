@@ -251,6 +251,7 @@ inoremap <Tab> <Tab>
 
 
 " bookmark
+noremap <S-q> %
 nnoremap ^ `
 vnoremap ^ `
 noremap ` m
