@@ -98,7 +98,7 @@ H2="Content-Type: application/json"
 V4="https://api.cloudflare.com/client/v4/zones"
 
 function getZone() {
-    ZN=$(curl -s --request GET --url "$V4?name=$DOMAIN" \
+    ZN=$(curl -sk --request GET --url "$V4?name=$DOMAIN" \
         -H "$H1" -H "$H2" | grep -Po '(?<="id":")[^"]*' | head -1)
     echo "$ZN"
 }
