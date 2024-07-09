@@ -23,12 +23,14 @@ noremap \ <nop>
 cnoreabbrev ss sh
 
 " delete not copy
+nnoremap x "_x
 vnoremap x "_x
 vnoremap X "_x
 " vnoremap d "_d
 " vnoremap D "_d
 " noremap DL "_x
 " noremap DH "_X
+" nnoremap x "_x
 noremap D "_d
 nnoremap DD "_dd
 nnoremap DW "_dw
