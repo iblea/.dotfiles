@@ -19,14 +19,14 @@
           },
           "to_after_key_up": [
             {
+              "key_code": "escape",
+              "lazy": false
+            },
+            {
               "select_input_source": {
                 "input_source_id": "com.apple.keylayout.US",
                 "language": "en"
               }
-            },
-            {
-              "key_code": "escape",
-              "lazy": false
             }
           ]
         },
@@ -44,7 +44,7 @@
             },
             "key_code": "spacebar"
           },
-          "to": [
+          "to_after_key_up": [
             {
               "key_code": "spacebar",
               "modifiers": [
@@ -73,7 +73,7 @@
             },
             "key_code": "spacebar"
           },
-          "to": [
+          "to_after_key_up": [
             {
               "key_code": "spacebar",
               "modifiers": [
@@ -96,16 +96,16 @@
             },
             "key_code": "spacebar"
           },
-          "to": [
+          "to_after_key_up": [
+            {
+              "key_code": "escape",
+              "lazy": false
+            },
             {
               "select_input_source": {
                 "input_source_id": "com.apple.keylayout.ABC",
                 "language": "en"
               }
-            },
-            {
-              "key_code": "escape",
-              "lazy": false
             }
           ]
         }
