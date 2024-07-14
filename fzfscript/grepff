@@ -32,10 +32,10 @@ elif [[ "$1" = "-n" ]]; then
 else
     IFS='' search_str+=( "${@}" )
 fi
-echo "search_str: ${search_str[@]}"
+# echo "search_str: ${search_str[@]}"
 
 search_string=$(echo "${search_str[${#search_str[@]}-1]}")
-echo "search_string: $search_string"
+# echo "search_string: $search_string"
 
 # if grep -q "zsh" <<< "$CURRENT_SHELL"; then
 #     search_string=$(echo "${search_str[${#search_str[@]+1}]}")
