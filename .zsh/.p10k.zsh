@@ -866,7 +866,9 @@
 
   ######################################[ load: CPU load ]######################################
   # Show average CPU load over this many last minutes. Valid values are 1, 5 and 15.
-  typeset -g POWERLEVEL9K_LOAD_WHICH=5
+  typeset -g POWERLEVEL9K_LOAD_WHICH=1
+  # echo "scale = 2; (8.6 / 6) * 100" | bc  % (load average percent)
+
   # Load color when load is under 50%.
   typeset -g POWERLEVEL9K_LOAD_NORMAL_FOREGROUND=66
   # Load color when load is between 50% and 70%.
