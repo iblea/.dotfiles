@@ -100,8 +100,18 @@ AIDARY=$(AID)
 # echo "AIDARY: $AIDARY"
 
 if [ -n "$AIDARY" ]; then
-    # update
 
+	# delete
+	if [[ "${CHANGED_IP}" = "del" ]] || [[ "$RECORD_TYPE" = "del" ]]; then
+		echo "domain value delete"
+		curl -sk --request DELETE \
+    	    --url "$V4/$ZN/dns_records/${AIDARY}" \
+    	    -H "$H1" -H "$H2" \
+			| grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
+		exit 0
+	fi
+
+    # update
     echo "domain is already exist, update it"
     curl -sk --request PUT \
         --url "$V4/$ZN/dns_records/${AIDARY}" \
