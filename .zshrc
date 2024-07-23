@@ -2,6 +2,9 @@ if [ -d /opt/homebrew ]; then
     if ! grep -q "/opt/homebrew/bin" <<< "$PATH"; then
         export PATH=/opt/homebrew/bin:$PATH
     fi
+    if ! grep -q "/opt/homebrew/sbin" <<< "$PATH"; then
+        export PATH=/opt/homebrew/sbin:$PATH
+    fi
 fi
 
 if [ -d $HOME/.dotfiles/.bin/ ]; then
