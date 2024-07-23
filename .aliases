@@ -2016,7 +2016,7 @@ function idump()
 }
 
 # alias
-[ -f $HOME/.alias_waf ] && source ~/.alias_waf
+[ -f $HOME/.aliases_company ] && source ~/.aliases_company
 
 
 return 0
