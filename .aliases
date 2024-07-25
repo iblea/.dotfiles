@@ -389,7 +389,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     alias expl="open ."
 
     function aidi() {
-        $HOME/.dotfiles/aider.sh
+        $HOME/.dotfiles/script/aider.sh
     }
 
     function aidic() {
