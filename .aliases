@@ -1363,7 +1363,7 @@ function cpdown() {
     cp -r $@ ~/download/
 }
 
-alias colorpreview='for i in {0..255}; do print -Pn “%K{$i} %k%F{$i}${(l:3::0:)i}%f “ ${${(M)$((i%6)):#3}:+$’\n’}; done'
+alias colorpreview='for i in {0..255}; do print -Pn “%K{$i} %k%F{$i}${(l:3::0:)i}%f “ ${${(M)$((i%6)):#3}:+$’\\n’}; done'
 
 alias sshclear='pkill -f "sshd:.*$USER.*\\@"'
 alias sshclearall='pkill -f "sshd:.*\\@"'
