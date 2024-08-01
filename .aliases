@@ -1687,9 +1687,43 @@ function gl() {
     elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
         export LC_ALL=ko_KR.utf8
     fi
-    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+    git log --graph \
+    --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+    --date=short \
+    -10 $@
     export LC_ALL="$AGO_LC_ALL"
 }
+
+function gla() {
+    # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
+    local AGO_LC_ALL="$LC_ALL"
+    if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+        export LC_ALL=ko_KR.UTF-8
+    elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+        export LC_ALL=ko_KR.utf8
+    fi
+    git log --graph \
+    --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+    --date=short \
+    $@
+    export LC_ALL="$AGO_LC_ALL"
+}
+
+function glv() {
+    # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
+    local AGO_LC_ALL="$LC_ALL"
+    if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+        export LC_ALL=ko_KR.UTF-8
+    elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+        export LC_ALL=ko_KR.utf8
+    fi
+    git log --graph \
+    --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%B%n' \
+    --date=short \
+    $@
+    export LC_ALL="$AGO_LC_ALL"
+}
+
 
 # glr
 # glr <option1> <option2>
@@ -1723,8 +1757,11 @@ function glr() {
     elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
         export LC_ALL=ko_KR.utf8
     fi
-    # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
-    git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $opts "remotes/${remotes}/${remote_branch}"
+    git log --graph \
+    --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+    --date=short \
+    $opts "remotes/${remotes}/${remote_branch}"
+
     export LC_ALL="$AGO_LC_ALL"
 }
 
@@ -1739,14 +1776,26 @@ function gld() {
     fi
 
     if [ $# -eq 0 ]; then
-        git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ./
+        git log --graph \
+        --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+        --date=short \
+        ./
     else
         if [[ "$1" = "/" ]]; then
-            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short ${@:2}
+            git log --graph \
+            --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+            --date=short \
+            ${@:2}
         elif [[ "${1:0:1}" = "-" ]]; then
-            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@ ./
+            git log --graph \
+            --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+            --date=short \
+            $@ ./
         else
-            git log --graph --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' --date=short $@
+            git log --graph \
+            --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%s%n' \
+            --date=short \
+            $@
         fi
     fi
 
