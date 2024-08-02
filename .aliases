@@ -1720,9 +1720,25 @@ function glv() {
     git log --graph \
     --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%B%n' \
     --date=short \
+    -3 $@
+    export LC_ALL="$AGO_LC_ALL"
+}
+
+function glva() {
+    # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' --date=short $@
+    local AGO_LC_ALL="$LC_ALL"
+    if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+        export LC_ALL=ko_KR.UTF-8
+    elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+        export LC_ALL=ko_KR.utf8
+    fi
+    git log --graph \
+    --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an> [%ce]%Creset %C(auto)%d%Creset %n%B%n' \
+    --date=short \
     $@
     export LC_ALL="$AGO_LC_ALL"
 }
+
 
 
 # glr
