@@ -129,6 +129,14 @@ function cd() {
 }
 fi
 
+function fg() {
+	if [ $# -eq 1 ] && [[ "$@" = "-" ]]; then
+        builtin fg %-
+    else
+        builtin fg %"$@"
+    fi
+}
+
 if [ -n "$(command -v nvim)" ]; then
     alias nvi='nvim'
     alias vi='nvim'
