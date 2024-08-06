@@ -1614,7 +1614,6 @@ fuunalias_alias 'gba' 'git branch --all'
 fuunalias_alias 'gco' 'git checkout'
 fuunalias_alias 'gsh' 'git reset'
 fuunalias_alias 'grs' 'git restore'
-fuunalias_alias 'gci' 'git commit'
 fuunalias_alias 'gcf' 'git config'
 fuunalias_alias 'gcfl' 'git config --list'
 fuunalias_alias 'gs' 'git status'
@@ -1650,6 +1649,18 @@ fuunalias_alias 'gpshfl' 'git push --force-with-lease'
 fuunalias_alias 'gpshfc' 'git push --force'
 fuunalias_alias 'gcpick' 'git cherry-pick'
 fuunalias_alias 'gcpicknci' 'git cherry-pick --no-commit'
+
+# fuunalias_alias 'gci' 'git commit'
+fuunalias_alias 'gci' ''
+
+function gci() {
+    if [ $# -eq 0 ]; then
+        git commit -v
+        return 0
+    fi
+
+    git commit $@
+}
 
 
 
