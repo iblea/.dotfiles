@@ -277,6 +277,7 @@ endfunc
 
 if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
+	autocmd FileType gitcommit  setl ts=4
 endif
 
 
