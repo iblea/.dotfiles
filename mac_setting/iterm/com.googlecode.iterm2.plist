@@ -1611,7 +1611,7 @@
 				<real>1</real>
 			</dict>
 			<key>Blend</key>
-			<real>0.1210354393115942</real>
+			<real>0.10190217391304347</real>
 			<key>Blinking Cursor</key>
 			<false/>
 			<key>Blur</key>
@@ -1713,6 +1713,8 @@
 			<real>1</real>
 			<key>Idle Code</key>
 			<integer>0</integer>
+			<key>Initial Use Transparency</key>
+			<true/>
 			<key>Jobs to Ignore</key>
 			<array>
 				<string>rlogin</string>
@@ -2250,7 +2252,7 @@
 			<key>Thin Strokes</key>
 			<integer>3</integer>
 			<key>Transparency</key>
-			<real>0.24938497340425539</real>
+			<real>0.0</real>
 			<key>Triggers</key>
 			<array>
 				<dict>
