@@ -310,9 +310,9 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         # alias vi="/Applications/MacVim.app/Contents/bin/vim"
         # alias vim="/Applications/MacVim.app/Contents/bin/vim"
     fi
-    if [ -d "/Applications/Neovide.app" ]; then
-        alias gvim='/Applications/Neovide.app/Contents/MacOS/neovide'
-        alias gi='/Applications/Neovide.app/Contents/MacOS/neovide'
+    if [ -d "/Applications/goneovim.app" ]; then
+        alias gvim='/Applications/goneovim.app/Contents/MacOS/goneovim'
+        alias gi='/Applications/goneovim.app/Contents/MacOS/goneovim'
     fi
 
     # brew install findutils
