@@ -310,10 +310,10 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         # alias vi="/Applications/MacVim.app/Contents/bin/vim"
         # alias vim="/Applications/MacVim.app/Contents/bin/vim"
     fi
-	if [ -n "$(command -v nvim-qt)" ]; then
-		alias gvim='nvim-qt'
-		alias gi='nvim-qt'
-	fi
+    if [ -d "/Applications/Neovide.app" ]; then
+        alias gvim='/Applications/Neovide.app/Contents/MacOS/neovide'
+        alias gi='/Applications/Neovide.app/Contents/MacOS/neovide'
+    fi
 
     # brew install findutils
     if [ -f /opt/homebrew/bin/gxargs ]; then
