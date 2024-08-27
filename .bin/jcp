@@ -1,0 +1,61 @@
+#!/bin/bash
+
+if [ $# -le 0 ]; then
+    echo "Wrong Argument"
+    exit 1
+fi
+
+R_MACRO="rloc"
+R_CONFIG="$HOME/.ssh/config"
+
+# MacOS Test
+R_PATH=""
+
+FILES=()
+FILE_PATH_STAT=0
+for arg in "$@"; do
+    if [[ "$arg" = "--" ]]; then
+        FILE_PATH_STAT=1
+        continue
+    fi
+    if [ $FILE_PATH_STAT -eq 1 ]; then
+        R_PATH="$arg"
+        break
+    fi
+
+    FILES+=( "$arg" )
+done
+
+if [ -z "$R_PATH" ]; then
+    CONFIG_READ=$(cat "$R_CONFIG" | grep -A 5 "Host.*${R_MACRO}$" )
+    R_USER=$(echo "$CONFIG_READ" | grep "User" | awk -F ' ' '{ print $NF }')
+    if [ -z "$R_USER" ]; then
+        echo "No User, Edit ssh config"
+        exit 1
+    fi
+    R_PATH="/Users/$R_USER/Downloads"
+fi
+
+REMOTE_ADDR=$(echo "$SSH_CONNECTION" | awk -F ' ' '{ print $1 }')
+echo ""
+echo "Remote Address: $REMOTE_ADDR"
+echo ""
+
+FILE="$1"
+
+if [ $# -eq 1 ]; then
+    FILE="$@"
+fi
+
+scp -F "$R_CONFIG" "${FILES[@]}" "$R_MACRO":"$R_PATH"
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "Transfer Failed"
+    echo ""
+    exit 1
+fi
+
+echo ""
+echo "$REMOTE_ADDR, transfered done"
+echo ""
