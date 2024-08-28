@@ -1,12 +1,15 @@
 #!/bin/bash
 
+R_MACRO="rloc"
+R_CONFIG="$HOME/.ssh/config"
+
+# <username> 설정 시 config 파일의 rloc username으로 바뀜
+R_DEFAULT_DOWNLOAD_PATH="/Users/<username>/Downloads"
+
 if [ $# -le 0 ]; then
     echo "Wrong Argument"
     exit 1
 fi
-
-R_MACRO="rloc"
-R_CONFIG="$HOME/.ssh/config"
 
 # MacOS Test
 R_PATH=""
@@ -33,19 +36,28 @@ if [ -z "$R_PATH" ]; then
         echo "No User, Edit ssh config"
         exit 1
     fi
+    # R_PATH=$(echo "${R_DEFAULT_DOWNLOAD_PATH}" | sed "s/<username>/${R_USER}/")
     R_PATH="/Users/$R_USER/Downloads"
 fi
 
 REMOTE_ADDR=$(echo "$SSH_CONNECTION" | awk -F ' ' '{ print $1 }')
 echo ""
 echo "Remote Address: $REMOTE_ADDR"
-echo ""
 
 FILE="$1"
 
 if [ $# -eq 1 ]; then
     FILE="$@"
 fi
+
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval $(ssh-agent -s) > /dev/null
+fi
+if [ -f "$HOME/.ssh/.passfile" ]; then
+    ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+fi
+echo ""
+
 
 scp -F "$R_CONFIG" "${FILES[@]}" "$R_MACRO":"$R_PATH"
 

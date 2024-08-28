@@ -34,17 +34,11 @@ fi
 
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval $(ssh-agent -s) > /dev/null
-else
-    echo 'already exist'
 fi
-
-
 if [ -f "$HOME/.ssh/.passfile" ]; then
-    { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa"
-else
-    echo 'no add'
-    exit 1;
+    ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
 fi
+
 
 
 SSH_CMD="ssh -F ${SSH_CONFIG_FILE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
@@ -133,7 +127,7 @@ if [ $WIN_SSH == 0 ]; then
     fi
 
     DIFF_1="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D1}\""
-	echo $DIFF_1
+    echo $DIFF_1
     DIFF_2=""
 
     D2=""
