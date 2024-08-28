@@ -75,6 +75,10 @@ if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 fi
 
+if ! grep -q "/opt/homebrew/opt/unzip/bin" <<< "$PATH"; then
+	export PATH="/opt/homebrew/opt/unzip/bin:$PATH"
+fi
+
 if ! grep -q "/opt/homebrew/opt/ruby@3.2/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/ruby@3.2/bin:$PATH"
 fi
