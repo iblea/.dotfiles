@@ -77,6 +77,8 @@ fi
 
 if ! grep -q "/opt/homebrew/opt/unzip/bin" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/unzip/bin:$PATH"
+	export UNZIP="-O cp949"
+	export ZIPINFO="-O cp949"
 fi
 
 if ! grep -q "/opt/homebrew/opt/ruby@3.2/bin/" <<< "$PATH"; then
