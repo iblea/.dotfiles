@@ -69,5 +69,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ""
-echo "$REMOTE_ADDR, transfered done"
+echo "Download Path : ${R_PATH}"
+echo "${REMOTE_ADDR}, transfered done"
 echo ""
