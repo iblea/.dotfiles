@@ -5,9 +5,10 @@
 WIN_SSH=0
 
 
-SSH_IP=10.0.0.1
-SSH_USER=aa
-SSH_PORT=22
+TUNNEL_ALIAS=rloc
+
+# Windows OS only
+TUNNEL_SSH_USER=aa
 
 REMOTE_IP=10.0.1.1
 REMOTE_USER=bb
@@ -20,22 +21,42 @@ SSH_CMD=""
 
 
 
-
-
-if [ -z "$SSH_CMD" ]; then
-    echo "user : $USER"
-    if [[ "$USER" == "root" ]]; then
-        SSH_CMD="ssh -F /root/.ssh/config -i /root/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-    else
-        SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-        # kif [ "${BCOMP_PATH:0:14}" = "/Applications/" ]; then
-        # k	SSH_CMD="ssh -F /Users/$USER/.ssh/config -i /Users/$USER/.ssh/id_rsa"
-        # kelse
-        # k	SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa"
-        # kfi
-    fi
+# SSH_CONFIG_FILE="/home/$USER/.ssh/config"
+SSH_CONFIG_FILE="$HOME/.ssh/config"
+if [[ "$USER" = "root" ]]; then
+    SSH_CONFIG_FILE="/root/.ssh/config"
 fi
-echo $SSH_CMD
+
+if [ ! -f "$SSH_CONFIG_FILE" ]; then
+    echo "don't exist ssh config."
+    exit 1
+fi
+
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval $(ssh-agent -s) > /dev/null
+else
+    echo 'already exist'
+fi
+
+
+if [ -f "$HOME/.ssh/.passfile" ]; then
+    { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa"
+else
+    echo 'no add'
+    exit 1;
+fi
+
+
+SSH_CMD="ssh -F ${SSH_CONFIG_FILE} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+# SSH_CMD="ssh -F ${SSH_CONFIG_FILE}"
+# if [ "${BCOMP_PATH:0:14}" = "/Applications/" ]; then
+#     SSH_CMD="ssh -F /Users/$USER/.ssh/config -i /Users/$USER/.ssh/id_rsa"
+# else
+#     SSH_CMD="ssh -F /home/$USER/.ssh/config -i /home/$USER/.ssh/id_rsa"
+# fi
+
+# echo $SSH_CMD
+# echo ""
 
 
 CP_PATH=/tmp/meldcp
@@ -46,7 +67,7 @@ CUSTOM_FILE=$HOME/.dotfiles/env_custom/bcomp_config
 if [ -f $CUSTOM_FILE ]; then
     . $CUSTOM_FILE
 else
-    echo "not bcomp file"
+    echo "not bcomp file [${CUSTOM_FILE}]"
     echo "create $CUSTOM_FILE and set first"
     exit 1
 fi
@@ -112,6 +133,7 @@ if [ $WIN_SSH == 0 ]; then
     fi
 
     DIFF_1="\"sftp://${REMOTE_USER}@${REMOTE_IP}:${REMOTE_PORT}/${D1}\""
+	echo $DIFF_1
     DIFF_2=""
 
     D2=""
@@ -188,7 +210,7 @@ if [ $WIN_SSH == 0 ]; then
         exit 1
     fi
 
-    $SSH_CMD ${SSH_USER}@${SSH_IP} -p ${SSH_PORT} "${DIFF_COMMAND}"
+    $SSH_CMD ${TUNNEL_ALIAS} "${DIFF_COMMAND}"
     # sleep_rm $D2 &
 
 
@@ -296,12 +318,12 @@ else
         exit 1
     fi
 
-    SESS_ID=`$SSH_CMD ${SSH_USER}@${SSH_IP} -p ${SSH_PORT} "query session | FIND \"${SSH_USER}\"" | awk -F ' ' '{ print $3 }'`
+    SESS_ID=$($SSH_CMD "${TUNNEL_ALIAS}" "query session | FIND \"${TUNNEL_SSH_USER}\"" | awk -F ' ' '{ print $3 }')
     if [[ "${SESS_ID}" == "" ]]; then
         exit 1
     fi
 
-    $SSH_CMD ${SSH_USER}@${SSH_IP} -p ${SSH_PORT} "psexec -s -i ${SESS_ID} ${DIFF_COMMAND}"
+    $SSH_CMD -i "$SSH_KEY_PATH" ${TUNNEL_ALIAS} "psexec -s -i ${SESS_ID} ${DIFF_COMMAND}"
     # sleep_rm $D2 &
 
 fi

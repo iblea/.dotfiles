@@ -1,0 +1,20 @@
+
+# WIN_SSH 값를 1로 설정하면
+# cmd (powershell) ssh 로 실행한다.
+WIN_SSH=0
+
+# remote -> local ssh tunnel alias
+TUNNEL_ALIAS="rloc"
+
+# Windows OS only
+TUNNEL_SSH_USER=aa
+
+# beyond compare (local) remote file url address
+REMOTE_IP=10.0.1.1
+REMOTE_USER=bb
+REMOTE_PORT=22
+
+# BCOMP_PATH="C:\Program Files\Beyond Compare 4\BCompare.exe"
+# BCOMP_PATH="/mnt/c/Program\\ Files/Beyond\\ Compare\\ 4/BCompare.exe"
+BCOMP_PATH="\"/Applications/Beyond Compare.app/Contents/MacOS/bComp\""
+
