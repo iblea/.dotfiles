@@ -1,0 +1,7 @@
+#!/bin/bash
+
+curpath=$(dirname "$(realpath $0)")
+cd "$curpath"
+
+../script/ssh_set_init.sh
+
