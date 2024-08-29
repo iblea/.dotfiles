@@ -1,0 +1,54 @@
+#!/bin/bash
+
+
+if [ -z "$(which zsh)" ]; then
+    echo "not found zsh"
+    exit 1
+fi
+
+cd $HOME
+
+# git clone git@github.com:/iblea/.dotfiles.git
+git clone "https://github.com/iblea/.dotfiles.git"
+
+
+if [ ! -d "$HOME/.dotfiles/" ]; then
+    echo "git clone failed."
+    exit 1
+fi
+
+echo ""
+echo "clone done"
+echo ""
+
+cd "$HOME/.dotfiles/"
+
+
+script/install_zsh.sh
+
+if [ ! -d "$HOME/.zsh/" ]; then
+    echo "install oh-my-zsh / p10k failed."
+    exit 1
+fi
+
+if [ -f "$HOME/.zshrc" ]; then
+    rm -f "$HOME/.zshrc"
+fi
+
+echo ""
+echo "install oh-my-zsh / p10k"
+echo ""
+
+script/ssh_set_init.sh
+
+if [ ! -f "$HOME/.ssh/config" ]; then
+    echo "ssh init failed."
+    exit 1
+fi
+
+echo ""
+echo "ssh init done"
+echo ""
+
+./settings.sh
+
