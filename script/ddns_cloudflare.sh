@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# https://inbox.kr/186
 # https://developers.cloudflare.com/api/operations/dns-records-for-a-zone-create-dns-record
 # https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
 
@@ -41,10 +42,20 @@ if [ $# -le 1 ] || [ $# -ge 4 ]; then
     exit 1
 fi
 
+
 if [ $# -eq 2 ]; then
     RECORD="$1"
     CHANGED_IP="$2"
     RECORD_TYPE="A"
+elif [ $# -eq 0 ]; then
+    RECORD="iasdf.com"
+    CHANGED_IP="list"
+    RECORD_TYPE="A"
+
+    if [ -z "$(which jq)" ]; then
+        echo "jq command not found"
+        exit 1
+    fi
 else
     RECORD="$1"
     CHANGED_IP="$2"
@@ -101,18 +112,57 @@ AIDARY=$(AID)
 
 if [ -n "$AIDARY" ]; then
 
-	# delete
-	if [[ "${CHANGED_IP}" = "del" ]] || [[ "$RECORD_TYPE" = "del" ]]; then
-		echo "domain value delete"
-		curl -sk --request DELETE \
-    	    --url "$V4/$ZN/dns_records/${AIDARY}" \
-    	    -H "$H1" -H "$H2" \
-			| grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
-		exit 0
-	fi
+    if [ $# -eq 0 ]; then
+
+        output=$(curl -sk --request GET \
+            --url "$V4/${ZN}/dns_records" \
+            -H "$H1" -H "$H2")
+
+        if [ -z "$output" ]; then
+            echo "cloudflare api error"
+            exit 1
+        fi
+
+        success=$(echo "$output" | jq '.success' )
+        if [[ "${success}" = "false" ]]; then
+            echo "$output"
+            echo "cloudflare api error"
+            exit 1
+        fi
+
+        output_len=$(echo "$output" | jq '.result | length')
+        if [[ "${output_len}" = "0" ]]; then
+            echo "$output"
+            echo "not found"
+            exit 1
+        fi
+
+        for (( i=0; i<$output_len; i++ )); do
+            idx_content=$(echo "${output}" | jq ".result[$i]")
+            # echo "${idx_content}"
+            name=$(echo "${idx_content}" | jq ".name")
+            type=$(echo "${idx_content}" | jq ".type")
+            content=$(echo "${idx_content}" | jq ".content")
+            proxied=$(echo "${idx_content}" | jq ".proxied")
+            ttl=$(echo "${idx_content}" | jq ".ttl")
+            echo "${name}[${type}] = '${content}' (${ttl},${proxied})"
+        done
+
+        exit 0
+    fi
+
+    # delete
+    if [[ "${CHANGED_IP}" = "del" ]] || [[ "$RECORD_TYPE" = "del" ]]; then
+        echo "domain value delete"
+        curl -sk --request DELETE \
+            --url "$V4/$ZN/dns_records/${AIDARY}" \
+            -H "$H1" -H "$H2" \
+            | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
+        exit 0
+    fi
 
     # update
-    echo "domain is already exist, update it"
+    echo "domain is already exist, update it (overwrite)"
     curl -sk --request PUT \
         --url "$V4/$ZN/dns_records/${AIDARY}" \
         -H "$H1" -H "$H2" \
