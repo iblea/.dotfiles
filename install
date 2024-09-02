@@ -8,8 +8,17 @@ fi
 
 cd $HOME
 
-# git clone git@github.com:/iblea/.dotfiles.git
-git clone "https://github.com/iblea/.dotfiles.git"
+if [ -f "$HOME/.ssh/id_rsa" ]; then
+    read -n 1 -p "git clone ssh? (y/n): " input_char
+    echo
+    if [ "$input_char" == "y" ]; then
+        git clone "git@github.com:/iblea/.dotfiles.git"
+    else
+        git clone "https://github.com/iblea/.dotfiles.git"
+    fi
+else
+    git clone "https://github.com/iblea/.dotfiles.git"
+fi
 
 
 if [ ! -d "$HOME/.dotfiles/" ]; then
