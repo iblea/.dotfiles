@@ -2,6 +2,10 @@
 
 BLOG_URL="https://dev.iasdf.com"
 
+if [ ! -d "$HOME/.ssh/" ]; then
+    mkdir -p "$HOME/.ssh/"
+fi
+
 cd $HOME/.ssh/
 
 # curl -sk "${BLOG_URL}/jset/jpubsh" | sh -
