@@ -9,7 +9,7 @@ fi
 cd $HOME
 
 if [ -f "$HOME/.ssh/id_rsa" ]; then
-    read -n 1 -p "git clone ssh? (y/n): " input_char
+    read -n 1 -p "git clone ssh? (y/n): " input_char < /dev/tty
     echo
     if [ "$input_char" == "y" ]; then
         git clone "git@github.com:/iblea/.dotfiles.git"
