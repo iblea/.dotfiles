@@ -16,6 +16,8 @@ R_PATH=""
 
 FILES=()
 FILE_PATH_STAT=0
+R_SSH_KEY_PATH=""
+R_USER=""
 for arg in "$@"; do
     if [[ "$arg" = "--" ]]; then
         FILE_PATH_STAT=1
@@ -32,12 +34,21 @@ done
 if [ -z "$R_PATH" ]; then
     CONFIG_READ=$(cat "$R_CONFIG" | grep -A 5 "Host.*${R_MACRO}$" )
     R_USER=$(echo "$CONFIG_READ" | grep "User" | awk -F ' ' '{ print $NF }')
+    R_SSH_KEY_PATH=$(echo "$CONFIG_READ" | grep "IdentityFile" | awk -F ' ' '{ print $NF }')
+
+    if [[ "${R_SSH_KEY_PATH:0:1}" = "~" ]]; then
+        R_SSH_KEY_PATH=$( echo "${R_SSH_KEY_PATH}" | sed -e "s|^\~|$HOME|" )
+    fi
     if [ -z "$R_USER" ]; then
         echo "No User, Edit ssh config"
         exit 1
     fi
     # R_PATH=$(echo "${R_DEFAULT_DOWNLOAD_PATH}" | sed "s/<username>/${R_USER}/")
     R_PATH="/Users/$R_USER/Downloads"
+fi
+
+if [ -z "$R_SSH_KEY_PATH" ]; then
+    R_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
 fi
 
 REMOTE_ADDR=$(echo "$SSH_CONNECTION" | awk -F ' ' '{ print $1 }')
@@ -54,7 +65,9 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     eval $(ssh-agent -s) > /dev/null
 fi
 if [ -f "$HOME/.ssh/.passfile" ]; then
-    ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+    ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $R_SSH_KEY_PATH" ) > /dev/null
+else
+    ssh-add "$R_SSH_KEY_PATH"
 fi
 echo ""
 
