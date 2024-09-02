@@ -142,3 +142,12 @@ if [ -f ~/.aliases ]; then
     . ~/.aliases
 fi
 
+if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash" ]; then
+    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash"
+else
+    $HOME/.dotfiles/script/iterm/install_shell_integrated.sh
+    if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash" ]; then
+        source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash"
+    fi
+fi
+

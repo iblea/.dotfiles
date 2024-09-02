@@ -324,6 +324,15 @@ if [ -n "$(command -v nvim)" ]; then
     fi
 fi
 
+if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
+    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
+else
+	$HOME/.dotfiles/script/iterm/install_shell_integrated.sh
+	if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
+	    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
+	fi
+fi
+
 
 bindkey -M menuselect '^M' .accept-line
 
