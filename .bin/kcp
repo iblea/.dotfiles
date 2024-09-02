@@ -4,7 +4,7 @@ R_MACRO="rloc"
 R_CONFIG="$HOME/.ssh/config"
 
 # <username> 설정 시 config 파일의 rloc username으로 바뀜
-R_DEFAULT_DOWNLOAD_PATH="/Users/<username>/Downloads"
+R_DEFAULT_DOWNLOAD_PATH="./"
 
 if [ $# -le 0 ]; then
     echo "Wrong Argument"
@@ -29,7 +29,7 @@ for arg in "$@"; do
         break
     fi
 
-    FILES+=( "$arg" )
+    FILES+=( "rloc:${arg}" )
 done
 
 
@@ -68,7 +68,7 @@ fi
 echo ""
 
 
-scp -F "$R_CONFIG" "${FILES[@]}" "$R_MACRO":"$R_PATH"
+scp -F "$R_CONFIG" "${FILES[@]}" "$R_PATH"
 
 if [ $? -ne 0 ]; then
     echo ""
