@@ -6,12 +6,53 @@ if [ -z "$(which zsh)" ]; then
     exit 1
 fi
 
+function input_password()
+{
+    password=''
+    while IFS= read -n 1 -s -p ""  passchar < /dev/tty ; do
+    [[ -z $passchar ]] && { printf '\n' >/dev/tty; break; } # ENTER pressed; output \n and break.
+        if [[ $passchar = $'\x7f' ]]; then # backspace was pressed
+            # Remove last char from output variable.
+            [[ -n $password ]] && password=${password%?}
+
+            # Erase '*' to the left.
+            if [ $count -gt 0 ]; then
+                printf '\b \b' >/dev/tty
+                count=$(expr $count - 1)
+            fi
+        else
+            count=$(expr $count + 1)
+            # Add typed char to output variable.
+            password+=$passchar
+            # Print '*' in its stead.
+            printf '*' >/dev/tty
+        fi
+    done
+
+    echo "${password}"
+    unset password
+}
+
+
 cd $HOME
 
 if [ -f "$HOME/.ssh/id_rsa" ]; then
     read -n 1 -p "git clone ssh? (y/n): " input_char < /dev/tty
     echo
-    if [ "$input_char" == "y" ]; then
+    if [[ "$input_char" = "y" ]]; then
+        if [ -z "$SSH_AUTH_SOCK" ]; then
+            eval $(ssh-agent -s) > /dev/null
+        fi
+        if [ -f "$HOME/.ssh/.passfile" ]; then
+            ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+        else
+            # read -p "input pass? (y/n): " input_pass < /dev/tty
+            echo -n "input password (hidden) : "
+            input_pass=$( input_password )
+            echo
+            ( { sleep .1; echo "$input_pass"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+            echo "passphrase done"
+        fi
         git clone "git@github.com:/iblea/.dotfiles.git"
     else
         git clone "https://github.com/iblea/.dotfiles.git"
