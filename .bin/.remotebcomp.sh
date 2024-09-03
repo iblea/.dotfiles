@@ -33,7 +33,11 @@ if [ ! -f "$SSH_CONFIG_FILE" ]; then
 fi
 
 if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval $(ssh-agent -s) > /dev/null
+    export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
+fi
+ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -v "grep.*ssh-agent")
+if [ -z "$ssh_agent_proc" ]; then
+    eval $(ssh-agent -s -a "${SSH_AUTH_SOCK}") > /dev/null
 fi
 if [ -f "$HOME/.ssh/.passfile" ]; then
     ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null

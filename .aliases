@@ -14,8 +14,10 @@ function function_exist_check() {
 
 
 # ssh-agent
-if [ -z "$SSH_AUTH_SOCK" ]; then
-	eval $(ssh-agent -s) > /dev/null
+export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
+ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -v "grep.*ssh-agent")
+if [ -z "$ssh_agent_proc" ]; then
+    eval $(ssh-agent -s -a "${SSH_AUTH_SOCK}") > /dev/null
 fi
 
 
@@ -130,7 +132,7 @@ function cd() {
 fi
 
 function fg() {
-	if [ $# -eq 1 ] && [[ "$@" = "-" ]]; then
+    if [ $# -eq 1 ] && [[ "$@" = "-" ]]; then
         builtin fg %-
     else
         builtin fg %"$@"
@@ -141,7 +143,7 @@ if [ -n "$(command -v nvim)" ]; then
     alias nvi='nvim'
     alias vi='nvim'
     alias vim='nvim'
-	alias ovim="$(/bin/bash -c 'which vim')"
+    alias ovim="$(/bin/bash -c 'which vim')"
 fi
 alias vit="vi -c ':term'"
 
