@@ -44,6 +44,7 @@ ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -F "$SSH_AUTH_SOCK" | grep -v "
 if [ -z "$ssh_agent_proc" ]; then
     eval $(ssh-agent -s -a "${SSH_AUTH_SOCK}") > /dev/null
 fi
+unset ssh_agent_proc
 if [ -f "$HOME/.ssh/.passfile" ]; then
     ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
 fi
