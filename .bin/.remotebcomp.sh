@@ -35,7 +35,7 @@ fi
 if [ -z "$SSH_AUTH_SOCK" ]; then
     export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
 fi
-ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -v "grep.*ssh-agent")
+ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -F "$SSH_AUTH_SOCK" | grep -v "grep")
 if [ -z "$ssh_agent_proc" ]; then
     eval $(ssh-agent -s -a "${SSH_AUTH_SOCK}") > /dev/null
 fi
