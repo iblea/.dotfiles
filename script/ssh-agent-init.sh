@@ -12,10 +12,10 @@ if [ -z "$(command -v ssh-add)" ]; then
 fi
 
 
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
-fi
-# export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
+# if [ -z "$SSH_AUTH_SOCK" ]; then
+#     export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
+# fi
+export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
 
 SSH_AUTH_DIR=$(dirname "$SSH_AUTH_SOCK")
 if [ ! -d "${SSH_AUTH_DIR}" ]; then
