@@ -32,19 +32,7 @@ if [ ! -f "$SSH_CONFIG_FILE" ]; then
     exit 1
 fi
 
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
-fi
-SSH_AUTH_DIR=$(dirname "$SSH_AUTH_SOCK")
-if [ ! -d "${SSH_AUTH_DIR}" ]; then
-    mkdir -p "${SSH_AUTH_DIR}"
-fi
-unset SSH_AUTH_DIR
-ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -F "$SSH_AUTH_SOCK" | grep -v "grep")
-if [ -z "$ssh_agent_proc" ]; then
-    eval $(ssh-agent -s -a "${SSH_AUTH_SOCK}") > /dev/null
-fi
-unset ssh_agent_proc
+source $HOME/.dotfiles/script/ssh-agent-init.sh
 if [ -f "$HOME/.ssh/.passfile" ]; then
     ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
 fi
