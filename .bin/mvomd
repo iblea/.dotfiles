@@ -21,8 +21,6 @@ curpwd=$(pwd)
 filepath=$(dirname $(readlink -e "$fullpath"))
 builtin cd "$filepath" > /dev/null 2>&1
 
-pwd
-
 imgdir="mdresources/dir_${filename}_img"
 urlencode_imgdir=$(echo "${imgdir}" | sed 's/ /%20/g')
 imgrealpath=""
@@ -64,10 +62,11 @@ do
     urldecode_file=$(echo "${linefile}" | sed 's/%20/ /g')
     # urldecode_file=$(echo "$urldecode" | sed 's/%25/%/g')
 
-    echo "urldecode_file: $urldecode_file"
-    echo "imgdir : $imgdir"
+    # echo "urldecode_file: $urldecode_file"
+    # echo "imgdir : $imgdir"
 
     if [ -f "mdresources/obsidian/${urldecode_file}" ]; then
+        echo "move : ${urldecode_file}"
         mv "mdresources/obsidian/${urldecode_file}" "${imgdir}"
     else
         echo "file not exist [mdresources/obsidian/${urldecode_file}]"
