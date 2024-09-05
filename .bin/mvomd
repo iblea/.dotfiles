@@ -1,0 +1,72 @@
+#!/bin/bash
+
+
+
+# validation check
+if [ $# -eq 0 ] || [ $# -gt 2 ]; then
+    echo "wrong argument"
+    exit 0
+fi
+fullpath="$1"
+filename=$(basename "$fullpath")
+
+curpwd=$(pwd)
+filepath=$(dirname $(readlink -e "$fullpath"))
+builtin cd "$filepath" > /dev/null 2>&1
+
+pwd
+
+imgdir="mdresources/dir_${filename}_img"
+urlencode_imgdir=$(echo "${imgdir}" | sed 's/ /%20/g')
+imgrealpath=""
+
+if [ $# -eq 1 ]; then
+    imgrealpath="./${imgdir}"
+else
+    imgrealpath="$2/${imgdir}"
+fi
+
+if [ ! -f "$filename" ]; then
+    echo "file not exist"
+    builtin cd "$curpwd" > /dev/null 2>&1
+    exit 0
+fi
+
+if [ ! -d "$imgrealpath" ]; then
+    mkdir -p "$imgrealpath"
+fi
+
+
+# parse img path
+# ![] () remove
+# content=$(grep -E "\!.*\]\(.*$urlencode_imgdir/img_[^\/]*\)" $filename 2>/dev/null)
+content=$(grep -nE "^!\[.*]\(Pasted%20image%20.*\..*)" $filename)
+content=$(echo "$content" | sed "s/:!\[](/:/")
+content=$(echo "$content" | sed "s/)$//")
+
+if [ -z "$content" ]; then
+    echo "no img path"
+    builtin cd "$curpwd" > /dev/null 2>&1
+    exit 0
+fi
+
+for line in $content
+do
+    linenum=$(echo "$line" | cut -d: -f1)
+    linefile=$(echo "$line" | sed "s/^[0-9]*://")
+    urldecode_file=$(echo "${linefile}" | sed 's/%20/ /g')
+    # urldecode_file=$(echo "$urldecode" | sed 's/%25/%/g')
+
+    echo "urldecode_file: $urldecode_file"
+    echo "imgdir : $imgdir"
+
+    if [ -f "mdresources/obsidian/${urldecode_file}" ]; then
+        mv "mdresources/obsidian/${urldecode_file}" "${imgdir}"
+    else
+        echo "file not exist [mdresources/obsidian/${urldecode_file}]"
+    fi
+    sed -i "${linenum}s|.*|![](${imgdir}/${linefile})|" "${filename}"
+done
+
+
+exit 0
