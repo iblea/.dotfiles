@@ -452,6 +452,7 @@ function diffdir()
 
 # absolute path
 alias abs='readlink -e'
+alias rpth='readlink -e'
 
 alias grepno="$HOME/.dotfiles/grepscript/grepno"
 alias grepn="$HOME/.dotfiles/grepscript/grepn"
