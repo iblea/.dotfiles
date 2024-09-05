@@ -3,9 +3,16 @@
 # validation check
 if [ $# -eq 0 ] || [ $# -gt 2 ]; then
     echo "wrong argument"
-    return
+    exit 1
 fi
+
 fullpath="$1"
+
+if [ ! -f "$fullpath" ]; then
+    echo "file not exist"
+    exit 1
+fi
+
 filename=$(basename "$fullpath")
 
 curpwd=$(pwd)
@@ -25,12 +32,12 @@ fi
 if [ ! -f "$filename" ]; then
     echo "file not exist"
     builtin cd "$curpwd" > /dev/null 2>&1
-    return
+    exit 1
 fi
 if [ ! -d "$imgrealpath" ]; then
     echo "img dir not exist"
     builtin cd "$curpwd" > /dev/null 2>&1
-    return
+    exit 1
 fi
 
 # get file list in imgdir

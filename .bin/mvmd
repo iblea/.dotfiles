@@ -2,13 +2,14 @@
 
 if [ $# -lt 2 ]; then
     echo "mvmd wrong argument"
+    exit 1
 fi
 
 dstpath="${@:${#}:1}"
 
 if [ ! -d "${dstpath}" ]; then
     echo "no such directory [${dstpath}]"
-    return 1
+    exit 1
 fi
 
 src_file_count=$(expr ${#} - 1)

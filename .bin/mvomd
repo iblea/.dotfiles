@@ -7,7 +7,14 @@ if [ $# -eq 0 ] || [ $# -gt 2 ]; then
     echo "wrong argument"
     exit 0
 fi
+
 fullpath="$1"
+
+if [ ! -f "$fullpath" ]; then
+    echo "file not exist"
+    exit 1
+fi
+
 filename=$(basename "$fullpath")
 
 curpwd=$(pwd)
