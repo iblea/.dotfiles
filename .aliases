@@ -1704,7 +1704,49 @@ function gstmp() {
     echo ""
 }
 
+function gsl() {
+    gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$gitroot" ]; then
+        echo "not git repo"
+        return 1
+    fi
+
+    if [ ! -d "${gitroot}/.git" ]; then
+        echo "not git directory in repo"
+        return 1
+    fi
+
+    if [ ! -d "${gitroot}/.git/svn" ]; then
+        echo "not svn directory in repo"
+        return 1
+    fi
+
+    git svn log --limit 10 $@ 2>/dev/null
+}
+
+function gsla() {
+    gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$gitroot" ]; then
+        echo "not git repo"
+        return 1
+    fi
+
+    if [ ! -d "${gitroot}/.git" ]; then
+        echo "not git directory in repo"
+        return 1
+    fi
+
+    if [ ! -d "${gitroot}/.git/svn" ]; then
+        echo "not svn directory in repo"
+        return 1
+    fi
+
+    git svn log $@ 2>/dev/null
+}
+
+
 function gl() {
+
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' $@
     local AGO_LC_ALL="$LC_ALL"
     if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
@@ -1712,6 +1754,7 @@ function gl() {
     elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
         export LC_ALL=ko_KR.utf8
     fi
+
     # --date=iso-local
     git log --graph \
     --date=format-local:"%Y-%m-%d %H:%M:%S" \
