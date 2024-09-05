@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# validation check
+if [ $# -eq 0 ] || [ $# -gt 2 ]; then
+    echo "wrong argument"
+    return
+fi
+fullpath="$1"
+filename=$(basename "$fullpath")
+
+curpwd=$(pwd)
+filepath=$(dirname $(readlink -e "$fullpath"))
+builtin cd "$filepath" > /dev/null 2>&1
+
+imgdir="mdresources/dir_${filename}_img"
+urlencode_imgdir=$(echo "${imgdir}" | sed 's/ /%20/g')
+
+imgrealpath=""
+if [ $# -eq 1 ]; then
+    imgrealpath="./${imgdir}"
+else
+    imgrealpath="$2/${imgdir}"
+fi
+
+if [ ! -f "$filename" ]; then
+    echo "file not exist"
+    builtin cd "$curpwd" > /dev/null 2>&1
+    return
+fi
+if [ ! -d "$imgrealpath" ]; then
+    echo "img dir not exist"
+    builtin cd "$curpwd" > /dev/null 2>&1
+    return
+fi
+
+# get file list in imgdir
+# imgfiles=$(ls $imgrealpath/*.{png,jpg,gif,jpeg,webp})
+imgfiles=$(ls "$imgrealpath")
+IFS=$'\n' filearray=( $(echo "$imgfiles" ) )
+origin_file_count=${#filearray[@]}
+
+# parse img path
+# ![] () remove
+# content=$(grep -E "\!.*\]\(.*$urlencode_imgdir/img_[^\/]*\)" $filename 2>/dev/null)
+content=$(grep -E "!.*\]\(.*$urlencode_imgdir/[^\/]*\)" $filename)
+content=$(echo "$content" | sed "s/\![^!]*](//g")
+# <img src= > remove
+content2=$(grep -E "<img src=\".*$urlencode_imgdir/img_[^\/]*\"" $filename 2>/dev/null)
+content2=$(echo "$content2" | sed "s/<img[^\<]*src=\"//g")
+content2=$(echo "$content2" | sed "s/\"[^\>]*>/|/g")
+content=$(echo "$content"; echo "$content2")
+content=$(echo "$content" | sed 's/%20/ /g')
+
+
+delete_file_array=()
+
+for imgfile in "${filearray[@]}"
+do
+    if grep -q "$imgfile" <<<"$content"; then
+        echo "exist : $imgfile"
+        # filearray="${filearray[@]}"
+        # filearray=( $(echo "${filearray[@]}" | sed 's/%20/ /g') )
+    else
+        echo "not exist : $imgfile"
+        delete_file_array+=("$imgfile")
+    fi
+done
+
+if [ ${#delete_file_array[@]} -ne 0 ]; then
+    echo ""
+fi
+
+# remain entry delete
+rm_index=0
+for imgfile in "${delete_file_array[@]}"
+do
+    echo "imgfile : '$imgfile'"
+    if [ -n "$imgfile" ]; then
+        # rm -f "$imgrealpath/$imgfile"
+        rm_index=$(expr $rm_index + 1)
+    fi
+done
+
+echo ""
+
+imgrealdir=$(find "$imgrealpath" -maxdepth 0 -type d -empty)
+echo "imgrealpath : $imgrealpath"
+if [ -n "$imgrealdir" ]; then
+    echo "directory empty, remove it [${imgrealpath}]"
+    rmdir "${imgrealpath}"
+fi
+
+echo "remove ${rm_index}/${origin_file_count} files."
+builtin cd "$curpwd" > /dev/null 2>&1
