@@ -83,7 +83,7 @@ for imgfile in "${delete_file_array[@]}"
 do
     echo "imgfile : '$imgfile'"
     if [ -n "$imgfile" ]; then
-        # rm -f "$imgrealpath/$imgfile"
+        rm -f "$imgrealpath/$imgfile"
         rm_index=$(expr $rm_index + 1)
     fi
 done

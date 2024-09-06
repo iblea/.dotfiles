@@ -173,4 +173,10 @@ fi
 echo ""
 echo "done"
 
+echo "rmdimg"
+echo "==========================="
+builtin cd "$filepath" > /dev/null 2>&1
+$HOME/.dotfiles/.bin/rmdimg "$filename"
+
+
 exit 0
