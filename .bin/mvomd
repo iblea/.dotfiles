@@ -1,4 +1,4 @@
-#!/bin/bash
+#obsidian_pasted_image!/bin/bash
 
 
 
@@ -41,38 +41,136 @@ if [ ! -d "$imgrealpath" ]; then
     mkdir -p "$imgrealpath"
 fi
 
+# catfile=$(cat "$filename")
 
-# parse img path
-# ![] () remove
-# content=$(grep -E "\!.*\]\(.*$urlencode_imgdir/img_[^\/]*\)" $filename 2>/dev/null)
-content=$(grep -nE "^!\[.*]\(Pasted%20image%20.*\..*)" $filename)
+function obsidian_pasted_image() {
+
+    # mdresources/obsidian/Pasted image 000000000000.png
+    # parse img path
+    # ![] () remove
+    # content=$(grep -E "\!.*\]\(.*$urlencode_imgdir/img_[^\/]*\)" $filename 2>/dev/null)
+
+    pcontent=$(grep -nE "^!\[.*]\(Pasted%20image%20.*\..*)" $filename)
+    pcontent=$(echo "$pcontent" | sed "s/:!\[](/:/")
+    pcontent=$(echo "$pcontent" | sed "s/)$//")
+
+    IFS=$'\n' pcontent_list=( $(echo "$pcontent" ) )
+
+    if [ -z "$pcontent" ]; then
+        echo "no img path (pasted image)"
+        echo ""
+        return 0
+        # ;builtin cd "$curpwd" > /dev/null 2>&1
+        # exit 0
+    fi
+
+    pmv_count=0
+    for pline in "${pcontent_list[@]}"
+    do
+        plinenum=$(echo "$pline" | cut -d: -f1)
+        plinefile=$(echo "$pline" | sed "s/^[0-9]*://")
+        purldecode_file=$(echo "${plinefile}" | sed 's/%20/ /g')
+        # purldecode_file=$(echo "$urldecode" | sed 's/%25/%/g')
+
+        # echo "purldecode_file: $purldecode_file"
+        # echo "imgdir : $imgdir"
+
+        if [ ! -f "mdresources/obsidian/${purldecode_file}" ]; then
+            echo "file not exist [mdresources/obsidian/${purldecode_file}]"
+            continue
+        fi
+
+        echo "move : ${purldecode_file}"
+        mv "mdresources/obsidian/${purldecode_file}" "${imgdir}"
+        sed -i "${plinenum}s|.*|![](${imgdir}/${linefile})|" "${filename}"
+        pmv_count=$((pmv_count+1))
+    done
+
+    echo "moved [${pmv_count}/${#pcontent_list[@]}] files"
+    echo ""
+}
+
+obsidian_pasted_image
+
+
+
+
+
+content=$(grep -nE "^!\[.*]\(IMG-OB-.*\..*)" $filename)
 content=$(echo "$content" | sed "s/:!\[](/:/")
 content=$(echo "$content" | sed "s/)$//")
 
 if [ -z "$content" ]; then
-    echo "no img path"
-    builtin cd "$curpwd" > /dev/null 2>&1
+    echo "no img path (IMG-OB)"
+    # builtin cd "$curpwd" > /dev/null 2>&1
     exit 0
 fi
 
-for line in $content
+IFS=$'\n' mdimglist=( $(echo "$content" ) )
+obimgdirpath="mdresources/obsidian/dir_${filename}_img"
+if [ ! -d "${obimgdirpath}" ]; then
+    echo "not found [mdresources/obsidian/dir_${filename}_img]"
+    exit 0
+fi
+
+
+mv_count=0
+
+for mdimg in "${mdimglist[@]}"
 do
-    linenum=$(echo "$line" | cut -d: -f1)
-    linefile=$(echo "$line" | sed "s/^[0-9]*://")
+    linenum=$(echo "$mdimg" | cut -d: -f1)
+    linefile=$(echo "$mdimg" | sed "s/^[0-9]*://")
     urldecode_file=$(echo "${linefile}" | sed 's/%20/ /g')
-    # urldecode_file=$(echo "$urldecode" | sed 's/%25/%/g')
 
-    # echo "urldecode_file: $urldecode_file"
-    # echo "imgdir : $imgdir"
+    # echo "linenum : $linenum"
+    # echo "linefile : $linefile"
 
-    if [ -f "mdresources/obsidian/${urldecode_file}" ]; then
-        echo "move : ${urldecode_file}"
-        mv "mdresources/obsidian/${urldecode_file}" "${imgdir}"
-    else
+    if [ ! -f "${obimgdirpath}/${urldecode_file}" ]; then
         echo "file not exist [mdresources/obsidian/${urldecode_file}]"
+        continue
     fi
+
+    echo "move : ${urldecode_file}"
+    mv "${obimgdirpath}/${urldecode_file}" "${imgdir}"
     sed -i "${linenum}s|.*|![](${imgdir}/${linefile})|" "${filename}"
+    mv_count=$((mv_count+1))
+
 done
 
+echo "moved [${mv_count}/${#mdimglist[@]}] files"
+
+echo ""
+
+obimgdirs=$(ls "${obimgdirpath}")
+IFS=$'\n' obimglist=( $(echo "$obimgdirs" ) )
+obimglist_count=${#obimglist[@]}
+rm_count=0
+
+for obimg in "${obimglist[@]}"
+do
+    if ! grep -q "$obimg" <<< "$content"; then
+        echo "image not referenced : $obimg"
+        rm -f "${obimgdirpath}/$obimg"
+        rm_count=$((rm_count+1))
+    fi
+done
+
+echo "removed [${rm_count}/${obimglist_count}] files"
+echo ""
+
+
+obimgremain=$(ls "${obimgdirpath}")
+echo "obsidian img dir : ${obimgdirpath}"
+
+if [ -z "$obimgremain" ]; then
+    echo "remove empty dir"
+    rmdir "${obimgdirpath}"
+else
+    echo "remain files in directory"
+    ls -al "${obimgdirpath}"
+fi
+
+echo ""
+echo "done"
 
 exit 0
