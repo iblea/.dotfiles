@@ -39,9 +39,9 @@ fi
 
 
 
-if [ -d "$HOME/.local/.bin/" ]; then
-	if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
-		export PATH="$HOME/.local/.bin:$PATH"
+if [ -d "$HOME/.local/bin/" ]; then
+	if ! grep -q "$HOME/.local/bin" <<< "$PATH"; then
+		export PATH="$HOME/.local/bin:$PATH"
 	fi
 fi
 

@@ -236,9 +236,9 @@ fi
 if [ -n "$(uname -r | grep 'WSL')" ]; then
     if [ "$(command -v code)" = "" ]; then
         codepath="/mnt/c/jvscode/Code.exe"
-        if [ -f $codepath ] && [ ! -f $HOME/.local/.bin/code ]; then
-            [ ! -d $HOME/.local/.bin/ ] && mkdir -p $HOME/.local/.bin/
-            ln -s $codepath $HOME/.local/.bin/code
+        if [ -f $codepath ] && [ ! -f $HOME/.local/bin/code ]; then
+            [ ! -d $HOME/.local/bin/ ] && mkdir -p $HOME/.local/bin/
+            ln -s $codepath $HOME/.local/bin/code
         fi
         unset codepath
     fi
