@@ -35,9 +35,9 @@ if [[ "$line" = "$startline" ]]; then
         sed -n "${line}p" ${filename} | grep --color=always -P "$2"
         sed -n "${endline_start},${endline}p" ${filename}
     else
-        # bat -n --theme="Dracula" --color=always --line-range "${line}:${endline}"--highlight-line "$line" ${filename}
-        bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -P "$2"
-        bat -n --theme="Dracula" --color=always --line-range "${endline_start}:${endline}" ${filename}
+        bat -n --theme="Dracula" --color=always --line-range "${line}:${endline}"--highlight-line "$line" ${filename}
+        # bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -P "$2"
+        # bat -n --theme="Dracula" --color=always --line-range "${endline_start}:${endline}" ${filename}
     fi
 
 elif [[ "$line" = "$endline" ]]; then
@@ -49,9 +49,9 @@ elif [[ "$line" = "$endline" ]]; then
         sed -n "${startline},${startline_end}p" ${filename}
         sed -n "${line}p" ${filename} | grep --color=always -P "$2"
     else
-        # bat -n --theme="Dracula" --color=always --line-range "${startline}:${line}" --highlight-line "$line" ${filename}
-        bat -n --theme="Dracula" --color=always --line-range "${startline}:${startline_end}" ${filename}
-        bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -P "$2"
+        bat -n --theme="Dracula" --color=always --line-range "${startline}:${line}" --highlight-line "$line" ${filename}
+        # bat -n --theme="Dracula" --color=always --line-range "${startline}:${startline_end}" ${filename}
+        # bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -P "$2"
     fi
 
 else
@@ -64,10 +64,10 @@ else
         sed -n "${line}p" ${filename} | grep --color=always -P "$2"
         sed -n "${endline_start},${endline}p" ${filename}
     else
-        # bat -n --theme="Dracula" --color=always --line-range "${startline}:${endline}" --highlight-line "$line" ${filename}
-        bat -n --theme="Dracula" --color=always --line-range "${startline}:${startline_end}" ${filename}
-        bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -P "$2"
-        bat -n --theme="Dracula" --color=always --line-range "${endline_start}:${endline}" ${filename}
+        bat -n --theme="Dracula" --color=always --line-range "${startline}:${endline}" --highlight-line "$line" ${filename}
+        # bat -n --theme="Dracula" --color=always --line-range "${startline}:${startline_end}" ${filename}
+        # bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -P "$2"
+        # bat -n --theme="Dracula" --color=always --line-range "${endline_start}:${endline}" ${filename}
     fi
 
 fi
