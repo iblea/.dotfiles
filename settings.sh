@@ -153,6 +153,8 @@ if [ -n "$(command -v sgpt)" ]; then
 fi
 
 
+# zoxide
+# curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
 # gdbinit
 # ln -s $settings_full_dir/.gdbinit

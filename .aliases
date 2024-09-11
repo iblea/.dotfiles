@@ -27,7 +27,8 @@ source $HOME/.dotfiles/script/ssh-agent-init.sh
 # }
 
 # zsh 아니면 cd 명령어는 기존대로 처리
-if grep -q "/zsh" <<< "$SHELL"; then
+if ( grep -q "/zsh" <<< "$SHELL" ); then
+
 function cdb() {
     builtin cd "$@"
     # ls --color=auto -AF
@@ -35,6 +36,7 @@ function cdb() {
     pwd
 }
 
+if [ -z "$_ZO_DATA_DIR" ]; then
 function cd() {
     # If we don't have exactly one argument that is a valid dir...
     if ! [[ $# -eq 1 && -d "$PWD"/"$1" ]]; then
@@ -124,6 +126,7 @@ function cd() {
     # echo ""
     pwd
 }
+fi
 fi
 
 function fg() {

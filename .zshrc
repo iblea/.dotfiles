@@ -198,14 +198,14 @@ fi
 # gitssh_path=$HOME/.ssh/.gitssh.sh
 #
 # if [[ ! -f $gitssh_path ]]; then
-# 	touch $gitssh_path
-# 	echo -e "#/bin/bash" >> $gitssh_path
-# 	echo "" >> $gitssh_path
-# 	echo "ssh -F ~/.ssh/config -i ~/.ssh/id_rsa \$*" >> $gitssh_path
+#     touch $gitssh_path
+#     echo -e "#/bin/bash" >> $gitssh_path
+#     echo "" >> $gitssh_path
+#     echo "ssh -F ~/.ssh/config -i ~/.ssh/id_rsa \$*" >> $gitssh_path
 # fi
 #
 # if [[ ! -x $gitssh_path ]]; then
-# 	chmod 755 $gitssh_path
+#     chmod 755 $gitssh_path
 # fi
 
 # export GIT_SSH=$gitssh_path
@@ -241,6 +241,17 @@ if [ -d $HOME/.dotfiles/env_custom/ ]; then
     done
 fi
 
+ZOXIDE_PATH=$(command -v zoxide)
+if [ -n "$ZOXIDE_PATH" ]; then
+    export _ZO_DATA_DIR="$HOME/.local/share/zoxide"
+    export _ZO_ECHO=1
+    export _ZO_MAXAGE=10000
+    if [ ! -d "$_ZO_DATA_DIR" ]; then
+        mkdir -p "$_ZO_DATA_DIR"
+    fi
+    eval "$($ZOXIDE_PATH init zsh --cmd cd --hook prompt)"
+fi
+unset ZOXIDE_PATH
 
 # ### install fd
 # https://github.com/sharkdp/fd/releases
@@ -260,8 +271,8 @@ if [ "$(command -v fzf)" = "" ]; then
     fi
 fi
 if [ -n "$(command -v fzf)" ]; then
-	# export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
-	export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#F92672,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
+    # export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
+    export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#F92672,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
     # Auto-completion
     # ---------------
     if [ -d $HOME/.zsh/.fzf/ ]; then
@@ -327,10 +338,10 @@ fi
 if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
     source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
 else
-	$HOME/.dotfiles/script/iterm/install_shell_integrated.sh
-	if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
-	    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
-	fi
+    $HOME/.dotfiles/script/iterm/install_shell_integrated.sh
+    if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
+        source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
+    fi
 fi
 
 

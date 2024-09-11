@@ -132,6 +132,18 @@ if [ -d $HOME/.dotfiles/env_custom/ ]; then
     unset files
 fi
 
+ZOXIDE_PATH=$(command -v zoxide)
+if [ -n "$ZOXIDE_PATH" ]; then
+    export _ZO_DATA_DIR="$HOME/.local/share/zoxide"
+    export _ZO_ECHO=1
+    export _ZO_MAXAGE=10000
+    if [ ! -d "$_ZO_DATA_DIR" ]; then
+        mkdir -p "$_ZO_DATA_DIR"
+    fi
+    eval "$($ZOXIDE_PATH init bash --cmd cd --hook prompt)"
+fi
+unset ZOXIDE_PATH
+
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
