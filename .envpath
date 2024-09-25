@@ -45,6 +45,13 @@ if [ -d "$HOME/.local/bin/" ]; then
 	fi
 fi
 
+if [ -d "$HOME/.local/.bin/" ]; then
+	if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
+		export PATH="$HOME/.local/.bin:$PATH"
+	fi
+fi
+
+
 # if homebrew exist
 if [ -d "/opt/homebrew/" ]; then
 
