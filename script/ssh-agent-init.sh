@@ -32,7 +32,7 @@ function ssh_agent_process_find()
         return 0
     fi
 
-    local ssh_agent_lsof=$(lsof -c "ssh-agent" | grep "${SSH_AUTH_SOCK}")
+    local ssh_agent_lsof=$(lsof -c "ssh-agent" | grep -F "${SSH_AUTH_SOCK}")
     if [ -z "${ssh_agent_pgrep}" ]; then
         echo "0"
         return 0
