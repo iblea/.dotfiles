@@ -380,6 +380,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     alias keyvi="vi \"$HOME/GoogleDrive/keys/keys.txt\""
 
 
+    alias gosr="cd $HOME/src"
     alias gosrc="cd $HOME/src"
     # cd practice directory
     alias gotest="cd $HOME/src/testsrc"
