@@ -78,6 +78,11 @@ if ! grep -q "/opt/homebrew/opt/libnet/lib" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/libnet/bin:$PATH"
 fi
 
+if ! grep -q "/opt/homebrew/opt/libpq/bin" <<< "$PATH"; then
+	export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/libnet/lib
+	export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+fi
+
 if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
 	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 fi
