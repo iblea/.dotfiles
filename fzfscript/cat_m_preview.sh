@@ -11,7 +11,7 @@ line=$(echo "$1" | awk -F ':' '{print $2}')
 
 file_end_line=$(wc -l "$filename" | awk '{print $1}')
 
-preview_len=4
+preview_len=3
 
 startline=$(expr $line - $preview_len)
 endline=$(expr $line + $preview_len)

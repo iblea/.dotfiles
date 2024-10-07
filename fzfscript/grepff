@@ -80,7 +80,8 @@ for (( i=0; i<${#output_array[@]}; i+=2 )); do
         continue
     fi
     # results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
-    results+="${output_array[$i]}\n${output_array[$i+1]}\n\0"
+    # results+="${output_array[$i]}\n${output_array[$i+1]}\n\0"
+    results+="${output_array[$i]}\n${output_array[$i+1]}\0"
     # results+="${output_array[$i]}\n${output_array[$i+1]}\0"
 done
 
@@ -122,7 +123,7 @@ echo -n -e "${results}" | fzf \
     --prompt 'grepff> ' \
     --delimiter '\n' \
     --preview "${preview_script} '{1}' '$search_string'" \
-    --preview-window 'up:10,wrap' \
+    --preview-window 'up:8,wrap' \
     --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
 
 
