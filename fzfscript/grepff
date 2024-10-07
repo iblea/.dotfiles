@@ -112,6 +112,7 @@ fi
 # echo "${results}"
 # results=${results:0:${#results}-4}
 
+# stty size < /dev/tty
 echo -n -e "${results}" | fzf \
     --color hl+:underline \
     -e --ansi --read0 --cycle --info=inline  \
@@ -121,7 +122,7 @@ echo -n -e "${results}" | fzf \
     --prompt 'grepff> ' \
     --delimiter '\n' \
     --preview "${preview_script} '{1}' '$search_string'" \
-    --preview-window 'up,40%,wrap' \
+    --preview-window 'up:10,wrap' \
     --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
 
 

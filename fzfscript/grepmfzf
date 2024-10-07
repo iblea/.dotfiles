@@ -67,7 +67,7 @@ fzf \
     --prompt 'grepmfzf> ' \
     --delimiter '\n' \
     --preview "${preview_prefix} '{1}' {q}" \
-    --preview-window 'up,40%,wrap' \
+    --preview-window 'up:10,wrap' \
     --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
     # --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
     # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
