@@ -61,10 +61,11 @@ if [[ "$line" = "$startline" ]]; then
     endline_start=$(expr $line + 1)
 
     if [ -z "$(command -v bat)" ]; then
-        sed -n "${line}p" ${filename} | grep --color=always -F "$2"
-        sed -n "${endline_start},${endline}p" ${filename}
+        # sed -n "${line}p" ${filename} | grep --color=always -F "$2"
+        sed -n "${line}p" "${filename}" | grep --color=always -P ".*"
+        sed -n "${endline_start},${endline}p" "${filename}"
     else
-        bat -n --theme="Dracula" --color=always --line-range "${line}:${endline}" --highlight-line "$line" ${filename}
+        bat -n --theme="Dracula" --color=always --line-range "${line}:${endline}" --highlight-line "$line" "${filename}"
         # bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -F "$2"
         # bat -n --theme="Dracula" --color=always --line-range "${endline_start}:${endline}" ${filename}
     fi
@@ -75,10 +76,11 @@ elif [[ "$line" = "$endline" ]]; then
     startline_end=$(expr $line - 1)
 
     if [ -z "$(command -v bat)" ]; then
-        sed -n "${startline},${startline_end}p" ${filename}
-        sed -n "${line}p" ${filename} | grep --color=always -F "$2"
+        sed -n "${startline},${startline_end}p" "${filename}"
+        sed -n "${line}p" "${filename}" | grep --color=always -P ".*"
+        # sed -n "${line}p" ${filename} | grep --color=always -F "$2"
     else
-        bat -n --theme="Dracula" --color=always --line-range "${startline}:${line}" --highlight-line "$line" ${filename}
+        bat -n --theme="Dracula" --color=always --line-range "${startline}:${line}" --highlight-line "$line" "${filename}"
         # bat -n --theme="Dracula" --color=always --line-range "${startline}:${startline_end}" ${filename}
         # bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -F "$2"
     fi
@@ -89,11 +91,12 @@ else
     endline_start=$(expr $line + 1)
 
     if [ -z "$(command -v bat)" ]; then
-        sed -n "${startline},${startline_end}p" ${filename}
-        sed -n "${line}p" ${filename} | grep --color=always -F "$2"
-        sed -n "${endline_start},${endline}p" ${filename}
+        sed -n "${startline},${startline_end}p" "${filename}"
+        # sed -n "${line}p" ${filename} | grep --color=always -F "$2"
+        sed -n "${line}p" "${filename}" | grep --color=always -P ".*"
+        sed -n "${endline_start},${endline}p" "${filename}"
     else
-        bat -n --theme="Dracula" --color=always --line-range "${startline}:${endline}" --highlight-line "$line" ${filename}
+        bat -n --theme="Dracula" --color=always --line-range "${startline}:${endline}" --highlight-line "$line" "${filename}"
         # bat -n --theme="Dracula" --color=always --line-range "${startline}:${startline_end}" ${filename}
         # bat -n --theme="Dracula" --color=always --line-range "${line}" --highlight-line "$line" ${filename} | grep --color=always -F "$2"
         # bat -n --theme="Dracula" --color=always --line-range "${endline_start}:${endline}" ${filename}

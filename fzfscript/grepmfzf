@@ -5,7 +5,13 @@ if [ -z "$(command -v fzf)" ]; then
     agrepm "$@"
     exit 1
 fi
+
+fzf_open_script="$HOME/.dotfiles/fzfscript/open_editor.sh"
+fzf_execute="execute-silent"
 if [ -z "$(command -v code)" ]; then
+    fzf_execute="become"
+fi
+if [ -z "$(command -v code)" ] && [ -z "$(command -v vim)" ]; then
     agrepn "$@"
     exit 1
 fi
@@ -73,12 +79,15 @@ fzf \
     --bind "ctrl-d:half-page-down" \
     --prompt 'grepmfzf> ' \
     --delimiter '\n' \
-    --preview "${preview_prefix} '{1}' {q}" \
+    --preview "${preview_script} {1} " \
     --preview-window "${preview_options},wrap" \
-    --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+    --bind "enter:${fzf_execute}( echo {1} | xargs -I{} ${fzf_open_script} ${current_pwd}/{} )"
+
+    # --preview "${preview_prefix} '{1}' {q}" \
     # --preview-window 'up:6,wrap' \
     # --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
     # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+    # --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
 
 else
 
@@ -94,11 +103,14 @@ fzf \
     --bind "ctrl-d:half-page-down" \
     --prompt 'grepmfzf> ' \
     --delimiter '\n' \
-    --preview "${preview_prefix} '{1}' {q}" \
+    --preview "${preview_script} {1} " \
     --preview-window "${preview_options},wrap" \
-    --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+    --bind "enter:${fzf_execute}( echo {1} | xargs -I{} ${fzf_open_script} ${current_pwd}/{} )"
+
+    # ;--preview "${preview_prefix} '{1}' {q}" \
     # --preview-window 'up:6,wrap' \
     # --preview-window 'up,40%,border-bottom,+{2}+3/3,~3' \
     # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+    # --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
 
 fi

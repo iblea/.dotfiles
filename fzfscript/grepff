@@ -5,7 +5,13 @@ if [ -z "$(command -v fzf)" ]; then
     $HOME/.dotfiles/grepscript/agrepn "$@"
     eixt $?
 fi
+
+fzf_open_script="$HOME/.dotfiles/fzfscript/open_editor.sh"
+fzf_execute="execute-silent"
 if [ -z "$(command -v code)" ]; then
+    fzf_execute="become"
+fi
+if [ -z "$(command -v code)" ] && [ -z "$(command -v vim)" ]; then
     $HOME/.dotfiles/grepscript/agrepn "$@"
     exit $?
 fi
@@ -89,7 +95,16 @@ for (( i=0; i<${#output_array[@]}; i+=2 )); do
     fi
     # results+="\n${output_array[$i+1]}    | ${output_array[$i]}"
     # results+="${output_array[$i]}\n${output_array[$i+1]}\n\0"
-    results+="${output_array[$i]}\n${output_array[$i+1]}\0"
+
+    # content=$( printf '%s' "${output_array[$i+1]}" | sed -e 's|\\|\\\\|g' )
+    # echo, printf -> slower
+    # null, newline change
+    content="${output_array[$i+1]}"
+    content="${content//\\/\\\\}"
+    results+="${output_array[$i]}\n${content}\0"
+    # content="${output_array[$i+1]}"
+    # echo "content: $content"
+    # results+="${output_array[$i]}\n${output_array[$i+1]}\0"
     # results+="${output_array[$i]}\n${output_array[$i+1]}\0"
 done
 
@@ -118,8 +133,6 @@ if [ -z "$results" ]; then
     exit 1
 fi
 
-# echo "${results}"
-# results=${results:0:${#results}-4}
 
 terminal_size=$(stty size < /dev/tty 2>/dev/null)
 terminal_width=0
@@ -155,9 +168,16 @@ echo -n -e "${results}" | fzf \
     --bind "ctrl-d:half-page-down" \
     --prompt 'grepff> ' \
     --delimiter '\n' \
-    --preview "${preview_script} '{1}' '$search_string'" \
+    --preview "${preview_script} {1} " \
     --preview-window "${preview_options},wrap" \
-    --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+    --bind "enter:${fzf_execute}( echo {1} | xargs -I{} ${fzf_open_script} ${current_pwd}/{} )"
+
+
+    # search_string -> memset.*' -> error
+    # --preview "${preview_script} '{1}' '$search_string'" \
+    # --bind "enter:execute-silent(
+    #     echo {1} | xargs -I{} code --goto ${current_pwd}/{}
+    # )"
     # --preview-window 'up:6,wrap' \
 
 
