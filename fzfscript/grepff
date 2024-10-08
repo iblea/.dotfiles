@@ -113,7 +113,32 @@ fi
 # echo "${results}"
 # results=${results:0:${#results}-4}
 
-# stty size < /dev/tty
+terminal_size=$(stty size < /dev/tty 2>/dev/null)
+terminal_width=0
+terminal_height=0
+
+if [ -n "$terminal_size" ]; then
+    terminal_width=$(echo $terminal_size | awk '{print $2}')
+    terminal_height=$(echo $terminal_size | awk '{print $1}')
+fi
+
+preview_options="up:14" # 6
+if [ $(echo "$terminal_width") -ge 200 ]; then
+    preview_options="right"
+else
+
+    if [ $(echo "$terminal_height") -ge 24 ]; then
+        preview_options="up:14" # 6 (6 + 6 + 1(highlight) + 1(wrap tmp len))
+    elif [ $(echo "$terminal_height") -le 15 ]; then
+        preview_options="up:6" # 2
+    else
+        # echo "11 - 10" | bc
+        preview_height=$(expr ${terminal_height} - 9)
+        preview_options="up:${preview_height}" # 2
+    fi
+fi
+
+
 echo -n -e "${results}" | fzf \
     --color hl+:underline \
     -e --ansi --read0 --cycle --info=inline  \
@@ -123,8 +148,9 @@ echo -n -e "${results}" | fzf \
     --prompt 'grepff> ' \
     --delimiter '\n' \
     --preview "${preview_script} '{1}' '$search_string'" \
-    --preview-window 'up:8,wrap' \
+    --preview-window "${preview_options},wrap" \
     --bind "enter:execute-silent(echo {1} | xargs -I{} code --goto ${current_pwd}/{})"
+    # --preview-window 'up:6,wrap' \
 
 
 # echo "${results}" | fzf -e --ansi --read0 --cycle --info=inline  \

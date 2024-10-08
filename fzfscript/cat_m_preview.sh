@@ -11,7 +11,37 @@ line=$(echo "$1" | awk -F ':' '{print $2}')
 
 file_end_line=$(wc -l "$filename" | awk '{print $1}')
 
-preview_len=3
+# (stty height) - 2 (preview border) - 2 (wrap line)
+preview_len=6
+
+terminal_size=$(stty size < /dev/tty 2>/dev/null)
+terminal_width=0
+terminal_height=0
+
+if [ -n "$terminal_size" ]; then
+    terminal_width=$(echo $terminal_size | awk '{print $2}')
+    terminal_height=$(echo $terminal_size | awk '{print $1}')
+fi
+
+preview_len=6
+if [ $(echo "$terminal_width") -ge 200 ]; then
+    tmp=$(expr $terminal_height - 4)
+    preview_len=$(expr $tmp / 2)
+    if [ $preview_len -le 0 ]; then
+        preview_len=1
+    fi
+else
+
+    if [ $(echo "$terminal_height") -ge 24 ]; then
+        preview_len=6
+    elif [ $(echo "$terminal_height") -le 15 ]; then
+        preview_len=2
+    else
+        preview_height=$(expr ${terminal_height} - 11)
+        preview_len=$(expr $preview_height / 2)
+    fi
+fi
+
 
 startline=$(expr $line - $preview_len)
 endline=$(expr $line + $preview_len)
