@@ -27,6 +27,8 @@ IFS='' search_str+=( ${exclude_str[@]} )
 search_string=""
 if [[ "$1" = "-f" ]]; then
     IFS='' search_str+=( "${@:2}" )
+elif [[ "$1" = "-m" ]]; then
+    IFS='' search_str+=( "${@:2}" )
 elif [[ "$1" = "-n" ]]; then
     IFS='' search_str+=( "${@:2}" )
 else
@@ -53,6 +55,12 @@ preview_script="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
 if [[ "$1" = "-f" ]]; then
     # echo "-f option"
     # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
+    output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
+elif [[ "$1" = "-m" ]]; then
+    # echo "-m option"
+    # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
+
     output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
 elif [[ "$1" = "-n" ]]; then
