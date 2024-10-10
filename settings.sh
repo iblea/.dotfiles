@@ -15,46 +15,69 @@ fixed_home=""
 home_last=$(echo "${PARENT_DIR:${#PARENT_DIR}-1:1}")
 
 if [ $? -ne 0 ]; then
-	echo "Error: HOME is not set"
-	echo "home evn : '$PARENT_DIR'"
-	exit 1
+    echo "Error: HOME is not set"
+    echo "home evn : '$PARENT_DIR'"
+    exit 1
 fi
 
 if [ "$home_last" != "/" ]; then
-	settings_full_dir="${PARENT_DIR}/${SETTINGS_DIR}"
-	fixed_home="$PARENT_DIR"
+    settings_full_dir="${PARENT_DIR}/${SETTINGS_DIR}"
+    fixed_home="$PARENT_DIR"
 else
-	settings_full_dir="${PARENT_DIR}${SETTINGS_DIR}"
-	fixed_home="${PARENT_DIR:0:${#PARENT_DIR}-1}"
-	if [ $? -ne 0 ]; then
-		echo "Error: HOME is not set"
-		echo "home evn : '$PARENT_DIR'"
-		exit 1
-	fi
+    settings_full_dir="${PARENT_DIR}${SETTINGS_DIR}"
+    fixed_home="${PARENT_DIR:0:${#PARENT_DIR}-1}"
+    if [ $? -ne 0 ]; then
+        echo "Error: HOME is not set"
+        echo "home evn : '$PARENT_DIR'"
+        exit 1
+    fi
 fi
 
 
 echo "settings_full_dir: $settings_full_dir"
+echo
 
 if [ -z "$settings_full_dir" ]; then
-	echo "Error: settings_full_dir is not set"
-	exit 1
+    echo "Error: settings_full_dir is not set"
+    exit 1
 fi
 
 
 # zsh
 if [ ! -d $fixed_home/.zsh ]; then
-	mkdir $fixed_home/.zsh/
+    mkdir $fixed_home/.zsh/
 fi
-ln -s $settings_full_dir/.zshrc
-ln -s $settings_full_dir/.zsh/.p10k.zsh $fixed_home/.zsh/.p10k.zsh
+
+if [ ! -e "$fixed_home/.zshrc" ]; then
+    if [ -L "$fixed_home/.zshrc" ]; then
+        rm -f "$fixed_home/.zshrc"
+    fi
+    ln -s "$settings_full_dir/.zshrc"
+fi
+
+if [ ! -e "$fixed_home/.zsh/.p10k.zsh" ]; then
+    if [ -L "$fixed_home/.zsh/.p10k.zsh" ]; then
+        rm -f "$fixed_home/.zsh/.p10k.zsh"
+    fi
+    ln -s $settings_full_dir/.zsh/.p10k.zsh $fixed_home/.zsh/.p10k.zsh
+fi
 
 # bash
-ln -s $settings_full_dir/.bashrc
+if [ ! -e "$fixed_home/.bashrc" ]; then
+    if [ -L "$fixed_home/.bashrc" ]; then
+        rm -f "$fixed_home/.bashrc"
+    fi
+    ln -s $settings_full_dir/.bashrc
+fi
 
 
 # vimrc
-ln -s $settings_full_dir/vimrc/.vimrc
+if [ ! -e "$fixed_home/.vimrc" ]; then
+    if [ -L "$fixed_home/.vimrc" ]; then
+        rm -f "$fixed_home/.vimrc"
+    fi
+    ln -s $settings_full_dir/vimrc/.vimrc
+fi
 
 # https://github.com/neovim/neovim-releases (GLIBC 2.27 official unsupported)
 if [ -n $(which nvim) ]; then
@@ -64,14 +87,19 @@ if [ -n $(which nvim) ]; then
     fi
     cd "$fixed_home/.config"
     if [ ! -d "$fixed_home/.config/nvim" ]; then
+        if [ -L "$fixed_home/.config/nvim" ]; then
+            rm -f "$fixed_home/.config/nvim"
+        fi
         ln -s $settings_full_dir/vimrc/neovim nvim
     fi
     cd "$PARENT_DIR"
+else
+    echo "neovim is not installed"
 fi
 
 cd $settings_full_dir
 if [ -d ./.vim/ ]; then
-	rm -rf ./.vim/
+    rm -rf ./.vim/
 fi
 
 
@@ -83,7 +111,7 @@ fi
 # ln -s $settings_full_dir/.vim
 
 if [ ! -d $fixed_home/.vim ]; then
-	mkdir $fixed_home/.vim/
+    mkdir $fixed_home/.vim/
 fi
 
 if [ ! -f $fixed_home/.vim/autoload/plug.vim ]; then
@@ -95,61 +123,97 @@ echo "Please open vim and :PlugInstall first"
 
 
 # envpath
-cd "$PARENT_DIR"
-ln -s $settings_full_dir/.envpath
+cd "$fixed_home"
+
+if [ ! -e "$fixed_home/.envpath" ]; then
+    if [ -L "$fixed_home/.envpath" ]; then
+        rm -f "$fixed_home/.envpath"
+    fi
+    ln -s $settings_full_dir/.envpath
+fi
 
 
 # alias
-ln -s $settings_full_dir/.aliases
+if [ ! -e "$fixed_home/.aliases" ]; then
+    if [ -L "$fixed_home/.aliases" ]; then
+        rm -f "$fixed_home/.aliases"
+    fi
+    ln -s $settings_full_dir/.aliases
+fi
 
 
 # karabiner
 if [[ "$(uname -s)" = "Darwin" ]]; then
-	complex_path=karabiner/assets/complex_modifications
-	if [ -d $fixed_home/.config/$complex_path ]; then
-		rm -rf $fixed_home/.config/$complex_path
-	fi
-	if [ -d $fixed_home/.config ]; then
-		ln -s $settings_full_dir/$complex_path  $fixed_home/.config/$complex_path
-	else
-		echo "no directory $fixed_home/.config"
-	fi
+    complex_path=karabiner/assets/complex_modifications
+    if [ -d "$fixed_home/.config/$complex_path" ]; then
+        rm -rf "$fixed_home/.config/$complex_path"
+    fi
+    if [ -L "$fixed_home/.config/$complex_path" ]; then
+        rm -rf "$fixed_home/.config/$complex_path"
+    fi
+    if [ -d $fixed_home/.config ]; then
+        ln -s $settings_full_dir/$complex_path  $fixed_home/.config/$complex_path
+    else
+        echo "no directory $fixed_home/.config"
+    fi
 fi
 
 
 # bcomp (beyond compare command)
-if [ -n "$(uname -r | grep 'WSL')" ]; then
-	# wsl
-	ln -s $settings_full_dir/.bin/.localbcomp.sh $fixed_home/.bcomp.sh
-elif [[ "$(uname -s)" = "Darwin" ]]; then
-	ln -s $settings_full_dir/.bin/.localbcomp.sh $fixed_home/.bcomp.sh
-else
-	ln -s $settings_full_dir/.bin/.remotebcomp.sh $fixed_home/.bcomp.sh
+if [ ! -e "$fixed_home/.bcomp.sh" ]; then
+    if [ -L "$fixed_home/.bcomp.sh" ]; then
+        rm -f "$fixed_home/.bcomp.sh"
+    fi
+
+    if [ -n "$(uname -r | grep 'WSL')" ]; then
+        # wsl
+        ln -s $settings_full_dir/.bin/.localbcomp.sh $fixed_home/.bcomp.sh
+    elif [[ "$(uname -s)" = "Darwin" ]]; then
+        ln -s $settings_full_dir/.bin/.localbcomp.sh $fixed_home/.bcomp.sh
+    else
+        ln -s $settings_full_dir/.bin/.remotebcomp.sh $fixed_home/.bcomp.sh
+    fi
 fi
 
 # wezterm
 if [ -n "$(command -v wezterm)" ]; then
-	ln -s $fixed_home/.dotfiles/wezterm_config/wezterm $fixed_home/.config
-	ln -s $settings_full_dir/wezterm_config/wezterm/wezterm.lua $fixed_home/.wezterm.lua
+    if [ ! -e "$fixed_home/.config" ]; then
+        if [ -L "$fixed_home/.config" ]; then
+            rm -f "$fixed_home/.config"
+        fi
+        ln -s $fixed_home/.dotfiles/wezterm_config/wezterm $fixed_home/.config
+    fi
+    if [ ! -e "$fixed_home/.wezterm.lua" ]; then
+        if [ -L "$fixed_home/.wezterm.lua" ]; then
+            rm -f "$fixed_home/.wezterm.lua"
+        fi
+        ln -s $settings_full_dir/wezterm_config/wezterm/wezterm.lua $fixed_home/.wezterm.lua
+    fi
 fi
 
 
 # hammerspoon
 if [[ "$(uname -s)" = "Darwin" ]]; then
-	if [ ! -d "$fixed_home/.hammerspoon" ]; then
-		ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
-	fi
+    if [ ! -e "$fixed_home/.hammerspoon" ]; then
+        if [ -L "$fixed_home/.hammerspoon" ]; then
+            rm -f "$fixed_home/.hammerspoon"
+        fi
+        ln -s $settings_full_dir/.hammerspoon $fixed_home/.hammerspoon
+    fi
 fi
 
 if [ -n "$(command -v sgpt)" ]; then
-	SHELL_GPT_DIR="$PARENT_DIR/.config/shell_gpt"
-	if [ ! -d $SHELL_GPT_DIR/ ]; then
-		mkdir -p $SHELL_GPT_DIR/
-	fi
-	if [ ! -f $SHELL_GPT_DIR/.sgptrc ]; then
-		cp -rfp $settings_full_dir/.sgptrc $SHELL_GPT_DIR/.sgptrc
-		echo "Please set openai api key"
-	fi
+    SHELL_GPT_DIR="$PARENT_DIR/.config/shell_gpt"
+    if [ ! -d $SHELL_GPT_DIR/ ]; then
+        mkdir -p $SHELL_GPT_DIR/
+    fi
+    if [ ! -f "$SHELL_GPT_DIR/.sgptrc" ]; then
+        if [ -L "$SHELL_GPT_DIR/.sgptrc" ]; then
+            rm -f "$SHELL_GPT_DIR/.sgptrc"
+        fi
+        cp -rfp "$settings_full_dir/.sgptrc" "$SHELL_GPT_DIR/.sgptrc"
+        echo "Please set openai api key"
+    fi
 fi
 
 
@@ -161,7 +225,7 @@ fi
 
 # only linux workspace
 # if [ "$1" == "linux" ]; then
-# 	ln -s $settings_full_dir/.alias_waf
+#     ln -s $settings_full_dir/.alias_waf
 # fi
 
 
@@ -170,3 +234,7 @@ fi
 # gmail="test@gmail.com"
 # ln -s "$fixed_home/Library/CloudStorage/GoogleDrive-$(gmail)/내 드라이브" "GoogleDrive"
 
+
+
+echo ""
+echo "done"
