@@ -1,9 +1,8 @@
+#!/bin/bash
 
-if ( grep -q "ERROR: grep result is empty" <<< "$@" ); then
-    echo "1" >> /tmp/test.txt
-    exit 1
-elif ( grep -q "ERROR: cannot find" <<< "$@" ); then
-    echo "2" >> /tmp/test.txt
+if grep -q "ERROR: grep result is empty" <<< "$@"; then
+    exit 2
+elif grep -q "ERROR: cannot find" <<< "$@"; then
     exit 1
 fi
 
