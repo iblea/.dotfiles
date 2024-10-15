@@ -61,8 +61,8 @@ else
 fi
 
 if [ -z "$output" ]; then
-    echo "grep result is empty"
-    exit 0
+    echo "ERROR: grep result is empty"
+    exit 2
 fi
 
 output_array=()
@@ -110,7 +110,7 @@ done
 # fi
 
 if [ -z "$results" ]; then
-    echo "cannot find '$@'"
+    echo "ERROR: cannot find '$@'"
     exit 1
 fi
 

@@ -5,6 +5,13 @@ if ! grep -q ":" <<< "$1"; then
     exit 1
 fi
 
+if ( grep -q "ERROR: grep result is empty" <<< "$@" ); then
+    echo "1" >> /tmp/test.txt
+    exit 1
+elif ( grep -q "ERROR: cannot find" <<< "$@" ); then
+    echo "2" >> /tmp/test.txt
+    exit 1
+fi
 
 filename=$(echo "$1" | awk -F ':' '{print $1}')
 line=$(echo "$1" | awk -F ':' '{print $2}')

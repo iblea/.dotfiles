@@ -137,6 +137,15 @@ RELOAD="reload:$reload_script"
 # exit 0
 
 # $reload_script | fzf \
+# result=$($HOME/.dotfiles/fzfscript/grepff_logic.sh "${opts[@]}" "${find_word_escape}")
+# if [ $? -ne 0 ]; then
+#     printf '%s\n' "$result"
+#     exit $?
+# fi
+#
+# # printf '%s' "$result" | fzf \
+# # echo -n -e "$result" | fzf \
+
 ~/.dotfiles/fzfscript/grepff_logic.sh "${opts[@]}" "${find_word_escape}" | fzf \
     --color hl+:underline \
     -e --ansi --read0 --cycle --info=inline  \
