@@ -23,50 +23,76 @@ CURRENT_SHELL=$(ps -p $$ -o 'comm=')
 #     return
 # fi
 
-is_argument="0"
 findword=""
 is_escape="0"
 preview_script="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
-if [[ "$1" = "-f" ]]; then
-    preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
-    is_argument="1"
-    is_escape="1"
-    if [ $# -gt 1 ]; then
-        if [[ "$2" = "--" ]]; then
-            findword="$3"
+
+args=( "$@" )
+opts=( )
+
+
+if [ $# -gt 0 ]; then
+
+argslen=$(expr ${#args[@]} - 1)
+for (( i=0; i<$argslen; i++ )); do
+    arg="${args[$i]}"
+    opts+=( "$arg" )
+    if [[ "$arg" = "--" ]]; then
+
+        # default option is -n
+        if [ ${#opts[@]} -eq 1 ]; then
+            opts=( "-n" "--" )
+        fi
+
+        if [ $((i+1)) -eq $# ]; then
+            findword=""
         else
-            findword="$2"
+            findword="${args[@]:$((i+1))}"
+        fi
+        break
+    fi
+    if [[ "$arg" = "-f" ]]; then
+        preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
+        is_escape="1"
+    elif [[ "$arg" = "-m" ]]; then
+        preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
+        is_escape="1"
+    fi
+done
+
+if [ -z "$findword" ]; then
+    findword="${args[$argslen]}"
+    # if findword first character is "-", then it is option
+    if [[ "${findword}" = "--" ]]; then
+        findword=""
+        if [ ${#opts[@]} -eq 0 ]; then
+            opts=( "-n" "--" )
+        else
+            opts+=( "--" )
+        fi
+    elif [[ "${findword:0:1}" = "-" ]]; then
+        if [[ "$findword" = "-f" ]]; then
+            preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
+            is_escape="1"
+        elif [[ "$findword" = "-m" ]]; then
+            preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
+            is_escape="1"
+        elif [[ "$findword" = "-n" ]]; then
+            echo -n ""
+        else
+            opts+=( "-n" )
+        fi
+        opts+=( "$findword" )
+        opts+=( "--" )
+        findword=""
+    else
+        if [ ${#opts[@]} -eq 0 ]; then
+            opts=( "-n" "--" )
         fi
     fi
-elif [[ "$1" = "-m" ]]; then
-    preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
-    is_argument="1"
-    is_escape="1"
-    if [ $# -gt 1 ]; then
-        if [[ "$2" = "--" ]]; then
-            findword="$3"
-        else
-            findword="$2"
-        fi
-    fi
-elif [[ "$1" = "-n" ]]; then
-    is_argument="1"
-    if [ $# -gt 1 ]; then
-        if [[ "$2" = "--" ]]; then
-            findword="$3"
-        else
-            findword="$2"
-        fi
-    fi
+fi
 else
-    is_argument="0"
-    if [ $# -gt 0 ]; then
-        if [[ "$1" = "--" ]]; then
-            findword="$2"
-        else
-            findword="$1"
-        fi
-    fi
+    opts=( "-n" "--" )
 fi
 
 if [ -z "$findword" ]; then
@@ -107,7 +133,6 @@ fi
 
 
 
-opts=( )
 # $HOME/.dotfiles/fzfscript/grepff_logic.sh
 reload_script="$HOME/.dotfiles/fzfscript/grepff_logic.sh"
 
@@ -122,18 +147,15 @@ else
 fi
 
 if [[ "$is_argument" = "1" ]]; then
-    reload_script+=" $1 -- \"$reload_find_word\""
-    opts=( "$1" "--" )
+    reload_script+=" ${opts[@]} \"$reload_find_word\""
 else
-    reload_script+=" -n -- \"$reload_find_word\""
-    opts=( "-n" "--" )
+    reload_script+=" ${opts[@]} \"$reload_find_word\""
 fi
 
 RELOAD="reload:$reload_script"
 # echo "RELOAD: $RELOAD"
 # echo "findword: $findword"
 # echo "find_word_escape: "$find_word_escape""
-# echo "opts : ${opts[@]}"
 # exit 0
 
 # $reload_script | fzf \

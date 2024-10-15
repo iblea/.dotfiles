@@ -3,25 +3,84 @@
 
 source $HOME/.dotfiles/grepscript/grep_exclude
 search_str=( )
+include_str=( )
 IFS='' search_str+=( ${exclude_str[@]} )
 
 search_string=""
-if [[ "$1" = "-f" ]]; then
-    IFS='' search_str+=( "${@:2}" )
-elif [[ "$1" = "-m" ]]; then
-    IFS='' search_str+=( "${@:2}" )
-elif [[ "$1" = "-n" ]]; then
-    IFS='' search_str+=( "${@:2}" )
-else
-    IFS='' search_str+=( "${@}" )
-fi
-# echo "search_str: ${search_str[@]}"
+
+args=( "$@" )
+
+for arg in "${args[@]}"; do
+
+    if [[ "$arg" = "-f" ]]; then
+        continue
+    elif [[ "$arg" = "-m" ]]; then
+        continue
+    elif [[ "$arg" = "-n" ]]; then
+        continue
+    fi
+
+    if [[ "$arg" = "-e="* ]]; then
+        ext=${arg:3}
+        include_str+=( "--include=*.${ext}" )
+        continue
+    elif [[ "$arg" = "--include="* ]]; then
+        include_str+=( "$arg" )
+        continue
+    fi
+
+    if [[ "$arg" = "--c" ]]; then
+        include_str+=( "--include=*.c" )
+        include_str+=( "--include=*.y" )
+        include_str+=( "--include=*.h" )
+        continue
+    elif [[ "$arg" = "--cpp" ]]; then
+        include_str+=( "--include=*.cpp" )
+        include_str+=( "--include=*.h" )
+        include_str+=( "--include=*.cc" )
+        include_str+=( "--include=*.hpp" )
+        continue
+    elif [[ "$arg" = "--clang" ]]; then
+        include_str+=( "--include=*.c" )
+        include_str+=( "--include=*.y" )
+        include_str+=( "--include=*.cpp" )
+        include_str+=( "--include=*.h" )
+        include_str+=( "--include=*.hpp" )
+        include_str+=( "--include=*.cc" )
+        continue
+    elif [[ "$arg" = "--sh" ]]; then
+        include_str+=( "--include=*.sh" )
+        continue
+    elif [[ "$arg" = "--php" ]]; then
+        include_str+=( "--include=*.php" )
+        continue
+    elif [[ "$arg" = "--java" ]]; then
+        include_str+=( "--include=*.java" )
+        continue
+    elif [[ "$arg" = "--py" ]]; then
+        include_str+=( "--include=*.py" )
+        continue
+    elif [[ "$arg" = "--python" ]]; then
+        include_str+=( "--include=*.py" )
+        continue
+    elif [[ "$arg" = "--js" ]]; then
+        include_str+=( "--include=*.js" )
+        continue
+    fi
+
+    search_str+=( "$arg" )
+done
+
+# IFS='' search_str+=( "${@}" )
 
 search_string=$(echo "${search_str[${#search_str[@]}-1]}")
 # echo "search_string: $search_string"
 # search_str[${#search_str[@]}-1]='"'"$search_string"'"'
 
 
+# for s in "${include_str[@]}"; do
+#     echo "i: '$s'"
+# done
 # for s in "${search_str[@]}"; do
 #     echo "s: '$s'"
 # done
@@ -42,22 +101,22 @@ preview_script="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
 if [[ "$1" = "-f" ]]; then
     # echo "-f option"
     # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
-    output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHF ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
 elif [[ "$1" = "-m" ]]; then
     # echo "-m option"
     # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
 
-    output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHF ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
 elif [[ "$1" = "-n" ]]; then
     # echo "-n option"
     # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
-    output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHP ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
 else
     # echo "other option"
     # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
-    output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHP ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
 fi
 
 if [ -z "$output" ]; then
