@@ -18,22 +18,26 @@ terminal_size=$(stty size < /dev/tty 2>/dev/null)
 terminal_width=0
 terminal_height=0
 
+source "$HOME/.dotfiles/fzfscript/tty_size.sh"
+
 if [ -n "$terminal_size" ]; then
     terminal_width=$(echo $terminal_size | awk '{print $2}')
     terminal_height=$(echo $terminal_size | awk '{print $1}')
 fi
 
 preview_len=6
-if [ $(echo "$terminal_width") -ge 200 ]; then
+if [ $(echo "$terminal_height") -ge $UP_HEIGHT_SIZE ]; then
+    preview_len=6
+elif [ $(echo "$terminal_width") -ge $RIGHT_WIDTH_SIZE ]; then
     tmp=$(expr $terminal_height - 4)
     preview_len=$(expr $tmp / 2)
     if [ $preview_len -le 0 ]; then
         preview_len=1
     fi
 else
-    if [ $(echo "$terminal_height") -ge 24 ]; then
+    if [ $(echo "$terminal_height") -ge $MAX_HEIGHT_SIZE ]; then
         preview_len=6
-    elif [ $(echo "$terminal_height") -le 15 ]; then
+    elif [ $(echo "$terminal_height") -le $MIN_HEIGHT_SIZE ]; then
         preview_len=2
     else
         preview_height=$(expr ${terminal_height} - 11)
