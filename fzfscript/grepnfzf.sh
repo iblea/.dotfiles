@@ -20,7 +20,7 @@ IFS='' search_str+=( ${exclude_str[@]} )
 IFS='' search_str+=( "$@" )
 
 output=""
-output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "/Binary file .* matches/d" | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
 
 if [ -z "$output" ]; then
     echo "grep result is empty"

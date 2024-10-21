@@ -157,7 +157,8 @@ fi
 alias grepo="grep --color=auto -rnIH"
 alias grepi="grep --color=auto -rnIHP"
 alias grepapi="grep --color=auto --exclude-dir=hmapi -rnIHP"
-alias grepf="grep --color=auto -rnIHF"
+# alias grepf="grep --color=auto -rnIHF"
+alias grepq="grep --color=auto -rnIHF"
 
 
 # ssh
@@ -500,6 +501,8 @@ alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 #     # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
 # done
 
+alias grepf="$HOME/.dotfiles/fzfscript/grepff"
+alias greph="$HOME/.dotfiles/fzfscript/grepff"
 alias grepff="$HOME/.dotfiles/fzfscript/grepff"
 
 alias gnf="$HOME/.dotfiles/fzfscript/grepnfzf"
@@ -924,6 +927,7 @@ function clearsslkeylog() {
 function findsrc() {
     local ext="\(c\|cpp\|h\|y\|l\|py\)"
     find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$@" {} \; |
+    sed -e "/Binary file .* matches/d" |
     sed -e "s/\:\[m\[K\s*/ |[m[K /2"
     # sed -e "s/\:/ | /2" -e "s| \| \[m\[K\s*| \| [m[K|"
 }
@@ -935,6 +939,7 @@ function afindsrc() {
     fi
     local ext="\(c\|cpp\|h\|y\|l\|py\)"
     find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$@" {} \; |
+    sed -e "/Binary file .* matches/d" |
     sed -e "s|^|${curpwd}|1" -e "s|\:\[m\[K\s*|[m[K\n|2"
     # sed -e "s|^|${curpwd}|1" -e "s/\:/\n/2" -e "s|\n\[m\[K\s*|\n[m[K|"
 }

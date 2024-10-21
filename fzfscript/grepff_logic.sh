@@ -6,6 +6,8 @@ search_str=( )
 include_str=( )
 IFS='' search_str+=( ${exclude_str[@]} )
 
+BINARY_FILE_GREP_WARNING="Binary file .* matches"
+
 search_string=""
 
 args=( "$@" )
@@ -101,22 +103,22 @@ preview_script="$HOME/.dotfiles/fzfscript/cat_n_preview.sh"
 if [[ "$1" = "-f" ]]; then
     # echo "-f option"
     # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
-    output=$(grep --color=always -rnIHF ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHF ${include_str[@]} ${search_str[@]} | sed -e "/${BINARY_FILE_GREP_WARNING}/d" | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
 elif [[ "$1" = "-m" ]]; then
     # echo "-m option"
     # output=$(grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2")
 
-    output=$(grep --color=always -rnIHF ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHF ${include_str[@]} ${search_str[@]} | sed -e "/${BINARY_FILE_GREP_WARNING}/d" | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
     preview_script="$HOME/.dotfiles/fzfscript/cat_m_preview.sh"
 elif [[ "$1" = "-n" ]]; then
     # echo "-n option"
     # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
-    output=$(grep --color=always -rnIHP ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHP ${include_str[@]} ${search_str[@]} | sed -e "/${BINARY_FILE_GREP_WARNING}/d" | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
 else
     # echo "other option"
     # output=$(grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2")
-    output=$(grep --color=always -rnIHP ${include_str[@]} ${search_str[@]} | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
+    output=$(grep --color=always -rnIHP ${include_str[@]} ${search_str[@]} | sed -e "/${BINARY_FILE_GREP_WARNING}/d" | sed -e "s|\:\[m\[K\s*|[m[K\n|2")
 fi
 
 if [ -z "$output" ]; then
