@@ -15,6 +15,7 @@ fi
 #     export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
 # fi
 export SSH_AUTH_SOCK="$HOME/.ssh/ssh-agent.sock"
+source $HOME/.dotfiles/script/passkey_filepath
 
 
 function ssh_agent_process_find()
@@ -58,4 +59,12 @@ fi
 unset ssh_agent_found
 
 # ssh-add $HOME/.ssh/id_rsa
+
+if [ -f "$PASSPATH_SSH_AGENT" ]; then
+    ssh_agent_found=$(ssh_agent_process_find )
+    if [[ "${ssh_agent_found}" = "1" ]]; then
+        ( { sleep .1; cat "$PASSPATH_SSH_AGENT"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+    fi
+fi
+
 

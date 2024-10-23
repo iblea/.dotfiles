@@ -33,8 +33,9 @@ if [ ! -f "$SSH_CONFIG_FILE" ]; then
 fi
 
 source $HOME/.dotfiles/script/ssh-agent-init.sh
-if [ -f "$HOME/.ssh/.passfile" ]; then
-    ( { sleep .1; cat $HOME/.ssh/.passfile; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+source $HOME/.dotfiles/script/passkey_filepath
+if [ -f "$PASSPATH_SSH_AGENT" ]; then
+    ( { sleep .1; cat "$PASSPATH_SSH_AGENT"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
 fi
 
 
