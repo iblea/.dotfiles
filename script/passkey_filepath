@@ -1,1 +1,1 @@
-PASSPATH_SSH_AGENT="$HOME/.ssh/.passkey_passkey_ssh_agent"
+PASSPATH_SSH_AGENT="$HOME/.ssh/.passkey_agent"
