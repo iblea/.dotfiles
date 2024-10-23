@@ -63,7 +63,7 @@ unset ssh_agent_found
 if [ -f "$PASSPATH_SSH_AGENT" ]; then
     ssh_agent_found=$(ssh_agent_process_find )
     if [[ "${ssh_agent_found}" = "1" ]]; then
-        ( { sleep .1; cat "$PASSPATH_SSH_AGENT"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+        ( { sleep .1; cat "$PASSPATH_SSH_AGENT" | tr -d '\r' | tr -d '\n'; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
     fi
 fi
 
