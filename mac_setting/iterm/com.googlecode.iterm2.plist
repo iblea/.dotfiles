@@ -1256,13 +1256,28 @@
 		<key>0xd-0x100000-0x24</key>
 		<dict>
 			<key>Action</key>
-			<integer>13</integer>
-			<key>Label</key>
-			<string></string>
+			<integer>11</integer>
+			<key>Apply Mode</key>
+			<integer>0</integer>
+			<key>Escaping</key>
+			<integer>2</integer>
 			<key>Text</key>
-			<string></string>
+			<string>0x0a</string>
 			<key>Version</key>
-			<integer>1</integer>
+			<integer>2</integer>
+		</dict>
+		<key>0xd-0x40000-0x24</key>
+		<dict>
+			<key>Action</key>
+			<integer>66</integer>
+			<key>Apply Mode</key>
+			<integer>0</integer>
+			<key>Escaping</key>
+			<integer>2</integer>
+			<key>Text</key>
+			<string>[{"Version":2,"Apply Mode":0,"Action":11,"Text":"0x0a","Escaping":2}]</string>
+			<key>Version</key>
+			<integer>2</integer>
 		</dict>
 		<key>0xf702-0x300000-0x0</key>
 		<dict>
