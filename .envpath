@@ -18,7 +18,23 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 	fi
 fi
 
-# java version
+
+# custom binary / script
+if [ -d "$HOME/.local/bin/" ]; then
+	if ! grep -q "$HOME/.local/bin" <<< "$PATH"; then
+		export PATH="$HOME/.local/bin:$PATH"
+	fi
+fi
+
+if [ -d "$HOME/.local/.bin/" ]; then
+	if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
+		export PATH="$HOME/.local/.bin:$PATH"
+	fi
+fi
+
+
+
+# java path
 if [ -n "$(command -v java)" ]; then
 	java --version >/dev/null 2>&1
 fi
@@ -37,19 +53,18 @@ if [ $? -eq 0 ]; then
 	fi
 fi
 
-
-
-if [ -d "$HOME/.local/bin/" ]; then
-	if ! grep -q "$HOME/.local/bin" <<< "$PATH"; then
-		export PATH="$HOME/.local/bin:$PATH"
+# go path
+if [ -n "$(command -v go)" ]; then
+	goversion=$(go version | awk -F ' ' '{ print $3 }' | sed 's/^go//')
+	if [ -d "/opt/homebrew/Cellar/go/${goversion}/libexec" ]; then
+		export GOROOT="/opt/homebrew/Cellar/go/${goversion}/libexec"
 	fi
+	unset goversion
 fi
 
-if [ -d "$HOME/.local/.bin/" ]; then
-	if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
-		export PATH="$HOME/.local/.bin:$PATH"
-	fi
-fi
+
+
+
 
 
 # if homebrew exist
