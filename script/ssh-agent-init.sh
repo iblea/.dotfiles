@@ -60,11 +60,16 @@ unset ssh_agent_found
 
 # ssh-add $HOME/.ssh/id_rsa
 
+# ( { sleep .1; echo -n 'test'; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" )
 if [ -f "$PASSPATH_SSH_AGENT" ]; then
     ssh_agent_found=$(ssh_agent_process_find )
     if [[ "${ssh_agent_found}" = "1" ]]; then
-        ( { sleep .1; echo "$(cat ""$PASSPATH_SSH_AGENT"" | tr -d '\r' | tr -d '\n')"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+		$HOME/.dotfiles/script/pass-ssh-agent.sh > /dev/null
     fi
 fi
 
 
+
+if [[ "$(uname -s)" = "Darwin" ]]; then
+    echo -n ""
+fi
