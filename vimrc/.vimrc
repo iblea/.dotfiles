@@ -5,7 +5,10 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	call plug#begin($HOME.'/.vim/plugged')
 
 	Plug 'preservim/nerdtree'
-	Plug 'iblea/AutoComplPop'
+	" Plug 'vim-scripts/AutoComplPop'
+	" Plug 'iblea/AutoComplPop'
+	Plug 'girishji/vimcomplete'
+	" Plug 'lifepillar/vim-mucomplete'
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
 	Plug 'jlanzarotta/bufexplorer'
@@ -59,3 +62,4 @@ endif
 if isdirectory("/opt/homebrew/")
 	set clipboard=unnamed
 endif
+

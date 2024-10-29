@@ -34,6 +34,37 @@ if isdirectory("/opt/homebrew/")
 	set clipboard=unnamed
 endif
 
+let g:open_path = getcwd()
+if exists(":term")
+	"set termsize=20x0
+	"set termwinsize=20x0
+	func! SPterm()
+		:term
+		call feedkeys("source ~/.zshrc\<CR>", 'n')
+		" call feedkeys("\<c-w>\<c-p>\<c-w>\=5\<c-w>+", 'n')
+	endfunc
+	func! VSterm_cw()
+		vert term
+		call feedkeys("source ~/.zshrc\<CR>", 'n')
+		" call feedkeys("\<c-w>\<c-p>\<c-w>\=30\<c-w>>", 'n')
+	endfunc
+	func! VSterm()
+		vert term
+		silent call feedkeys("cd ".g:open_path."\<CR>source ~/.zshrc\<CR>")
+	endfunc
+
+	nnoremap <silent> <c-n><c-y> <ESC>:silent call SPterm()<CR>
+	nnoremap <silent> <c-n><c-t> <ESC>:silent call VSterm_cw()<CR>
+	nnoremap <silent> \t <ESC>:silent call VSterm()<CR>
+	tnoremap <C-@> <ESC>
+	tnoremap <c-g> <c-f>
+	tnoremap <c-f> <c-w><c-w>
+	tnoremap <c-k> <c-\><c-n>
+	tnoremap <c-x> <c-\><c-n>
+	tnoremap <c-j> <c-w><c-p>
+	tnoremap <c-l> <c-\><c-n><ESC>:suspend<CR>
+endif
+
 
 function! Get_visual_selection()
     " Why is this not a built-in Vim script function?!
@@ -114,3 +145,4 @@ if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
 	autocmd TermOpen * startinsert
 endif
+

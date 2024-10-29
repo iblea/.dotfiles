@@ -172,12 +172,12 @@ nnoremap <Leader>. <C-w>>
 vnoremap <Leader>. <C-w>>
 nnoremap <Leader>v <C-W>=
 vnoremap <Leader>v <C-W>=
-" nnoremap <Leader>r <c-w>K
-" nnoremap <Leader>t <c-w>H
-" nnoremap <Leader>p <ESC>:sp<CR>
+nnoremap <Leader>r <c-w>K
+nnoremap <Leader>t <c-w>H
+nnoremap <Leader>p <ESC>:sp<CR>
 
-" nnoremap <Leader>u :bp<CR>
-" nnoremap <Leader>i :bn<CR>
+nnoremap <Leader>u :bp<CR>
+nnoremap <Leader>i :bn<CR>
 
 nnoremap <C-d> 15<C-e>
 nnoremap <C-a> 15<C-y>

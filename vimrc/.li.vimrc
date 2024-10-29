@@ -13,6 +13,7 @@ endif
 
 
 
+
 " RealVim realvim
 ca w!! w !sudo tee "%" > /dev/null
 
@@ -25,7 +26,7 @@ if isdirectory($HOME."/.vim/pack/autopair") || isdirectory($HOME."/.vim/plugged/
 endif
 
 if isdirectory($HOME."/.vim/pack/nerdtree") || isdirectory($HOME."/.vim/plugged/nerdtree")
-	let NERDTreeShowHidden=1
+    let NERDTreeShowHidden=1
 endif
 
 if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/vim-airline")
@@ -113,34 +114,65 @@ if $TERM == 'xterm-256color'
 nnoremap <esc>^[ <esc>^[
 endif
 
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col-1]!~'\k'
-        return "\<TAB>"
-    else
-        if pumvisible()
-            return "\<C-N>"
-        else
-            return "\<C-N>\<C-P>"
-        end
-    endif
-endfunction
+if exists(":term")
+	"set termsize=20x0
+	"set termwinsize=20x0
+	func! SPterm()
+		:term
+		call feedkeys("\<c-w>\<c-p>\<c-w>\=5\<c-w>+", 'n')
+	endfunc
+	func! VSterm_cw()
+		vert term
+		call feedkeys("\<c-w>\<c-p>\<c-w>\=30\<c-w>>", 'n')
+	endfunc
+	func! VSterm()
+		vert term
+		silent call feedkeys("cd ".g:open_path."\<CR>")
+	endfunc
 
-function! InsertSTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col-1]!~'\k'
-        return "\<TAB>"
-    else
-        if pumvisible()
-            return "\<C-P>"
-        else
-            return "\<C-P>\<C-N>"
-        end
-    endif
-endfunction
+	nnoremap <silent> <c-n><c-y> <ESC>:silent call SPterm()<CR>
+	nnoremap <silent> <c-n><c-t> <ESC>:silent call VSterm_cw()<CR>
+	nnoremap <silent> \t <ESC>:silent call VSterm()<CR>
+	tnoremap <C-@> <ESC>
+	tnoremap <c-g> <c-f>
+	tnoremap <c-f> <c-w><c-w>
+	tnoremap <c-k> <c-\><c-n>
+	tnoremap <c-x> <c-\><c-n>
+	tnoremap <c-j> <c-w><c-p>
+	tnoremap <c-l> <c-\><c-n><ESC>:suspend<CR>
+endif
 
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-inoremap <s-tab> <c-r>=InsertSTabWrapper()<cr>
+
+
+" AutoCompletePop Acp
+" function! InsertTabWrapper()
+"     let col = col('.') - 1
+"     if !col || getline('.')[col-1]!~'\k'
+"         return "\<TAB>"
+"     else
+"         if pumvisible()
+"             return "\<C-N>"
+"         else
+"             return "\<C-N>\<C-P>"
+"         end
+"     endif
+" endfunction
+" 
+" function! InsertSTabWrapper()
+"     let col = col('.') - 1
+"     if !col || getline('.')[col-1]!~'\k'
+"         return "\<TAB>"
+"     else
+"         if pumvisible()
+"             return "\<C-P>"
+"         else
+"             return "\<C-P>\<C-N>"
+"         end
+"     endif
+" endfunction
+
+" inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+" inoremap <s-tab> <c-r>=InsertSTabWrapper()<cr>
 " Acp
 if (!empty(glob($HOME."/.vim/plugin/acp.vim"))) || isdirectory($HOME."/.vim/plugged/AutoComplPop")
     let g:acp_enableAtStartup = 1
@@ -157,6 +189,21 @@ if (!empty(glob($HOME."/.vim/plugin/acp.vim"))) || isdirectory($HOME."/.vim/plug
     let g:acp_behaviorCssOmniPropertyLength = -1
     let g:acp_behaviorCssOmniValueLength = -1
 endif
+" Acp mucomplete
+if isdirectory($HOME."/.vim/plugged/vim-mucomplete")
+	iunmap <Tab>
+	iunmap <C-i>
+endif
+
+" Acp vimcomplete
+if isdirectory($HOME."/.vim/plugged/vimcomplete")
+	" iunmap <Tab>
+	" iunmap <C-i>
+	let g:vimcomplete_tab_enable = 1
+	let g:vimcomplete_cr_enable = 0
+endif
+
+
 " EasyMotion
 if (!empty(glob($HOME."/.vim/pack/easymotion"))) || isdirectory($HOME."/.vim/plugged/vim-easymotion")
     let g:EasyMotion_smartcase = 0
@@ -277,7 +324,7 @@ endfunc
 
 if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
-	autocmd FileType gitcommit  setl ts=4
+    autocmd FileType gitcommit  setl ts=4
 endif
 
 
