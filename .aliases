@@ -1549,7 +1549,7 @@ fuunalias_alias 'gmnsah' 'git merge --squash --no-commit --allow-unrelated-histo
 fuunalias_alias 'grevtme' 'git revert --no-edit --no-commit'
 fuunalias_alias 'gl' ''
 fuunalias_alias 'gsi' ''
-fuunalias_alias 'gpf' ''
+# fuunalias_alias 'gpf' ''
 fuunalias_alias 'gpsh' 'git push'
 fuunalias_alias 'gpshfl' 'git push --force-with-lease'
 fuunalias_alias 'gpshfc' 'git push --force'
