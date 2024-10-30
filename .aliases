@@ -501,6 +501,7 @@ alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 #     # results=$(echo "$results\n${grep_output[2]}    | ${grep_output[1]}")
 # done
 
+alias gpf="$HOME/.dotfiles/fzfscript/grepff"
 alias grepf="$HOME/.dotfiles/fzfscript/grepff"
 alias greph="$HOME/.dotfiles/fzfscript/grepff"
 alias grepff="$HOME/.dotfiles/fzfscript/grepff"
