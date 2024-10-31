@@ -502,6 +502,7 @@ alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 # done
 
 alias gpf="$HOME/.dotfiles/fzfscript/grepff"
+alias gpfh="$HOME/.dotfiles/fzfscript/grepff -f"
 alias gph="$HOME/.dotfiles/fzfscript/grepff -f"
 alias grepf="$HOME/.dotfiles/fzfscript/grepff"
 alias greph="$HOME/.dotfiles/fzfscript/grepff -f"
