@@ -1797,22 +1797,32 @@ function gld() {
 
 alias gitsync='git remote update origin --prune'
 function gitsvnrev() {
-    if [[ "$@" = "" ]]; then
-        return
-    fi
 
     local revinf="$@"
     if [[ "${revinf:0:1}" = "r" ]]; then
-        for branch in $(git for-each-ref --format='%(refname)' refs/heads/); do
+        branches=$(git for-each-ref --format='%(refname)' refs/heads/)
+        for branch in $branches ; do
             local inform=$(git svn find-rev $@ $branch)
             if [[ "$inform" = "" ]]; then
                 continue
             fi
             echo "branch (${branch}) : ${inform}"
         done
-    else
-        git svn find-rev $@
+        return 0
     fi
+
+    hash="${revinf}"
+    if [[ "${revinf}" = "" ]]; then
+        hash=$(git log --pretty=format:%H --max-count 1)
+    elif [[ $# -ge 2 ]] && [[ "$1" = "-p" ]]; then
+        hash=$(git log --pretty=format:%H --max-count 1 "$2" )
+    fi
+
+    if [ -z "$hash" ]; then
+        echo "cannot find commit hash"
+        return 0
+    fi
+    git svn find-rev "$hash"
 }
 
 # [svn-remote "v5.0"]
