@@ -1814,6 +1814,8 @@ function gitsvnrev() {
     hash="${revinf}"
     if [[ "${revinf}" = "" ]]; then
         hash=$(git log --pretty=format:%H --max-count 1)
+    elif [[ "${revinf}" = "./" ]]; then
+        hash=$(git log --pretty=format:%H --max-count 1 ./ )
     elif [[ $# -ge 2 ]] && [[ "$1" = "-p" ]]; then
         hash=$(git log --pretty=format:%H --max-count 1 "$2" )
     fi
