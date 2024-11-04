@@ -96,7 +96,48 @@ else
 fi
 
 if [ -z "$findword" ]; then
-    read -p "find : " -r findword
+    ago_histpath="$HISTFILE"
+    history_path="$HOME/.dotfiles/fzfscript"
+    history_file="$history_path/.grepff_history"
+    tmp_file="$history_path/.grepff_history_tmp"
+
+    # if [ -n "$HISTFILE" ]; then
+    #     unset HISTFILE
+    # fi
+
+    if [ ! -f "$history_file" ]; then
+        touch "$history_file"
+    fi
+
+    set -o emacs
+    set -o histexpand
+    set -o history
+    set -o monitor
+
+    bind '"\e[A": history-search-backward'    # Up arrow
+    bind '"\e[B": history-search-forward'     # Down arrow
+
+    bind '"\C-p": previous-history'
+    bind '"\eOA": previous-history'
+    bind '"\C-n": next-history'
+    bind '"\eOB": next-history'
+
+    HISTFILE="$tmpfile"
+    HISTFILESIZE=2000
+    HISTSIZE=1000
+    cp -r "$history_file" "$tmp_file"
+    history -c
+    # history -d $((HISTCMD-1)) && history -r "$tmp_file" # history -d $((HISTCMD-1)) && history
+    history -r "$tmp_file" # history -d $((HISTCMD-1)) && history
+    read -e -p "find : " -r findword
+    # history -d $((HISTCMD-1)) && read -e -p "find : " -r findword
+    history -d $((HISTCMD-1)) && export HISTFILE="$ago_histpath"
+
+    if [ -n "$findword" ]; then
+        echo "$findword" >> "$history_file"
+    fi
+    history_content=$(cat "$history_file" | tail -n 101)
+    echo "$history_content" > "$history_file"
 fi
 
 
