@@ -1,4 +1,5 @@
 #!/bin/bash
+#!/usr/bin/zsh
 
 R_MACRO="rloc"
 R_CONFIG="$HOME/.ssh/config"
@@ -57,26 +58,19 @@ REMOTE_ADDR=$(echo "$SSH_CONNECTION" | awk -F ' ' '{ print $1 }')
 echo ""
 echo "Remote Address: $REMOTE_ADDR"
 
-source $HOME/.dotfiles/script/ssh-agent-init.sh
-source $HOME/.dotfiles/script/passkey_filepath
-if [ -f "$PASSPATH_SSH_AGENT" ]; then
-    ( { sleep .1; echo "$(cat ""$PASSPATH_SSH_AGENT"" | tr -d '\r' | tr -d '\n')"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
-else
-    ssh-add "$R_SSH_KEY_PATH"
-fi
+# source $HOME/.dotfiles/script/ssh-agent-init.sh
+# source $HOME/.dotfiles/script/pass-ssh-agent.sh > /dev/null
+
+scp -F "$R_CONFIG" -i /home/iblea/.ssh/id_rsa "${FILES[@]}" "$R_MACRO":"$R_PATH"
 echo ""
 
 
-scp -F "$R_CONFIG" "${FILES[@]}" "$R_MACRO":"$R_PATH"
-
 if [ $? -ne 0 ]; then
-    echo ""
     echo "Transfer Failed"
     echo ""
     exit 1
 fi
 
-echo ""
 echo "Download Path : ${R_PATH}"
 echo "${REMOTE_ADDR}, transfered done"
 echo ""

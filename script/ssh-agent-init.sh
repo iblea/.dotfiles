@@ -65,6 +65,7 @@ if [ -f "$PASSPATH_SSH_AGENT" ]; then
     ssh_agent_found=$(ssh_agent_process_find )
     if [[ "${ssh_agent_found}" = "1" ]]; then
 		$HOME/.dotfiles/script/pass-ssh-agent.sh > /dev/null
+		# $HOME/.dotfiles/script/pass-ssh-agent.sh
     fi
 fi
 

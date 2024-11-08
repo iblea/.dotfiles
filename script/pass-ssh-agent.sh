@@ -6,6 +6,12 @@
 # expect "Enter passphrase for /path/to/.ssh/id_rsa:"
 # send "password\n"
 
+is_already_check="iblea@iasdf.com"
+keys=$(ssh-add -l)
+
+if grep -q "$is_already_check" <<< "$keys"; then
+    exit 0
+fi
 
 
 source $HOME/.dotfiles/script/passkey_filepath
