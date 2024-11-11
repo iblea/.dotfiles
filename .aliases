@@ -386,6 +386,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         fi
         "$ddns_script_path" $@
     }
+	alias ddnset="ddns_set"
 
     function ddnsvi() {
         ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_cloudflare.sh"
