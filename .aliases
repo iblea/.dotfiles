@@ -1679,7 +1679,7 @@ function gl() {
     git log --graph \
     --date=format-local:"%Y-%m-%d %H:%M:%S" \
     --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an>%Creset %C(auto)%d%Creset %n%s%n' \
-    -10 $@
+    -5 $@
     export LC_ALL="$AGO_LC_ALL"
 }
 
