@@ -16,6 +16,10 @@ if [ -z "$(command -v code)" ] && [ -z "$(command -v vim)" ]; then
     exit $?
 fi
 
+ago_histpath="$HISTFILE"
+history_path="$HOME/.dotfiles/fzfscript"
+history_file="$history_path/.grepff_history"
+tmp_file="$history_path/.grepff_history_tmp"
 CURRENT_SHELL=$(ps -p $$ -o 'comm=')
 
 # code -s > /dev/null
@@ -96,10 +100,6 @@ else
 fi
 
 if [ -z "$findword" ]; then
-    ago_histpath="$HISTFILE"
-    history_path="$HOME/.dotfiles/fzfscript"
-    history_file="$history_path/.grepff_history"
-    tmp_file="$history_path/.grepff_history_tmp"
 
     # if [ -n "$HISTFILE" ]; then
     #     unset HISTFILE
@@ -132,13 +132,13 @@ if [ -z "$findword" ]; then
     read -e -p "find : " -r findword
     # history -d $((HISTCMD-1)) && read -e -p "find : " -r findword
     history -d $((HISTCMD-1)) && export HISTFILE="$ago_histpath"
-
-    if [ -n "$findword" ]; then
-        echo "$findword" >> "$history_file"
-    fi
-    history_content=$(cat "$history_file" | tail -n 101)
-    echo "$history_content" > "$history_file"
 fi
+if [ -n "$findword" ]; then
+    echo "$findword" >> "$history_file"
+fi
+history_content=$(cat "$history_file" | tail -n 101)
+echo "$history_content" > "$history_file"
+
 
 
 current_pwd="$(pwd)"
