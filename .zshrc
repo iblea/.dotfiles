@@ -294,6 +294,7 @@ if [ -n "$(command -v fzf)" ]; then
     # -----------------------
     if [ "$(command -v fd)" != "" ]; then
         # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore'
+        # ignore binary file
         export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore -X grep -lI .'
         # .git 디렉토리를 제외하고 검색
         # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --exclude .git'
@@ -301,6 +302,7 @@ if [ -n "$(command -v fzf)" ]; then
     else
         # export FZF_DEFAULT_COMMAND=''
         # export FZF_DEFAULT_COMMAND='find . -type f'
+        # ignore binary file
         export FZF_DEFAULT_COMMAND='find . -type f -exec grep -lI . {} \;'
     fi
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
