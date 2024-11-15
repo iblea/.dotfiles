@@ -133,11 +133,17 @@ if [ -z "$findword" ]; then
     # history -d $((HISTCMD-1)) && read -e -p "find : " -r findword
     history -d $((HISTCMD-1)) && export HISTFILE="$ago_histpath"
 fi
+
 if [ -n "$findword" ]; then
-    echo "$findword" >> "$history_file"
+
+    history_content=$(cat "$history_file" | tail -n 100)
+    last_history=$(echo "$history_content" | tail -n 1)
+    if [ "$last_history" != "$findword" ]; then
+        echo "$history_content" > "$history_file"
+        echo "$findword" >> "$history_file"
+    fi
 fi
-history_content=$(cat "$history_file" | tail -n 101)
-echo "$history_content" > "$history_file"
+
 
 
 
