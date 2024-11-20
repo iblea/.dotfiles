@@ -123,7 +123,7 @@ if [ -z "$findword" ]; then
     bind '"\eOB": next-history'
 
     HISTFILE="$tmpfile"
-    HISTFILESIZE=2000
+    # HISTFILESIZE=2100000000
     HISTSIZE=1000
     cp -r "$history_file" "$tmp_file"
     history -c
