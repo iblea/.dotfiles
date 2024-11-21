@@ -225,21 +225,6 @@ function psf() {
 }
 
 alias makef='make -j8'
-function makeb() {
-    result=./compile_commands.json
-    if [ -f $result ]; then
-        rm -rf $result
-    fi
-    make clean;
-    bear make -j8 --print-directory
-    if [ -f $result ]; then
-        if [ -d ./.vscode ]; then
-            mv $result ./.vscode/
-            echo "mv $result"
-        fi
-    fi
-    echo "bear compile done"
-}
 
 # add export path
 if [ -d $HOME/.dotfiles/.bin/ ]; then
