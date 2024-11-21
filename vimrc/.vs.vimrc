@@ -220,8 +220,8 @@ nnoremap U K
 nnoremap L <nop>
 nnoremap H <nop>
 nnoremap M J
-noremap <S-k> {
-noremap <S-j> }
+" noremap <S-k> {
+" noremap <S-j> }
 noremap <S-h> ^
 noremap <S-l> $
 " nnoremap H M
@@ -259,6 +259,7 @@ vnoremap ^ `
 noremap ` m
 nnoremap @ ^
 vnoremap @ ^
+vnoremap $ $h
 nnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@########\|\|\|; <CR>zz
 vnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@########\|\|\|; <CR>zz
 " nnoremap ' <ESC>:noh<CR>
