@@ -67,8 +67,9 @@ fi
 
 
 
+
 # if homebrew exist
-if [ -d "/opt/homebrew/" ]; then
+if [ -d "/opt/homebrew/" ] && [[ "$(uname -s)" = "Darwin" ]]; then
 
 openssl_brew_version=1.1
 if ! grep -q "/opt/homebrew/opt/openssl@$openssl_brew_version/lib" <<< "$LIBRARY_PATH"; then
@@ -79,37 +80,25 @@ if ! grep -q "/opt/homebrew/opt/openssl@$openssl_brew_version/lib" <<< "$LIBRARY
 	fi
 fi
 
-if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-fi
+homebrew_bin_list=(
+	"openssl@$openssl_brew_version"
+	"curl"
+	"libnet"
+	"libpq"
+	"unzip"
+	"llvm"
+	"ruby@3.2"
+)
 
-if ! grep -q "/opt/homebrew/opt/openssl@$openssl_brew_version/bin/" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/openssl@$openssl_brew_version/bin:$PATH"
-fi
+for homebrew_bin in ${homebrew_bin_list[@]}; do
+	if ! grep -q "/opt/homebrew/opt/$homebrew_bin/bin" <<< "$PATH"; then
+		export PATH="/opt/homebrew/opt/$homebrew_bin/bin:$PATH"
+	fi
+done
 
-
-if ! grep -q "/opt/homebrew/opt/libnet/lib" <<< "$PATH"; then
-	export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/libnet/lib
-	export PATH="/opt/homebrew/opt/libnet/bin:$PATH"
-fi
-
-if ! grep -q "/opt/homebrew/opt/libpq/bin" <<< "$PATH"; then
-	export LIBRARY_PATH=$LIBRARY_PATH:/opt/homebrew/opt/libnet/lib
-	export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-fi
-
-if ! grep -q "/opt/homebrew/opt/curl/bin/" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-fi
-
-if ! grep -q "/opt/homebrew/opt/unzip/bin" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/unzip/bin:$PATH"
+if [ -n "$(command -v unzip)" ]; then
 	export UNZIP="-O cp949"
 	export ZIPINFO="-O cp949"
-fi
-
-if ! grep -q "/opt/homebrew/opt/ruby@3.2/bin/" <<< "$PATH"; then
-	export PATH="/opt/homebrew/opt/ruby@3.2/bin:$PATH"
 fi
 
 if [ -z "$NVM_DIR" ]; then
@@ -126,7 +115,13 @@ if [ -z "$NVM_DIR" ]; then
 fi
 
 
-gnubin_list=("grep" "gnu-sed" "coreutils" "findutils" "gnu-tar")
+gnubin_list=(
+	"grep"
+	"gnu-sed"
+	"coreutils"
+	"findutils"
+	"gnu-tar"
+)
 
 for gnu_path in ${gnubin_list[@]}; do
 	if grep -q "/opt/homebrew/opt/$gnu_path/libexec/gnubin" <<< "$PATH"; then
