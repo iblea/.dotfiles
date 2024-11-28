@@ -679,7 +679,6 @@ if [ -n "$(command -v fzf)" ]; then
         fi
         local origin_fzf_cmd=$(echo "$FZF_DEFAULT_COMMAND")
         export FZF_DEFAULT_COMMAND="($FZF_DEFAULT_COMMAND $exclude_opt 2>/dev/null; $size_0_cmd $exclude_opt 2>/dev/null)"
-        echo "FZF_DEFAULT_COMMAND : $FZF_DEFAULT_COMMAND"
         local fzfres=""
         # pipeline으로 입력이 들어온 경우
         if [ -p /dev/stdin ]; then
