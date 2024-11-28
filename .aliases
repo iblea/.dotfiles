@@ -544,6 +544,7 @@ if [ -n "$(command -v fzf)" ]; then
     {
         local codepath=vi
         local codeopt=""
+        local size_0_cmd=""
         [ -n "$(command -v code)" ] && codepath=code
         [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
         # [ -n "$(command -v cursor)" ] && codepath=cursor
@@ -654,17 +655,31 @@ if [ -n "$(command -v fzf)" ]; then
         fi
         # find 의 경우 '! -name "*.o"' 로 사용
         local exclude_pot=''
+
+        exclude_list=(
+            ".git"
+            ".svn"
+        )
         if [ "$FZF_DEFAULT_COMMAND" = "" ]; then
             exclude_opt=''
         elif [ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]; then
-            exclude_opt='-E ".git"'
+            size_0_cmd="fd -t f --follow --hidden --no-ignore -S 0b"
+            exclude_opt=''
+            for exclude in "${exclude_list[@]}"; do
+                exclude_opt+="-E \"$exclude\" "
+            done
         elif [ "${FZF_DEFAULT_COMMAND:0:4}" = "find" ]; then
-            exclude_opt='! -name ".git"'
+            size_0_cmd="find . -type f -size 0"
+            exclude_opt=''
+            for exclude in "${exclude_list[@]}"; do
+                exclude_opt+="! -name \"$exclude\" "
+            done
         else
             exclude_opt=''
         fi
         local origin_fzf_cmd=$(echo "$FZF_DEFAULT_COMMAND")
-        export FZF_DEFAULT_COMMAND="$FZF_DEFAULT_COMMAND $exclude_opt"
+        export FZF_DEFAULT_COMMAND="($FZF_DEFAULT_COMMAND $exclude_opt 2>/dev/null; $size_0_cmd $exclude_opt 2>/dev/null)"
+        echo "FZF_DEFAULT_COMMAND : $FZF_DEFAULT_COMMAND"
         local fzfres=""
         # pipeline으로 입력이 들어온 경우
         if [ -p /dev/stdin ]; then
@@ -924,6 +939,7 @@ function clearsslkeylog() {
 
 # fd glob pattern
 alias fdl="fd -H -t f -g"
+alias fdi="fd -H -I"
 function findsrc() {
     local ext="\(c\|cpp\|h\|y\|l\|py\)"
     find . ! \( -type d \( -path "./httpgw_oldssl" \) -prune \) -regex ".*\.$ext" -type f -exec grep -HnP --color=always "$@" {} \; |
