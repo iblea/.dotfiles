@@ -40,6 +40,10 @@ else
     git clone --depth=1 "https://github.com/romkatv/powerlevel10k.git" "$HOME/.zsh/.oh-my-zsh/custom/themes/powerlevel10k"
 fi
 
+if [ -f $HOME/.zshrc ]; then
+	rm -f $HOME/.zshrc
+fi
+
 echo ""
 echo ""
 echo ""
