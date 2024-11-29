@@ -15,15 +15,15 @@ curpath=$(dirname "$(realpath $0)")
 cd "$curpath"
 
 if [ ! -d "$HOME/.zsh/" ]; then
-    mkdir $HOME/.zsh
+    mkdir "$HOME/.zsh"
 fi
 
 if [ -d "$HOME/.zsh/.oh-my-zsh/" ]; then
     echo "already install oh-my-zsh"
 else
-    cd $HOME
+    cd "$HOME"
     curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | /bin/bash - 
-    mv $HOME/.oh-my-zsh/ $HOME/.zsh/
+    mv "$HOME/.oh-my-zsh/" "$HOME/.zsh/"
 fi
 
 echo ""
@@ -40,8 +40,8 @@ else
     git clone --depth=1 "https://github.com/romkatv/powerlevel10k.git" "$HOME/.zsh/.oh-my-zsh/custom/themes/powerlevel10k"
 fi
 
-if [ -f $HOME/.zshrc ]; then
-	rm -f $HOME/.zshrc
+if [ -f "$HOME/.zshrc" ]; then
+	rm -f "$HOME/.zshrc"
 fi
 
 echo ""
