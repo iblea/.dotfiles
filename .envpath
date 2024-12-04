@@ -62,6 +62,13 @@ if [ -n "$(command -v go)" ]; then
 	unset goversion
 fi
 
+# rust path
+if [ -d "$HOME/.cargo/bin" ]; then
+	if ! grep -q "$HOME/.cargo/bin:$PATH" <<< "$PATH"; then
+		export PATH="$HOME/.cargo/bin:$PATH"
+	fi
+fi
+
 
 
 
