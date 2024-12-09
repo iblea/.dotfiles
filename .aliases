@@ -14,8 +14,8 @@ function function_exist_check() {
 
 
 # bindkey
-if [ -f "$HOME/.dotfiles/bindkey.sh" ]; then
-	source $HOME/.dotfiles/bindkey.sh
+if [ -f "$HOME/.dotfiles/bindkey/bindkey.sh" ]; then
+	source $HOME/.dotfiles/bindkey/bindkey.sh
 fi
 
 # ssh-agent
@@ -229,6 +229,33 @@ function psf() {
         echo -e "${processes}" | grep -a --color=always "$process_name" | grep -a -v "grep --color.*always.*$process_name"
     done
 
+}
+
+function psu() {
+    process_name="$@"
+    ps -aux | head -n1
+    # ps -aux | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+    if [ $# -eq 0 ]; then
+        ps -aux
+        return 0
+    fi
+
+    IFS='' process_names=( $@ )
+    processes="$(ps -aux)"
+
+    for process_name in "${process_names[@]}" ; do
+        # bash -c "echo -e \"${processes}\" | grep --color=always \"$process_name\" | grep -v \"grep --color.*always.*$process_name\""
+        echo -e "${processes}" | grep -a --color=always "$process_name" | grep -a -v "grep --color.*always.*$process_name"
+    done
+
+}
+
+function watcha() {
+	if [ $# -eq 2 ]; then
+		watch --color -n $1 -x bash -c "source ~/.aliases; $2"
+	else
+		watch --color -n 1 -x bash -c "source ~/.aliases; $@"
+	fi
 }
 
 alias makef='make -j8'
