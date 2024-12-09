@@ -15,12 +15,12 @@ function function_exist_check() {
 
 # bindkey
 if [ -f "$HOME/.dotfiles/bindkey/bindkey.sh" ]; then
-	source $HOME/.dotfiles/bindkey/bindkey.sh
+    source $HOME/.dotfiles/bindkey/bindkey.sh
 fi
 
 # ssh-agent
 if [ -f "$HOME/.dotfiles/script/ssh-agent-init.sh" ]; then
-	source $HOME/.dotfiles/script/ssh-agent-init.sh
+    source $HOME/.dotfiles/script/ssh-agent-init.sh
 fi
 
 # function cd() {
@@ -231,6 +231,23 @@ function psf() {
 
 }
 
+function topd() {
+    process_name="$@"
+    if [ $# -eq 0 ]; then
+        top -b -n 1
+        return 0
+    fi
+
+    IFS='' process_names=( $@ )
+    processes="$(top -b -n 1)"
+    echo "$processes" | head -n 7
+
+    for process_name in "${process_names[@]}" ; do
+        echo -e "${processes}" | grep -a --color=always "$process_name" | grep -a -v "grep --color.*always.*$process_name"
+    done
+
+}
+
 function psu() {
     process_name="$@"
     ps -aux | head -n1
@@ -251,11 +268,11 @@ function psu() {
 }
 
 function watcha() {
-	if [ $# -eq 2 ]; then
-		watch --color -n $1 -x bash -c "source ~/.aliases; $2"
-	else
-		watch --color -n 1 -x bash -c "source ~/.aliases; $@"
-	fi
+    if [ $# -eq 2 ]; then
+        watch --color -n $1 -x bash -c "source ~/.aliases; $2"
+    else
+        watch --color -n 1 -x bash -c "source ~/.aliases; $@"
+    fi
 }
 
 alias makef='make -j8'
@@ -405,7 +422,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         fi
         "$ddns_script_path" $@
     }
-	alias ddnset="ddns_set"
+    alias ddnset="ddns_set"
 
     function ddnsvi() {
         ddns_script_path="$HOME/GoogleDrive/develop/settings/ddns_cloudflare.sh"
@@ -446,7 +463,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     alias epl="open ."
     alias expl="open ."
 
-	alias gk="/opt/homebrew/bin/gk"
+    alias gk="/opt/homebrew/bin/gk"
 
     function aidi() {
         $HOME/.dotfiles/script/aider.sh
