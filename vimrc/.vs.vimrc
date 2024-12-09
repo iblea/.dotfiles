@@ -5,6 +5,8 @@
 " hex to text editor
 " %!xxd -r
 
+set matchpairs=(:),{:},[:],<:>
+
 set hlsearch
 set nu
 set rnu
