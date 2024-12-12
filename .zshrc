@@ -347,6 +347,18 @@ else
 fi
 
 
+# bindkey
+if [ -f "$HOME/.dotfiles/bindkey/bindkey.sh" ]; then
+    source $HOME/.dotfiles/bindkey/bindkey.sh
+fi
+
+# ssh-agent
+if [ -f "$HOME/.dotfiles/script/ssh-agent-init.sh" ]; then
+    source $HOME/.dotfiles/script/ssh-agent-init.sh
+fi
+
+
+
 bindkey -M menuselect '^M' .accept-line
 
 setopt menu_complete

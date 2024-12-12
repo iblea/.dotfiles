@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# cat << EOF > ./kill_vsc_tmp_script.sh
+# #!/bin/bash
+# echo "script"
+# EOF
+
+if [ ! -f "$HOME/.dotfiles/script/kill_vsc_tmp_script.sh" ]; then
+    echo "ERR: script file not exist"
+    exit 1
+fi
+
+cd "$HOME/.dotfiles/script"
+nohup /bin/bash ./kill_vsc_tmp_script.sh 1>/dev/null 2>&1 &

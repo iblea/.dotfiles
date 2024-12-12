@@ -1,0 +1,295 @@
+#!/bin/bash
+
+if [ -n "$(command -v fzf)" ]; then
+    codepath=vi
+    codeopt=""
+    size_0_cmd=""
+    [ -n "$(command -v code)" ] && codepath=code
+    [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+    # [ -n "$(command -v cursor)" ] && codepath=cursor
+    WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
+    FZF_BIN_PATH=$($WHICH_IS fzf)
+    # argument 가 2개 이상일 경우
+    if [ $# -ge 2 ]; then
+        search_path=()
+        if [ "$1" = "touch" ]; then
+            for arg in "${@:2}"; do
+                if [ -d "$arg" ]; then
+                    echo "\"$arg\" is directory (so skip)"
+                    continue
+                fi
+                search_path+=("$arg")
+            done
+            $codepath $codeopt "${search_path[@]}"
+            exit 0;
+        fi
+        is_first=1
+        for arg in "$@"; do
+            if [ $is_first -eq 1 ]; then
+                is_first=0
+                if [[ "$codepath" = "vi" ]]; then
+                    continue
+                fi
+                if [[ "$arg" = "-g" ]] || [[ "$arg" = "--goto" ]]; then
+                    codeopt="--goto"
+                    continue
+                fi
+            fi
+            if [ -d "$arg" ]; then
+                echo "\"$arg\" is directory (so skip)"
+                continue
+            fi
+            if [ ! -e "$arg" ]; then
+                onlyfile=""
+                if [ "$codepath" != "vi" ]; then
+                    onlyfile=$(echo "$arg" | sed 's/:[0-9]*$//')
+                    # onlyfile="${arg%:*}"
+                    # onlyfile=$(echo "$arg" | awk -F":" '{NF=NF-1}1' OFS=":")
+                fi
+                if [ -e "$onlyfile" ]; then
+                    codeopt="--goto"
+                else
+                    echo "file not found. create new file? (ctrl-c to stop)"
+                    read $anykey
+                fi
+            fi
+            search_path+=("$arg")
+        done
+        $codepath $codeopt "${search_path[@]}"
+        exit 0
+    fi
+    # argument가 1개일 경우
+    if [ $# -eq 1 ]; then
+        if [ -d "$@" ]; then
+            # 해당 디렉토리로 이동하여 검색
+            builtin cd $@
+        elif [[ "$@" = "-" ]]; then
+            rm -f /tmp/code-stdin-*
+            codeopt="--goto"
+            $codepath $codeopt $@ &
+            exit 0
+        else
+            if [ ! -e "$@" ]; then
+                if [ "$codepath" != "vi" ]; then
+                    onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
+                    if [ -e "$onlyfile" ]; then
+                        codeopt="--goto"
+                        $codepath $codeopt $@
+                        exit 0
+                    fi
+                fi
+                fzfres=""
+                getdir=$(dirname "$@")
+                getname=$(echo "$@" | awk -F '/' '{ print $NF }')
+                if [[ "$getdir" != "." ]]; then
+                    builtin cd "$getdir"
+                fi
+                if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
+                    tmpcmd="fd -g \"*${getname}*\" --type file --follow --hidden --no-ignore -X grep -lI ."
+                else
+                    tmpcmd="find . -name \"*${getname}*\" -type f -exec grep -lI . {} \;"
+                fi
+                if [ -n "$(command -v bat)" ]; then
+                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+                else
+                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+                fi
+                # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
+                if [ -n "$fzfres" ]; then
+                    $codepath $codeopt $fzfres
+                fi
+                if [[ "$getdir" != "." ]]; then
+                    builtin cd - > /dev/null
+                    popd -1
+                    if [ $(dirs -v | wc -l ) -gt 1 ]; then
+                        builtin cd -1 > /dev/null
+                        builtin cd - > /dev/null
+                    fi
+                fi
+                exit 0
+                # skip new file
+                # echo "file not found. create new file? (ctrl-c to stop)"
+                # read $anykey
+            fi
+            # 1개이고 디렉토리가 아니면 바로 실행
+            $codepath $codeopt $@
+            exit 0
+        fi
+    fi
+    # find 의 경우 '! -name "*.o"' 로 사용
+    exclude_pot=''
+
+    exclude_list=(
+        ".git"
+        ".svn"
+    )
+    if [ "$FZF_DEFAULT_COMMAND" = "" ]; then
+        exclude_opt=''
+    elif [ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]; then
+        size_0_cmd="fd -t f --follow --hidden --no-ignore -S 0b"
+        exclude_opt=''
+        for exclude in "${exclude_list[@]}"; do
+            exclude_opt+="-E \"$exclude\" "
+        done
+    elif [ "${FZF_DEFAULT_COMMAND:0:4}" = "find" ]; then
+        size_0_cmd="find . -type f -size 0"
+        exclude_opt=''
+        for exclude in "${exclude_list[@]}"; do
+            exclude_opt+="! -name \"$exclude\" "
+        done
+    else
+        exclude_opt=''
+    fi
+    origin_fzf_cmd=$(echo "$FZF_DEFAULT_COMMAND")
+    export FZF_DEFAULT_COMMAND="($FZF_DEFAULT_COMMAND $exclude_opt 2>/dev/null; $size_0_cmd $exclude_opt 2>/dev/null)"
+    fzfres=""
+    # pipeline으로 입력이 들어온 경우
+    if [ -p /dev/stdin ]; then
+        cat < /dev/stdin > $HOME/.dotfiles/.fzfinput
+        sleep 0.05
+        if [ -n "$(command -v bat)" ]; then
+            fzfres=$(cat $HOME/.dotfiles/.fzfinput | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+        else
+            fzfres=$(cat $HOME/.dotfiles/.fzfinput | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+        fi
+        [ -f $HOME/.dotfiles/.fzfinput ] && rm -f $HOME/.dotfiles/.fzfinput
+        if [ -d "$fzfres" ]; then
+            echo "$fzfres is directory (so skip)"
+            exit 0
+        fi
+    else
+        if [ -n "$(command -v bat)" ]; then
+            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+        else
+            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+        fi
+    fi
+    if [ -n "$fzfres" ]; then
+        $codepath $codeopt $fzfres
+    fi
+    export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
+    # 디렉토리 이동했을 경우 원래 디렉토리로 이동
+    if [ $# -eq 1 ]; then
+        builtin cd - > /dev/null
+        popd -1
+        if [ $(dirs -v | wc -l ) -gt 1 ]; then
+            builtin cd -1 > /dev/null
+            builtin cd - > /dev/null
+        fi
+    fi
+    [ $# -eq 1 ] && builtin cd - > /dev/null
+
+else
+
+    # no fzf di
+    codepath=vi
+    codeopt=""
+    [ -n "$(command -v code)" ] && codepath=code
+    [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+    # [ -n "$(command -v cursor)" ] && codepath=cursor
+    # FZF_BIN_PATH=$(/bin/which fzf)
+    # argument 가 2개 이상일 경우
+    # if [ $# -ge 2 ]; then
+    #     search_path=()
+    #     for arg in "$@"; do
+    #         if [ "$1" = "touch" ]; then
+    #             $codepath $codeopt "${2}"
+    #             return ;
+    #         fi
+    #         if [ -d "$arg" ]; then
+    #             echo "\"$arg\" is directory (so skip)"
+    #             continue
+    #         fi
+    #         if [ ! -e "$@" ]; then
+    #             echo "file not found. create new file? (ctrl-c to stop)"
+    #             read $anykey
+    #         fi
+    #         search_path+=("$arg")
+    #     done
+    #     $codepath $codeopt "${search_path[@]}"
+    #     return;
+    # fi
+    if [ $# -ge 2 ]; then
+        search_path=()
+        if [ "$1" = "touch" ]; then
+            for arg in "${@:2}"; do
+                if [ -d "$arg" ]; then
+                    echo "\"$arg\" is directory (so skip)"
+                    continue
+                fi
+                search_path+=("$arg")
+            done
+            $codepath $codeopt "${search_path[@]}"
+            exit 0;
+        fi
+        is_first=1
+        for arg in "$@"; do
+            if [ $is_first -eq 1 ]; then
+                is_first=0
+                if [[ "$codepath" = "vi" ]]; then
+                    continue
+                fi
+                if [[ "$arg" = "-g" ]] || [[ "$arg" = "--goto" ]]; then
+                    codeopt="--goto"
+                    continue
+                fi
+            fi
+            if [ -d "$arg" ]; then
+                echo "\"$arg\" is directory (so skip)"
+                continue
+            fi
+            if [ ! -e "$arg" ]; then
+                onlyfile=""
+                if [ "$codepath" != "vi" ]; then
+                    onlyfile=$(echo "$arg" | sed 's/:[0-9]*$//')
+                    # onlyfile="${arg%:*}"
+                    # onlyfile=$(echo "$arg" | awk -F":" '{NF=NF-1}1' OFS=":")
+                fi
+                if [ -e "$onlyfile" ]; then
+                    codeopt="--goto"
+                else
+                    echo "file not found. create new file? (ctrl-c to stop)"
+                    read $anykey
+                fi
+            fi
+            search_path+=("$arg")
+        done
+        $codepath $codeopt "${search_path[@]}"
+        exit 0;
+    fi
+
+
+    # argument가 1개일 경우
+    if [ $# -eq 1 ]; then
+        if [ -d "$@" ]; then
+            # 해당 디렉토리로 이동하여 검색
+            echo "\"$@\" is directory (so skip)"
+            exit 0
+        elif [[ "$@" = "-" ]]; then
+            rm -f /tmp/code-stdin-*
+            codeopt="--goto"
+            $codepath $codeopt $@ &
+            exit 0
+        else
+            if [ ! -e "$@" ]; then
+                if [ "$codepath" != "vi" ]; then
+                    onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
+                    if [ -e "$onlyfile" ]; then
+                        codeopt="--goto"
+                        $codepath $codeopt $@
+                        exit 0
+                    fi
+                fi
+                echo "file not found. create new file? (ctrl-c to stop)"
+                read $anykey
+            fi
+            # 1개이고 디렉토리가 아니면 바로 실행
+            $codepath $codeopt $@
+            exit 0
+        fi
+    fi
+    if [ $# -eq 0 ]; then
+        echo "no argument"
+    fi
+
+fi

@@ -157,11 +157,20 @@ fi
 if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash" ]; then
     source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash"
 else
-	if [ -f "$HOME/.dotfiles/script/iterm/install_shell_integrated.sh" ]; then
-		$HOME/.dotfiles/script/iterm/install_shell_integrated.sh
-    	if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash" ]; then
-    	    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash"
-    	fi
-	fi
+    if [ -f "$HOME/.dotfiles/script/iterm/install_shell_integrated.sh" ]; then
+        $HOME/.dotfiles/script/iterm/install_shell_integrated.sh
+        if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash" ]; then
+            source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.bash"
+        fi
+    fi
 fi
 
+# bindkey
+if [ -f "$HOME/.dotfiles/bindkey/bindkey.sh" ]; then
+    source $HOME/.dotfiles/bindkey/bindkey.sh
+fi
+
+# ssh-agent
+if [ -f "$HOME/.dotfiles/script/ssh-agent-init.sh" ]; then
+    source $HOME/.dotfiles/script/ssh-agent-init.sh
+fi
