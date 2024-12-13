@@ -146,6 +146,9 @@ plugins=(
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
+if [ -z "$( locale -a 2>/dev/null | grep "${LC_ALL}" )" ]; then
+    export LC_ALL=""
+fi
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
