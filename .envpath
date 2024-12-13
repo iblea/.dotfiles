@@ -64,13 +64,18 @@ fi
 
 # rust path
 if [ -d "$HOME/.cargo/bin" ]; then
-	if ! grep -q "$HOME/.cargo/bin:$PATH" <<< "$PATH"; then
+	if ! grep -q "$HOME/.cargo/bin" <<< "$PATH"; then
 		export PATH="$HOME/.cargo/bin:$PATH"
 	fi
 fi
 
 
-
+# Added by Windsurf
+if [ -d "$HOME/.codeium/windsurf/bin" ]; then
+	if ! grep -q "$HOME/.codeium/windsurf/bin" <<< "$PATH"; then
+		export PATH="$HOME/.codeium/windsurf/bin:$PATH"
+	fi
+fi
 
 
 
