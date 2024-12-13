@@ -252,6 +252,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
     # macos
     if [ -d "/Applications/Hex Fiend.app" ]; then
         alias hxd='open -a /Applications/Hex\ Fiend.app'
+        alias hexvi='open -a /Applications/Hex\ Fiend.app'
     fi
     alias diffb='"/Applications/Beyond Compare.app/Contents/MacOS/BComp"'
     alias which="$(/bin/bash -c 'which which' 2>/dev/null)"
