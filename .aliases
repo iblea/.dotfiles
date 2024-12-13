@@ -445,8 +445,8 @@ alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 # done
 
 alias fif="fzf --bind 'enter:become(command -v code >/dev/null 2>&1 && code {} || vi {})'"
-alias fnf="$HOME/.dotfiles/fzfscript/grepff"
-alias fmf="$HOME/.dotfiles/fzfscript/grepff -f"
+# alias fnf="$HOME/.dotfiles/fzfscript/grepff"
+# alias fmf="$HOME/.dotfiles/fzfscript/grepff -f"
 alias gpf="$HOME/.dotfiles/fzfscript/grepff"
 alias gpfh="$HOME/.dotfiles/fzfscript/grepff -f"
 alias gph="$HOME/.dotfiles/fzfscript/grepff -f"
