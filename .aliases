@@ -78,14 +78,42 @@ if [ -f $HOME/.ssh/config ]; then
 fi
 
 # some more ls aliases
+
+# alias ll='ls -1shF'
+# alias lla='ls -1ashF'
+unalias ll
+function ll()
+{
+    lsoutput=$(ls -lhF --color=always)
+    size_col_width=15
+
+    echo "$lsoutput" | head -n 1
+    echo "$lsoutput" | tail -n +2 | awk '{
+        printf "%-7s ", $5
+        for(i=9;i<=NF;i++) printf "%s ", $i;
+        print ""
+    }'
+}
+
+function lla()
+{
+    lsoutput=$(ls -alhF --color=always)
+    size_col_width=15
+
+    echo "$lsoutput" | head -n 1
+    echo "$lsoutput" | tail -n +2 | awk '{
+        printf "%-7s ", $5
+        for(i=9;i<=NF;i++) printf "%s ", $i;
+        print ""
+    }'
+}
+
 # alias ll='ls -lhF'
 # alias lla='ls -alhF'
 alias l='ls -hCF'
 alias la='ls -ahCF'
 # alias l='ls -hCF -w 160'
 # alias la='ls -ahCF -w 160'
-alias ll='ls -1shF'
-alias lla='ls -1ashF'
 alias le='ls -lhF'
 alias lw='ls -shCF -w 180'
 alias lea='ls -alhF'
