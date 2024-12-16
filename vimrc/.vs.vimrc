@@ -1,5 +1,3 @@
-" set shell=C:\Windows\System32\cmd.exe
-
 " hex editor
 " :%!xxd
 " hex to text editor
