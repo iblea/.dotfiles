@@ -421,6 +421,9 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
 
 else
     alias diffb='~/.bcomp.sh'
+    if [ -n "$(command -v cursor)" ]; then
+        alias code="cursor"
+    fi
 fi
 
 # =======================================================================
