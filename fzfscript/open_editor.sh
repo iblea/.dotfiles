@@ -11,6 +11,16 @@ if [ -n "$(command -v code)" ]; then
     exit 0
 fi
 
+if [ -n "$(command -v code-insiders)" ]; then
+    code-insiders --goto "$@"
+    exit 0
+fi
+
+if [ -n "$(command -v cursor)" ]; then
+    cursor --goto "$@"
+    exit 0
+fi
+
 
 fileinfo="$@"
 # echo "fileinfo : $fileinfo"

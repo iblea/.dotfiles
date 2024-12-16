@@ -6,6 +6,7 @@ if [ -n "$(command -v fzf)" ]; then
     size_0_cmd=""
     [ -n "$(command -v code)" ] && codepath=code
     [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+    [ -n "$(command -v 'cursor')" ] && codepath=cursor
     # [ -n "$(command -v cursor)" ] && codepath=cursor
     WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
     FZF_BIN_PATH=$($WHICH_IS fzf)
@@ -186,6 +187,7 @@ else
     codeopt=""
     [ -n "$(command -v code)" ] && codepath=code
     [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+    [ -n "$(command -v 'cursor')" ] && codepath=cursor
     # [ -n "$(command -v cursor)" ] && codepath=cursor
     # FZF_BIN_PATH=$(/bin/which fzf)
     # argument 가 2개 이상일 경우
