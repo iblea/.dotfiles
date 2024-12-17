@@ -46,8 +46,6 @@ ps -aef | grep vscode
 cd $HOME/.dotfiles/script/
 if [ "$1" = "1" ]; then
     curpath=$(dirname "$(realpath $0)")
-    cd "$curpath"
-    rm -rf ./kill_vsc_tmp_script.sh
 else
     sleep 2
     nohup /bin/bash ./kill_vsc_tmp_script.sh 1 1>/dev/null 2>&1 &
