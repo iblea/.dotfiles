@@ -275,11 +275,12 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
 elif [[ "$(uname -s)" = "Darwin" ]]; then
     # alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
 
-    if [ -d "/Applications/Cursor.app" ]; then
-        alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
-    elif [ -d "/Applications/Visual Studio Code.app" ]; then
-        alias code="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
-    fi
+    # .bin/code
+    # if [ -d "/Applications/Cursor.app" ]; then
+    #     alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
+    # elif [ -d "/Applications/Visual Studio Code.app" ]; then
+    #     alias code="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+    # fi
     # export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     # alias diffb='~/.bcomp'
 
@@ -421,9 +422,10 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
 
 else
     alias diffb='~/.bcomp.sh'
-    if [ -n "$(command -v cursor)" ]; then
-        alias code="cursor"
-    fi
+    # .bin/code
+    # if [ -n "$(command -v cursor)" ]; then
+    #     alias code="cursor"
+    # fi
 fi
 
 # =======================================================================

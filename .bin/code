@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+    export LANG=ko_KR.UTF-8
+    export LC_ALL=ko_KR.UTF-8
+elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+    export LANG=ko_KR.UTF-8
+    export LC_ALL=ko_KR.utf8
+fi
+
+if [[ "$(uname -s)" = "Darwin" ]]; then
+    if [ -d "/Applications/Cursor.app" ]; then
+        "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+    elif [ -d "/Applications/Visual Studio Code.app" ]; then
+        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+    else
+        vim $@
+    fi
+
+else
+    if [ -n "$(command -v cursor)" ]; then
+        cursor $@
+    if [ -n "$(command -v code)" ]; then
+        code $@
+    else
+        vim $@
+    fi
+fi
