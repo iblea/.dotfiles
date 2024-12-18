@@ -20,29 +20,35 @@ source $HOME/.dotfiles/script/passkey_filepath
 
 function ssh_agent_process_find()
 {
-    local ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -F "$SSH_AUTH_SOCK" | grep -v "grep")
-    if [ -n "$ssh_agent_proc" ]; then
-        echo "1"
-        return 0
+    if [ -n "$(command -v ps)" ]; then
+        local ssh_agent_proc=$(ps -aef | grep ssh-agent | grep -F "$SSH_AUTH_SOCK" | grep -v "grep")
+        if [ -n "$ssh_agent_proc" ]; then
+            echo "1"
+            return 0
+        fi
     fi
 
-    local ssh_agent_pgrep=$(pgrep "ssh-agent")
-    # find pgrep
-    if [ -z "${ssh_agent_pgrep}" ]; then
-        echo "0"
-        return 0
+    if [ -n "$(command -v pgrep)" ]; then
+        local ssh_agent_pgrep=$(pgrep "ssh-agent")
+        if [ -z "${ssh_agent_pgrep}" ]; then
+            echo "0"
+            return 0
+        fi
     fi
 
-    local ssh_agent_lsof=$(lsof -c "ssh-agent" | grep -F "${SSH_AUTH_SOCK}")
-    if [ -z "${ssh_agent_pgrep}" ]; then
-        echo "0"
-        return 0
+    if [ -n "$(command -v lsof)" ]; then
+        local ssh_agent_lsof=$(lsof -c "ssh-agent" | grep -F "${SSH_AUTH_SOCK}")
+        if [ -z "${ssh_agent_pgrep}" ]; then
+            echo "0"
+            return 0
+        fi
     fi
 
     echo "1"
     return 0
 }
 
+if [ -f "$PASSPATH_SSH_AGENT" ]; then
 
 SSH_AUTH_DIR=$(dirname "$SSH_AUTH_SOCK")
 if [ ! -d "${SSH_AUTH_DIR}" ]; then
