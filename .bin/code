@@ -9,6 +9,9 @@ elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
     export LC_ALL=ko_KR.utf8
 fi
 
+PATH_BACKUP=$PATH
+export PATH=$( echo $PATH | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
+
 if [[ "$(uname -s)" = "Darwin" ]]; then
     if [ -d "/Applications/Cursor.app" ]; then
         "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
