@@ -38,7 +38,7 @@ function ssh_agent_process_find()
 
     if [ -n "$(command -v lsof)" ]; then
         local ssh_agent_lsof=$(lsof -c "ssh-agent" | grep -F "${SSH_AUTH_SOCK}")
-        if [ -z "${ssh_agent_pgrep}" ]; then
+        if [ -z "${ssh_agent_lsof}" ]; then
             echo "0"
             return 0
         fi
@@ -47,8 +47,6 @@ function ssh_agent_process_find()
     echo "1"
     return 0
 }
-
-if [ -f "$PASSPATH_SSH_AGENT" ]; then
 
 SSH_AUTH_DIR=$(dirname "$SSH_AUTH_SOCK")
 if [ ! -d "${SSH_AUTH_DIR}" ]; then
