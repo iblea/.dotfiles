@@ -1,6 +1,14 @@
 
 # locale settings
 
+# shellinfo=$(echo $0)
+# if grep -q "zsh" <<< "$shellinfo"; then
+# 	export HISTORY_IGNORE="(fg|ll|lea|history)"
+# elif grep -q "bash" <<< "$shellinfo"; then
+# 	export HISTIGNORE="fg:ll:ls:lea:$HISTIGNORE"
+# fi
+
+
 # if wrong LC_ALL, change empty set
 if [ -n "$LC_ALL" ]; then
 	if [ -z "$(locale -a 2>/dev/null | grep '${LC_ALL}')" ]; then
