@@ -1,0 +1,3794 @@
+{
+
+    // =============== ext - sonarlint ===============
+    "sonarlint.pathToCompileCommands": "",
+    // "sonarlint.ls.vmargs": "-Xmx2048m",
+    // "sonarlint.analysisExcludesStandalone": "**/*.md",
+    "sonarlint.pathToNodeExecutable": "",
+    "sonarlint.ls.vmargs": "-Xmx512m",
+    "sonarlint.output.showVerboseLogs": true,
+    // "output.smartScroll.enabled": false,
+    "sonarlint.analyzerProperties": {
+        // https://docs.sonarsource.com/sonarqube/latest/analyzing-source-code/analysis-parameters/
+        "sonar.exclusions": "**/*.o,**/*.a,**/*.so,**/*.exe,**/*.md,**/*.log,**/*.txt",
+        "sonar.sourceEncoding": "UTF-8",
+        "sonar.filesize.limit": "1",
+        "sonar.scm.exclusions.disabled": "true",
+        "sonar.cfamily.threads": "4"
+    },
+    "sonarlint.analysisExcludesStandalone": "**/*.go",
+    "sonarlint.rules": {
+
+        // c code style
+        // function arg, name refactor
+        "c:S3776": { "level": "off" },
+        // depth code style
+        "c:S134": { "level": "off" },
+        // macro semicolon
+        "c:S1116": { "level": "off" },
+        // code comment
+        "c:S125": { "level": "off" },
+        // // + /* comment warning
+        "c:S1103": { "level": "off" },
+        // multiple break
+        "c:S924": { "level": "off" },
+        // enum initialize value
+        "c:S841": { "level": "off" },
+        // pointer const
+        "c:S5350": { "level": "off" },
+        "c:S995": { "level": "off" },
+        // type error
+        "c:S5276": { "level": "off" },
+        "c:S859": { "level": "off" },
+        "c:S1905": { "level": "off" },
+        // use security function
+        "c:S1912": { "level": "off" },
+        // too many parameter in function
+        "c:S107": { "level": "off" },
+        // too many struct field
+        "c:S1820": { "level": "off" },
+        // switch case over 30
+        "c:S1479": { "level": "off" },
+        // switch one or two case
+        "c:S1301": { "level": "off" },
+        // Add a "default" case to this switch statement.
+        "c:S3562": { "level": "off" },
+        // for inline i
+        "c:S5955": { "level": "off" },
+        // for index change in loop
+        "c:S886": { "level": "off" },
+        // TODO: warning
+        "c:S1135": { "level": "off" },
+        // int i, j - line define 2 variable
+        "c:S1659": { "level": "off" },
+        // radient () remove
+        "c:S1110": { "level": "off" },
+        // merge if
+        "c:S1066": { "level": "off" },
+        // The right-hand operands of && and || should not contain side effects
+        "c:S912": { "level": "off" },
+        // .cpp
+        "c:S819": { "level": "off" },
+        "c:S820": { "level": "off" },
+        // google test unit test
+        "c:S1198": { "level": "off" },
+        "c:S1117": { "level": "off" },
+        // va_args (가변인수)
+        "c:S923": { "level": "off" },
+        // struct padding byte compare
+        "c:S5000": { "level": "off" },
+        // TOCTOU vulnerabilities
+        "c:S5847": { "level": "off" },
+        // FIXME comment
+        "c:S1134": { "level": "off" },
+
+
+        // c++ code style
+        // (Skip these rules if you personally develop in C++)
+        // enforce const/constexpr instead of #define
+        "cpp:S5028": { "level": "off" },
+        // enforce use of cxx-style containers (std::array, std::vector)
+        "cpp:S5945": { "level": "off" },
+        // enforce use of std::for_each
+        "cpp:S5566": { "level": "off" },
+
+
+        // python code style
+        "python:S117": { "level": "off" },
+        "python:S116": { "level": "off" },
+        "python:S100": { "level": "off" },
+        "python:S1542": { "level": "off" },
+        // function name length
+        "python:S3776": { "level": "off" },
+        // python 주석
+        "python:S125": { "level": "off" },
+        // python self define
+        "python:S2710": { "level": "off" },
+        // raise exception
+        "python:S112": { "level": "off" },
+        // requests SSL/TLS
+        "python:S4830": { "level": "off" },
+        // string literal
+        "python:S1192": { "level": "off" },
+
+
+        // java code style
+        // System.out
+        "java:S106": { "level": "off" },
+        // snake_case
+        "java:S117": { "level": "off" },
+        // java 주석
+        "java:S125": { "level": "off" },
+        // define
+        "java:S1192": { "level": "off" },
+        // package warning
+        "java:S1220": { "level": "off" },
+        // class와 변수명이 같음
+        "java:S1700": { "level": "off" },
+        // == false
+        "java:S1125": { "level": "off" },
+        // refactor
+        "java:S3776": { "level": "off" },
+        // while true
+        "java:S135": { "level": "off" },
+        // return condition
+        "java:S1126": { "level": "off" },
+        // 변수명 (a-zA-Z0~9)
+        "java:S3008": { "level": "off" },
+
+
+
+        // css code style
+        "css:S125": { "level": "off" },
+
+        // js / ts code style
+        "typescript:S6836": { "level": "off" }
+
+
+    },
+    // editor settings
+    "window.zoomLevel": 0,
+    // "window.zoomLevel": 1,
+    "editor.tabSize": 4,
+    "editor.fontLigatures": false,
+    "editor.fontligatures": false,
+    // "editor.letterSpacing": 0.3,
+    // "editor.letterSpacing": 0.9,
+
+    // "editor.letterSpacing": -0.5,
+    // "editor.fontFamily": "'CaskaydiaCove Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Courier Prime', 'ModernDos8x16MCCV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'HBIOS-SYS', 'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'ModernDos9x16MCCV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'ModernDos9x16MOV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'MorePerfectDOSVGAOVYNF', 'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "workbench.fontAliasing":  "antialiased",
+
+
+    // "editor.fontFamily": "'CourierPrimeM85V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'ModernDos9x16MCCV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    "editor.fontFamily": "'OperatorMonoC Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+
+    // "editor.fontFamily": "'FantasqueSansM Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'FantasqueSansM Nerd Font Mono', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Operator Mono', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'OperatorMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Operator Mono C', '티머니 둥근바람', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'OperatorMonoC Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Fira Code iScript', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'OperatorMonoX Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'ComicShannsMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.letterSpacing": 1,
+
+    // "editor.fontFamily": "'Courier New', 'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Courier Prime', 'OperatorMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Courier Prime_V', 'ModernDos8x16MCCV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+
+    // "editor.fontFamily": "'NovaMonoM', 'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'BigBlueTermPlus Nerd Font Mono', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'MorePerfectDOSVGAPYNF', 'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'MorePerfectDOSVGAOVYNF', 'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'ModernDos9x16_MCCV', 'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'ModernDos9x16MOV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'FixedsysModernV05 Nerd Font', '둥근모꼴', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'FixedsysCore Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Marista Nerd Font', '나눔손글씨 펜', 'Apple SD 산돌고딕 Neo', monospace",
+    // "editor.fontFamily": "'Windows Command Prompt', 'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+
+
+    // "editor.fontSize": 16, // zoomlevel : 0
+    "editor.fontSize": 15.6, // zoomlevel : 0
+    // "editor.fontSize": 15, // zoomlevel : 0
+    // "editor.fontSize": 14.5, // zoomlevel : 1
+    // "editor.fontSize": 14, // zoomlevel : 1
+    // "editor.fontSize": 13, // zoomlevel : 1.5
+    // "editor.fontSize": 12.5, // zoomlevel : 1 - notebook
+    // "editor.fontSize": 12, // zoomlevel : 2
+    // "editor.lineHeight": 1.4,
+
+    // "editor.fontSize": 14,
+    // "workbench.fontAliasing":  "antialiased",
+
+    // Tab, Space 구분
+    "editor.renderWhitespace": "all",
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    // remote editor set
+    // 소스파일 길이가 너무 커지면 vscode가 버벅이는 것을 방지
+    "editor.maxTokenizationLineLength": 15000,
+    "editor.definitionLinkOpensInPeek": false,
+
+    "editor.quickSuggestionsDelay": 50,
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "off",
+        "strings": "off"
+    },
+    "editor.suggestSelection": "first",
+    "editor.snippetSuggestions": "top",
+    "editor.suggest.localityBonus": true,
+    "editor.suggest.filterGraceful": true,
+    // set rnu
+    "editor.lineNumbers": "relative",
+    // set wrap
+    "editor.wordWrap": "on",
+
+    // "editor.fontWeight": "normal",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.find.seedSearchStringFromSelection": "never",
+    "editor.renderControlCharacters": true,
+    // Minimap 제거
+    "editor.minimap.enabled": false,
+
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggest.showStatusBar": true,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "editor.find.loop": true,
+    "editor.scrollBeyondLastLine": false,
+    "editor.cursorSurroundingLines": 5,
+    "editor.cursorBlinking": "solid",
+    "editor.stickyScroll.enabled": true,
+    "editor.largeFileOptimizations": true,
+    // "editor.find.addExtraSpaceOnTop": true
+    "editor.suggest.preview": true,
+    "editor.accessibilitySupport": "off",
+    "editor.multiCursorModifier": "alt",
+
+
+    // =============== markdown ===============
+    // "markdown.preview.fontSize": 14, // zoomlevel : 0
+    "markdown.preview.fontSize": 13, // zoomlevel : 1
+    // "markdown.preview.fontFamily": "'FantasqueSansM Nerd Font Mono', '티머니 둥근바람', 'Apple SD 산돌고딕 Neo', monospace",
+    // "markdown.preview.fontFamily": "'OperatorMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "markdown.preview.fontFamily": "'CaskaydiaCove Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "markdown.preview.fontFamily": "'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "markdown.preview.fontFamily": "'Operator Mono C', 'Apple SD 산돌고딕 Neo', monospace",
+    "markdown.preview.fontFamily": "'OperatorMonoC Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+
+    // "markdown.preview.fontFamily": "'Consolas', '맑은 고딕', Monaco', 'Apple SD 산돌고딕 Neo', monospace",
+    "markdown.extension.toc.updateOnSave": true,
+    "markdown-preview-enhanced.liveUpdate": true,
+    // "markdown-preview-enhanced.imageFolderPath": "../",
+    "markdown-preview-enhanced.previewTheme": "one-light.css",
+    "markdown-preview-enhanced.enableExtendedTableSyntax": true,
+    "markdown-preview-enhanced.enableScriptExecution": true,
+    "markdown-preview-enhanced.enableHTML5Embed": true,
+
+
+    // =============== debug ===============
+    "debug.onTaskErrors": "debugAnyway",
+    "debug.terminal.clearBeforeReusing": true,
+
+    "launch": {
+        "configurations": [
+            {
+                "name": "python: current file",
+                "type": "debugpy",
+                "request": "launch",
+                "program": "${file}",
+                "cwd": "${fileDirname}",
+                // pip debug 시 false로 변경
+                "justMyCode": true,
+            },
+            {
+                "name": "TS-Node: current file",
+                "type": "node",
+                "request": "launch",
+                // "runtimeExecutable": "${fileDirname}/node_modules/.bin/ts-node",
+                // "runtimeArgs": [
+                //     "--transpile-only",
+                //     // if you use esm
+                //     "--esm"
+                // ],
+                "program": "${file}",
+                "cwd": "${fileDirname}",
+                "internalConsoleOptions": "openOnSessionStart",
+                "skipFiles": ["<node_internals>/**", "node_modules/**"]
+            },
+            {
+                "name": "CPP: Current File (noext)",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${fileDirname}/${fileBasenameNoExtension}",
+                // "args": [],
+                "stopAtEntry": false,
+                "cwd": "${fileDirname}",
+                // "environment": [],
+                "externalConsole": false,
+                "MIMode": "gdb",
+                // "miDebuggerPath": "/usr/local/bin/gdb",
+                // "visualizerFile": "test.natvis",
+                "showDisplayString": true,
+                "setupCommands": [
+                    {
+                        "description": "gdb에 자동 서식 지정 사용",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    },
+                    {
+                        "description": "문자열 1000자 이상은 자르기",
+                        "text": "set print elements 1000",
+                        "ignoreFailures": true
+                    },
+                    {
+                        "description": "어셈블리 코드 인텔 스타일 사용",
+                        "text": "set disassembly-flavor intel",
+                        "ignoreFailures": true
+                    }
+                ],
+                "preLaunchTask": "CPP: build file",
+                // gdb 통신 로그 확인
+                // "logging": {
+                	// "engineLogging": false,
+                	// "exceptions": false,
+                	// "moduleLoad": false,
+                	// "programOutput": true,
+                	// "trace": false,
+                	// "traceResponse": false,
+                // },
+            },
+            {
+                "type": "go",
+                "request": "launch",
+                "name": "Go: current file",
+                "mode": "debug",
+                "program": "${fileDirname}/${fileBasenameNoExtension}",
+                "cwd": "${fileDirname}",
+            }
+        ]
+    },
+
+
+
+    // =============== search ===============
+    "search.mode": "view",
+    "search.quickOpen.includeSymbols": true,
+	"search.followSymlinks": true,
+    "search.seedOnFocus": false,
+
+
+    // =============== terminal ===============
+
+    // "terminal.integrated.fontFamily": "'CourierPrimeM85V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    "terminal.integrated.fontFamily": "'OperatorMonoC Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+
+    // "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'FantasqueSansM Nerd Font Mono', '티머니 둥근바람', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'WindowsCommandPrompt Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'Courier Prime', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'CourierPrimeM85V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'NovaMonoM', 'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'CourierPrimeM90V Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'Courier Prime_MV', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'BigBlueTermPlus Nerd Font Mono', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'MorePerfectDOSVGA Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'MorePerfectDOSVGAPYNF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'MorePerfectDOSVGAOVYNF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'ModernDos9x16MCV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'ModernDos9x16MCCV Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'FixedsysModernV05 Nerd Font', '둥근모꼴', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'FixedsysCore Nerd Font', '둥근모꼴', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'OperatorMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'OperatorMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'Operator Mono C', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'OperatorMonoC Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'CaskaydiaCove Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'CaskaydiaCoveH NF', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontFamily": "'ComicShannsMono Nerd Font', 'Apple SD 산돌고딕 Neo', monospace",
+    // "terminal.integrated.fontSize": 12, // zoomlevel : 2
+    // "terminal.integrated.fontSize": 12, // zoomlevel : 2
+    // "terminal.integrated.fontSize": 12.5, // zoomlevel : 1 - notebook
+    // "terminal.integrated.fontSize": 13, // zoomlevel : 1.5
+    // "terminal.integrated.fontSize": 14, // zoomlevel : 1
+    "terminal.integrated.fontSize": 15, // zoomlevel : 0
+    // "terminal.integrated.fontSize": 16, // zoomlevel : 0
+    // "terminal.integrated.fontSize": 17, // zoomlevel : 0
+    // "terminal.integrated.fontSize": 19,
+    // "terminal.integrated.letterSpacing": -2,
+    // "terminal.integrated.letterSpacing": 1,
+    // "terminal.integrated.letterSpacing": -1,
+    // "terminal.integrated.lineHeight": 1.3,
+    // "terminal.integrated.lineHeight": 1.25,
+    // "terminal.integrated.lineHeight": 1.1,
+    "terminal.integrated.lineHeight": 1.08,
+    "terminal.integrated.fontWeightBold": "2",
+    "terminal.integrated.fontWeight": "1",
+    "terminal.integrated.tabStopWidth": 4,
+    "terminal.integrated.shellIntegration.history": 1000,
+    "terminal.integrated.scrollback": 2000,
+    // "terminal.integrated.tabs.title": "${process}:${cwdFolder}",
+    // "terminal.integrated.tabs.title": "${cwdFolder}",
+    "terminal.integrated.tabs.title": "${cwdFolder}",
+    // "terminal.integrated.enableMultiLinePasteWarning": false,
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "terminal.integrated.gpuAcceleration": "canvas",
+    "terminal.integrated.rightClickBehavior": "paste",
+    // "terminal.integrated.fontWeight": "normal",
+    "terminal.explorerKind": "integrated",
+    // "terminal.explorerKind": "external",
+    "terminal.external.linuxExec": "xterm",
+    "terminal.external.osxExec": "iTerm.app",
+    // "terminal.external.osxExec": "WezTerm.app",
+    "terminal.external.windowsExec": "C:\\Windows\\System32\\wsl.exe",
+    // 일반적인 쉘프로그램 (puTTY)처럼 터미널에서 선택하는것만으로도 복사
+    "terminal.integrated.copyOnSelection": true,
+    // "terminal.integrated.defaultProfile.linux": "bash",
+	"terminal.integrated.defaultProfile.linux":"zsh",
+    "terminal.integrated.defaultProfile.windows": "WSL_shell",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.env.osx": {
+        "SHELL": "/bin/zsh"
+    },
+    "terminal.integrated.tabs.enabled": true,
+    "terminal.integrated.tabs.hideCondition": "never",
+    "terminal.integrated.tabs.location": "left",
+    "terminal.integrated.tabs.showActiveTerminal": "never",
+    "terminal.integrated.allowMnemonics": true,
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        },
+        "WSL_shell": {
+            "path": "C:\\WINDOWS\\System32\\wsl.exe",
+            "args": [
+                // "-d",
+                // "Ubuntu"
+            ]
+        },
+        // "wt": {
+        //     "path": [
+        //         "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.13.11431.0_x64__8wekyb3d8bbwe\\wt.exe",
+        //     ],
+        //     "args": [],
+        //     "icon": "terminal-cmd"
+        // }
+    },
+
+
+
+    // =============== scm ===============
+    "scm.defaultViewMode": "tree",
+    // "scm.alwaysShowActions": true,
+    "scm.alwaysShowRepositories": true,
+    "scm.diffDecorationsGutterPattern": {
+        "added": true
+    },
+    "git.autofetch": false,
+    "git.confirmSync": false,
+    "git.mergeEditor": true,
+    "git.verboseCommit": true,
+    "git.alwaysShowStagedChangesResourceGroup": true,
+    "git.openRepositoryInParentFolders": "always",
+    "git.suggestSmartCommit": false,
+
+
+
+    // =============== problems ===============
+
+    "problems.showCurrentInStatus": false,
+    "problems.sortOrder": "severity",
+
+    "remote.extensionKind": {
+        "ryuta46.multi-command": [ "ui" ],
+        "vscodevim.vim": [ "ui" ],
+        "humao.rest-client": [ "ui" ],
+        "tgreen7.open-file-command": [ "ui" ],
+        "oderwat.indent-rainbow": [ "ui" ],
+        "shardulm94.trailing-spaces": [ "ui" ],
+        "danielsanmedium.dscodegpt": ["ui"],
+        "vcaveman.open-in-web": [ "ui" ],
+        // "codestream.codestream": [ "ui" ],
+        "genieai.chatgpt-vscode": ["ui"],
+        "bito.bito": [ "ui" ],
+        // "github.copilot-chat": [ "ui" ],
+        "zokugun.sync-settings": ["ui"],
+        "jebbs.plantuml": ["ui"],
+        "aleksandardev.vscode-sequence-diagrams": ["ui"],
+        "dionmunk.vscode-notes": ["ui"],
+        "natizyskunk.sftp": [ "workspace" ],
+        "kruemelkatze.vscode-dashboard": [ "ui" ],
+        "dumpvn.search-github": [ "ui" ],
+
+        "shalimski.swapdiff": [ "ui" ],
+        "jinsihou.diff-tool": [ "ui" ],
+        "iket0731.symbol-navigate-back": [ "ui" ],
+        "rebornix.toggle": [ "ui" ],
+
+        // note
+        "patricklee.vsnotes": [ "ui" ],
+        "mafut.vsnotes-todo": [ "ui" ],
+        "fabiospampinato.vscode-todo-plus": [ "ui" ],
+
+
+        // workspace 원격지 성능이 좋지 않을 경우 UI에서 진행
+        "continue.continue": ["ui"],
+        // OpenFile 등 코드 임베드를 위해 workspace 실행 권장
+        // "continue.continue": ["workspace"],
+
+        "orangex4.regexr-vscode": [ "ui" ],
+
+        "danielroedl.meld-diff": [ "workspace" ],
+        // "shd101wyy.markdown-preview-enhanced": [ "workspace" ],
+        // "shd101wyy.markdown-preview-enhanced": [ "ui" ],
+        // "sonarsource.sonarlint-vscode": [ "ui" ],
+        "sonarsource.sonarlint-vscode": [ "workspace" ],
+
+        // "magit"
+        // "kahole.magit": [ "workspace" ],
+        "hendo.magitts": [ "workspace" ],
+
+        // translate
+        "sculove.translator": [ "ui" ],
+        "funkyremi.vscode-google-translate": [ "ui" ],
+        "hoovercj.vscode-power-mode": [ "ui" ]
+    },
+
+
+    // =============== files ===============
+    "files.simpleDialog.enable": true,
+    "files.associations": {
+        "*.rej": "diff",
+        "*.h": "c",
+        "*.c": "c",
+        "*.y": "c",
+        "*.py": "python",
+        "*.log": "log",
+        "*.log.*": "log",
+        "passwd": "shellscript",
+        ".aliases": "shellscript"
+    },
+    "files.autoGuessEncoding": false,
+    "files.maxMemoryForLargeFilesMB": 8192,
+
+    "workbench.list.defaultFindMode": "filter",
+    "workbench.editor.splitSizing": "distribute",
+    // "workbench.panel.defaultLocation": "left",
+    "workbench.panel.defaultLocation": "bottom",
+    "workbench.list.openMode": "singleClick",
+    "workbench.editorAssociations": {
+        "*.zip": "default",
+        "*.vsix": "default",
+        "*.p12": "default",
+        "*.excalidraw.md": "editor.excalidraw"
+    },
+    "workbench.editor.enablePreview": false,
+    "workbench.startupEditor": "none",
+
+
+    // breadcrumbs
+    "breadcrumbs.showStructs": false,
+    "breadcrumbs.showStrings": false,
+    "breadcrumbs.showNumbers": false,
+    "breadcrumbs.showOperators": false,
+    "breadcrumbs.showFields": false,
+    "breadcrumbs.showVariables": false,
+
+    // =================== diff editor ===================
+    "diffEditor.renderIndicators": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.renderSideBySide": false,
+    "diffEditor.experimental.showMoves": true,
+    "diffEditor.useInlineViewWhenSpaceIsLimited": false,
+    "multiDiffEditor.experimental.enabled": true,
+    // "multiDiffEditor.experimental.enabled": false,
+    "semanticdiff.closeOriginalTab": true,
+
+
+    // =============== per file settings ===============
+    "[cpp]": {
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": true,
+    },
+    "[c]": {
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": false,
+        "editor.wordBasedSuggestions": "matchingDocuments",
+        "editor.suggest.insertMode": "replace",
+        "editor.semanticHighlighting.enabled": true,
+    },
+    "[python]": {
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "editor.formatOnType": true,
+		// you must need this extension ( https://pypi.org/project/autopep8/ )
+		// python3 -m pip install --upgrade autopep8
+		// "python.formatting.provider": "autopep8",
+    },
+    "[markdown]": {
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.formatOnType": true,
+		// you must need this extension ( https://pypi.org/project/autopep8/ )
+		// python3 -m pip install --upgrade autopep8
+		// "python.formatting.provider": "autopep8",
+    },
+    "[shellscript]": {
+        // "editor.defaultFormatter": "foxundermoon.shell-format",
+        "files.eol": "\n"
+    },
+
+
+    // native 설정 시 창 오류 남
+    "window.dialogStyle": "custom",
+    "window.restoreWindows": "all",
+    "window.enableMenuBarMnemonics": false,
+    "window.newWindowDimensions": "inherit",
+    "window.commandCenter": true,
+    // "workbench.colorTheme": "Monokai Pro",
+    // "workbench.colorTheme": "Monokai Classic",
+
+    "workbench.iconTheme": "Monokai Classic Icons",
+    // "workbench.iconTheme": "Monokai Classic Icons",
+    // editor 세로줄 세팅
+    "editor.rulers": [
+        80,
+        {
+            "column": 100,
+            "color": "#693f07"
+        },
+        {
+            "column": 120,
+            "color": "#3a0707"
+        },
+    ],
+
+    // theme color custom
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": [ "markup.underline.link" ],
+                "settings": { "foreground": "#D55FDE", "fontStyle": "underline" }
+            },
+        ],
+        // "comments": "#22AA22",
+        "[One Dark Pro *]": {
+            "comments": "#22AA22",
+        },
+        // https://colorate.azurewebsites.net/ko/Color/ffffff
+        // https://www.color-hex.com/color/ffffff
+        "[GitHub Dark *]": {
+            "comments": { "fontStyle": "italic" },
+            "textMateRules": [
+                // function and define
+                {
+                    "scope": [ "entity.name.function", "meta.function-call" ],
+                    "settings": { "foreground": "#D2A8FF" }
+                },
+                {
+                    // define
+                    "scope": [ "entity.name.function.preprocessor.c", "entity.name.function.preprocessor.cpp" ],
+                    "settings": { "foreground": "#BC7DFF" }
+                },
+
+                // variable type
+                {
+                    // typedef struct name
+                    "scope": [ "entity.name.type.c", "entity.name.type.cpp" ],
+                    // "settings": { "foreground": "#FF7B72" },
+                    "settings": { "foreground": "#FF6B89" },
+                },
+                {
+                    "scope": [ "entity.name.type.class" ],
+                    "settings": { "foreground": "#FFA4CC" }
+                },
+
+                // variable
+                {
+                    // 파라메터 변수
+                    "scope": [ "variable.parameter" ],
+                    "settings": {
+                        "foreground": "#FFA657",
+                        "fontStyle": "underline"
+                    }
+                },
+                {
+                    // 지역변수
+                    "scope": [
+                        "variable.other.local",
+                        "variable.other.readwrite",
+                        "variable.other.assignment.go"
+                    ],
+                    // "settings": { "foreground": "#FFC796" }
+                    "settings": { "foreground": "#EFC796" }
+                },
+                {
+                    // 상수
+                    "scope": [ "variable.other.constant" ],
+                    "settings": {
+                        "foreground": "#8BE9FD"
+                    }
+                },
+                {
+                    // 젼역변수
+                    "scope": [ "variable.other.global.c", "variable.other.global.cpp" ],
+                    "settings": { "foreground": "#F6E542", "fontStyle": "underline" }
+                },
+                {
+                    // 구조체 참조 변수 str->"data"
+                    "scope": [ "variable.other.property" ],
+                    // "settings": { "foreground": "#EFC796" }
+                    "settings": { "foreground": "#CEA3A5" }
+                },
+                {
+                    // 기타변수
+                    "scope": [ "variable.other" ],
+                    "settings": { "foreground": "#b6a36e" }
+                },
+
+
+                {
+                    // python - self 키워드
+                    "scope": [ "variable.parameter.function.language.special.self.python", "variable.language.special.self.python" ],
+                    "settings": { "foreground": "#FFA6CC", "fontStyle": "underline" }
+                },
+                {
+                    "scope": [ "meta.attribute.python" ],
+                    "settings": { "foreground": "#FBBEB5" }
+                },
+            ]
+        },
+        "[Dracula*]": {
+            // https://colorate.azurewebsites.net/ko/Color/ffffff
+            // https://www.color-hex.com/color/ffffff
+            "textMateRules": [
+                // function and define
+                {
+                    // function
+                    "scope": [ "entity.name.function", "meta.function-call" ],
+                    "settings": {
+                        "foreground": "#50FA7B",
+                    }
+                },
+                {
+                    // define
+                    "scope": [ "entity.name.function.preprocessor.c", "entity.name.function.preprocessor.cpp" ],
+                    "settings": {
+                        "foreground": "#40CA63",
+                        "fontStyle": "underline"
+                    }
+                },
+
+                // variable
+                {
+                    // paramter 변수
+                    "scope": [ "variable.parameter" ],
+                    "settings": {
+                        "foreground": "#FFB86C",
+                        // "fontStyle": "italic underline"
+                        "fontStyle": "underline"
+                    }
+                },
+                {
+                    // 지역변수
+                    "scope": [ "variable.other.local", "variable.other.readwrite" ],
+                    // E6DB74
+                    // "settings": { "foreground": "#E6DB74" }
+                    "settings": { "foreground": "#FFCD98" }
+                },
+                {
+                    // 전역변수
+                    "scope": [ "variable.other.global" ],
+                    "settings": { "foreground": "#F6E542" }
+                },
+                {
+                    // module 변수
+                    "scope": [ "entity.name.namespace"],
+                    "settings": { "foreground": "#DDA64A", "fontStyle": "underline" }
+                },
+                {
+                    // 구조체 참조 변수 str->"data"
+                    // 클래스 내 변수
+                    "scope": [ "variable.other.property" ],
+                    // "settings": { "foreground": "#EFC796" }
+                    "settings": {
+                        "foreground": "#E0BC86",
+                        // "fontStyle": "italic"
+                    }
+                },
+                {
+                    "scope": [ "variable.other.constant" ],
+                    "settings": {
+                        "foreground": "#AA84E0",
+                    }
+                },
+                {
+                    "scope": [ "variable.other.enummember" ],
+                    "settings": {
+                        "foreground": "#BAB4F0",
+                    }
+                },
+                {
+                    // 기타 변수
+                    "scope": [ "variable.other" ],
+                    "settings": { "foreground": "#DFBD88" }
+                },
+            ]
+        },
+        "[Monokai *]": {
+            // https://colorate.azurewebsites.net/ko/Color/ffffff
+            // https://www.color-hex.com/color/ffffff
+            // "comments": { "foreground": "#88846f", "fontStyle": "" },
+            // "comments": { "foreground": "#88846f", "fontStyle": "italic" },
+            "comments": { "foreground": "#88846f", "fontStyle": "" },
+            "keywords": { "fontStyle": "bold italic" },
+            "textMateRules": [
+                // handwritten font
+                {
+                    "name": "operator handwritten",
+                    "scope": [
+                        "keyword",
+                        "keyword.operator.logical.python",
+                        "storage.type.class.python",
+                        "storage.type.function.python",
+                    ],
+                    "settings": {
+                        "foreground": "#ff6188",
+                        "fontStyle": "bold italic"
+                    }
+                },
+                {
+                    "name": "operator handwritten",
+                    "scope": [
+                        "storage.modifier",
+                        "storage.type.struct",
+                    ],
+                    "settings": {
+                        "fontStyle": "bold italic"
+                    }
+                },
+                {
+                    "name": "operator",
+                    "scope": [
+                        "keyword.operator"
+                    ],
+                    "settings": {
+                        "fontStyle": "bold"
+                    }
+                },
+
+                {
+                    "name": "docstring",
+                    "scope": "string.quoted.docstring.multi.python",
+                    "settings": {
+                        "foreground": "#88846f"
+                    }
+                },
+                {
+                    "name": "default",
+                    "scope": [
+                        "source",
+                        "other",
+                        "comment.other.git-status.head",
+                        "constant.other",
+                        "entity.name.namespace",
+                        "entity.name.operator.custom-literal",
+                        "meta.function-call.python meta.function-call.arguments.python",
+                        "meta.object.member",
+                        "meta.type_params.rust",
+                        "punctuation.definition.group",
+                        "storage.modifier.import.java",
+                        "string.unquoted.label",
+                        "string source",
+                        "support.type.property-name",
+                        "text",
+                        "text.find-in-files",
+                        "variable",
+                        "variable.other.property",
+                        "variable.other.property.static",
+                        "variable.other.event"
+                    ],
+                    "settings": {
+                        // "foreground": "#E6EDF3",
+                        "foreground": "#dedede",
+                    }
+                },
+                {
+                    "name": "string",
+                    "scope": [ "string" ],
+                    "settings": {
+                        // "foreground": "#ffdd98"
+                        // "foreground": "#e6db74",
+                        // "foreground": "#ffd866"
+                        "foreground": "#cec833"
+                    }
+                },
+
+                {
+                    "name": "define",
+                    "scope": [ "entity.name.function.preprocessor.c", "entity.name.function.preprocessor.cpp" ],
+                    "settings": {
+                        // "foreground": "#50fa7b",
+                        // "foreground": "#40ea6b",
+                        "foreground": "#2be98a",
+                        // "fontStyle": "underline"
+                        "fontStyle": "italic",
+                        // "fontStyle": "bold italic",
+                    }
+                },
+
+                // {
+                //     // python type
+                //     "scope": [
+                //         // "storage.type",
+                //         // "storage.type.*.python",
+                //         "storage.type.class.python",
+                //         "storage.type.function.python"
+                //     ],
+                //     "settings": {
+                //         "foreground": "#ff6188",
+                //         "fontStyle": "bold italic"
+                //     }
+                // },
+
+                // {
+                //     // type에 지정된 italic 제거
+                //     "scope": [
+                //         "storage.type.struct",
+                //         // "support.type",
+                //         "storage.modifier",
+                //     ],
+                //     "settings": { "fontStyle": "" }
+                // },
+
+                // variable
+                {
+                    // paramter 변수
+                    "name": "parameter variable",
+                    "scope": [ "variable.parameter" ],
+                    "settings": {
+                        // "foreground": "#FFB86C",
+                        // "fontStyle": "italic underline"
+                        "fontStyle": "underline"
+                    }
+                },
+                {
+                    // 지역변수
+                    "name": "local variable",
+                    // 지역변수
+                    "scope": [
+                        "variable.other.local",
+                        "variable.other.readwrite",
+                    ],
+                    "settings": {
+                        // "fontStyle": "bold",
+                        // "foreground": "#dedede",
+                        "foreground": "#ffdd98"
+                        // "foreground": "#ffcfa0"
+                        // "foreground": "#efcfa0"
+                    }
+                },
+                {
+                    // go 변수 선언
+                    "name": "local variable",
+                    // 지역변수
+                    "scope": [
+                        "variable.other.assignment.go"
+                    ],
+                    "settings": {
+                        // "foreground": "#ffdd98",
+                        "foreground": "#ffcfa0",
+                        "fontStyle": "underline"
+                    }
+                },
+
+                {
+                    // 젼역변수
+                    "name": "global variable",
+                    // "scope": [ "variable.other.global.c", "variable.other.global.cpp" ],
+                    "scope": [ "variable.other.global" ],
+                    // "settings": { "foreground": "#ffff3f", "fontStyle": "bold underline" }
+                    "settings": { "foreground": "#ef8ff0", "fontStyle": "bold underline" }
+                },
+                {
+                    // 구조체 참조 변수 str->"data"
+                    "name": "struct reference variable",
+                    "scope": [
+                        "variable.other.property",
+                        "variable.other.member"
+                    ],
+                    // "settings": { "foreground": "#eeb3b5" }
+                    // "settings": { "foreground": "#c9a567" }
+                    // "settings": { "foreground": "#c2a277" }
+                    "settings": { "foreground": "#d9b597" }
+                    // "settings": { "foreground": "#c68a12" }
+                    // "settings": { "foreground": "#CEA3A5" }
+                },
+                {
+                    "name": "namespace",
+                    "scope": [ "entity.name.namespace" ],
+                    "settings": {
+                        "foreground": "#ff8488",
+                        // "fontStyle": "underline"
+                        "fontStyle": "italic underline"
+                    }
+                },
+                {
+                    "name": "class",
+                    "scope": [ "entity.name.type.class" ],
+                    // "settings": { "foreground": "#ffa4cc" }
+                    "settings": {
+                        // "foreground": "#ffa4cc",
+                        "foreground": "#66d9ef",
+                        "fontStyle": ""
+                    }
+                },
+                {
+                    // 기타 변수
+                    "name": "other variable",
+                    "scope": [ "variable.other" ],
+                    "settings": {
+                        // "foreground": "#b6a36e"
+                        // "foreground": "#e6db74"
+                        // "foreground": "#ffd866"
+                        // "foreground": "#cec833"
+                        // "foreground": "#fcd4d1",
+                        // "foreground": "#efcece",
+                        // "fontStyle": "underline"
+                        // "foreground": "#ede8d0"
+                        // "foreground": "#c5c5ac"
+                        // "foreground": "#a5a59c"
+                        "foreground": "#b5b5ac"
+                        // "foreground": "#c5c5bc"
+                        // "foreground": "#e5e5cc"
+                        // "foreground": "#f5f5dc"
+                        // "foreground": "#b5b59c"
+
+                    }
+                },
+
+
+
+
+                // variable type
+                {
+                    // typedef struct name
+                    "scope": [ "entity.name.type.c", "entity.name.type.cpp" ],
+                    // "settings": { "foreground": "#FF7B72" },
+                    "settings": {
+                        "fontStyle": "bold italic underline"
+                        // "fontStyle": "underline"
+                    }
+                },
+                // {
+                //     "scope": [ "storage.type" ],
+                //     "settings": { "fontStyle": "" }
+                // },
+
+
+                {
+                    "scope": [ "support.type.property-name.json" ],
+                    "settings": {
+                        // "foreground": "#FFB86C",
+                        "foreground": "#66d9ef",
+                    }
+                },
+
+                // markdown
+                {
+                    // ` ` code
+                    "scope": [ "markup.inline.raw.string.markdown" ],
+                    "settings": {
+                        // "foreground": "#A6E22E",
+                        "foreground": "#79C0FF"
+                    }
+                },
+            ]
+        },
+        "[Monokai Classic]": {
+            "textMateRules": [
+                {
+                    "name": "operator handwritten",
+                    "scope": [
+                        "keyword",
+                        "keyword.operator.logical.python",
+                        "storage.type.class.python",
+                        "storage.type.function.python",
+                    ],
+                    "settings": {
+                        "foreground": "#f92672",
+                        "fontStyle": "bold italic"
+                    }
+                },
+                // {
+                //     // python type
+                //     "scope": [
+                //         // "storage.type",
+                //         // "storage.type.*.python",
+                //         "storage.type.class.python",
+                //         "storage.type.function.python"
+                //     ],
+                //     "settings": {
+                //         "foreground": "#f92672",
+                //         "fontStyle": "bold italic"
+                //     }
+                // },
+            ]
+        }
+
+    },
+    // https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide
+    "editor.semanticHighlighting.enabled": true,
+    "editor.semanticTokenColorCustomizations": {
+        "[One Dark Pro *]": {
+          // Apply to this theme only
+            "enabled": true,
+            "rules": {
+                "property:c": {
+                    "foreground": "#b28581"
+                },
+                "variable:c": {
+                    "foreground": "#f28791"
+                },
+                "variable:cpp": {
+                    "foreground": "#f28791"
+                },
+                "variable:java": {
+                    "foreground": "#f28791"
+                },
+                "variable:python": {
+                    "foreground": "#f28791"
+                    // "foreground": "#ef596f"
+                },
+                // python variable 을 강제로 설정할 경우
+                // 상수변수의 color도 variable의 색상으로 지정되어 추가 예외처리
+                "variable.other.constant:python": {
+                    "foreground": "#e5c07b"
+                },
+            },
+        },
+        "[Monokai *]": {
+            // "enabled": false,
+            "rules": {
+                // "entity.name.function:c": {
+                //     "foreground": "#f28791"
+                // },
+            }
+        }
+    },
+
+    // Developer: Generate Color Theme From Current Settings
+    "workbench.colorCustomizations": {
+        "editorGroup.emptyBackground": "#000000",
+        "editor.background": "#000000",
+        "editor.foreground": "#dedede",
+        "textPreformat.foreground": "#79C0FF",
+
+        // "editor.lineHighlightBackground": "#3e3d32",
+        "editor.lineHighlightBackground": "#353535BB",
+        "editorCursor.background": "#000000",
+        "editorCursor.foreground": "#00ff40",
+
+      "panel.background": "#000000",
+        "menu.background": "#000000",
+        "activityBar.background": "#000000",
+        "statusBar.background": "#0a0a0a",
+        "statusBar.foreground": "#e5e5e5",
+        "statusBar.noFolderBackground": "#0a0a0a",
+        "statusBar.noFolderForeground": "#e5e5e5",
+		"statusBar.debuggingBackground": "#9a3633",
+		"statusBar.debuggingForeground": "#ffffff",
+        "titleBar.activeBackground": "#000000",
+        "titleBar.inactiveBackground": "#111111",
+        "tab.activeBackground": "#222222",
+        "tab.activeForeground": "#dddddd",
+        "tab.inactiveBackground": "#000000",
+        "tab.inactiveForeground": "#dddddd",
+        "editorGroupHeader.tabsBackground": "#000000",
+        "sideBar.background": "#000000",
+        "sideBar.foreground": "#dddddd",
+        "editorGutter.background" : "#000000",
+        "editorLineNumber.activeForeground": "#999999",
+        "editorLineNumber.foreground": "#999999",
+        "editorLineNumber.dimmedForeground": "#999999",
+        "editor.selectionBackground": "#484848",
+        "input.background": "#151515",
+
+
+        "diffEditor.removedLineBackground": "#ff000033",
+        "diffEditor.removedTextBackground": "#90274a70",
+        "diffEditor.insertedLineBackground": "#9bb95533",
+        "diffEditor.insertedTextBackground": "#4b661680",
+
+
+        "editorBracketHighlight.foreground1": "#00CC00",
+        "editorBracketHighlight.foreground2": "#33CCCC",
+        "editorBracketHighlight.foreground3": "#0099FF",
+        "editorBracketHighlight.foreground4": "#FF66FF",
+        "editorBracketHighlight.foreground5": "#FF6666",
+        "editorBracketHighlight.foreground6": "#FFFF99",
+
+
+        "editor.findMatchBackground": "#ff870077",
+        "editor.findMatchBorder": "#ff8700",
+        "editor.findMatchHighlightBackground": "#ff87af77",
+        "editor.findMatchHighlightBorder": "#ffffff",
+        // "editor.findMatchHighlightBorder": "#000000",
+        // "editor.findMatchHighlightBorder": "#ff87af",
+
+        // "gitlens.trailingLineForegroundColor":"#7a838d",
+        "gitlens.trailingLineForegroundColor":"#118811",
+
+        "checkbox.background": "#000000",
+        "progressBar.background": "#000000",
+        "notifications.background": "#000000",
+        "notificationToast.border": "#000000",
+        "quickInput.background": "#282828",
+        "editorWidget.background": "#282828",
+        // "quickInput.background": "#161b22",
+
+        "debugExceptionWidget.background": "#420b0d",
+        "debugExceptionWidget.border": "#a31515",
+        // "editor.stackFrameHighlightBackground": "#bb800966",
+        "editor.stackFrameHighlightBackground": "#bb800988",
+        "editor.focusedStackFrameHighlightBackground": "#2ea04366",
+
+
+        "terminal.background": "#000000",
+        "terminal.foreground": "#BEBEBE",
+        "terminalCursor.background": "#000000",
+        "terminalCursor.foreground": "#00FF40",
+        "terminal.selectionForeground": "#ff8700",
+
+        // putty
+        // "terminal.ansiBlack": "#000000",
+        // "terminal.ansiBrightBlack": "#999999",
+        // "terminal.ansiBlue": "#1E1EF0",
+        // "terminal.ansiBrightBlue": "#6969FF",
+        // "terminal.ansiCyan": "#00BBBB",
+        // "terminal.ansiBrightCyan": "#55FFFF",
+        // "terminal.ansiGreen": "#00BB00",
+        // "terminal.ansiBrightGreen": "#55FF55",
+        // "terminal.ansiMagenta": "#AE81FF",
+        // "terminal.ansiBrightMagenta": "#FF55FF",
+        // "terminal.ansiRed": "#BB0000",
+        // "terminal.ansiBrightRed": "#FF5555",
+        // "terminal.ansiWhite": "#BBBBBB",
+        // "terminal.ansiBrightWhite": "#FFFFFF",
+        // "terminal.ansiYellow": "#BBBB00",
+        // "terminal.ansiBrightYellow": "#FFFF55",
+
+        // iterm2
+        "terminal.ansiBlack": "#000000",
+        "terminal.ansiBrightBlack": "#676767",
+        "terminal.ansiBlue": "#0225c7",
+        "terminal.ansiBrightBlue": "#6871ff",
+        "terminal.ansiCyan": "#00c5c7",
+        "terminal.ansiBrightCyan": "#5ffdff",
+        "terminal.ansiGreen": "#00c200",
+        "terminal.ansiBrightGreen": "#5ff967",
+        "terminal.ansiMagenta": "#c930c7",
+        "terminal.ansiBrightMagenta": "#ff76ff",
+        "terminal.ansiRed": "#c91b00",
+        "terminal.ansiBrightRed": "#ff6d67",
+        "terminal.ansiWhite": "#c7c7c7",
+        "terminal.ansiBrightWhite": "#fffeff",
+        "terminal.ansiYellow": "#c7c400",
+        "terminal.ansiBrightYellow": "#fefb67",
+
+
+        "[Monokai *]": {
+            "terminal.selectionForeground": "#ff54ff",
+            "terminal.ansiBlack": "#080200",
+            "terminal.ansiBrightBlack": "#6f6b67",
+            "terminal.ansiBlue": "#288ad6",
+            // "terminal.ansiBlue": "#278ad6",
+            "terminal.ansiBrightBlue": "#ae80fe",
+            "terminal.ansiCyan": "#78bdc5",
+            "terminal.ansiBrightCyan": "#63d4ea",
+            "terminal.ansiGreen": "#a1c57d",
+            "terminal.ansiBrightGreen": "#a6e12e",
+            "terminal.ansiMagenta": "#d89676",
+            // "terminal.ansiMagenta": "#fc9867",
+            "terminal.ansiBrightMagenta": "#fc961f",
+            "terminal.ansiRed": "#dd6b87",
+            // "terminal.ansiRed": "#ff6188",
+            "terminal.ansiBrightRed": "#f82a71",
+            "terminal.ansiWhite": "#e7e7e7",
+            "terminal.ansiBrightWhite": "#f7f7f1",
+            "terminal.ansiYellow": "#e6da73",
+            "terminal.ansiBrightYellow": "#ffd866",
+        },
+
+    },
+
+    "oneDarkPro.editorTheme": "One Dark Pro Darker",
+    // // 굵게
+    // "oneDarkPro.bold": true,
+    // "oneDarkPro.vivid": true,
+    // // 기울임체
+    // "oneDarkPro.italic": true,
+    "oneDarkPro.color": {
+        "chalky": "", //변수
+        "coral": "",  //연한빨강
+        "dark": "",
+        "error": "",
+        "fountainBlue": "",
+        "green": "",
+        "invalid": "",
+        "lightDark": "",
+        "lightWhite": "",
+        "malibu": "", //하늘색
+        "purple": "",
+        "whiskey": "", //노랑주황색
+        "deepRed": ""
+    },
+
+
+
+    // =============== multicommand ===============
+    // multicommand start
+    // sudo chown -R $USER:$(id -gn) /etc/crontab
+    "multiCommand.commands": [
+        {
+            "command": "multiCommand.continue_custom",
+            "sequence": [
+                "workbench.debug.action.focusRepl",
+                // "workbench.debug.action.toggleRepl",
+                "editor.action.deleteLines",
+                "workbench.debug.action.focusRepl",
+                {
+                    "command": "editor.action.insertSnippet",
+                    "args": {
+                        "snippet": "-exec c"
+                    }
+                },
+                "repl.action.acceptInput"
+            ],
+            "interval": 30,
+        },
+        {
+            "command": "multiCommand.logtail_httpgw",
+            "sequence": [
+                {
+                    "command": "workbench.action.tasks.runTask",
+                    "args": "didbg_task"
+                },
+                "workbench.action.focusActiveEditorGroup",
+                "workbench.action.moveEditorToRightGroup",
+                "autoScroll.enable",
+                "scrollEditorBottom",
+                // {
+                //     "command": "workbench.action.tasks.runTask",
+                //     "args": "logLinkSet"
+                // },
+                // {
+                //     "command": "logwatcher.watchFile",
+                //     "args": "/monitorapp/debug/httpgw_debug_link.log"
+                // },
+                // "workbench.output.action.toggleAutoScroll"
+                // "workbench.action.focusActiveEditorGroup",
+            ],
+            "interval": 600,
+        },
+        {
+            "command": "multiCommand.peekTypeDef",
+            // "interval": 50,
+            "sequence": [
+                "editor.action.peekTypeDefinition",
+                // "workbench.action.focusActiveEditorGroup",
+                // "togglePeekWidgetFocus",
+            ],
+            "interval": 5
+        },
+        {
+            "command": "multiCommand.TestTask",
+            "sequence": [
+                "workbench.action.tasks.test",
+                "testing.refreshTests",
+            ]
+        },
+        {
+            "command": "multiCommand.TestBuildCursorPrint",
+            "sequence": [
+                // "testing.refreshTests",
+                "testing.runAtCursor",
+                "testing.showMostRecentOutput",
+                // java
+                // "workbench.panel.repl.view.focus",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.TestBuildLastPrint",
+            "sequence": [
+                // 마지막 테스트 다시 실행은 refresh 할 필요 없음
+                // "testing.refreshTests",
+                "testing.reRunLastRun",
+                "testing.showMostRecentOutput",
+                // java
+                // "workbench.panel.repl.view.focus",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.TestBuildFilePrint",
+            "sequence": [
+                // "testing.runCurrentFile",
+                // "testing.refreshTests",
+                "testing.runCurrentFile",
+                "testing.showMostRecentOutput",
+                // java
+                // "workbench.panel.repl.view.focus",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.FindCancel",
+            "sequence": [
+                "closeFindWidget",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.toggleSidebarAndFocus",
+            "sequence": [
+                "workbench.action.toggleSidebarVisibility",
+                "workbench.action.focusSideBar"
+            ]
+        },
+        {
+            "command": "multiCommand.CloseSideAll",
+            "sequence": [
+                "workbench.action.closeSidebar",
+                "workbench.action.closePanel",
+                "workbench.action.closeAuxiliaryBar"
+                // cursor
+                // "aichat.close-sidebar",
+            ]
+        },
+        {
+            "command": "multiCommand.QuickOpenView",
+            "sequence": [
+                "workbench.action.showCommands",
+                "workbench.action.quickOpenView"
+            ]
+        },
+        {
+            "command": "multiCommand.peekNewTab",
+            "sequence": [
+                "togglePeekWidgetFocus",
+                "togglePeekWidgetFocus",
+                "revealReference",
+                "closeReferenceSearch",
+                "workbench.action.keepEditor",
+            ]
+        },
+        {
+            "command": "multiCommand.GoAndClosePeek",
+            "sequence": [
+                "revealReference",
+                "closeReferenceSearch",
+            ]
+        },
+        {
+
+            "command": "multiCommand.GoSideAndClosePeek",
+            "sequence": [
+                "openReferenceToSide",
+                "workbench.action.focusPreviousGroup",
+                "closeReferenceSearch",
+                "workbench.action.focusNextGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.SelectionFindFocus",
+            "sequence": [
+                "actions.findWithSelection",
+                "actions.find",
+                "workbench.action.focusActiveEditorGroup",
+                "extension.vim_escape",
+                // "toggleFindWholeWord",
+            ]
+        },
+        {
+            "command": "multiCommand.FindNext",
+            "sequence": [
+                "cursorRight",
+                "editor.action.nextMatchFindAction",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.FindNextinFindInput",
+            "sequence": [
+                "editor.action.nextMatchFindAction",
+                "workbench.action.focusActiveEditorGroup",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.FindPrev",
+            "sequence": [
+                "editor.action.previousMatchFindAction",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.FindPrevinFindInput",
+            "sequence": [
+                "editor.action.previousMatchFindAction",
+                "workbench.action.focusActiveEditorGroup",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.FindFocusTrans",
+            "sequence": [
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.SearchToEditor",
+            "sequence": [
+                "search.action.focusNextSearchResult",
+                "extension.vim_escape",
+                "cursorHome"
+            ],
+            "interval": 100
+        },
+        {
+            "command": "multiCommand.SelectionAddLog",
+            "sequence": [
+                "editor.action.addSelectionToNextFindMatch",
+                "extension.addLog"
+                // "toggleFindWholeWord",
+            ]
+        },
+        {
+            "command": "multiCommand.DebugEnter",
+            "sequence": [
+                "cursorHome",
+                {
+                    "command": "editor.action.insertSnippet",
+                    "args": { "snippet": "-exec " }
+                },
+                "repl.action.acceptInput"
+            ]
+        },
+        {
+            "command": "multiCommand.DebugCurrent",
+            "sequence": [
+                "history.showPrevious",
+                "repl.action.acceptInput"
+            ]
+        },
+        {
+            "command": "multiCommand.DebugContinueCloseSidebar",
+            "sequence": [
+                "workbench.action.debug.continue",
+                "workbench.action.closeSidebar",
+            ]
+        },
+        {
+            "command": "multiCommand.DebugStart",
+            "sequence": [
+                // "workbench.view.debug",
+                "workbench.action.debug.start",
+                // "workbench.action.closePanel",
+                // "workbench.action.focusAuxiliaryBar",
+                "workbench.debug.action.focusWatchView",
+                "workbench.debug.action.focusVariablesView",
+                "workbench.action.terminal.focus",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.DebugStop",
+            "sequence": [
+                // "workbench.action.closeSidebar",
+                // "workbench.action.closePanel",
+                // "workbench.action.closeAuxiliaryBar",
+                "workbench.action.debug.stop",
+                // "workbench.action.closePanel",
+                "workbench.action.closeAuxiliaryBar",
+                // cursor
+                // "aichat.close-sidebar",
+                "workbench.action.focusActiveEditorGroup",
+            ],
+            "interval": 0.5,
+        },
+        {
+            "command": "multiCommand.DebugDisconnect",
+            "sequence": [
+                // "workbench.action.closeSidebar",
+                // "workbench.action.closePanel",
+                // "workbench.action.closeAuxiliaryBar",
+                "workbench.action.debug.disconnect",
+                // "workbench.action.closePanel",
+                "workbench.action.focusActiveEditorGroup",
+            ],
+            "interval": 0.5,
+        },
+        {
+            "command": "multiCommand.DebugLog",
+            "sequence": [
+                "workbench.action.terminal.split",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "taildebug \u000A"
+                    }
+                },
+                "workbench.action.focusActiveEditorGroup"
+            ]
+        },
+        {
+            "command": "multiCommand.RequestandFirst",
+            "sequence": [
+                //"thunder-client.run-last-request",
+                "rest-client.rerun-last-request",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.RequestandTerm",
+            "sequence": [
+                "rest-client.rerun-last-request",
+                "workbench.action.terminal.focus"
+            ]
+        },
+        {
+            "command": "multiCommand.RequestHttp",
+            "sequence": [
+                "rest-client.request",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            "command": "multiCommand.Ref_ListSelect",
+            "sequence": [
+                "list.select",
+                "workbench.view.extension.references-view",
+            ]
+        },
+        {
+            "command": "multiCommand.positionPanelBottom",
+            "sequence": [
+                "workbench.action.positionPanelBottom",
+                "workbench.action.terminal.focus"
+            ]
+        },
+        {
+            "command": "multiCommand.positionPanelRight",
+            "sequence": [
+                "workbench.action.positionPanelRight",
+                "workbench.action.terminal.focus"
+            ]
+        },
+        {
+            "command": "multiCommand.positionPanelLeft",
+            "sequence": [
+                "workbench.action.positionPanelLeft",
+                "workbench.action.terminal.focus"
+            ]
+        },
+        {
+            "command": "multiCommand.wordcopy",
+            "sequence": [
+                "editor.action.addSelectionToNextFindMatch",
+                "editor.action.clipboardCopyAction",
+                "extension.vim_escape",
+                "cursorWordLeft",
+            ]
+        },
+        {
+            "command": "multiCommand.search_list_enter",
+            "sequence": [
+                "list.select",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.search_focusPrevResult",
+            "sequence": [
+                "search.action.focusPreviousSearchResult",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.search_focusNextResult",
+            "sequence": [
+                "search.action.focusNextSearchResult",
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "command": "multiCommand.openscmhead",
+            "sequence": [
+                // "svn.openHEADFile",
+                "git.openHEADFile",
+            ],
+        },
+        {
+            "command": "multiCommand.diff_head",
+            "sequence": [
+                "workbench.action.keepEditor",
+                // "svn.openHEADFile",
+                "git.openHEADFile",
+                "editor.action.selectAll",
+                "editor.action.clipboardCopyAction",
+                "cursorTop",
+                "workbench.action.closeActiveEditor",
+                "meld-diff.diffWithClipboard"
+            ],
+            "interval": 0.5,
+        },
+        {
+            "command": "multiCommand.chatgptFocus",
+            "sequence": [
+                // "workbench.view.extension.chatgpt-vscode-view-container"
+                "chatgpt-vscode.view.focus",
+                "chatgpt-vscode.conversationView"
+            ],
+            "interval": 0.1
+        },
+        {
+            "command": "multiCommand.merge_conflict",
+            "sequence": [
+                "workbench.action.keepEditor",
+                "merge-conflict.compare"
+            ],
+            "interval": 0.5,
+        },
+        {
+            "command": "multiCommand.diff_next",
+            "sequence": [
+                "workbench.action.compareEditor.focusOtherSide",
+                // move to cursor - screen center
+                "extension.vim_ctrl+h",
+            ],
+            "interval": 0.5
+        },
+        {
+            "command": "multiCommand.externalDiffToolSide",
+            "sequence": [
+                "workbench.action.compareEditor.focusOtherSide",
+                "meld-diff.diffFromFileListSelect",
+                "workbench.action.compareEditor.focusOtherSide",
+                "meld-diff.diffFromFileList"
+            ]
+        },
+        {
+            "command": "multiCommand.externalDiffToolNoSide",
+            "sequence": [
+                "swapdiff.swapdiff",
+                "meld-diff.diffFromFileListSelect",
+                "swapdiff.swapdiff",
+                "meld-diff.diffFromFileList"
+            ]
+        },
+        {
+            "command": "multiCommand.cmdtest",
+            "sequence": [
+                "workbench.action.files.openFile",
+                // {
+                //     "command": "editor.action.insertSnippet",
+                //     "args": { "snippet": "-exec " }
+                // },
+            ]
+        },
+        {
+            "command": "multiCommand.openLocalFile",
+            "sequence": [
+                {
+                    "command": "open-file-command.openFile",
+                    // "args": ["~/Videos/.aaa_testcurl.sh", 55, 1]
+                    "args": ["~/curltest/.aaa_testcurl.sh", 55, 1]
+                },
+                "workbench.action.keepEditor"
+            ]
+        },
+        {
+            "command": "multiCommand.openLocalFile_another",
+            "sequence": [
+                {
+                    "command": "open-file-command.openFile",
+                    // "args": ["~/Videos/.qqq_testcurl.sh", 55, 1]
+                    "args": ["~/curltest/.qqq_testcurl.sh", 55, 1]
+                },
+                "workbench.action.keepEditor"
+            ]
+        },
+        {
+            "command": "multiCommand.initReference",
+            "sequence": [
+                "references-view.tree.focus",
+                "list.collapseAll",
+                "CppReferencesView.focus",
+                "list.collapseAll",
+                "workbench.action.focusActiveEditorGroup"
+            ]
+        },
+
+
+        // grep finder
+        {
+            "command": "multiCommand.GrepKeyword_starter",
+            "sequence": [
+                "editor.action.clipboardCopyAction",
+                "extension.vim_escape",
+                "workbench.action.terminal.focus",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "\u0003\u0003"
+                    }
+                },
+            ],
+            "interval": 5
+        },
+        {
+            "command": "multiCommand.FzfGrepKeyword_ender_Normal",
+            "sequence": [
+                "workbench.action.terminal.paste",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        // "text": "\\>' | sed -e 'p' -e 's/:/ | /2' | sed -n '2~2p' \u000A"
+                        // "text": "\\>' | sed -e \"s|^|$(pwd)/|1\" -e \"s/\\:/\\n/2\" \u000A"
+                        // "text": "\\>' \u000A"
+                        "text": "\\b' \u000A"
+                    }
+                },
+            ],
+            "interval": 150,
+        },
+        {
+            "command": "multiCommand.GrepKeyword_ender_Normal",
+            "sequence": [
+                "workbench.action.terminal.paste",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        // "text": "\\>' | sed -e 'p' -e 's/:/ | /2' | sed -n '2~2p' \u000A"
+                        // "text": "\\>' | sed -e \"s|^|$(pwd)/|1\" -e \"s/\\:/\\n/2\" \u000A"
+                        // "text": "\\>' \u000A"
+                        "text": "\\b' \u000A"
+                    }
+                },
+                "workbench.action.focusActiveEditorGroup",
+            ],
+            "interval": 5,
+        },
+        {
+            "command": "multiCommand.FzfGrepKeyword_ender_Visual",
+            "sequence": [
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    // "args": { "text": "'  \u000A" }
+                    "args": { "text": "\u000A" }
+                },
+                "workbench.action.terminal.paste",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    // "args": { "text": "'  \u000A" }
+                    "args": { "text": "\u000A" }
+                },
+            ],
+            "interval": 180,
+        },
+        {
+            "command": "multiCommand.GrepKeyword_ender_Visual",
+            "sequence": [
+                "workbench.action.terminal.paste",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": { "text": "'  \u000A" }
+                },
+                "workbench.action.focusActiveEditorGroup",
+            ],
+            "interval": 5,
+        },
+
+
+        // grep finder - real command
+        {
+            "command": "multiCommand.fzfgrepff_Normal_start",
+            "sequence": [
+                "editor.action.addSelectionToNextFindMatch",
+                "multiCommand.GrepKeyword_starter",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        // "text": "\u000A\u000A\u000A\u000A\u000Agrep --color=always -rnIH -- '\\<"
+                        // "text": "\u000A\u000A\u000Agrep --color=always -rnIH '\\<"
+                        "text": "\u0003\u000A\u000Afor (( i = 0; i<25;i++ )); do ;echo ''; done ;\u000A\u000Afnf -n "
+                    }
+                },
+            ],
+            "interval": 5,
+        },
+        {
+            "command": "multiCommand.fzfallGrepKeyword_Normal",
+            "sequence": [
+                "multiCommand.fzfgrepff_Normal_start",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "-- '\\b"
+                    }
+                },
+                "multiCommand.FzfGrepKeyword_ender_Normal",
+            ],
+            "interval": 100,
+        },
+        {
+            "command": "multiCommand.allGrepKeyword_Normal",
+            "sequence": [
+                "editor.action.addSelectionToNextFindMatch",
+                "multiCommand.GrepKeyword_starter",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        // "text": "\u000A\u000A\u000A\u000A\u000Agrep --color=always -rnIH -- '\\<"
+                        // "text": "\u000A\u000A\u000Agrep --color=always -rnIH '\\<"
+                        "text": "\u000A\u000A\u000A\u000A\u000Aagrepn -- '\\b"
+                    }
+                },
+                "multiCommand.GrepKeyword_ender_Normal",
+            ],
+            "interval": 5,
+        },
+        {
+            "command": "multiCommand.cppGrepKeyword_Normal",
+            "sequence": [
+                "editor.action.addSelectionToNextFindMatch",
+                "multiCommand.GrepKeyword_starter",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        // "text": "\u000A\u000A\u000A\u000A\u000Afindexa c cpp y h -- '\\<"
+                        "text": "\u000A\u000A\u000A\u000A\u000Afindexa c cpp y h -- '\\b"
+                    }
+                },
+                "multiCommand.GrepKeyword_ender_Normal",
+            ],
+            "interval": 5,
+            "when": "resourceExtname =~ /\\.(c|cpp|h|y)/ || editorLangId =~ /^c$|^cpp$/",
+        },
+        {
+            "command": "multiCommand.fzfgrepff_Visual_start",
+            "sequence": [
+                "multiCommand.GrepKeyword_starter",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        // "text": "\u0003\u000A\u000Afor (( i = 0; i<25;i++ )); do ;echo ''; done ;\u000A\u000Afmf -- '"
+                        "text": "\u0003\u000A\u000Afor (( i = 0; i<25;i++ )); do ;echo ''; done ;\u000A\u000Afnf "
+                    }
+                },
+            ],
+            "interval": 5,
+        },
+        {
+            "command": "multiCommand.fzfallGrepKeyword_Visual",
+            "sequence": [
+                "multiCommand.fzfgrepff_Visual_start",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "-f "
+                    }
+                },
+                "multiCommand.FzfGrepKeyword_ender_Visual"
+            ],
+            "interval": 100
+        },
+        {
+            "command": "multiCommand.allGrepKeyword_Visual",
+            "sequence": [
+                "multiCommand.GrepKeyword_starter",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "\u000A\u000A\u000A\u000A\u000Aagrepm -- '"
+                    }
+                },
+                "multiCommand.GrepKeyword_ender_Visual"
+            ],
+            "interval": 5
+        },
+        {
+            "command": "multiCommand.cppGrepKeyword_Visual",
+            "sequence": [
+                "multiCommand.GrepKeyword_starter",
+                {
+                    "command": "workbench.action.terminal.sendSequence",
+                    "args": {
+                        "text": "\u000A\u000A\u000A\u000A\u000Afindexa c cpp y h -- '"
+                    }
+                },
+                "multiCommand.GrepKeyword_ender_Visual"
+            ],
+            "interval": 5
+        },
+        {
+            "command": "multiCommand.increaseViewSizes",
+            "sequence": [
+                // "workbench.action.closeAuxiliaryBar",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+            ],
+            "interval": 10
+        },
+        {
+            "command": "multiCommand.decreaseViewSizes",
+            "sequence": [
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+            ],
+            "interval": 10
+        },
+        {
+            "command": "multiCommand.increaseViewSizes_Bar",
+            "sequence": [
+                // "workbench.action.closeAuxiliaryBar",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+            ],
+            "interval": 10
+        },
+        {
+            "command": "multiCommand.decreaseViewSizes_Bar",
+            "sequence": [
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+            ],
+            "interval": 10
+        },
+        {
+            "command": "multiCommand.increaseViewSizes_Panel",
+            "sequence": [
+                // "workbench.action.closeAuxiliaryBar",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+                // "workbench.action.increaseViewSize",
+            ],
+            "interval": 10
+        },
+        {
+            "command": "multiCommand.decreaseViewSizes_Panel",
+            "sequence": [
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+                // "workbench.action.decreaseViewSize",
+            ],
+            "interval": 10
+        },
+    ],
+
+    "terminal.integrated.commandsToSkipShell": [
+        //AuxiliaryBar Terminal
+        "workbench.action.toggleAuxiliaryBar",
+        "workbench.action.files.openFile",
+        "multiCommand.DebugStart",
+        "multiCommand.DebugContinueCloseSidebar",
+        "multiCommand.DebugDisconnect",
+        "multiCommand.DebugStop",
+        "multiCommand.continue_custom",
+        "workbench.action.terminal.openDetectedLink",
+        "workbench.action.closePanel",
+        "extension.multiCommand.execute",
+
+        "workbench.action.debug.continue",
+        "workbench.action.debug.pause",
+        "workbench.action.debug.restart",
+        "workbench.action.debug.run",
+        "workbench.action.debug.start",
+        "workbench.action.debug.stepInto",
+        "workbench.action.debug.stepOut",
+        "workbench.action.debug.stepOver",
+        "workbench.action.debug.stop",
+    ],
+
+    // =============== vim ===============
+    // 렉이 심함
+    "vim.statusBarColorControl": false,
+    "contributes": {
+        "semanticTokenScopes": [
+            {
+                "language": "typescript",
+                "scopes": {
+                    "property.readonly": ["variable.other.constant.property.ts"]
+                }
+            }
+        ]
+    },
+
+    // "vim.leader": "<Space>",
+    "vim.leader": "s",
+    "vim.vimrc.enable": true,
+    "vim.sneak": false,
+    "vim.surround": true,
+    "vim.easymotion": true,
+    // "vim.easymotionKeys": "hklyuiopnm,qwertzxcvbasdgjf;",
+
+    // OS:mac
+    "vim.vimrc.path": "~/.dotfiles/vimrc/.vs.vimrc",
+    // OS:Windows
+    // "vim.vimrc.path": "c:\\jvscode\\data\\user-data\\User\\.vimrc",
+    // "vim.vimrc.path": "c:\\Users\\ghkd0\\AppData\\Roaming\\Code\\User\\.vimrc",
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.incsearch": true,
+    "vim.showcmd": true,
+    // vim.shell 내용은 %COMSPEC% 변수 내용을 따라감
+    "vim.shell": "C:\\Windows\\System32\\wsl.exe",
+    // vim search highlight color ( find highlight )
+    "vim.searchHighlightColor": "rgb(215,215,0)",
+    "vim.searchHighlightTextColor": "rgb(0,0,0)",
+    // "vim.statusBarColors.easymotionmode": "#007ACC",
+    // "vim.statusBarColors.easymotioninputmode": "#007ACC",
+    "vim.handleKeys": {
+        "<C-shift+k>": true,
+    },
+    "vim.startInInsertMode": false,
+
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            // grep finder
+            "before": ["!"],
+            "commands": [
+                "multiCommand.fzfallGrepKeyword_Visual",
+                // "multiCommand.allGrepKeyword_Visual",
+            ]
+        },
+        {
+            "before": ["f"],
+            "commands": [
+                "workbench.action.focusNextGroup"
+            ]
+        },
+        {
+            "before": ["F"],
+            "commands": [
+                "workbench.action.focusPreviousGroup"
+            ]
+        },
+        {
+            "before": [";", "q", "<CR>"],
+            "commands": [
+                "workbench.action.closeActiveEditor"
+            ]
+        },
+        // {
+        //     "before": ["@"],
+        //     "commands": [
+        //         "multiCommand.SelectionFindFocus"
+        //     ]
+        // },
+        // {
+        //     "before": ["^"],
+        //     "after": ["<ESC>", ":", "n", "o", "h", "<CR>"],
+        //     // "commands": [
+        //     //     "closeFindWidget",
+        //     // ]
+        // },
+        {
+            "before": ["="],
+            "commands": [
+                "editor.action.formatSelection"
+            ]
+
+        },
+        {
+            "before": ["C-n"],
+            "commands": [
+                "editor.action.quickFix"
+            ]
+        },
+        {
+            "before": ["z", "f"],
+            "commands": [
+                "editor.createFoldingRangeFromSelection",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "before": ["z", "i"],
+            "commands": [
+                "editor.createFoldingRangeFromSelection",
+                "extension.vim_escape"
+            ]
+        },
+        {
+            "before": ["U"],
+            "commands": [
+                "symbolNavigateBack.revealDeclaration"
+            ]
+        },
+        {
+            "before": ["="],
+            "commands": [
+                "editor.action.formatSelection"
+            ],
+        },
+        {
+            "before": ["J"],
+            "commands": [
+                "editor.action.moveLinesDownAction"
+            ],
+        },
+        {
+            "before": ["K"],
+            "commands": [
+                "editor.action.moveLinesUpAction"
+            ],
+        },
+    ],
+    "vim.insertModeKeyBindingsNonRecursive": [
+        {
+            "before": ["<C-a>"],
+            "commands": [
+                "cursorHome",
+            ]
+        },
+        {
+            "before": ["<C-d>"],
+            "commands": [
+                "cursorEnd",
+            ]
+        },
+        {
+            "before": ["C-n"],
+            "commands": [
+                "editor.action.quickFix"
+            ]
+        },
+    ],
+    // "vim.cursorStylePerMode.normal": "line-thin",
+    "vim.commandLineModeKeyBindingsNonRecursive": [
+        {
+            "before": ["e", " ", ".", "<CR>"],
+            "commands": [
+                "extension.vim_escape",
+                "workbench.action.files.openFile"
+                // "workbench.action.files.openFile"
+            ]
+        },
+        {
+            "before": ["e", " ", ".", "/", "<CR>"],
+            "commands": [
+                "extension.vim_escape",
+                "workbench.action.files.openFile"
+                // "workbench.action.files.openFile"
+            ]
+        },
+        // sftp save
+        {
+            "before": [ "e", "w", "<CR>"],
+            "commands": [
+                "workbench.action.files.save",
+                {
+                    "command": "workbench.action.tasks.runTask",
+                    "args": "sftp_tmp_task"
+                },
+                "extension.vim_escape",
+            ]
+        },
+        {
+            "before": ["C-e"],
+            "commands": [
+                "extension.vim_escape",
+                // "workbench.action.quickOpen"
+                "workbench.action.quickOpen"
+            ]
+        },
+        {
+            "before": ["C-g"],
+            "commands": [
+                "extension.vim_escape",
+                {
+                    "command": "workbench.action.terminal.newWithCwd",
+                    "args": {
+                        "cwd": "${fileDirname}"
+                    },
+                }
+            ]
+        },
+        // command mode에서 한영변환없이 바로 저장하기 위한 설정
+        {
+            "before": ["ㅈ"],
+            "after": ["w"]
+        },
+        {
+            "before": ["ㅂ"],
+            "after": ["q"]
+        },
+        {
+            "before": ["C-q"],
+            "commands": [
+                "workbench.action.closeActiveEditor"
+            ]
+        },
+        // go to first of Line
+        {
+            "before": ["C-a"],
+            "after": ["C-b"]
+        },
+        {
+            "before": ["C-d"],
+            "after": ["C-e"]
+        },
+        // go to backword cursor
+        {
+            "before": ["C-b"],
+            "after": ["<Left>"]
+        },
+        // go to Forward cursor
+        {
+
+            "before": ["C-f"],
+            "after": ["<Right>"]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["q"],
+            "after": ["<leader>", "<leader>", "/"]
+        },
+        {
+            "before": ["<leader>", "i"],
+            "commands": [
+                "todo.toggleDone"
+                // "todo.toggleCancelled"
+            ],
+            // "when": ""
+        },
+        {
+            "before": ["<leader>", "o"],
+            "commands": [
+                // "todo.toggleDone"
+                "todo.toggleCancelled"
+            ],
+            // "when": ""
+        },
+        {
+            "before": ["<leader>", "["],
+            "commands": [
+                "todo.toggleStart"
+            ],
+        },
+        {
+            "before": ["<leader>", "]"],
+            "commands": [
+                "todo.toggleDone"
+            ],
+        },
+        {
+            // grep finder
+            "before": ["!"],
+            "commands": [
+                "multiCommand.fzfallGrepKeyword_Normal",
+                // "multiCommand.allGrepKeyword_Normal",
+                // "multiCommand.cppGrepKeyword_Normal"
+            ],
+        },
+        // {
+        //     "before": ["s"],
+        //     // "after": ["e"],
+        //     "commands": [
+        //         "multiCommand.SelectionFindFocus"
+        //     ]
+        // },
+        {
+            "before": ["f"],
+            "commands": [
+                "workbench.action.focusNextGroup"
+            ]
+        },
+        {
+            "before": ["F"],
+            "commands": [
+                "workbench.action.focusPreviousGroup"
+            ]
+        },
+        {
+            "before": ["C-q"],
+            "after": ["C-w"]
+        },
+        // {
+        //     "before": ["@"],
+        //     "commands": [
+        //         "multiCommand.SelectionFindFocus"
+        //     ]
+        // },
+
+        // {
+        //     "before": ["s"],
+        //     "after": [","]
+        // },
+        // {
+        //     "before": ["s"],
+        //     "after": ["."],
+        // },
+        // {
+        //     "before": ["^"],
+        //     "after": ["<ESC>", ":", "n", "o", "h", "<CR>"],
+        //     // "commands": [
+        //     //     "closeFindWidget",
+        //     // ]
+        // },
+        {
+            "before": ["m"],
+            "commands": [
+                "multiCommand.FindNext",
+            ]
+        },
+        {
+            "before": ["M"],
+            "commands": [
+                "multiCommand.FindPrev"
+            ]
+        },
+        // {
+        //     "before": ["C-m"],
+        //     "commands": [
+        //         // "multiCommand.SelectionFindFocus"
+        //         "multiCommand.FindPrev"
+        //     ]
+        // },
+        {
+            "before": ["["],
+            "commands": [
+                "breadcrumbs.focusAndSelect",
+                "list.focusUp",
+                "list.select",
+                "workbench.action.focusActiveEditorGroup"
+                // "breadcrumbs.revealFocused",
+                // "breadcrumbs.selectEditor",
+            ],
+            // "after": ["z","z"],
+        },
+        {
+            "before": ["]"],
+            "commands": [
+                "breadcrumbs.focusAndSelect",
+                "list.focusDown",
+                "list.select",
+                "workbench.action.focusActiveEditorGroup"
+                // "breadcrumbs.revealFocused",
+                // "breadcrumbs.selectEditor",
+            ],
+            // "after": ["z","z"],
+        },
+        {
+            "before": ["\\"],
+            "commands": [
+                "breadcrumbs.focusAndSelect",
+                // "list.focusUp",
+                // "list.focusDown",
+                "list.select",
+                "workbench.action.focusActiveEditorGroup"
+            ],
+            // "after": ["z","z"],
+        },
+        {
+            "before": ["C-p"],
+            "after": ["p"]
+            // "commands":  [
+            //     "editor.action.clipboardPasteAction",
+            //     // "workbench.action.showCommands",
+            //     // "workbench.action.quickOpenView"
+            // ]
+        },
+        {
+            "before": ["C-i"],
+            "commands": [
+                "workbench.action.navigateForward"
+            ]
+        },
+        {
+            "before": ["C-n"],
+            "commands": [
+                "editor.action.quickFix"
+            ]
+        },
+        {
+            "before": ["C-o"],
+            "commands": [
+                "workbench.action.navigateBack",
+            ]
+        },
+        {
+            "before": ["d", "o"],
+            "commands": [
+                "editor.action.deleteLines",
+            ]
+        },
+        // {
+        //     "before": ["J"],
+        //     "after": ["g", "j"]
+        // },
+        // {
+        //     "before": ["K"],
+        //     "after": ["g", "k"]
+        // },
+        {
+            "before": ["J"],
+            "commands": [
+                "editor.action.moveLinesDownAction"
+            ],
+        },
+        {
+            "before": ["K"],
+            "commands": [
+                "editor.action.moveLinesUpAction"
+            ],
+        },
+        {
+            "before": ["U"],
+            "commands": [
+                "symbolNavigateBack.revealDeclaration"
+                // "manpages.openFromSelection"
+            ]
+        },
+        {
+            "before": ["H"],
+            "after": ["h"]
+            // "commands": [
+            //     "workbench.action.previousEditor"
+            // ]
+        },
+        {
+            "before": ["L"],
+            "after": ["l"]
+            // "commands": [
+            //     "workbench.action.nextEditor"
+            // ]
+        },
+        // {
+        //     "before": ["o"],
+        //     "after": ["a"],
+        //     "commands": [
+        //         "editor.action.insertLineAfter",
+        //     ],
+        // },
+        {
+            "before": ["<leader>", "m"],
+            "commands": [
+                "bookmarks.toggle"
+            ]
+        },
+        {
+            "before": ["<leader>", "n"],
+            "commands": [
+                "bookmarks.list"
+            ]
+        },
+        {
+            "before": ["<leader>", "b"],
+            "commands": [
+                "bookmarks.listFromAllFiles"
+            ]
+        },
+        {
+            "before": ["<leader>", "c"],
+            "commands": [
+                "bookmarks.clear"
+            ]
+        },
+        {
+            "before": ["<leader>", "x"],
+            "commands": [
+                "bookmarks.clearFromAllFiles"
+            ]
+        },
+        {
+            "before": ["<leader>", "h"],
+            "commands": [
+                "workbench.action.moveEditorToLeftGroup"
+            ]
+        },
+        {
+            "before": ["<leader>", "H"],
+            "commands" : [
+                "workbench.action.moveEditorToPreviousGroup"
+            ]
+        },
+        {
+            "before": ["<leader>", "j"],
+            "commands": [
+                // scrollLineDown
+                // "editor.debug.action.toggleBreakpo",
+                // "workbench.action.moveEditorToPreviousGroup"
+                "workbench.action.moveEditorToBelowGroup"
+            ]
+        },
+        {
+            "before": ["<leader>", "k"],
+            "commands": [
+                // "editor.debug.action.conditionalBreakpoint"
+                // "workbench.action.moveEditorToNextGroup"
+                "workbench.action.moveEditorToAboveGroup"
+            ]
+        },
+        {
+            "before": ["<leader>", "l"],
+            "commands": [
+                "workbench.action.moveEditorToRightGroup"
+            ]
+        },
+        {
+            "before": ["<leader>", "L"],
+            "commands" : [
+                "workbench.action.moveEditorToNextGroup"
+                // "workbench.action.moveActiveEditorGroupRight"
+            ]
+        },
+        {
+            "before": ["<leader>", ";"],
+            //"before": ["<leader>", "oem_1"],
+            "commands": [
+                "editor.action.showHover",
+            ]
+        },
+        {
+            "before": ["<leader>", "<leader>", "c"],
+            "commands": [
+                "logviewer.clearLogView",
+            ]
+        },
+        {
+            "before": ["<leader>", "<leader>", "h"],
+            "commands": [
+                "C_Cpp.SwitchHeaderSource"
+            ]
+        },
+
+        {
+            "before": ["g", "d"],
+            "commands": [
+                "symbolNavigateBack.revealDefinition"
+            ]
+        },
+        {
+            "before": ["g", "n"],
+            "commands": [
+                "symbolNavigateBack.navigateBack"
+            ]
+        },
+        {
+            "before": ["g", "f"],
+            "commands": [
+                "symbolNavigateBack.navigateBack"
+            ]
+        },
+        {
+            "before": ["g", "m"],
+            "commands": [
+                "symbolNavigateBack.navigateForward"
+            ]
+        },
+        {
+            "before": ["g", "z"],
+            "commands": [
+                "symbolNavigateBack.navigateForward"
+            ]
+        },
+        {
+            // 정의로 이동
+            "before": ["g", "u"],
+            "commands": [
+                "symbolNavigateBack.revealDefinition"
+            ]
+        },
+        {
+            // 선언으로 이동
+            "before": ["g", "i"],
+            "commands": [
+                "symbolNavigateBack.revealDeclaration",
+            ]
+        },
+        {
+            // 타입으로 이동
+            "before": ["g", "o"],
+            "commands": [
+                "multiCommand.peekTypeDef",
+            ]
+        },
+        {
+            // 측면에서 정의 열기 후 이동
+            "before": ["g", "p"],
+            "commands": [
+                {
+                    "command": "symbolNavigateBack.executeCommand",
+                    "args": "editor.action.revealDefinitionAside"
+                }
+            ]
+        },
+        {
+            // 측면에서 정의 열기 후 이동
+            "before": ["g", "y"],
+            "commands": [
+                {
+                    "command": "symbolNavigateBack.executeCommand",
+                    "args": "editor.action.revealDefinitionAside"
+                }
+            ]
+        },
+        {
+            "before": ["g", "t"],
+            "commands": [
+                "editor.action.goToReferences"
+            ]
+        },
+        {
+            "before": ["g", "v"],
+            "commands": [
+                "references-view.findReferences",
+                "workbench.action.focusActiveEditorGroup",
+            ]
+        },
+        {
+            // 정의로 이동
+            "before": ["g", "r"],
+            "commands": [
+                "symbolNavigateBack.revealDefinition"
+            ]
+        },
+        {
+            // 선언으로 이동
+            "before": ["g", "e"],
+            "commands": [
+                "symbolNavigateBack.revealDeclaration",
+            ]
+        },
+        {
+            // 타입으로 이동
+            "before": ["g", "w"],
+            "commands": [
+                "multiCommand.peekTypeDef",
+            ]
+        },
+        {
+            // 측면에서 정의 열기 후 이동
+            "before": ["g", "q"],
+            "commands": [
+                {
+                    "command": "symbolNavigateBack.executeCommand",
+                    "args": "editor.action.revealDefinitionAside"
+                }
+            ]
+
+        },
+        {
+            // 측면에서 정의 열기 후 이동
+            "before": ["<leader>", "<tab>"],
+            "commands": [
+                "workbench.action.toggleEditorWidths"
+            ],
+            "when": "editorTextFocus"
+
+        },
+        {
+            // 측면에서 정의 열기 후 이동
+            "before": ["<leader>", "]"],
+            "commands": [
+                "workbench.action.toggleEditorWidths"
+            ],
+            "when": "editorTextFocus"
+        },
+        {
+            "before": ["="],
+            "commands": [
+                "editor.action.formatDocument"
+            ],
+        },
+        {
+            "before": ["d", "<leader>"],
+            "after": ["d", "s"]
+        },
+    ],
+    "vim.normalModeKeyBindings": [
+        // {
+        //     "before": [";"],
+        //     "commands": [
+        //         "vim.showQuickpickCmdLine"
+        //     ]
+        // },
+        // normal mode에서 insert 모드로 들어가기 위한 설정
+        {
+            "before": ["ㅑ"],
+            "after": ["i"]
+        },
+        {
+            "before": ["ㅐ"],
+            "after": ["o"]
+        },
+        {
+            "before": ["ㅁ"],
+            "after": ["a"]
+        },
+        // hjkl 방향키 설정. 다만 방향키는 조금 늦게 먹음.
+        {
+            "before": ["ㅗ"],
+            "after": ["h"]
+        },
+        {
+            "before": ["ㅓ"],
+            "after": ["j"]
+        },
+        {
+            "before": ["ㅏ"],
+            "after": ["k"]
+        },
+        {
+            "before": ["ㅣ"],
+            "after": ["l"]
+        },
+        {
+            "before": ["ㅌ"],
+            "after": ["x"]
+        },
+    ],
+
+    "vscode-neovim.neovimExecutablePaths.win32": "C:\\neovim\\bin\\nvim.exe",
+
+
+    // =============== ext - indentRainbow ===============
+    "indentRainbow.indicatorStyle": "light",
+    "indentRainbow.lightIndicatorStyleLineWidth": 1,
+    "indentRainbow.colors": [
+        "rgba(255,255,64,0.3)",
+        "rgba(127,255,127,0.3)",
+        "rgba(255,127,255,0.3)",
+        "rgba(79,236,236,0.3)"
+    ],
+    "indentRainbow.excludedLanguages": [
+        "plaintext",
+        "diff"
+    ],
+
+
+
+
+    // =============== ext - Gitlens ===============
+    "gitlens.mode.statusBar.enabled": true,
+    "gitlens.advanced.externalDiffTool": "bcompare",
+    "gitlens.autolinks": [
+        { "prefix": "#", "url": "http://10.0.0.135/AllView/show_detail/<num>" },
+        { "prefix": "Mantis ", "url": "https://mantis.monitorapp.com/view.php?id=<num>" },
+        { "prefix": "Mantis", "url": "https://mantis.monitorapp.com/view.php?id=<num>" }
+    ],
+    "gitlens.graph.dateFormat": null,
+    "gitlens.graph.dimMergeCommits": true,
+    "gitlens.views.pageItemLimit": 500,
+    "gitlens.graph.layout": "editor",
+    "gitlens.graph.minimap.enabled": false,
+    // "gitlens.ai.experimental.provider": "anthropic",
+    // "gitlens.ai.experimental.anthropic.model": "claude-3-sonnet-20240229",
+    // "gitlens.ai.experimental.generateCommitMessage.enabled": true,
+    // "gitlens.experimental.generateCommitMessagePrompt": "Now, please generate a commit message in Korean. Ensure that it includes a precise and informative subject line that succinctly summarizes the crux of the changes in under 60 characters. If necessary, follow with an explanatory body providing insight into the nature of the changes, the reasoning behind them, and any significant consequences or considerations arising from them. Conclude with any relevant issue references at the end of the message.",
+
+
+    "gitlens.views.commitDetails.pullRequests.enabled": true,
+    "gitlens.launchpad.indicator.enabled": false,
+    "gitlens.launchpad.indicator.polling.enabled": false,
+    // "gitlens.views.commitDetails.files.threshold": 5,
+    // "gitlens.views.commitDetails.autolinks.enabled": false,
+    "gitlens.remotes": [
+        { "domain": "github.com", "type": "GitHub" },
+        { "domain": "gitlab.iasdf.com", "type": "GitLab" }
+    ],
+    "gitlens.views.openChangesInMultiDiffEditor": false,
+    "gitlens.views.launchpad.enabled": true,
+    "gitlens.views.launchpad.files.layout": "tree",
+    "gitlens.views.scm.grouped.views": {
+        "commits": false,
+        "branches": true,
+        "remotes": true,
+        "stashes": false,
+        "tags": true,
+        "worktrees": true,
+        "contributors": true,
+        "repositories": false,
+        "searchAndCompare": false,
+        "launchpad": false
+    },
+    "gitlens.views.scm.grouped.default": "stashes",
+    "gitlens.debug": true,
+    "gitlens.outputLevel": "warn",
+
+
+
+
+
+
+
+    // =============== ext - CPP-testMate ===============
+    "testMate.cpp.log.userId": "798bcbd227c6d99daf7d8d9e037fcf36de278c19",
+
+    // =============== ext - discord presence ===============
+    "discord.enabled": true,
+    //discord settings
+    // hide filename
+    "discord.removeDetails": false,
+    // hide workspace
+    "discord.removeLowerDetails": true,
+    // hide filename icon
+    "discord.removeRemoteRepository": true,
+    // hide timestamp
+    "discord.removeTimestamp": false,
+
+    "discord.detailsEditing": "func func한 코딩 중",
+    "discord.detailsDebugging": "벌레 잡는 중",
+    "discord.detailsIdling": "In Terminal",
+    "discord.largeImageIdling": "In Terminal",
+    "discord.lowerDetailsIdling": "In Terminal",
+
+
+    // =============== ext - Python ===============
+
+
+    // =============== ext - C / C++ ===============
+    "autoDocstring.docstringFormat": "google",
+    "C_Cpp.configurationWarnings": "enabled",
+    "C_Cpp.experimentalFeatures": "enabled",
+    "C_Cpp.intelliSenseEngineFallback": "disabled",
+    // "C_Cpp.errorSquiggles": "Disabled",
+    "C_Cpp.intelliSenseCachePath": "${workspaceFolder}/.vscode/cpptools",
+    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "right",
+    // "C_Cpp.loggingLevel": "Debug",
+    "C_Cpp.default.cppStandard": "c++14",
+    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.loggingLevel": "Warning",
+    "C_Cpp.vcFormat.newLine.beforeElse": false,
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "newLine",
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "sameLine",
+    "C_Cpp.suggestSnippets": false,
+    "cmake.configureOnOpen": true,
+
+
+    "Notes.notesExtensions": "md,markdown,txt",
+    "Notes.notesDefaultNoteExtension": "md",
+
+
+
+    // =============== Genie ===============
+    // https://platform.openai.com/account/api-keys
+    // https://platform.openai.com/docs/models/overview
+    // https://platform.openai.com/docs/models/models
+    // "genieai.personalizedName": "Arona",    // (Blue Archive AI Arona)
+    // "genieai.openai.apiBaseUrl": "https://api.anthropic.com/v1",
+    // "genieai.openai.apiBaseUrl": "https://api.anthropic.com/v1/messages",
+    // "genieai.openai.model": "claude-3-haiku-20240307",
+    // "genieai.openai.apiBaseUrl": "https://openrouter.ai/api/v1",
+    // "genieai.openai.model": "openai/gpt-3.5-turbo",
+    // "genieai.openai.model": "anthropic/claude-3-haiku",
+    "continue.enableTabAutocomplete": false,
+    "continue.remoteConfigSyncPeriod": 0,
+    "continue.showInlineTip": false,
+
+
+    // =============== ext - Copilot ===============
+    "chat.editor.fontWeight": "default",
+    "github.copilot.editor.enableAutoCompletions": true,
+    "github.copilot.chat.localeOverride": "ko",
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": true,
+        "markdown": true,
+        "scminput": false,
+        "yaml": true
+    },
+    "github.copilot.advanced": {
+        "inlineSuggestCount": 3,
+        "top_p": 1,
+        // "useLanguageServer": true,
+    },
+    "github.copilot.chat.inlineChatHint.enabled": true,
+    "github.copilot.chat.inlineChatCompletionTrigger.enabled": true,
+    "github.copilot.chat.temporalContext.enabled": true,
+
+    "github.copilot.chat.setupTests.enabled": true,
+    "github.copilot.chat.startDebugging.enabled": true,
+    "chat.commandCenter.enabled": true,
+    "github.copilot.chat.edits.enabled": true,
+    "github.copilot.chat.reviewSelection.enabled": true,
+    "github.copilot.renameSuggestions.triggerAutomatically": true,
+    "github.copilot.chat.fixTestFailure.enabled": true,
+    "github.copilot.chat.terminalChatLocation": "quickChat",
+    "github.copilot.chat.search.semanticTextResults": true,
+    "github.copilot.chat.generateTests.codeLens": true,
+    "github.copilot.editor.enableCodeActions": true,
+
+
+    // =============== ext - Rest Client ===============
+    "rest-client.defaultHeaders": {
+        "accept": "*/*",
+        // "accept-encoding": "gzip, deflate, br",
+        "user-agent": "Mozilla/5.0",
+    },
+    "rest-client.timeoutinmilliseconds": 0,
+    "rest-client.previewResponsePanelTakeFocus": false,
+    "rest-client.suppressResponseBodyContentTypeValidationWarning": false,
+    "rest-client.requestNameAsResponseTabTitle": true,
+    "rest-client.previewResponseInUntitledDocument": true, // requestNameAsResponseTabTitle 옵션과 같이 동작하지 않음.
+    "rest-client.showResponseInDifferentTab": false,
+    // "http.proxyStrictSSL": false,
+
+    // =============== ext - Power Mode ===============
+    "powermode.enabled": true,
+    "powermode.shake.enabled": false,
+    "powermode.shake.intensity": 1.5,
+    "powermode.combo.location": "off",
+    // "powermode.combo.timeout": 60,
+
+    "powermode.explosions.enabled": true,
+    "powermode.explosions.frequency": 1,
+    "powermode.explosions.backgroundMode": "mask",
+
+    // "powermode.presets": "particles",
+    // "powermode.explosions.maxExplosions": 10,
+    // "powermode.explosions.size": 10,
+
+    "powermode.presets": "exploding-rift",
+    "powermode.explosions.size": 7,
+    "powermode.explosions.maxExplosions": 5,
+    "powermode.explosions.duration": 150,
+    // "powermode.explosions.size": 6,
+    // "powermode.explosions.duration": 100,
+
+    // "powermode.presets": "fireworks",
+    // "powermode.explosions.maxExplosions": 1,
+    // "powermode.explosions.size": 7,
+    // "powermode.explosions.offset":0.2,
+    // "powermode.explosions.duration": 500,
+
+    // "powermode.explosions.duration": 1000,
+
+
+    // =============== ext- Todo Tree ===============
+    "todo-tree.highlights.defaultHighlight": {
+        "type": "text",
+        "foreground": "#BBBBBB",
+        "background": "#BB0000",
+        "iconColour": "#FF0000"
+    },
+    "todo-tree.general.tags": [
+        "BUG",
+        "FIXME",
+        "FIXED",
+        "TODO",
+        "WARNING",
+    ],
+
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "check",
+            // "type": "line",
+            "type": "text",
+            "foreground": "#FF0000",
+            "background": "#0D1117",
+            // "opacity": 50,
+            "iconColour": "#00FFFF"
+        },
+        "WARNING": {
+            "icon": "check",
+            // "type": "line",
+            "type": "text",
+            "foreground": "#EE8800",
+            "background": "#0D1117",
+            // "opacity": 50,
+            "iconColour": "#00FFFF"
+        },
+    },
+
+    "todo-tree.tree.scanMode": "open files",
+
+
+    // =============== ext - ssh-fs ===============
+    "sshfs.configs": [
+        {
+            "name": "local_dev",
+            "host": "127.0.0.1",
+            "port": 9232,
+            "username": "user",
+            "password": "userpass",
+            "root": "/home/user",
+            "passphrase": true
+        },
+    ],
+
+
+    // =============== ext - trigger task on save ===============
+    // "triggerTaskOnSave.on": true,
+    // "triggerTaskOnSave.tasks": {
+    //     "sftp_tmp_task": [
+    //         "**/*.sh"
+    //     ]
+    // },
+
+
+    // =============== ext - autolog ===============
+    "autolog.languages": {
+        "javascript": {
+            "wrapper": "console.log('$eSEL : ', $SEL)",
+            "match": "^(.*\\b)?console\\.log\\(([^)]*)\\);?.*$",
+            "comment": "//"
+        },
+        "typescript": {
+            "wrapper": "console.log('$eSEL : ', $SEL)",
+            "match": "^(.*\\b)?console\\.log\\(([^)]*)\\);?.*$",
+            "comment": "//"
+        },
+        "elm": {
+            "wrapper": "_ = Debug.log \"$eSEL\" <| $SEL",
+            "match": "^.*=\\s*(\n\\s*)?(\\-*\\s*)*Debug\\.log.*$",
+            "comment": "--",
+            "prefix": "AL -> "
+        },
+        "python": {
+            "wrapper": "print('$eSEL : ', $SEL)",
+            "match": "^(.*\\b)?print\\(([^)]*)\\).*$",
+            "comment": "#"
+        },
+        "c": {
+            "wrapper": "printf(\"$eSEL : %s\\n\", $SEL);",
+            "match": "^(.*\\b)?printf\\(([^)]*)\\);?.*$",
+            "comment": "//"
+        },
+        "cpp": {
+            "wrapper": "printf(\"$eSEL : %s\\n\", $SEL);",
+            "match": "^(.*\\b)?printf\\(([^)]*)\\);?.*$",
+            "comment": "//"
+        },
+        "default": {
+            "wrapper": "print($SEL);",
+            "match": "^(.*\\b)?print\\(([^)]*)\\).*$",
+            "comment": "//"
+        }
+    },
+    "autolog.prefix": "DBG - ",
+
+
+    // =============== ext - logViewer ===============
+    "logViewer.showStatusBarItemOnChange": true,
+	"logViewer.chunkSizeKb": 1024,
+	"logViewer.options": {
+		"fileCheckInterval": 250,
+		"fileListInterval": 2000
+	},
+    "logViewer.followTailMode": "manual",
+    "logViewer.watch": [
+        {
+            "title": "GW Log",
+            "pattern": "/debug/*.log"
+        },
+    ],
+
+
+    // =============== ext - Meld Diff ===============
+    // "meld-diff.diffCommand": "C:\\Program Files\\Beyond Compare 4\\BComp.exe",
+    // "meld-diff.diffCommand": "/Applications/Beyond Compare.app/Contents/MacOS/bComp",
+    "meld-diff.diffCommand": "$HOME/.bcomp.sh",
+	"meld-diff.diffArgumentsTwoWay": "\"$1\" \"$2\"",
+	"meld-diff.diffArgumentsThreeWay": "\"$1\" \"$2\" \"$3\"",
+    // "meld-diff.diffCommand": "~/.bcomp.sh",
+
+
+    // =============== ext - Bookmarks ===============
+    "bookmarks.saveBookmarksInProject": true,
+    "bookmarks.navigateThroughAllFiles": true,
+    "bookmarks.sideBar.expanded": true,
+    "workbench.sideBar.location": "left",
+
+
+    // =============== ext - trailing spaces ===============
+    // 저장 시 공백 제거
+    "trailing-spaces.trimOnSave": true,
+
+
+    // =============== ext - paste image ===============
+    "pasteImage.defaultName": "[img]_Y-MM-DD-HH-mm-ss",
+    // paste image from local pc
+    "pasteImage.path": "mdresources/dir_${fileBasename}_img",
+    // paste image
+    // "pasteImage.path": "mdresources/dir_${currentFileName}_img",
+    "pasteImage.insertPattern": "![image](${imageFilePath}${imageSyntaxSuffix}",
+    "pasteImage.encodePath": "urlEncodeSpace",
+    // // "pasteImage.forceUnixStyleSeparator": true,
+    // // "pasteImage.prefix": "/",
+    // "pasteImage.showFilePathConfirmInputBox": false,
+
+
+    // =============== inlayhint ===============
+    "editor.inlayHints.enabled": "on",
+    // "editor.inlayHints.fontSize": 13, // zoomlevel : 0
+    "editor.inlayHints.fontSize": 11, // zoomlevel : 1
+    "editor.inlayHints.padding": true,
+    "editor.inlayHints.maximumLength": 0,
+    "python.analysis.inlayHints.callArgumentNames": "partial",
+    "python.analysis.inlayHints.variableTypes": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.inlayHints.pytestParameters": true,
+    "C_Cpp.inlayHints.autoDeclarationTypes.showOnLeft": true,
+    "C_Cpp.inlayHints.autoDeclarationTypes.enabled": true,
+    "C_Cpp.inlayHints.parameterNames.enabled": true,
+    // "C_Cpp.inlayHints.parameterNames.hideLeadingUnderscores": true,
+    // "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": true,
+    "C_Cpp.inlayHints.referenceOperator.enabled": true,
+    "C_Cpp.inlayHints.referenceOperator.showSpace": true,
+    "C_Cpp.inlayHints.parameterNames.hideLeadingUnderscores": true,
+    "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": false,
+    "javascript.inlayHints.enumMemberValues.enabled": true,
+    "javascript.inlayHints.functionLikeReturnTypes.enabled": true,
+    "javascript.inlayHints.parameterTypes.enabled": true,
+    "javascript.inlayHints.variableTypes.enabled": true,
+    "javascript.inlayHints.propertyDeclarationTypes.enabled": true,
+    "typescript.inlayHints.enumMemberValues.enabled": true,
+    "typescript.inlayHints.parameterTypes.enabled": true,
+    "typescript.inlayHints.variableTypes.enabled": true,
+    "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+    "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+    "typescript.inlayHints.parameterNames.enabled": "all",
+    "javascript.inlayHints.parameterNames.enabled": "all",
+    "java.inlayHints.parameterNames.enabled": "none",
+    "java.inlayHints.parameterNames.exclusions": [
+        "this"
+    ],
+    "go.inlayHints.assignVariableTypes": true,
+    "go.inlayHints.compositeLiteralFields": true,
+    "go.inlayHints.compositeLiteralTypes": true,
+    "go.inlayHints.constantValues": true,
+    "go.inlayHints.functionTypeParameters": true,
+    "go.inlayHints.parameterNames": true,
+    "go.inlayHints.rangeVariableTypes": true,
+
+
+
+    // =============== setting sync ===============
+    "sync.gist": "",
+    "sync.autoDownload": false,
+    "sync.autoUpload": false,
+    "sync.forceDownload": false,
+    "sync.quietSync": true,
+    "sync.syncExtensions": true,
+    "sync.removeExtensions": true,
+    "sync.forceUpload": true,
+    "settingsSync.ignoredSettings": [],
+    "settingsSync.ignoredExtensions": [],
+    // OS:mac
+    "syncSettings.additionalFiles": [
+        "~globalStorage/../tasks.json",
+    ],
+    "syncSettings.keybindingsPerPlatform": true,
+
+
+    // =============== ext- codestream ===============
+    "codestream.disableStrictSSL": true,
+    // "codestream.serverUrl": "https://codestream-us1.service.newrelic.com",
+    "codestream.serverUrl": "https://codestream-us1.service.newrelic.com",
+    "codestream.traceLevel": "errors",
+    "codestream.proxySupport": "on",
+    "codestream.showLineLevelBlame": false,
+
+
+    // =============== ext - background ===============
+    "background.enabled": true,
+    // "background.fullscreen": {
+    //     "images": [
+    //         "file://~/.dotfiles/images/Ib_vscode_bg_1.png"
+    //     ],
+    //     "opacity": 0.31,
+    //     "size": "10%",
+    //     "position": "bottom right; positon: relative",
+    //     "interval": 0,
+    //     "random": false
+    // },
+
+    // ===== deprecated =====
+    // "background.customImages": [
+    //     "file://~/.dotfiles/images/Ib_vscode_bg_1.png",
+    //     // "file://~/.dotfiles/images/Ib_vscode_bg_2.png",
+    // ],
+    // "background.style": {
+    //         // 0.849:1
+    //         // "background-size": "230px 300px",
+    //         "background-size": "213px 275px", //0.76
+    //         // "background-size": "173px 225px",
+    //         "opacity": 0.8,
+    //         "size": "cover",
+    //         "margin-left": "30px",
+    //         "position": "absolute",
+    //         "background-position": "right bottom",
+    //         "interval": 0,
+    // },
+    // ======================
+    "background.editor": {
+        "useFront": true,
+        "style": {
+            // 0.849:1
+            // "background-size": "264px 350px",
+            // "background-size": "254px 300px",
+            // "background-size": "235px 300px",
+            // "background-size": "212px 250px",
+            // "background-size": "198px 250px",
+            // "background-size": "210px 275px",
+            // "background-size": "220px 275px",
+            // "background-size": "230px 300px",
+            "background-size": "213px 275px", //0.76  // Zoom Level 0
+            // "background-size": "191px 225px",
+            // "background-size": "173px 225px",  // Zoom Level 1
+            // "background-size": "170px 200px",
+            // "background-size": "148px 200px",
+            // "background-size": "138px 187px",
+            // "opacity": 0.91, // 0.85 ~ 0.95 recommended
+            "opacity": 0.80,
+            "size": "cover", // also css, `cover` to self-adaption (recommended)，or `contain`、`200px 200px`
+            // "position": "center", // alias to `background-position`, default `center`
+            "margin-left": "30px",
+            "position": "absolute", // alias to `background-position`, default `center`
+            "background-position": "right bottom",
+            "interval": 0,
+        },
+        // "style": {
+        //     "background-position": "100% 100%",
+        //     "background-size": "auto",
+        //     "opacity": 0.6
+        // },
+        // "styles": [
+        //     {},
+        //     {},
+        //     {}
+        // ],
+        "images": [
+            "file://~/.dotfiles/images/Ib_vscode_bg_1.png",
+            // "file://~/.dotfiles/images/Ib_vscode_bg_2.png",
+        ],
+        "interval": 0,
+        "random": false
+    },
+    "background.panel": {
+        "images": [
+
+        ]
+    },
+    // "background.panel": {
+    //     "images": [
+    //         "file://~/.dotfiles/images/Ib_vscode_bg_1.png",
+    //     ],
+    //     "opacity": 0.8,
+    //     "size": "cover",
+    //     "position": "absolute",
+    //     "margin-left": "30px",
+    //     "background-position": "right bottom",
+    //     "interval": 0,
+    //     "random": false
+    // },
+
+    // 한별이 full background
+    // "background.interval": 60,
+    // "background.customImages": [
+    //     "file://~/.dotfiles/images/codingon.png",
+    //     "file://~/.dotfiles/images/letscoding.png",
+    //     "file://~/.dotfiles/images/helloworld.png",
+    //     "file://~/.dotfiles/images/numpy.png",
+    //     "file://~/.dotfiles/images/pointer.png",
+    //     "file://~/.dotfiles/images/null.png",
+    //     "file://~/.dotfiles/images/char.png",
+    //     "file://~/.dotfiles/images/funcfunc.png",
+    //     "file://~/.dotfiles/images/javame.png",
+    //     "file://~/.dotfiles/images/whydo.png",
+    //     "file://~/.dotfiles/images/whydont.png",
+    // ],
+
+    // =============== java ===============
+    "boot-java.rewrite.reconcile": true,
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.referencesCodeLens.enabled":true,
+    // "java.jdt.ls.vmargs": "-Xmx2048m"
+
+    // =============== inline parameter ===============
+    "inline-parameters.enabled": true,
+    "inline-parameters.java.enabled": true,
+    "inline-parameters.java.showVariadicNumbers": true,
+    "inline-parameters.java.hintBeforeParameter": true,
+    "inline-parameters.java.suppressWhenArgumentMatchesName": true,
+    "inline-parameters.python.enabled": false,
+
+    "editor.parameterHints.enabled": true,
+    "editor.parameterHints.cycle": true,
+    "editor.suggest.showTypeParameters": true,
+
+    // =============== VSCode Sequence Diagrams ===============
+    "sequencediagrams.diagram.style": "simple",
+
+
+
+    // =============== vsnote ===============
+    "vsnotes.treeviewHideFiles": false,
+    "vsnotes.additionalNoteTitles": [],
+    "vsnotes.noteTitleConvertSpaces": "_",
+    "vsnotes.ignorePatterns": [
+        "\\.obsidian/",
+        "\\.obsidian\\.vimrc",
+        "\\.git/",
+        "mdresources/",
+        "mantis/",
+        "\\.DS_Store$",
+        ".*\\.zip$",
+        ".*\\.7z$",
+        ".*\\.tar$",
+        ".*\\.tar\\.gz$",
+        ".*\\.tgz$",
+        ".*\\.mp3$",
+        ".*\\.mp4$",
+        ".*\\.avi$",
+        ".*\\.gif$",
+        ".*\\.png$",
+        ".*\\.jpg$",
+        ".*\\.jpeg$",
+    ],
+
+    // "vsnotes.defaultNoteTitle": "{dt}_{title}.{ext}",
+    "vsnotes.defaultNoteTitle": "{title}.{ext}",
+    "vsnotes.defaultNoteName": "note",
+    // "vsnotes.defaultNoteName": "todolist.todo",
+    "vsnotes.listRecentLimit": 1000,
+    // "vsnotes.defaultNoteTitle": "{title}",
+    // "vsnotes.defaultNoteName": "note.md",
+    // "vsnotes.defaultNoteTitle": "note.md",
+
+
+
+    // =============== todo ===============
+    "todo.file.name": "todolist.todo", // Todo file name. Other supported names are: `*.todo`, `*.todos`, `*.task`, `*.tasks`, `*.taskpaper` and `todolist.txt`
+    "todo.file.defaultContent": "\nTodo:\n  ☐ Item\n", // New todo files default content
+    "todo.file.include": ["**/TODO" ], // Globs to use for including files
+    "todo.file.exclude": ["**/.!(todo|todos|task|tasks)/**" ], // Globs to use for excluding files
+    "todo.file.view.expanded": true, // Start the tree in an expanded state
+    "todo.embedded.include": [ ],
+    "todo.indentation": "  ", // String used for indentation
+    "todo.symbols.box": "☐", // Box symbol
+    "todo.symbols.done": "✔", // Done symbol
+    "todo.symbols.cancelled": "✘", // Cancelled symbol
+
+
+
+
+    // =============== project dashboard ===============
+    "dashboard.openOnStartup": "empty workspace",
+    "dashboard.recentColors": [ "#000000", "#000000" ],
+    "dashboard.recentColorsToRemember": 1,
+    "dashboard.customProjectCardBackground": "#282828",
+    // "dashboard.searchIsActiveByDefault": false,
+
+
+    // =============== resource monitor ===============
+    "resmon.show.cpufreq": false,
+    "resmon.show.cpuusage": true,
+    "resmon.show.cputemp": true,
+    "resmon.show.mem": true,
+    "resmon.show.disk": false,
+    "resmon.show.battery": false,
+
+
+
+    // =============== highlight ===============
+    "highlight.regexes": {
+        "(((//)|(\\*)|(#)|(--))\\s?TODO\\s?:.*)": {
+            "decorations": [
+                {
+                    "color": "#FF1111",
+                    // "backgroundColor": "#000000",
+                    "fontStyle": ""
+                },
+            ]
+        },
+        "(((//)|(\\*)|(#)|(--))\\s?FIXME\\s?:.*)": {
+            "decorations": [
+                {
+                    // "color": "#CDCDCD",
+                    // "backgroundColor": "#BB0000",
+                    "color": "#ff7733",
+                    // "backgroundColor": "#000000",
+                    "fontStyle": ""
+                },
+            ]
+        },
+        "(((//)|(\\*)|(#)|(--))\\s?FIXED\\s?:.*)": {
+            "decorations": [
+                {
+                    "color": "#8888FF",
+                    // "backgroundColor": "#000000",
+                    "fontStyle": ""
+                },
+            ]
+        },
+        "(((//)|(\\*)|(#)|(--))\\s?BUG\\s?:.*)": {
+            "decorations": [
+                {
+                    "color": "#EE8800",
+                    // "backgroundColor": "#000000",
+                    "fontStyle": ""
+                },
+            ]
+        },
+        "(((//)|(\\*)|(#)|(--))\\s?WARNING\\s?:.*)": {
+            "decorations": [
+                {
+                    "color": "#EE8800",
+                    // "backgroundColor": "#0D1117",
+                    "fontStyle": ""
+                },
+            ]
+        },
+
+        "([a-zA-Z0-9_]*_mockptr)\\(" :{
+            "filterLanguageRegex": "c",
+            "decorations": [
+                {
+                    "color": "#EE8800",
+                    // "backgroundColor": "#0D1117",
+                    "fontStyle": ""
+                },
+            ]
+        },
+    },
+
+
+
+
+    // =============== restricted extension (non trusted mode) ===============
+    "extensions.supportUntrustedWorkspaces": {
+        "ryuta46.multi-command" : { "supported": true },
+        "monokai.theme-monokai-pro-vscode": { "supported": true },
+
+        "github.copilot": { "supported": true, },
+        "github.copilot-chat": { "supported": true, },
+
+        "continue.continue": { "supported": true, },
+        "patricklee.vsnotes": { "supported": true, },
+        "mafut.vsnotes-todo": { "supported": true, },
+        "zokugun.sync-settings": { "supported": true, },
+        "icrawl.discord-vscode": { "supported": true, },
+
+        "danielroedl.meld-diff": { "supported": true, },
+        "shalimski.swapdiff": { "supported": true, },
+        "jinsihou.diff-tool": { "supported": true, },
+        "semanticdiff.semanticdiff": { "supported": true, },
+        "orangex4.regexr-vscode": { "supported": true, },
+        "mhutchie.git-graph": { "supported": true, },
+        "eamodio.gitlens": { "supported": true },
+        "dumpvn.search-github": { "supported": true, },
+        "mutantdino.resourcemonitor": { "supported": true, },
+        "hoovercj.vscode-power-mode": { "supported": true, },
+        "tgreen7.open-file-command": { "supported": true, },
+        "shd101wyy.markdown-preview-enhanced": { "supported": true, },
+        "yzhang.markdown-all-in-one": { "supported": true, },
+        "ritwickdey.liveserver": { "supported": true, },
+        "mushan.vscode-paste-image": { "supported": true, },
+        "sakamoto66.vscode-paste-image": { "supported": true, },
+        "shardulm94.trailing-spaces": { "supported": true, },
+        "oderwat.indent-rainbow": { "supported": true, },
+        "visualstudioexptteam.intellicode-api-usage-examples": { "supported": true, },
+        "usernamehw.errorlens": { "supported": true, },
+        "shalldie.background": { "supported": true, },
+        "foxundermoon.shell-format": { "supported": true, },
+        "jebbs.plantuml": { "supported": true, },
+        "aleksandardev.vscode-sequence-diagrams": { "supported": true, },
+        "natizyskunk.sftp": { "supported": true, },
+        "meronz.manpages": { "supported": true, },
+        "liamhammett.inline-parameters": { "supported": true, },
+        "robertostermann.inline-parameters-extended": { "supported": true, },
+        "vscode.media-preview": { "supported": true, },
+        "naumovs.color-highlight": { "supported": true, },
+        "fabiospampinato.vscode-highlight": { "supported": true, },
+        "kisstkondoros.vscode-gutter-preview": { "supported": true, },
+        "fabiospampinato.vscode-todo-plus": { "supported": true, },
+        "zokugun.cron-tasks": { "supported": true, },
+        "gruntfuggly.triggertaskonsave": { "supported": true, },
+    },
+
+
+
+
+    // =============== etc ===============
+    // "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "security.workspace.trust.untrustedFiles": "open",
+	// "manpages.apropos.args": [ "2", "3", "5" ],
+	// "manpages.binary.args": [ "--all" ],
+	// "manpages.binary.args": [ "2" ],
+	"manpages.binary.path": "/usr/bin/man",
+    "task.quickOpen.skip": true,
+    "currentFilePath.defaultPathStyle": "unix",
+    "LogWatcher.automaticallyShowChanges": true,
+    "extensions.ignoreRecommendations": true,
+    "extensions.autoUpdate": false,
+    "auto-reload.interval": 1000,
+    "remote.SSH.remotePlatform": {
+        "55": "linux"
+    },
+
+
+    // 자동 업데이트 확인 (수동만)
+    "update.mode": "manual",
+    "cmake.showOptionsMovedNotification": false,
+    "window.closeWhenEmpty": false,
+    "window.confirmBeforeClose": "never",
+    "window.titleBarStyle": "custom",
+    "remote.autoForwardPortsSource": "hybrid",
+
+    "editor.suggest.snippetsPreventQuickSuggestions": true,
+    // "editor.suggestOnTriggerCharacters": false,
+
+
+    // tab complete
+    "editor.tabCompletion": "on",
+    "editor.acceptSuggestionOnEnter": "on",
+    "emmet.triggerExpansionOnTab": true,
+    "editor.suggest.selectionMode": "always",
+
+    "editor.lightbulb.enabled": "on",
+    "inlineChat.mode": "preview",
+    "workbench.activityBar.orientation": "vertical",
+    "redhat.telemetry.enabled": true,
+    "editor.unicodeHighlight.nonBasicASCII": false,
+    "database-client.telemetry.usesOnlineServices": false,
+    "debug.inlineValues": "off",
+
+
+    "markdown-pdf.format": "A4",
+    "markdown-pdf.headerTemplate": "",
+    "markdown-pdf.stylesRelativePathFile": true,
+    "search.showLineNumbers": true,
+    "search.searchEditor.reusePriorSearchConfiguration": true,
+    "search.searchEditor.defaultNumberOfContextLines": 0,
+
+    "editor.showFoldingControls": "mouseover",
+    "editor.unfoldOnClickAfterEndOfLine": false,
+    "editor.insertSpaces": true,
+    "editor.rename.enablePreview": false,
+    "search.quickAccess.preserveInput": true,
+
+
+    // https://github.com/asciidoctor/asciidoctor-vscode?tab=readme-ov-file#extension-settings
+    // .ad, .adoc, .asciidoc
+    "asciidoc.extensions.enableKroki": true,
+    "asciidoc.preview.refreshInterval": 5000,
+
+    "database-client.terminalLocation": "Panel",
+
+    "task.verboseLogging": false,
+    "database-client.autoSync": true,
+    "output.smartScroll.enabled": false,
+    "testMate.cpp.log.logpanel": true,
+    "github.copilot.chat.codeGeneration.instructions": [
+        // {
+        //     "file": ".copilot-instructions.md"
+        // },
+        {
+            // "language": "Korean",
+            "text": "Always add a comment: 'Generated by Copilot'. Please answer in Korean (한국어로 설명해 줘)."
+        }
+    ],
+    "github.copilot.chat.reviewSelection.instructions": [
+        // {
+        //     "file": ".copilot-instructions.md"
+        // },
+        {
+            // "language": "Korean",
+            "text": "Resolve all TODO tasks. Please answer in Korean (한국어로 설명해 줘)."
+        }
+    ],
+    "github.copilot.chat.testGeneration.instructions": [
+        // {
+        //     "file": ".copilot-test-instructions.md"
+        // },
+        {
+            // "language": "Korean",
+            "text": "Always try uniting related tests in a suite. Please answer in Korean (한국어로 설명해 줘)."
+        }
+    ],
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "javascript.referencesCodeLens.enabled": true,
+    "typescript.tsserver.maxTsServerMemory": 8192,
+    "typescript.referencesCodeLens.enabled": true,
+    "references.preferredLocation": "view",
+    "workbench.colorTheme": "Monokai Classic",
+    "magit.forge-enabled": true,
+
+    "codeium.enableCodeLens": true,
+    "codeium.enableSearch": true,
+    "codeium.enableConfig": {
+        "*": true
+    },
+    "codeium.disableSupercomplete": false,
+    "cursor.cpp.enablePartialAccepts": true,
+    "cursor.cmdk.useThemedDiffBackground": true,
+    "cursor.diffs.useCharacterLevelDiffs": true,
+    "cursor.composer.collapsePaneInputBoxPills": true,
+    "cursor.composer.renderPillsInsteadOfBlocks": true,
+
+
+
+}
