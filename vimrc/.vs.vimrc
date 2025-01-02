@@ -204,10 +204,10 @@ vmap <Tab>3 $h
 
 noremap <C-x> <nop>
 
-nnoremap <Leader>a <C-u>
-nnoremap <Leader>d <C-d>
-vnoremap <Leader>a <C-u>
-vnoremap <Leader>d <C-d>
+" nnoremap <Leader>a <C-u>
+" nnoremap <Leader>d <C-d>
+" vnoremap <Leader>a <C-u>
+" vnoremap <Leader>d <C-d>
 
 
 nnoremap <C-k> H
