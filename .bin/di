@@ -65,6 +65,19 @@ if [ -n "$(command -v fzf)" ]; then
             # 해당 디렉토리로 이동하여 검색
             builtin cd $@
         elif [[ "$@" = "-" ]]; then
+            tmp_files=$(ls -1tr /tmp/code-stdin-*)
+            tmp_file_count=$(echo "$tmp_files" | wc -l)
+			# 최신 파일 기준으로 10개 외 나머지 모두 제거
+            rm_count=$(($tmp_file_count - 10))
+            rm_idx=0
+            for tmp_file in $tmp_files; do
+                if [ $rm_idx -ge $rm_count ]; then
+                    break
+                fi
+                # echo "remove $tmp_file"
+                rm -f $tmp_file
+                rm_idx=$(($rm_idx + 1))
+            done
             # rm -f /tmp/code-stdin-*
             # codeopt="--goto"
             # $codepath $codeopt $@ &
