@@ -375,3 +375,35 @@ export CLICOLOR=1
 
 typeset -g GITSTATUS_NUM_THREADS=8
 
+
+# ls, fg 및 관련 alias들을 히스토리에서 제외
+# typeset -g HISTORY_IGNORE="(ls|ls *|ll|ll *|la|la *|l|l *|lea|lea *|fg|fg *)"
+
+HISTORY_IGNORES=(
+    '^l([[:space:]].*)?$'
+    '^ls([[:space:]].*)?$'
+    '^ll([[:space:]].*)?$'
+    '^lea([[:space:]].*)?$'
+    '^fg([[:space:]].*)?$'
+)
+
+zshaddhistory() {
+    emulate -L zsh
+    setopt extendedglob
+
+    # [[ $1 != (ls[[:space:]]#|fg[[:space:]]#)$'\n' ]]
+    local ls_pattern="ls[[:space:]]#"
+    local fg_pattern="fg[[:space:]]#"
+    local ignore_pattern="($ls_pattern|$fg_pattern)"
+
+    # 명령어가 패턴과 일치하는지 확인
+    # [[ $1 != ${ignore_pattern}$'\n' ]]
+
+    cmd="$1"
+    for ignore in "${HISTORY_IGNORES[@]}" ; do
+        if [[ "${cmd%$'\n'}" =~ $ignore ]]; then
+            return 1
+		fi
+    done
+    return 0
+}
