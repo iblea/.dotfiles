@@ -216,6 +216,15 @@ if [ -n "$(command -v sgpt)" ]; then
     fi
 fi
 
+# ghostty
+
+if [[ "$(uname -s)" = "Darwin" ]]; then
+if [ -d "$HOME/Library/Application Support/com.mitchellh.ghostty" ]; then
+	rm -f "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+	ln -s "$settings_full_dir/ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+fi
+fi
+
 
 # zoxide
 # curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh

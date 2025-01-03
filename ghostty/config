@@ -1,0 +1,83 @@
+
+# https://ghostty.org/docs/config/reference
+
+# color
+foreground = cecece
+background = 000000
+
+# Black
+# palette = 0=#272822
+# palette = 0=#212121
+palette = 0=#6e6b67
+# Red
+# palette = 1=#f92672
+# palette = 1=#ce7187
+palette = 1=#e44171
+# Green
+# palette = 2=#a6e22e
+# palette = 2=#a8c384
+palette = 2=#b2df52
+# Yellow
+# palette = 3=#e6db74
+# palette = 3=#e3da81
+palette = 3=#f8d977
+# Blue
+# palette = 4=#fd971f
+# palette = 4=#1c48f5
+palette = 4=#a781f6
+# Purple(Magenta)
+# palette = 5=#ae81ff
+# palette = 5=#ce987b
+palette = 5=#ed9a3f
+# Cyan
+# palette = 6=#66d9ef
+# palette = 6=#87bbc3
+palette = 6=#81d1e6
+# White
+# palette = 7=#fdfff1
+# palette = 7=#cecec3
+palette = 7=#f7f7f2
+
+# Black (Bright)
+# palette = 8=#6e7066
+palette = 8=#212121
+# Red (Bright)
+# palette = 9=#f92672
+palette = 9=#ce7187
+# Green (Bright)
+# palette = 10=#a6e22e
+palette = 10=#a8c384
+# Yellow (Bright)
+# palette = 11=#e6db74
+palette = 11=#e3da81
+# Blue (Bright)
+# palette = 12=#fd971f
+palette = 12=#1c48f5
+# Purple(Magenta) (Bright)
+# palette = 13=#a781f6
+palette = 13=#ce987b
+# Cyan (Bright)
+# palette = 14=#66d9ef
+palette = 14=#87bbc3
+# White (Bright)
+# palette = 15=#fdfff1
+palette = 15=#cecec3
+
+selection-background = #57584f
+selection-foreground = #fdfff1
+
+# font
+font-family = "OperatorMonoC Nerd Font"
+font-size = 16
+# font-family = "CaskaydiaCove Nerd Font"
+
+# cursor
+cursor-color = 74fb60
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+# util
+copy-on-select = true
+
+auto-update = check
