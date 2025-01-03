@@ -132,6 +132,8 @@ if [ -d $HOME/.dotfiles/env_custom/ ]; then
     unset files
 fi
 
+export HISTORY_IGNORE='(l|ls|ll|lea|fg)'
+
 ZOXIDE_PATH=$(command -v zoxide)
 if [ -n "$ZOXIDE_PATH" ]; then
     export _ZO_DATA_DIR="$HOME/.local/share/zoxide"

@@ -234,7 +234,8 @@ fi
 
 # environment path (envpath)
 if [ -f $HOME/.envpath ]; then
-    . ~/.envpath
+    # . ~/.envpath
+    source ~/.envpath
 fi
 
 if [ -d $HOME/.dotfiles/env_custom/ ]; then
