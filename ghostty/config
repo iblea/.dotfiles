@@ -8,7 +8,8 @@ background = 000000
 # Black
 # palette = 0=#272822
 # palette = 0=#212121
-palette = 0=#6e6b67
+# palette = 0=#6e6b67
+palette = 0=#555555
 # Red
 # palette = 1=#f92672
 # palette = 1=#ce7187
@@ -40,7 +41,8 @@ palette = 7=#f7f7f2
 
 # Black (Bright)
 # palette = 8=#6e7066
-palette = 8=#212121
+# palette = 8=#212121
+palette = 8=#777777
 # Red (Bright)
 # palette = 9=#f92672
 palette = 9=#ce7187
