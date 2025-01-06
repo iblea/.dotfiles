@@ -197,11 +197,12 @@ if [ -n "$(command -v fzf)" ]; then
 else
 
     # no fzf di
-    codepath=vi
     codeopt=""
-    [ -n "$(command -v code)" ] && codepath=code
-    [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
-    [ -n "$(command -v 'cursor')" ] && codepath=cursor
+    # codepath=vi
+    # [ -n "$(command -v code)" ] && codepath=code
+    # [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+    # [ -n "$(command -v 'cursor')" ] && codepath=cursor
+    codepath="$HOME/.dotfiles/.bin/code"
     # [ -n "$(command -v cursor)" ] && codepath=cursor
     # FZF_BIN_PATH=$(/bin/which fzf)
     # argument 가 2개 이상일 경우
