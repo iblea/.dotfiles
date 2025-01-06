@@ -191,14 +191,18 @@ nnoremap <C-a> <C-u>
 nnoremap <silent><C-u> <ESC><C-]>
 vnoremap q ge
 vnoremap Q gE
+nnoremap @ %
+vnoremap @ %
+nnoremap % ^
+vnoremap % ^
 nmap <Tab>q ^
-nmap <Tab>w %
-nmap <Tab>e $
+nnoremap <Tab>w %
+nnoremap <Tab>e $
 nmap <Tab>r 0
 nmap <Tab>3 $h
 vmap <Tab>q ^
-vmap <Tab>w %
-vmap <Tab>e $
+vnoremap <Tab>w %
+vnoremap <Tab>e $
 vmap <Tab>r 0
 vmap <Tab>3 $h
 
@@ -257,8 +261,6 @@ noremap <S-q> %
 nnoremap ^ `
 vnoremap ^ `
 noremap ` m
-nnoremap @ ^
-vnoremap @ ^
 vnoremap $ $h
 nnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@########\|\|\|; <CR>zz
 vnoremap ' <ESC>:noh<CR> /\|\|\|########@@@@@@@@ vim_search_init @@@@@@@@########\|\|\|; <CR>zz
