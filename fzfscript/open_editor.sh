@@ -6,6 +6,8 @@ elif grep -q "ERROR: cannot find" <<< "$@"; then
     exit 1
 fi
 
+PATH_BACKUP="$PATH"
+export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
 if [ -n "$(command -v code)" ]; then
     code --goto "$@"
     exit 0
