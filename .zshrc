@@ -381,10 +381,10 @@ typeset -g GITSTATUS_NUM_THREADS=8
 # typeset -g HISTORY_IGNORE="(ls|ls *|ll|ll *|la|la *|l|l *|lea|lea *|fg|fg *)"
 
 HISTORY_IGNORES=(
-    '^l([[:space:]].*)?$'
-    '^ls([[:space:]].*)?$'
-    '^ll([[:space:]].*)?$'
-    '^lea([[:space:]].*)?$'
+    '^l([[:space:]]*)?$'
+    '^ls([[:space:]]*)?$'
+    '^ll([[:space:]]*)?$'
+    '^lea([[:space:]]*)?$'
     '^fg([[:space:]].*)?$'
 )
 
