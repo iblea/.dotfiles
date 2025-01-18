@@ -10,7 +10,7 @@ fzf_open_script="$HOME/.dotfiles/fzfscript/open_editor.sh"
 fzf_execute="execute-silent"
 PATH_BACKUP="$PATH"
 export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
-if [ -z "$(command -v code)" ]; then
+if [ -z "$(command -v code)" ] && [ -z "$(command -v cursor)" ]; then
     fzf_execute="become"
 fi
 PATH="$PATH_BACKUP"
