@@ -5,7 +5,7 @@ R_MACRO="rloc"
 R_CONFIG="$HOME/.ssh/config"
 
 # <username> 설정 시 config 파일의 rloc username으로 바뀜
-R_DEFAULT_DOWNLOAD_PATH="/Users/<username>/Downloads"
+R_DEFAULT_DOWNLOAD_PATH="/Users/<username>/Down"
 
 if [ $# -le 0 ]; then
     echo "Wrong Argument"
@@ -48,6 +48,8 @@ if [ -z "$R_PATH" ]; then
     fi
     R_PATH=$(echo "${R_DEFAULT_DOWNLOAD_PATH}" | sed "s/<username>/${R_USER}/")
     # R_PATH="/Users/$R_USER/Downloads"
+    echo "R_PATH: $R_PATH"
+    ssh -F "$R_CONFIG" -i "$R_SSH_KEY_PATH" "$R_MACRO" "test ! -e '$R_PATH' && mkdir -p '$R_PATH'"
 fi
 
 if [ -z "$R_SSH_KEY_PATH" ]; then

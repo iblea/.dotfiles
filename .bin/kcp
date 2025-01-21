@@ -18,6 +18,7 @@ FILES=()
 FILE_PATH_STAT=0
 R_SSH_KEY_PATH=""
 R_USER=""
+R_HOME=""
 
 for arg in "$@"; do
     if [[ "$arg" = "--" ]]; then
@@ -29,6 +30,12 @@ for arg in "$@"; do
         break
     fi
 
+    if [[ "${arg:0:1}" = "~" ]]; then
+        if [ -z "$R_HOME" ]; then
+            R_HOME=$(ssh -F "$R_CONFIG" -i "$R_SSH_KEY_PATH" "$R_MACRO" "echo \$HOME")
+        fi
+        arg=$(echo "${arg}" | sed -e "s|^\~|$R_HOME|")
+    fi
     FILES+=( "rloc:${arg}" )
 done
 
