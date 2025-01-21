@@ -74,7 +74,7 @@ fi
 echo ""
 
 
-scp -F "$R_CONFIG" "${FILES[@]}" "$R_PATH"
+scp -r -F "$R_CONFIG" "${FILES[@]}" "$R_PATH"
 
 if [ $? -ne 0 ]; then
     echo ""

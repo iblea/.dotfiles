@@ -63,7 +63,7 @@ echo "Remote Address: $REMOTE_ADDR"
 # source $HOME/.dotfiles/script/ssh-agent-init.sh
 # source $HOME/.dotfiles/script/pass-ssh-agent.sh > /dev/null
 
-scp -F "$R_CONFIG" -i /home/iblea/.ssh/id_rsa "${FILES[@]}" "$R_MACRO":"$R_PATH"
+scp -r -F "$R_CONFIG" -i /home/iblea/.ssh/id_rsa "${FILES[@]}" "$R_MACRO":"$R_PATH"
 echo ""
 
 
