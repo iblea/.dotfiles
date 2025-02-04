@@ -177,5 +177,7 @@ if [ -f "$HOME/.dotfiles/script/ssh-agent-init.sh" ]; then
     source $HOME/.dotfiles/script/ssh-agent-init.sh
 fi
 
-eval "$(rbenv init - --no-rehash bash)"
+if [ -n "$(command -v rbenv)"]; then
+	eval "$(rbenv init - --no-rehash bash)"
+fi
 
