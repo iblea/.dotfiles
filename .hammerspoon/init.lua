@@ -1,6 +1,7 @@
 --- hs.alert.show('Hello, world!')
 
 local inputEnglish = "com.apple.keylayout.ABC"
+--- local inputEnglish = "com.apple.keylayout.Dvorak"
 local inputKorean = "org.youknowone.inputmethod.Gureum.han2"
 
 require('modules.inputsource_aurora')

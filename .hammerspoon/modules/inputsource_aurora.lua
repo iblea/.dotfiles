@@ -1,5 +1,6 @@
 local boxes = {}
 local inputEnglish = "com.apple.keylayout.ABC"
+--- local inputEnglish = "com.apple.keylayout.Dvorak"
 local box_height = 28
 local box_alpha = 0.35
 local GREEN = hs.drawing.color.osx_green
