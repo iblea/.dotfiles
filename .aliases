@@ -160,6 +160,24 @@ function psf() {
 
 }
 
+function perft() {
+    if [ $# -eq 0 ]; then
+        perf top
+        return 0
+    fi
+
+    IFS='' process_names=( $@ )
+    process_str=""
+    for process_name in "${process_names[@]}" ; do
+        process_str="$process_str,$(pidof "$process_name" | tr ' ' ',')"
+    done
+    if [ "${process_str:0:1}" = "," ]; then
+        process_str="${process_str:1}"
+    fi
+    # echo "$process_str"
+    perf top  --pid=$(echo "$process_num")
+}
+
 function topd() {
     process_name="$@"
     if [ $# -eq 0 ]; then
