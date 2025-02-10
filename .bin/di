@@ -115,7 +115,7 @@ if [ -n "$(command -v fzf)" ]; then
                 if [ "$FZF_DEFAULT_COMMAND" = "" ]; then
                     exclude_opt=''
                 elif [ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]; then
-                    size_0_cmd="fd -g "*${getname}*" -t f --follow --hidden --no-ignore -S 0b"
+                    size_0_cmd="fd -g \"*${getname}*\" -t f --follow --hidden --no-ignore -S 0b ."
                     if [ -z "$tmpres" ]; then
                         tmpres=$(fd -g "*${getname}*" -t f --follow --hidden --no-ignore -S 0b)
                     else
@@ -127,11 +127,11 @@ if [ -n "$(command -v fzf)" ]; then
                         exclude_opt+="-E \"$exclude\" "
                     done
                 elif [ "${FZF_DEFAULT_COMMAND:0:4}" = "find" ]; then
-                    size_0_cmd="find . -type f -size 0"
+                    size_0_cmd="find . -type f -size 0 -name \"*${getname}*\""
                     if [ -z "$tmpres" ]; then
-                        tmpres=$(find . -type f -size 0)
+                        tmpres=$(find . -type f -size 0 -name "*${getname}*")
                     else
-                        size_0_res=$(find . -type f -size 0)
+                        size_0_res=$(find . -type f -size 0 -name "*${getname}*")
                         tmpres=$(echo -e "${tmpres}\n${size_0_res}")
                     fi
                     exclude_opt=''
@@ -142,7 +142,7 @@ if [ -n "$(command -v fzf)" ]; then
                     exclude_opt=''
                 fi
                 origin_fzf_cmd=$(echo "$FZF_DEFAULT_COMMAND")
-                export FZF_DEFAULT_COMMAND="($FZF_DEFAULT_COMMAND $exclude_opt 2>/dev/null; $size_0_cmd $exclude_opt 2>/dev/null)"
+                export FZF_DEFAULT_COMMAND="($tmpcmd $exclude_opt 2>/dev/null; $size_0_cmd $exclude_opt 2>/dev/null)"
                 if [[ ! "$tmpres" =~ $'\n' ]]; then
                     if [ -n "$tmpres" ]; then
                         echo "find only one. open: $tmpres"
@@ -161,9 +161,9 @@ if [ -n "$(command -v fzf)" ]; then
                     exit 0
                 fi
                 if [ -n "$(command -v bat)" ]; then
-                    fzfres=$(echo "$tmpres" | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+                    fzfres=$(echo "$tmpres" | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${FZF_DEFAULT_COMMAND}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
                 else
-                    fzfres=$(echo "$tmpres" | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+                    fzfres=$(echo "$tmpres" | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${FZF_DEFAULT_COMMAND}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
                 fi
                 export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
                 # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
