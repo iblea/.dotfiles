@@ -94,6 +94,7 @@ if [ -n "$(command -v fzf)" ]; then
                     fi
                 fi
                 fzfres=""
+                tmpres=""
                 getdir=$(dirname "$@")
                 getname=$(echo "$@" | awk -F '/' '{ print $NF }')
                 if [[ "$getdir" != "." ]]; then
@@ -101,13 +102,28 @@ if [ -n "$(command -v fzf)" ]; then
                 fi
                 if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
                     tmpcmd="fd -g \"*${getname}*\" --type file --follow --hidden --no-ignore -X grep -lI ."
+                    tmpres=$(fd -g "*${getname}*" --type file --follow --hidden --no-ignore -X grep -lI .)
                 else
                     tmpcmd="find . -name \"*${getname}*\" -type f -exec grep -lI . {} \;"
+                    tmpres=$(find . -name "*${getname}*" -type f -exec grep -lI . {} \;)
+                fi
+
+                if [[ ! "$tmpres" =~ $'\n' ]]; then
+                    if [[ "$getdir" != "." ]]; then
+                        builtin cd - > /dev/null
+                        # popd -1
+                        if [ $(dirs -v | wc -l ) -gt 1 ]; then
+                            builtin cd -1 > /dev/null
+                            builtin cd - > /dev/null
+                        fi
+                    fi
+                    $codepath $codeopt $tmpres
+                    exit 0
                 fi
                 if [ -n "$(command -v bat)" ]; then
-                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+                    fzfres=$(echo "$tmpres" | FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
                 else
-                    fzfres=$(FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+                    fzfres=$(echo "$tmpres" | FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
                 fi
                 # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                 if [ -n "$fzfres" ]; then
@@ -115,7 +131,7 @@ if [ -n "$(command -v fzf)" ]; then
                 fi
                 if [[ "$getdir" != "." ]]; then
                     builtin cd - > /dev/null
-                    popd -1
+                    # popd -1
                     if [ $(dirs -v | wc -l ) -gt 1 ]; then
                         builtin cd -1 > /dev/null
                         builtin cd - > /dev/null
@@ -174,9 +190,9 @@ if [ -n "$(command -v fzf)" ]; then
         fi
     else
         if [ -n "$(command -v bat)" ]; then
-            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind "ctrl-r:reload:${FZF_DEFAULT_COMMAND}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
         else
-            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+            fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind "ctrl-r:reload:${FZF_DEFAULT_COMMAND}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
         fi
     fi
     if [ -n "$fzfres" ]; then
