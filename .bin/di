@@ -100,6 +100,11 @@ if [ -n "$(command -v fzf)" ]; then
                 if [[ "$getdir" != "." ]]; then
                     builtin cd "$getdir"
                 fi
+                exclude_opt=""
+                exclude_list=(
+                    ".git"
+                    ".svn"
+                )
                 if [[ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]]; then
                     tmpcmd="fd -g \"*${getname}*\" --type file --follow --hidden --no-ignore -X grep -lI ."
                     tmpres=$(fd -g "*${getname}*" --type file --follow --hidden --no-ignore -X grep -lI .)
@@ -107,8 +112,44 @@ if [ -n "$(command -v fzf)" ]; then
                     tmpcmd="find . -name \"*${getname}*\" -type f -exec grep -lI . {} \;"
                     tmpres=$(find . -name "*${getname}*" -type f -exec grep -lI . {} \;)
                 fi
-
+                if [ "$FZF_DEFAULT_COMMAND" = "" ]; then
+                    exclude_opt=''
+                elif [ "${FZF_DEFAULT_COMMAND:0:2}" = "fd" ]; then
+                    size_0_cmd="fd -g "*${getname}*" -t f --follow --hidden --no-ignore -S 0b"
+                    if [ -z "$tmpres" ]; then
+                        tmpres=$(fd -g "*${getname}*" -t f --follow --hidden --no-ignore -S 0b)
+                    else
+                        size_0_res=$(fd -g "*${getname}*" -t f --follow --hidden --no-ignore -S 0b .)
+                        tmpres=$(echo -e "${tmpres}\n${size_0_res}")
+                    fi
+                    exclude_opt=''
+                    for exclude in "${exclude_list[@]}"; do
+                        exclude_opt+="-E \"$exclude\" "
+                    done
+                elif [ "${FZF_DEFAULT_COMMAND:0:4}" = "find" ]; then
+                    size_0_cmd="find . -type f -size 0"
+                    if [ -z "$tmpres" ]; then
+                        tmpres=$(find . -type f -size 0)
+                    else
+                        size_0_res=$(find . -type f -size 0)
+                        tmpres=$(echo -e "${tmpres}\n${size_0_res}")
+                    fi
+                    exclude_opt=''
+                    for exclude in "${exclude_list[@]}"; do
+                        exclude_opt+="! -name \"$exclude\" "
+                    done
+                else
+                    exclude_opt=''
+                fi
+                origin_fzf_cmd=$(echo "$FZF_DEFAULT_COMMAND")
+                export FZF_DEFAULT_COMMAND="($FZF_DEFAULT_COMMAND $exclude_opt 2>/dev/null; $size_0_cmd $exclude_opt 2>/dev/null)"
                 if [[ ! "$tmpres" =~ $'\n' ]]; then
+                    if [ -n "$tmpres" ]; then
+                        echo "find only one. open: $tmpres"
+                        $codepath $codeopt $tmpres
+                    else
+                        echo "no result"
+                    fi
                     if [[ "$getdir" != "." ]]; then
                         builtin cd - > /dev/null
                         # popd -1
@@ -117,14 +158,14 @@ if [ -n "$(command -v fzf)" ]; then
                             builtin cd - > /dev/null
                         fi
                     fi
-                    $codepath $codeopt $tmpres
                     exit 0
                 fi
                 if [ -n "$(command -v bat)" ]; then
-                    fzfres=$(echo "$tmpres" | FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
+                    fzfres=$(echo "$tmpres" | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'bat -n --theme="Dracula" --color=always {}')
                 else
-                    fzfres=$(echo "$tmpres" | FZF_DEFAULT_COMMAND="$tmpcmd" $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
+                    fzfres=$(echo "$tmpres" | $FZF_BIN_PATH -e --ansi --height 40% --layout=reverse --bind "ctrl-r:reload:${tmpcmd}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
                 fi
+                export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
                 # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                 if [ -n "$fzfres" ]; then
                     $codepath $codeopt $fzfres
@@ -195,10 +236,10 @@ if [ -n "$(command -v fzf)" ]; then
             fzfres=$($FZF_BIN_PATH -e --ansi --height 40% --layout=reverse  --bind "ctrl-r:reload:${FZF_DEFAULT_COMMAND}" --bind 'ctrl-a:half-page-up' --bind 'ctrl-d:half-page-down' --preview 'cat {}')
         fi
     fi
+    export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
     if [ -n "$fzfres" ]; then
         $codepath $codeopt $fzfres
     fi
-    export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
     # 디렉토리 이동했을 경우 원래 디렉토리로 이동
     if [ $# -eq 1 ]; then
         builtin cd - > /dev/null
