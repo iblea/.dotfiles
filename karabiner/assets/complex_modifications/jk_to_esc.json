@@ -15,6 +15,21 @@
                     "to": [{ "key_code": "escape" }]
                 }
            ]
+	    },
+        {
+            "description": "kl to change en/ko",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "k" },
+                            { "key_code": "l" }
+                        ]
+                    },
+                    "to": [{ "key_code": "f19" }]
+                }
+           ]
 	    }
 	]
 }
