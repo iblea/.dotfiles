@@ -132,8 +132,9 @@ if [ -n "$(command -v fzf)" ]; then
                 tmpres=$(eval "$FZF_DEFAULT_COMMAND")
                 if [[ ! "$tmpres" =~ $'\n' ]]; then
                     if [ -n "$tmpres" ]; then
-                        echo "find only one. open: $tmpres"
-                        $codepath $codeopt $tmpres
+                        openfile=$(echo "${tmpres}" | sed "s/^\.\//${getdir}\//")
+                        echo "find only one. open: $openfile"
+                        $codepath $codeopt "$tmpres"
                     else
                         echo "no result"
                     fi
