@@ -2,61 +2,6 @@
   "title": "ctrl space to esc",
   "rules": [
     {
-      "description": "ctrl space to esc en_US",
-      "manipulators": [
-        {
-          "type": "basic",
-          "from": {
-            "modifiers": {
-              "mandatory": [
-                "left_control"
-              ],
-              "optional": [
-                "any"
-              ]
-            },
-            "key_code": "spacebar"
-          },
-          "to_after_key_up": [
-            {
-              "key_code": "escape",
-              "lazy": false
-            },
-            {
-              "select_input_source": {
-                "input_source_id": "com.apple.keylayout.US",
-                "language": "en"
-              }
-            }
-          ]
-        },
-        {
-          "type": "basic",
-          "from": {
-            "modifiers": {
-              "mandatory": [
-                "left_control",
-                "left_command"
-              ],
-              "optional": [
-                "any"
-              ]
-            },
-            "key_code": "spacebar"
-          },
-          "to_after_key_up": [
-            {
-              "key_code": "spacebar",
-              "modifiers": [
-                "left_control",
-                "left_command"
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "description": "ctrl space to esc ABC",
       "manipulators": [
         {
@@ -106,6 +51,61 @@
                 "input_source_id": "com.apple.keylayout.ABC",
                 "language": "en"
               }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "ctrl space to esc en_US",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
+                "left_control"
+              ],
+              "optional": [
+                "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to_after_key_up": [
+            {
+              "key_code": "escape",
+              "lazy": false
+            },
+            {
+              "select_input_source": {
+                "input_source_id": "com.apple.keylayout.US",
+                "language": "en"
+              }
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "modifiers": {
+              "mandatory": [
+                "left_control",
+                "left_command"
+              ],
+              "optional": [
+                "any"
+              ]
+            },
+            "key_code": "spacebar"
+          },
+          "to_after_key_up": [
+            {
+              "key_code": "spacebar",
+              "modifiers": [
+                "left_control",
+                "left_command"
+              ]
             }
           ]
         }

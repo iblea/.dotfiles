@@ -1,8 +1,60 @@
 {
-   "title": "jk to esc",
-   "rules": [
+    "title": "jk to esc",
+    "rules": [
         {
-            "description": "jk to esc 1",
+            "description": "jk to (ko to ABC) esc ",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "j" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [
+                        {
+                            "key_code": "escape",
+                            "lazy": false
+                        },
+                        {
+                            "select_input_source": {
+                                "input_source_id": "com.apple.keylayout.ABC",
+                                "language": "en"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "jk to (ko to en_US) esc ",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "j" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [
+                        {
+                            "key_code": "escape",
+                            "lazy": false
+                        },
+                        {
+                            "select_input_source": {
+                                "input_source_id": "com.apple.keylayout.US",
+                                "language": "en"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "jk to esc only",
             "manipulators": [
                 {
                     "type": "basic",
@@ -14,22 +66,22 @@
                     },
                     "to": [{ "key_code": "escape" }]
                 }
-           ]
-	    },
+            ]
+        },
         {
-            "description": "kl to change en/ko",
+            "description": "nk to change en/ko",
             "manipulators": [
                 {
                     "type": "basic",
                     "from": {
                         "simultaneous": [
                             { "key_code": "k" },
-                            { "key_code": "l" }
+                            { "key_code": "n" }
                         ]
                     },
                     "to": [{ "key_code": "f19" }]
                 }
-           ]
-	    }
-	]
+            ]
+        }
+    ]
 }
