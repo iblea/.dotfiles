@@ -1,0 +1,20 @@
+{
+   "title": "jk to esc",
+   "rules": [
+        {
+            "description": "jk to esc 1",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "j" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [{ "key_code": "escape" }]
+                }
+           ]
+	    }
+	]
+}
