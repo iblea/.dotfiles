@@ -2,7 +2,7 @@
     "title": "jk to esc",
     "rules": [
         {
-            "description": "jk to (ko to ABC) esc ",
+            "description": "jk to (ko to ABC) esc",
             "manipulators": [
                 {
                     "type": "basic",
@@ -28,7 +28,7 @@
             ]
         },
         {
-            "description": "jk to (ko to en_US) esc ",
+            "description": "jk to (ko to en_US) esc",
             "manipulators": [
                 {
                     "type": "basic",
