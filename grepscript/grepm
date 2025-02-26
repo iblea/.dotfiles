@@ -7,13 +7,23 @@ if [[ "$curpwd" != "/" ]]; then
     curpwd="${curpwd}/"
 fi
 
-opts=( )
-keyword="$@"
-if [ $# -ge 2 ]; then
-    IFS='' array=( $@ )
-    IFS='' opts=( $(echo "${array[@]:0:${#array[@]}-1}") )
-    keyword=${array[((${#array[@]}-1))]}
-fi
+# opts=( )
+# keyword="$@"
+# if [ $# -ge 2 ]; then
+#     IFS='' array=( $@ )
+#     IFS='' opts=( $(echo "${array[@]:0:${#array[@]}-1}") )
+#     keyword=${array[((${#array[@]}-1))]}
+# fi
+
+opts=()
+last_idx=$(($# ))
+for i in $(seq 1 $last_idx); do
+    if [ $i -eq $last_idx ]; then
+        keyword="${!i}"
+    else
+        opts+=("${!i}")
+    fi
+done
 
 source $HOME/.dotfiles/grepscript/grep_exclude
 
