@@ -19,4 +19,4 @@ source $HOME/.dotfiles/grepscript/grep_exclude
 
 # grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
 # grep --color=always -rnIHF ${search_str[@]} | sed -e "s/:/ | /2"
-grep --color=always -rnIHF ${exclude_str[@]} ${opts[@]} "$keyword" | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
+grep --color=always -rnIHF ${opts[@]} ${exclude_str[@]} "$keyword" | sed -e "s/\:\[m\[K\s*/ |[m[K /2"

@@ -21,4 +21,6 @@ source $HOME/.dotfiles/grepscript/grep_exclude
 # grep --color=always -rnIHP ${search_str[@]} | sed -e "p" -e "s/:/ | /2" | sed -n "2~2p"
 # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2" -e "s|\[m\[K\s*|[m[K|g"
 # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2"
-grep --color=always -rnIHP ${exclude_str[@]} ${opts[@]} "$keyword" | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
+grep --color=always -rnIHP ${opts[@]} ${exclude_str[@]} "$keyword" | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
+echo "${exclude_str[@]}"
+echo "${opts[@]}"
