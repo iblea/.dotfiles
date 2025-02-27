@@ -175,7 +175,8 @@ function perft() {
         process_str="${process_str:1}"
     fi
     # echo "$process_str"
-    perf top  --pid=$(echo "$process_num")
+    perf top  --pid=$(echo "$process_str")
+	# perf top  --pid=$(pidof "tmp_process" | tr ' ' ',')
 }
 
 function topd() {
