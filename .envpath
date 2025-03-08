@@ -91,7 +91,7 @@ fi
 # if homebrew exist
 if [ -d "/opt/homebrew/" ] && [[ "$(uname -s)" = "Darwin" ]]; then
 
-openssl_brew_version=1.1
+openssl_brew_version=3
 if ! grep -q "/opt/homebrew/opt/openssl@$openssl_brew_version/lib" <<< "$LIBRARY_PATH"; then
 	if [ "$LIBRARY_PATH" = "" ]; then
 		export LIBRARY_PATH=/opt/homebrew/opt/openssl@$openssl_brew_version/lib
