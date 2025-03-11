@@ -49,7 +49,7 @@ if [ -z "$R_PATH" ]; then
     R_PATH=$(echo "${R_DEFAULT_DOWNLOAD_PATH}" | sed "s/<username>/${R_USER}/")
     # R_PATH="/Users/$R_USER/Downloads"
     echo "R_PATH: $R_PATH"
-    ssh -F "$R_CONFIG" -i "$R_SSH_KEY_PATH" "$R_MACRO" "test ! -e '$R_PATH' && mkdir -p '$R_PATH'"
+    ssh -F "$R_CONFIG" -i "$R_SSH_KEY_PATH" -o "StrictHostKeyChecking=no" "$R_MACRO" "test ! -e '$R_PATH' && mkdir -p '$R_PATH'"
 fi
 
 if [ -z "$R_SSH_KEY_PATH" ]; then
@@ -63,7 +63,7 @@ echo "Remote Address: $REMOTE_ADDR"
 # source $HOME/.dotfiles/script/ssh-agent-init.sh
 # source $HOME/.dotfiles/script/pass-ssh-agent.sh > /dev/null
 
-scp -r -F "$R_CONFIG" -i /home/iblea/.ssh/id_rsa "${FILES[@]}" "$R_MACRO":"$R_PATH"
+scp -r -F "$R_CONFIG" -i "/$HOME/.ssh/id_rsa" -o "StrictHostKeyChecking=no" "${FILES[@]}" "$R_MACRO":"$R_PATH"
 echo ""
 
 

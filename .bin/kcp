@@ -32,7 +32,7 @@ for arg in "$@"; do
 
     if [[ "${arg:0:1}" = "~" ]]; then
         if [ -z "$R_HOME" ]; then
-            R_HOME=$(ssh -F "$R_CONFIG" -i "$R_SSH_KEY_PATH" "$R_MACRO" "echo \$HOME")
+            R_HOME=$(ssh -F "$R_CONFIG" -i "$R_SSH_KEY_PATH" -o "StrictHostKeyChecking=no" "$R_MACRO" "echo \$HOME")
         fi
         arg=$(echo "${arg}" | sed -e "s|^\~|$R_HOME|")
     fi
@@ -74,7 +74,7 @@ fi
 echo ""
 
 
-scp -r -F "$R_CONFIG" "${FILES[@]}" "$R_PATH"
+scp -r -F "$R_CONFIG" -o "StrictHostKeyChecking=no" "${FILES[@]}" "$R_PATH"
 
 if [ $? -ne 0 ]; then
     echo ""
