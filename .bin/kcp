@@ -60,9 +60,9 @@ if [ -z "$R_SSH_KEY_PATH" ]; then
     R_SSH_KEY_PATH="$HOME/.ssh/id_rsa"
 fi
 
-REMOTE_ADDR=$(echo "$SSH_CONNECTION" | awk -F ' ' '{ print $1 }')
+# REMOTE_ADDR=$(echo "$SSH_CONNECTION" | awk -F ' ' '{ print $1 }')
 echo ""
-echo "Remote Address: $REMOTE_ADDR"
+# echo "Remote Address: $REMOTE_ADDR"
 
 source $HOME/.dotfiles/script/ssh-agent-init.sh
 source $HOME/.dotfiles/script/passkey_filepath
@@ -85,5 +85,5 @@ fi
 
 echo ""
 echo "Download Path : ${R_PATH}"
-echo "${REMOTE_ADDR}, transfered done"
+# echo "${REMOTE_ADDR}, transfered done"
 echo ""
