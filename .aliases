@@ -1527,11 +1527,11 @@ function gitsvnrev() {
 
 function gitsvnrevb() {
     if [ $# -le 1 ]; then
-        git svn find-rev $@ $(git rev-parse --abbrev-ref HEAD)
+        git svn find-rev $@ $(git rev-parse --abbrev-ref HEAD) 2>/dev/null
     elif [ $# -eq 2 ]; then
-        git svn find-rev $1 $2
+        git svn find-rev $1 $2 2>/dev/null
     else
-        git svn find-rev $(git log remotes/origin/$@ --max-count 1 --pretty=format:%H)
+        git svn find-rev $(git log remotes/origin/$@ --max-count 1 --pretty=format:%H) 2>/dev/null
     fi
 }
 
