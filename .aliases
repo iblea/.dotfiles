@@ -1118,7 +1118,7 @@ if [ ! -f ~/.gitconfig ]; then
     git config --global rerere.enabled true
     git config --global column.ui never
     git config --global branch.sort -committerdate
-
+    git config --global core.excludesFile "~/.dotfiles/gitignore_global"
     # signed commit
     # git config gpg.format ssh
     # git config user.signingkey ~/.ssh/key.pub
