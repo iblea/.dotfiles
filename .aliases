@@ -950,7 +950,51 @@ function cpdown() {
     cp -r $@ ~/download/
 }
 
-alias colorpreview='for i in {0..255}; do print -Pn “%K{$i} %k%F{$i}${(l:3::0:)i}%f “ ${${(M)$((i%6)):#3}:+$’\\n’}; done'
+# 256 색상 인덱스를 hex 코드로 변환하는 함수
+function color256_to_hex() {
+  local index=$1
+  local r g b
+
+  if (( index < 16 )); then
+    # system color (0 - 15)
+    case $index in
+      0) echo "#000000" ;; # black
+      1) echo "#800000" ;; # red (maroon)
+      2) echo "#008000" ;; # green (lime)
+      3) echo "#808000" ;; # yellow (olive)
+      4) echo "#000080" ;; # blue (navy)
+      5) echo "#800080" ;; # purple
+      6) echo "#008080" ;; # cyan (teal)
+      7) echo "#C0C0C0" ;; # silver (Grey)
+      8) echo "#808080" ;; # grey
+      9) echo "#FF0000" ;; # red
+      10) echo "#00FF00" ;; # green
+      11) echo "#FFFF00" ;; # yellow
+      12) echo "#0000FF" ;; # blue
+      13) echo "#FF00FF" ;; # purple (fuchsia)
+      14) echo "#00FFFF" ;; # cyan (aqua)
+      15) echo "#FFFFFF" ;; # white
+    esac
+  elif (( index < 232 )); then
+    # 216 color cube (16-231)
+    index=$((index - 16))
+    b=$((index % 6))
+    g=$(((index / 6) % 6))
+    r=$((index / 36))
+
+    # 0-5 범위를 0-255 범위로 변환
+    r=$((r * 51))
+    g=$((g * 51))
+    b=$((b * 51))
+
+    printf "#%02X%02X%02X\n" $r $g $b
+  else
+    # greyscale (232-255)
+    gray=$(((index - 232) * 10 + 8))
+    printf "#%02X%02X%02X\n" $gray $gray $gray
+  fi
+}
+alias colorpreview='for i in {0..255}; do print -Pn "%K{$i} %k%F{$i}${(l:3::0:)i} $(color256_to_hex $i )%f " ${${(M)$((i%6)):#3}:+\\n}; done'
 
 alias sshclear='pkill -f "sshd:.*$USER.*\\@"'
 alias sshclearall='pkill -f "sshd:.*\\@"'
@@ -1651,6 +1695,34 @@ function greverts()
 # ==============================================================================
 
 alias dateunix='date "+%s"'
+function unixtimeint() {
+    if [ $# -ne 1 ]; then
+        echo "wrong argument"
+        return 1;
+    fi
+    date -d @$@ "+%Y-%m-%d %H:%M:%S"
+}
+function unixtimedate() {
+    if [ $# -eq 1 ]; then
+        date -d "$@" +%s
+    elif [ $# -eq 6 ]; then
+        read fyear_ fmonth_ fday_ fhour_ fmin_ fsec_ <<< "$@"
+        # 2006-01-02 15:04:05
+        date -d "${fyear_}-${fmonth_}-${fday_} ${fhour_}:${fmin_}:${fsec_}" +%s
+        unset fyear_
+        unset fmonth_
+        unset fday_
+        unset fhour_
+        unset fmin_
+        unset fsec_
+    else
+        echo "wrong argument."
+        echo "write format \"2006-01-02 15:04:05\" or \"2006 01 02 15 04 05\""
+        return 1
+    fi
+    return 0
+}
+
 
 alias ㅣ='ls -shCF -w 60'
 alias ㅣㅣ='ls -lhF'
