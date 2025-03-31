@@ -951,50 +951,62 @@ function cpdown() {
 }
 
 # 256 색상 인덱스를 hex 코드로 변환하는 함수
-function color256_to_hex() {
-  local index=$1
-  local r g b
+function xterm_to_hex() {
+    local index=$1
+    local r g b
 
-  if (( index < 16 )); then
-    # system color (0 - 15)
-    case $index in
-      0) echo "#000000" ;; # black
-      1) echo "#800000" ;; # red (maroon)
-      2) echo "#008000" ;; # green (lime)
-      3) echo "#808000" ;; # yellow (olive)
-      4) echo "#000080" ;; # blue (navy)
-      5) echo "#800080" ;; # purple
-      6) echo "#008080" ;; # cyan (teal)
-      7) echo "#C0C0C0" ;; # silver (Grey)
-      8) echo "#808080" ;; # grey
-      9) echo "#FF0000" ;; # red
-      10) echo "#00FF00" ;; # green
-      11) echo "#FFFF00" ;; # yellow
-      12) echo "#0000FF" ;; # blue
-      13) echo "#FF00FF" ;; # purple (fuchsia)
-      14) echo "#00FFFF" ;; # cyan (aqua)
-      15) echo "#FFFFFF" ;; # white
-    esac
-  elif (( index < 232 )); then
-    # 216 color cube (16-231)
-    index=$((index - 16))
-    b=$((index % 6))
-    g=$(((index / 6) % 6))
-    r=$((index / 36))
+    # Validate input
+    if ! [[ "$index" =~ ^[0-9]+$ ]] || [ "$index" -lt 0 ] || [ "$index" -gt 255 ]; then
+        echo "Error: Color index must be an integer between 0-255" >&2
+        return 1
+    fi
 
-    # 0-5 범위를 0-255 범위로 변환
-    r=$((r * 51))
-    g=$((g * 51))
-    b=$((b * 51))
+    # Standard 16 colors (0-15)
+    if [ "$index" -lt 16 ]; then
+        case $index in
+            0)  r=0;   g=0;   b=0   ;; # black
+            1)  r=128; g=0;   b=0   ;; # red
+            2)  r=0;   g=128; b=0   ;; # green
+            3)  r=128; g=128; b=0   ;; # yellow
+            4)  r=0;   g=0;   b=128 ;; # blue
+            5)  r=128; g=0;   b=128 ;; # magenta
+            6)  r=0;   g=128; b=128 ;; # cyan
+            7)  r=192; g=192; b=192 ;; # white
+            8)  r=128; g=128; b=128 ;; # bright black (gray)
+            9)  r=255; g=0;   b=0   ;; # bright red
+            10) r=0;   g=255; b=0   ;; # bright green
+            11) r=255; g=255; b=0   ;; # bright yellow
+            12) r=0;   g=0;   b=255 ;; # bright blue
+            13) r=255; g=0;   b=255 ;; # bright magenta
+            14) r=0;   g=255; b=255 ;; # bright cyan
+            15) r=255; g=255; b=255 ;; # bright white
+        esac
+    # 6x6x6 color cube (16-231)
+    elif [ "$index" -lt 232 ]; then
+        local color_idx=$(($index - 16))
+        # The RGB components in the 6x6x6 cube increase in steps of 40 (except 0), resulting in:
+        # 0, 95, 135, 175, 215, 255
+        r=$(( (color_idx / 36) ))
+        g=$(( (color_idx % 36) / 6 ))
+        b=$(( color_idx % 6 ))
 
-    printf "#%02X%02X%02X\n" $r $g $b
-  else
-    # greyscale (232-255)
-    gray=$(((index - 232) * 10 + 8))
-    printf "#%02X%02X%02X\n" $gray $gray $gray
-  fi
+        # Convert to actual RGB values
+        r=$(( r == 0 ? 0 : r * 40 + 55 ))
+        g=$(( g == 0 ? 0 : g * 40 + 55 ))
+        b=$(( b == 0 ? 0 : b * 40 + 55 ))
+    # Grayscale (232-255)
+    else
+        # Grayscale values start at 8 and increment by 10
+        r=$(( (index - 232) * 10 + 8 ))
+        g=$r
+        b=$r
+    fi
+
+    # Format as hex
+    printf "#%02x%02x%02x\n" $r $g $b
 }
-alias colorpreview='for i in {0..255}; do print -Pn "%K{$i} %k%F{$i}${(l:3::0:)i} $(color256_to_hex $i )%f " ${${(M)$((i%6)):#3}:+\\n}; done'
+
+alias colorpreview='for i in {0..255}; do print -Pn "%K{$i} %k%F{$i}${(l:3::0:)i} $(xterm_to_hex $i )%f " ${${(M)$((i%6)):#3}:+\\n}; done'
 
 alias sshclear='pkill -f "sshd:.*$USER.*\\@"'
 alias sshclearall='pkill -f "sshd:.*\\@"'
