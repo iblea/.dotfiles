@@ -23,6 +23,9 @@ syntax match GwIPLog  / src [0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3
 syntax match GwPortLog  / src [0-9]\{1,5\}, dst [0-9]\{1,5\}$/
 syntax match GwIncomingLog  / incomming seq -\?[0-9]*, ack -\?[0-9]*, wnd -\?[0-9]*$/
 syntax match GwOutgoingLog  / outgoing seq -\?[0-9]*, ack -\?[0-9]*, wnd -\?[0-9]*$/
+syntax match GwForwarded  / forward from FD [0-9]* => FD [0-9]*$/
+syntax match GwForwarded  / FD [0-9]* FD [0-9]* connected$/
+
 
 " highlight GwDate   ctermfg=cyan guifg=#00ffff
 " highlight GwLevelINF  ctermfg=yellow guifg=#ffff00
@@ -45,6 +48,8 @@ highlight GwIPLog    ctermfg=86  guifg=#5fffd7
 highlight GwPortLog    ctermfg=159  guifg=#afffff
 highlight GwIncomingLog    ctermfg=76  guifg=#5fd700
 highlight GwOutgoingLog    ctermfg=36  guifg=#00af87
+"highlight GwForwarded    ctermfg=202  guifg=#ff5f00
+highlight GwForwarded    ctermfg=199  guifg=#ff00af cterm=italic gui=italic
 
 
 let b:current_syntax = 'gwlog'
