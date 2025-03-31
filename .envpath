@@ -43,14 +43,16 @@ fi
 
 
 # java path
+# if [ -n "$(command -v java)" ]; then
+# 	java --version >/dev/null 2>&1
+# fi
+# if [ $? -eq 0 ]; then
 if [ -n "$(command -v java)" ]; then
-	java --version >/dev/null 2>&1
-fi
-if [ $? -eq 0 ]; then
 	if [[ "$(uname -s)" = "Darwin" ]]; then
 		export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 		if [ -z "$JAVA_HOME" ]; then
 			export JAVA_HOME="$(/usr/libexec/java_home -v17)"
+			# export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
 		fi
 	else
 		# custom java home path
