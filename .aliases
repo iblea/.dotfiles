@@ -141,6 +141,8 @@ alias kd='ls -shCF -w 60'
 # alias l='ls -1shF'
 alias psa='ps -aef'
 
+alias rma='rm -v'
+
 function psf() {
     process_name="$@"
     ps -aef | head -n1
