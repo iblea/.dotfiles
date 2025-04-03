@@ -148,6 +148,17 @@ if [ -n "$findword" ]; then
     fi
 fi
 
+if [ -z "$findword" ]; then
+    # last_history=$(cat "$history_file" | tail -n 1)
+    # echo "last_history: $last_history"
+    # if [ -z "$last_history" ]; then
+    #     echo "find word is empty"
+    #     exit 1
+    # fi
+    # findword="$last_history"
+    echo "findword is empty"
+    exit 1
+fi
 
 
 
