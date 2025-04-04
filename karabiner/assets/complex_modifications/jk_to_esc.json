@@ -82,6 +82,47 @@
                     "to": [{ "key_code": "f19" }]
                 }
             ]
+        },
+        {
+            "description": "df to (ko to ABC) esc",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "d" },
+                            { "key_code": "f" }
+                        ]
+                    },
+                    "to": [
+                        {
+                            "key_code": "escape",
+                            "lazy": false
+                        },
+                        {
+                            "select_input_source": {
+                                "input_source_id": "com.apple.keylayout.ABC",
+                                "language": "en"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "dc to change en/ko",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "d" },
+                            { "key_code": "c" }
+                        ]
+                    },
+                    "to": [{ "key_code": "f19" }]
+                }
+            ]
         }
     ]
 }
