@@ -134,8 +134,8 @@ if [ -z "$findword" ]; then
     history -r "$tmp_file" # history -d $((HISTCMD-1)) && history
     read -e -p "find : " -r findword
     # history -d $((HISTCMD-1)) && read -e -p "find : " -r findword
-    history -d $((HISTCMD-1)) && export HISTFILE="$ago_histpath"
-    history -d $((HISTCMD-1)) && export HISTSIZE=0
+    history -d $((HISTCMD-1)) 2>/dev/null; export HISTFILE="$ago_histpath"
+    history -d $((HISTCMD-1)) 2>/dev/null; export HISTSIZE=0
 fi
 
 if [ -n "$findword" ]; then
