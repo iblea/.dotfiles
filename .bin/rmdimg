@@ -55,7 +55,10 @@ content=$(echo "$content" | sed "s/\![^!]*](//g")
 content2=$(grep -E "<img src=\".*$urlencode_imgdir/img_[^\/]*\"" $filename 2>/dev/null)
 content2=$(echo "$content2" | sed "s/<img[^\<]*src=\"//g")
 content2=$(echo "$content2" | sed "s/\"[^\>]*>/|/g")
-content=$(echo "$content"; echo "$content2")
+content3=$(grep -E "!\[\[.*$urlencode_imgdir/[^\/]*\]\]" $filename)
+# content3=$(echo "$content3" | sed "s/\!\[\[//g")
+# content3=$(echo "$content3" | sed "s/\]\]//g")
+content=$(echo "$content"; echo "$content2"; echo "$content3")
 content=$(echo "$content" | sed 's/%20/ /g')
 
 
@@ -72,6 +75,9 @@ do
         delete_file_array+=("$imgfile")
     fi
 done
+
+echo "delete_file_array: ${delete_file_array[@]}"
+exit 0
 
 if [ ${#delete_file_array[@]} -ne 0 ]; then
     echo ""
