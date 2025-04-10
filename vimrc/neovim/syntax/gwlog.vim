@@ -19,8 +19,8 @@ syntax match GwPortLog  / src [0-9]\{1,5\}, dst [0-9]\{1,5\}$/
 syntax match GwIncomingLog  / incomming seq -\?[0-9]*, ack -\?[0-9]*, wnd -\?[0-9]*$/
 syntax match GwOutgoingLog  / outgoing seq -\?[0-9]*, ack -\?[0-9]*, wnd -\?[0-9]*$/
 syntax match GwForwarded  / forward from FD [0-9]* => FD [0-9]*$/
-syntax match GwForwarded  / FD [0-9]* FD [0-9]* connected$/
-syntax match GwForwarded  / client FD [0-9]*, ID [0-9]*$/
+syntax match GwForwarded  /.*: FD [0-9]* FD [0-9]* connected$/
+syntax match GwForwarded  /.*: client FD [0-9]*, ID [0-9]*$/
 
 
 " highlight GwDate   ctermfg=cyan guifg=#00ffff
