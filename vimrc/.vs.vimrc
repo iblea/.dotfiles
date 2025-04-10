@@ -50,20 +50,20 @@ nnoremap <C-y> <ESC>:e!<CR>G
 nnoremap Q @
 
 "fold key
-nnoremap ,a zf
-vnoremap ,a zf
+nnoremap .a zf
+vnoremap .a zf
 " nnoremap <leader>f zf
 " vnoremap <leader>f zf
-noremap ,f za
-noremap ,o zo
-noremap ,d zd
-" noremap ,o zA
+noremap .f za
+noremap .o zo
+noremap .d zd
+" noremap .o zA
 " nnoremap <Leader>o zA
 " vnoremap <Leader>o zA
-nnoremap ,u zd
-vnoremap ,u zd
-nnoremap ,U zD
-vnoremap ,U zD
+nnoremap .u zd
+vnoremap .u zd
+nnoremap .U zD
+vnoremap .U zD
 
 noremap za zf
 noremap zf za
@@ -73,10 +73,10 @@ noremap zi za
 " vnoremap <Leader>e zd
 " nnoremap <Leader>E zD
 " vnoremap <Leader>E zD
-nnoremap ,q v]}zf
-vnoremap ,q v]}zf
-nnoremap ,w v}zf
-vnoremap ,w v}zf
+nnoremap .q v]}zf
+vnoremap .q v]}zf
+nnoremap .w v}zf
+vnoremap .w v}zf
 
 
 " C-Space in Windows or GVim
@@ -138,6 +138,7 @@ noremap + <C-a>
 " nnoremap <C-m> <C-e>
 " nnoremap , ;
 " nnoremap . ;
+noremap . <NOP>
 nnoremap ye <ESC>hebye<ESC>
 nnoremap yq <ESC>ggyG<C-o>zz<ESC>
 nnoremap # <ESC>:set hlsearch<CR>#Nzz*Nzzvey
@@ -149,6 +150,8 @@ nnoremap <S-I> <ESC>:set hlsearch<CR>#Nzz
 " nnoremap N Nzz
 vnoremap # y/<c-r>"<CR>Nzz
 vnoremap * y?<c-r>"<CR>Nzz
+
+noremap , N
 
 nnoremap t ge
 nnoremap T gE
