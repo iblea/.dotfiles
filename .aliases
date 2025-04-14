@@ -1208,6 +1208,9 @@ if [ ! -f ~/.gitconfig ]; then
     git config --global mergetool.bcompare.cmd "$HOME"/'.bcomp.sh "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
     git config --global mergetool.bcompare.trustExitCode true
     git config --global mergetool.bcompare.keepBackup false
+
+    # defaultBranch
+    git config --global init.defaultBranch main
 fi
 
 
@@ -1695,7 +1698,7 @@ function greverts()
 # git status -s . | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
 
 # git-svn
-# git svn init svn://1.1.1.1/REPO/v5.0 --prefix=svn/
+# git svn init svn://1.1.1.1.0/REPO/proj --prefix=origin/ --id=svn --username=username
 # git svn fetch
 # git checkout -b git-svn remotes/svn/git-svn
 # git push origin git-svn
