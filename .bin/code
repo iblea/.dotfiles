@@ -13,10 +13,10 @@ PATH_BACKUP="$PATH"
 export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
 
 if [[ "$(uname -s)" = "Darwin" ]]; then
-    if [ -d "/Applications/Cursor.app" ]; then
-        "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
-    elif [ -d "/Applications/Visual Studio Code.app" ]; then
+    if [ -d "/Applications/Visual Studio Code.app" ]; then
         "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+    elif [ -d "/Applications/Cursor.app" ]; then
+        "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
     else
         vim $@
     fi
