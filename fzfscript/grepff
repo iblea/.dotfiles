@@ -241,6 +241,8 @@ RELOAD="reload:$reload_script"
     --delimiter '\n' \
     --preview "${preview_script} {1} " \
     --preview-window "${preview_options},wrap" \
+    --bind "ctrl-o:change-query()" \
+    --bind "ctrl-i:replace-query" \
     --bind "enter:${fzf_execute}( echo {1} | xargs -I{} ${fzf_open_script} ${current_pwd}/{} )"
 
 
