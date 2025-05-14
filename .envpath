@@ -194,3 +194,21 @@ fi
 unset is_zsh
 
 
+if [[ "$(uname -s)" = "Darwin" ]]; then
+	if [ -d "/opt/homebrew/opt/llvm/" ]; then
+		if [ -d "/opt/homebrew/opt/llvm/lib" ]; then
+			if [ -z "${LDFLAGS}" ]; then
+				export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+			else
+				LDFLAGS="${LDFLAGS} -L/opt/homebrew/opt/llvm/lib"
+			fi
+		fi
+		if [ -d "/opt/homebrew/opt/llvm/include" ]; then
+			if [ -z "${CPPFLAGS}" ]; then
+				export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+			else
+				CPPFLAGS="${CPPFLAGS} -I/opt/homebrew/opt/llvm/include"
+			fi
+		fi
+	fi
+fi
