@@ -87,12 +87,23 @@ function ll()
     lsoutput=$( ls -lhF --color=always $@ )
     size_col_width=15
 
-    echo "$lsoutput" | head -n 1
-    echo "$lsoutput" | tail -n +2 | awk '{
-        printf "%-7s ", $5
-        for(i=9;i<=NF;i++) printf "%s ", $i;
-        print ""
-    }'
+    headline=$(echo "$lsoutput" | head -n 1)
+    is_headline=$(echo "$headline" | grep "^total ")
+    if [ -z "$is_headline" ]; then
+        echo "$lsoutput" | awk '{
+            printf "%-7s ", $5
+            for(i=9;i<=NF;i++) printf "%s ", $i;
+            print ""
+        }'
+    else
+        echo "$headline"
+        # expect first line (total ...)
+        echo "$lsoutput" | tail -n +2 | awk '{
+            printf "%-7s ", $5
+            for(i=9;i<=NF;i++) printf "%s ", $i;
+            print ""
+        }'
+    fi
 }
 
 function lla()
@@ -1698,7 +1709,7 @@ function greverts()
 # git status -s . | grep "^AA " | awk -F 'AA ' ' { print $2 } ' | xargs -I {} git checkout --merge {}
 
 # git-svn
-# git svn init svn://1.1.1.1.0/REPO/proj --prefix=origin/ --id=svn --username=username
+# git svn init svn://1.1.1.1/REPO/proj --prefix=origin/ --id=svn --username=username
 # git svn fetch
 # git checkout -b git-svn remotes/svn/git-svn
 # git push origin git-svn
