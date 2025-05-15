@@ -1,5 +1,18 @@
 #!/bin/bash
 
+function custom_vi() {
+    clear
+    echo "Do you want to open file with vi?"
+    ls -alhF $@ | awk '{
+        for(i=9;i<=NF;i++) printf "%s ", $i;
+        print ""
+    }'
+    read -sn 1 key 
+    if [[ -z "$key" ]] || [[ "$key" == $'\n' ]] || [[ "$key" == $'\r' ]]; then
+        vi $@
+    fi
+}
+
 
 if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
     export LANG=ko_KR.UTF-8
@@ -27,6 +40,9 @@ else
     elif [ -n "$(command -v code)" ]; then
         code $@
     else
-        vim $@
+        # vim $@
+        custom_vi $@
     fi
 fi
+
+
