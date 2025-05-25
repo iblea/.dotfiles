@@ -26,6 +26,19 @@ PATH_BACKUP="$PATH"
 export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
 
 if [[ "$(uname -s)" = "Darwin" ]]; then
+
+    if [ -n "$GIT_ASKPASS" ]; then
+        if  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+        elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+        elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+        elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+        fi
+    fi
+
     if [ -d "/Applications/Visual Studio Code.app" ]; then
         "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
     elif [ -d "/Applications/Cursor.app" ]; then
@@ -35,6 +48,18 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
     fi
 
 else
+    if [ -n "$GIT_ASKPASS" ]; then
+        if  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+            code $@
+        elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+            cursor $@
+        elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+            code $@
+        elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+            cursor $@
+        fi
+    fi
+
     if [ -n "$(command -v cursor)" ]; then
         cursor $@
     elif [ -n "$(command -v code)" ]; then
