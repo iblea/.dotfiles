@@ -7,7 +7,7 @@ function custom_vi() {
         for(i=9;i<=NF;i++) printf "%s ", $i;
         print ""
     }'
-    read -sn 1 key 
+    read -sn 1 key
     if [[ -z "$key" ]] || [[ "$key" == $'\n' ]] || [[ "$key" == $'\r' ]]; then
         vi $@
     fi
@@ -30,12 +30,16 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
     if [ -n "$GIT_ASKPASS" ]; then
         if  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
             "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+            exit 0
         elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
             "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+            exit 0
         elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
             "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+            exit 0
         elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
             "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+            exit 0
         fi
     fi
 
@@ -51,12 +55,16 @@ else
     if [ -n "$GIT_ASKPASS" ]; then
         if  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
             code $@
+            exit 0
         elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
             cursor $@
+            exit 0
         elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
             code $@
+            exit 0
         elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
             cursor $@
+            exit 0
         fi
     fi
 
