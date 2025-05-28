@@ -35,8 +35,8 @@
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    # os_icon               # os identifier
     dir                     # current directory
+    os_icon                 # os identifier
     vcs                     # git status
     # =========================[ Line #2 ]=========================
     newline                 # \n
@@ -196,7 +196,20 @@
 
   #################################[ os_icon: os identifier ]##################################
   # OS identifier color.
-  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=
+  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=140
+  typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION=''
+  if [ -n "$SSH_CONNECTION" ]; then
+    typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='SSH'
+  else
+    # no SSH Connection
+    if [ -n "$(uname -s | grep -i 'darwin')" ]; then
+      typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='Mac'
+    elif [ -n "$(uname -r | grep -i 'wsl')" ]; then
+      typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='WSL'
+    elif [ -f "/.dockerenv" ]; then
+      typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='Con'
+    fi
+  fi
   # Custom icon.
   # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
 
