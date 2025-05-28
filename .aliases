@@ -1807,6 +1807,9 @@ function idump()
     $HOME/inetdump
 }
 
+alias exesh='find . -name "*.sh" -type f -exec chmod 755 {} \;'
+
+
 # alias
 [ -f $HOME/.aliases_company ] && source ~/.aliases_company
 
