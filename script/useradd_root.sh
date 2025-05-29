@@ -2,7 +2,7 @@
 
 USERNAME="test"
 PASSWORD="testtest"
-SHELL_PATH=/bin/bash
+SHELL_PATH="/bin/bash"
 
 
 is_exist=$(cat /etc/passwd | grep "^$USERNAME:")
