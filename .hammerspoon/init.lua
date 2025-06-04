@@ -50,8 +50,10 @@ hs.hotkey.bind({"option", "control"}, "E", appLaunchOrFocus("iTerm"))
 -- hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("WezTerm"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
-hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Visual Studio Code"))
-hs.hotkey.bind({"option", "control"}, "Q", appLaunchOrFocus("Visual Studio Code"))
+--- hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Visual Studio Code"))
+--- hs.hotkey.bind({"option", "control"}, "Q", appLaunchOrFocus("Visual Studio Code"))
+hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Cursor"))
+hs.hotkey.bind({"option", "control"}, "Q", appLaunchOrFocus("Cursor"))
 --- hs.hotkey.bind({"option", "control"}, "A", appLaunchOrFocus("Cursor"))
 
 --- hs.hotkey.bind({"option", "control"}, "W", appLaunchOrFocus("Safari"))
