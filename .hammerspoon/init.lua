@@ -48,6 +48,7 @@ hs.hotkey.bind({"option", "control"}, "X", appLaunchOrFocus("Finder"))
 hs.hotkey.bind({"option", "control"}, "N", appLaunchOrFocus("iTerm"))
 hs.hotkey.bind({"option", "control"}, "E", appLaunchOrFocus("iTerm"))
 -- hs.hotkey.bind({"option", "control"}, "D", appLaunchOrFocus("WezTerm"))
+hs.hotkey.bind({"option", "control"}, ",", appLaunchOrFocus("Obsidian"))
 
 --- hs.hotkey.bind({"option", "control"}, "I", appLaunchOrFocus("Intellij IDEA"))
 --- hs.hotkey.bind({"option", "control"}, "M", appLaunchOrFocus("Visual Studio Code"))
