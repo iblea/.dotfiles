@@ -44,19 +44,20 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
         # fi
 
         if  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
             exit 0
         elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-            exit 0
-        elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
             "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
             exit 0
-        elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+        elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
             "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+            exit 0
+        elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
             exit 0
         fi
 
+        exit 0
     fi
 
     # if [ -d "/Applications/Visual Studio Code.app" ]; then
@@ -71,6 +72,7 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
         vim "$@"
     fi
 
+    exit 0
 else
     if [ -n "$GIT_ASKPASS" ]; then
 
@@ -89,19 +91,20 @@ else
         # fi
 
         if  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-            code "$@"
+            cursor "$@"
             exit 0
         elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-            cursor "$@"
-            exit 0
-        elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
             code "$@"
             exit 0
-        elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+        elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
             cursor "$@"
+            exit 0
+        elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+            code "$@"
             exit 0
         fi
 
+        exit 0
     fi
 
     # if [ -n "$(command -v code)" ]; then
@@ -116,6 +119,8 @@ else
         # vim "$@"
         custom_vi "$@"
     fi
+
+    exit 0
 fi
 
 
