@@ -33,7 +33,19 @@ line="${fileinfo##*:}"
 # echo "line : $line"
 # vim +$line "$filename" -c 'normal zt'
 
-echo "$filename" | xargs -I{} -o vim {} +${line}
+clear
+echo "Do you want to open file with vi?"
+echo "filepath: $filename"
+# echo "$(pwd)"
+# real_filename=$(echo "$filename" | sed -e "s|$(pwd)/||")
+# echo "real_filename: $real_filename"
+
+read -sn 1 key < /dev/tty
+
+if [[ -z "$key" ]] || [[ "$key" == $'\n' ]] || [[ "$key" == $'\r' ]]; then
+    echo "$filename" | xargs -I{} -o vim {} +${line}
+fi
+
 
 # filename
 # vim "$filename"
