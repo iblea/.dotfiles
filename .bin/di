@@ -81,7 +81,7 @@ if [ -n "$(command -v fzf)" ]; then
             # rm -f /tmp/code-stdin-*
             # codeopt="--goto"
             # $codepath $codeopt $@ &
-            $codepath $@
+            $codepath "$@"
             exit 0
         else
             if [ ! -e "$@" ]; then
@@ -89,7 +89,7 @@ if [ -n "$(command -v fzf)" ]; then
                     onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
                     if [ -e "$onlyfile" ]; then
                         codeopt="--goto"
-                        $codepath $codeopt $@
+                        $codepath $codeopt "$@"
                         exit 0
                     fi
                 fi
@@ -156,7 +156,7 @@ if [ -n "$(command -v fzf)" ]; then
                 export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
                 # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                 if [ -n "$fzfres" ]; then
-                    $codepath $codeopt $fzfres
+                    $codepath $codeopt "$fzfres"
                 fi
                 if [[ "$getdir" != "." ]]; then
                     builtin cd - > /dev/null
@@ -172,7 +172,7 @@ if [ -n "$(command -v fzf)" ]; then
                 # read $anykey
             fi
             # 1개이고 디렉토리가 아니면 바로 실행
-            $codepath $codeopt $@
+            $codepath $codeopt "$@"
             exit 0
         fi
     fi
@@ -242,7 +242,7 @@ if [ -n "$(command -v fzf)" ]; then
     fi
     export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
     if [ -n "$fzfres" ]; then
-        $codepath $codeopt $fzfres
+        $codepath $codeopt "$fzfres"
     fi
     # 디렉토리 이동했을 경우 원래 디렉토리로 이동
     if [ $# -eq 1 ]; then
@@ -346,7 +346,7 @@ else
         elif [[ "$@" = "-" ]]; then
             rm -f /tmp/code-stdin-*
             codeopt="--goto"
-            $codepath $codeopt $@ &
+            $codepath $codeopt "$@" &
             exit 0
         else
             if [ ! -e "$@" ]; then
@@ -354,7 +354,7 @@ else
                     onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
                     if [ -e "$onlyfile" ]; then
                         codeopt="--goto"
-                        $codepath $codeopt $@
+                        $codepath $codeopt "$@"
                         exit 0
                     fi
                 fi
@@ -362,7 +362,7 @@ else
                 read $anykey
             fi
             # 1개이고 디렉토리가 아니면 바로 실행
-            $codepath $codeopt $@
+            $codepath $codeopt "$@"
             exit 0
         fi
     fi

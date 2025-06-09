@@ -3,13 +3,13 @@
 function custom_vi() {
     clear
     echo "Do you want to open file with vi?"
-    ls -alhF $@ | awk '{
+    ls -alhF "$@" | awk '{
         for(i=9;i<=NF;i++) printf "%s ", $i;
         print ""
     }'
     read -sn 1 key
     if [[ -z "$key" ]] || [[ "$key" == $'\n' ]] || [[ "$key" == $'\r' ]]; then
-        vi $@
+        vi "$@"
     fi
 }
 
@@ -29,52 +29,52 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 
     if [ -n "$GIT_ASKPASS" ]; then
         if  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
             exit 0
         elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
             exit 0
         elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
             exit 0
         elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
             exit 0
         fi
     fi
 
     if [ -d "/Applications/Visual Studio Code.app" ]; then
-        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" $@
+        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
     elif [ -d "/Applications/Cursor.app" ]; then
-        "/Applications/Cursor.app/Contents/Resources/app/bin/code" $@
+        "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
     else
-        vim $@
+        vim "$@"
     fi
 
 else
     if [ -n "$GIT_ASKPASS" ]; then
         if  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-            code $@
+            code "$@"
             exit 0
         elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-            cursor $@
+            cursor "$@"
             exit 0
         elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-            code $@
+            code "$@"
             exit 0
         elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-            cursor $@
+            cursor "$@"
             exit 0
         fi
     fi
 
     if [ -n "$(command -v cursor)" ]; then
-        cursor $@
+        cursor "$@"
     elif [ -n "$(command -v code)" ]; then
-        code $@
+        code "$@"
     else
-        # vim $@
-        custom_vi $@
+        # vim "$@"
+        custom_vi "$@"
     fi
 fi
 
