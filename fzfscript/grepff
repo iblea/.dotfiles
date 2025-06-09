@@ -242,8 +242,10 @@ RELOAD="reload:$reload_script"
     --preview "${preview_script} {1} " \
     --preview-window "${preview_options},wrap" \
     --bind "ctrl-o:change-query()" \
-    --bind "ctrl-i:replace-query" \
+	--bind "ctrl-i:transform:[[ {1} ]] && echo 'change-query({1})' || echo ''" \
     --bind "enter:${fzf_execute}( echo {1} | xargs -I{} ${fzf_open_script} ${current_pwd}/{} )"
+
+	# --bind "ctrl-i:replace-query({1})" \
 
 
     # search_string -> memset.*' -> error
