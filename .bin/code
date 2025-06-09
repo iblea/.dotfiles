@@ -59,10 +59,14 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 
     fi
 
-    if [ -d "/Applications/Visual Studio Code.app" ]; then
-        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-    elif [ -d "/Applications/Cursor.app" ]; then
+    # if [ -d "/Applications/Visual Studio Code.app" ]; then
+    #     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+    # elif [ -d "/Applications/Cursor.app" ]; then
+    #     "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+    if [ -d "/Applications/Cursor.app" ]; then
         "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+    elif [ -d "/Applications/Visual Studio Code.app" ]; then
+        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
     else
         vim "$@"
     fi
@@ -100,6 +104,10 @@ else
 
     fi
 
+    # if [ -n "$(command -v code)" ]; then
+    #     code "$@"
+    # elif [ -n "$(command -v cursor)" ]; then
+    #     cursor "$@"
     if [ -n "$(command -v cursor)" ]; then
         cursor "$@"
     elif [ -n "$(command -v code)" ]; then
