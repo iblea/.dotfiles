@@ -499,6 +499,11 @@ alias agrepno="$HOME/.dotfiles/grepscript/agrepno"
 alias agrepn="$HOME/.dotfiles/grepscript/agrepn"
 alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 
+
+if [ -n "$(which zssh)" ]; then
+    alias ssh="zssh -z ^X"
+fi
+
 # 반복문에서 echo 및 sed 시 성능이 너무 떨어짐
 # agrepn 단독 사용 시 0.04sec 걸리는 명령어가 grepnz 사용 시 3.5sec 까지 늘어남.
 # 따라서 반복문 내에서 echo 와 sed 사용을 최소화
@@ -1808,6 +1813,9 @@ function idump()
 }
 
 alias exesh='find . -name "*.sh" -type f -exec chmod 755 {} \;'
+
+alias base64_encode='base64 -w 0'
+alias base64_decode='base64 -d -i'
 
 
 # alias
