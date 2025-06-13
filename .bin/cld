@@ -5,8 +5,8 @@ if [ -$# -eq 0 ]; then
 	exit 1
 fi
 
-if [ "$(command -v claude)" ]; then
-	echo "cluade command not found"
+if [ -z "$(command -v claude)" ]; then
+	echo "claude command not found"
 	exit 1
 fi
 
@@ -20,3 +20,4 @@ prompt_content=$(cat $PROMPT_PATH)
 
 # claude --system-prompt "$prompt_content" -p ";kor 안녕"
 claude --system-prompt "$prompt_content" -p "$@"
+
