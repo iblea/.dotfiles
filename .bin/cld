@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ -$# -eq 0 ]; then
+	echo "arg none"
+	exit 1
+fi
+
+if [ "$(command -v claude)" ]; then
+	echo "cluade command not found"
+	exit 1
+fi
+
+
+PROMPT_PATH=$HOME/.dotfiles/prompt/global_prompt.md
+
+prompt_content=$(cat $PROMPT_PATH)
+
+# echo "prompt content"
+# echo "$prompt_content"
+
+# claude --system-prompt "$prompt_content" -p ";kor 안녕"
+claude --system-prompt "$prompt_content" -p "$@"
