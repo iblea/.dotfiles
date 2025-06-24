@@ -500,7 +500,7 @@ alias agrepn="$HOME/.dotfiles/grepscript/agrepn"
 alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 
 
-if [ -n "$($(which which) zssh)" ]; then
+if [ -n "$($(bash -c 'which which') zssh)" ]; then
     alias ssh="zssh -z ^X"
 fi
 
