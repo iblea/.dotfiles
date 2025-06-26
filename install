@@ -36,28 +36,30 @@ function input_password()
 
 cd $HOME
 
-if [ -f "$HOME/.ssh/id_rsa" ]; then
-    read -n 1 -p "git clone ssh? (y/n): " input_char < /dev/tty
-    echo
-    if [[ "$input_char" = "y" ]]; then
-        source $HOME/.dotfiles/script/ssh-agent-init.sh
-        source $HOME/.dotfiles/script/passkey_filepath
-        if [ -f "$PASSPATH_SSH_AGENT" ]; then
-            ( { sleep .1; echo "$(cat ""$PASSPATH_SSH_AGENT"" | tr -d '\r' | tr -d '\n')"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+if [ ! -d $HOME/.dotfiles ]; then
+    if [ -f "$HOME/.ssh/id_rsa" ]; then
+        read -n 1 -p "git clone ssh? (y/n): " input_char < /dev/tty
+        echo
+        if [[ "$input_char" = "y" ]]; then
+            source $HOME/.dotfiles/script/ssh-agent-init.sh
+            source $HOME/.dotfiles/script/passkey_filepath
+            if [ -f "$PASSPATH_SSH_AGENT" ]; then
+                ( { sleep .1; echo "$(cat ""$PASSPATH_SSH_AGENT"" | tr -d '\r' | tr -d '\n')"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+            else
+                # read -p "input pass? (y/n): " input_pass < /dev/tty
+                echo -n "input password (hidden) : "
+                input_pass=$( input_password )
+                echo
+                ( { sleep .1; echo "$input_pass"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
+                echo "passphrase done"
+            fi
+            git clone "git@github.com:/iblea/.dotfiles.git"
         else
-            # read -p "input pass? (y/n): " input_pass < /dev/tty
-            echo -n "input password (hidden) : "
-            input_pass=$( input_password )
-            echo
-            ( { sleep .1; echo "$input_pass"; } | script -q /dev/null -c "ssh-add $HOME/.ssh/id_rsa" ) > /dev/null
-            echo "passphrase done"
+            git clone "https://github.com/iblea/.dotfiles.git"
         fi
-        git clone "git@github.com:/iblea/.dotfiles.git"
     else
         git clone "https://github.com/iblea/.dotfiles.git"
     fi
-else
-    git clone "https://github.com/iblea/.dotfiles.git"
 fi
 
 
