@@ -48,36 +48,25 @@ if [ ! -d $fixed_home/.zsh ]; then
     mkdir $fixed_home/.zsh/
 fi
 
-if [ ! -e "$fixed_home/.zshrc" ]; then
-    if [ -L "$fixed_home/.zshrc" ]; then
-        rm -f "$fixed_home/.zshrc"
-    fi
-    ln -s "$settings_full_dir/.zshrc"
-fi
 
-if [ ! -e "$fixed_home/.zsh/.p10k.zsh" ]; then
-    if [ -L "$fixed_home/.zsh/.p10k.zsh" ]; then
-        rm -f "$fixed_home/.zsh/.p10k.zsh"
-    fi
-    ln -s $settings_full_dir/.zsh/.p10k.zsh $fixed_home/.zsh/.p10k.zsh
-fi
+# set rcfile
+rc_files=(
+    ".zshrc"
+    ".zsh/.p10k.zsh"
+    ".bashrc"
+    ".vimrc"
+    ".toprc"
+)
 
-# bash
-if [ ! -e "$fixed_home/.bashrc" ]; then
-    if [ -L "$fixed_home/.bashrc" ]; then
-        rm -f "$fixed_home/.bashrc"
+for rc_file in "${rc_files[@]}"; do
+	echo "check rc_file: $rc_file"
+    if [ ! -e "$fixed_home/$rc_file" ]; then
+        if [ -L "$fixed_home/$rc_file" ]; then
+            rm -f "$fixed_home/$rc_file"
+        fi
+        ln -s "$settings_full_dir/$rc_file" "$fixed_home/$rc_file"
     fi
-    ln -s $settings_full_dir/.bashrc
-fi
-
-
-# vimrc
-if [ ! -e "$fixed_home/.vimrc" ]; then
-    if [ -L "$fixed_home/.vimrc" ]; then
-        rm -f "$fixed_home/.vimrc"
-    fi
-    ln -s $settings_full_dir/vimrc/.vimrc
-fi
+done
 
 # https://github.com/neovim/neovim-releases (GLIBC 2.27 official unsupported)
 if [ -n $(which nvim) ]; then
