@@ -51,20 +51,27 @@ fi
 
 # set rcfile
 rc_files=(
-    ".zshrc"
-    ".zsh/.p10k.zsh"
-    ".bashrc"
-    ".vimrc"
-    ".toprc"
+    ".zshrc" ".zshrc"
+    ".zsh/.p10k.zsh" ".zsh/.p10k.zsh"
+    ".bashrc" ".bashrc"
+    "vimrc/.vimrc" ".vimrc"
+    ".toprc" ".toprc"
 )
 
-for rc_file in "${rc_files[@]}"; do
-	echo "check rc_file: $rc_file"
-    if [ ! -e "$fixed_home/$rc_file" ]; then
-        if [ -L "$fixed_home/$rc_file" ]; then
-            rm -f "$fixed_home/$rc_file"
+
+for (( i=0; i<${#rc_files[@]}; i+=2 )); do
+    settings_path="${rc_files[$i]}"
+    home_linking_path="${rc_files[$i+1]}"
+
+    echo "check rc_file: $settings_path -> $home_linking_path"
+
+    # non file
+    if [ ! -e "$fixed_home/$home_linking_path" ]; then
+        if [ -L "$fixed_home/$home_linking_path" ]; then
+            # but linking file exists
+            rm -f "$fixed_home/$home_linking_path"
         fi
-        ln -s "$settings_full_dir/$rc_file" "$fixed_home/$rc_file"
+        ln -s "$settings_full_dir/$settings_path" "$fixed_home/$home_linking_path"
     fi
 done
 
