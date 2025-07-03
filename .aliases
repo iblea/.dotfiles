@@ -464,9 +464,31 @@ fi
 
 
 
-
-
-
+# sudo custom function
+function sudu() {
+    if declare -f "$1" > /dev/null 2>&1; then
+        echo "🔧 Running function '$1' with sudo..."
+        
+        # 임시 파일에 함수 정의와 실행 코드 저장
+        local temp_file=$(mktemp)
+        {
+            echo "#!/bin/bash"
+            echo "export PATH=\"$PATH\""
+            declare -f "$1"
+            echo "$@"
+        } > "$temp_file"
+        
+        # 실행 후 정리
+        command sudo -E bash "$temp_file" && rm -f "$temp_file"
+        
+    elif alias "$1" > /dev/null 2>&1; then
+        echo "🔧 Running alias '$1' with sudo..."
+        local alias_cmd=$(alias "$1" | sed "s/^[^=]*='\(.*\)'$/\1/")
+        command sudo -E bash -c "export PATH=\"$PATH\"; $alias_cmd ${*:2}"
+    else
+        command sudo -E env PATH="$PATH" "$@"
+    fi
+}
 
 # diffdirectory - diffdir
 function diffdir()
