@@ -543,7 +543,7 @@
   # sagging, try setting POWERLEVEL9K_VCS_MAX_INDEX_SIZE_DIRTY to a number lower than the output
   # of `git ls-files | wc -l`. Alternatively, add `bash.showDirtyState = false` to the repository's
   # config: `git config bash.showDirtyState false`.
-  typeset -g POWERLEVEL9K_VCS_MAX_INDEX_SIZE_DIRTY=25000
+  typeset -g POWERLEVEL9K_VCS_MAX_INDEX_SIZE_DIRTY=20000
   # typeset -g POWERLEVEL9K_VCS_MAX_INDEX_SIZE_DIRTY=100000
 
   # Don't show Git status in prompt for repositories whose workdir matches this pattern.
