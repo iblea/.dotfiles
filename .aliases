@@ -1798,30 +1798,35 @@ alias ㄴ헷ㅊ='sgpt --code'
 function td()
 {
     if [ -z "$td_iface" ]; then
-        echo "not 'td_iface' set"
-        td_iface="eth0"
+        td_iface="any"
     fi
 
     if [ $# -eq 0 ]; then
         echo "wrong argument tcpdump"
-        echo "current show iface : '$td_iface'"
         return 1
-    elif [ $# -eq 1 ]; then
+	elif [ $# -eq 1 ]; then
+		echo "tcpdump interface: $td_iface"
         tcpdump -nn -vv -i "$td_iface" tcp port $@
-    elif [ $# -eq 2 ] && [[ "$1" = "set" ]]; then
-        echo "set td_iface=$2"
-        td_iface="$2"
-        return 0
     else
         # 5문자 뒤 문자를 출력 (ex. "qwertyasdf" -> "yasdf")
         # local opt=( $(echo "$@" | cut -c5- ) )
         # ' ' 문자를 기준으로 3번째부터 출력 ("a b c d" -> "c d")
         # local opt=$(echo "$@" | cut -d ' ' -f 3-)
         # 3번째부터 출력 : bash나 zsh나 동일
-        for arg in "${@:3}"; do
+		local tmp_iface=""
+		local opt=()
+        for arg in "${@:1}"; do
             opt+=("$arg")
+			if [[ "$tmp_iface" = "?" ]]; then
+				tmp_iface="$arg"
+				td_iface="$arg"
+			fi
+			if [[ "$arg" = "-i" ]]; then
+				tmp_iface="?"
+			fi
         done
-        tcpdump -nn -vv -i "$td_iface" $2 port $1 ${opt[@]}
+		echo "tcpdump interface: $td_iface"
+        tcpdump -nn -vv -i "$td_iface" ${opt[@]}
     fi
 }
 
