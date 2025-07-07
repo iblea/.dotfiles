@@ -9,6 +9,8 @@
 # fi
 
 
+
+
 # if wrong LC_ALL, change empty set
 if [ -n "$LC_ALL" ]; then
 	if [ -z "$(locale -a 2>/dev/null | grep '${LC_ALL}')" ]; then
@@ -17,6 +19,22 @@ if [ -n "$LC_ALL" ]; then
 fi
 
 if [[ "$(uname -s)" = "Darwin" ]]; then
+
+	if [ -d /opt/homebrew ]; then
+		if ! grep -q "/opt/homebrew/bin" <<< "$PATH"; then
+			export PATH=/opt/homebrew/bin:$PATH
+		fi
+		if ! grep -q "/opt/homebrew/sbin" <<< "$PATH"; then
+			export PATH=/opt/homebrew/sbin:$PATH
+		fi
+	fi
+
+	if [ -d $HOME/.dotfiles/bin/ ]; then
+		if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
+			export PATH=$HOME/.dotfiles/bin:$PATH
+		fi
+	fi
+
 	if [ -n "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
 		export LC_ALL=ko_KR.UTF-8
 		export LANG=ko_KR.UTF-8

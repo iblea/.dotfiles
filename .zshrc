@@ -1,18 +1,9 @@
-if [ -d /opt/homebrew ]; then
-    if ! grep -q "/opt/homebrew/bin" <<< "$PATH"; then
-        export PATH=/opt/homebrew/bin:$PATH
-    fi
-    if ! grep -q "/opt/homebrew/sbin" <<< "$PATH"; then
-        export PATH=/opt/homebrew/sbin:$PATH
-    fi
-fi
 
-if [ -d $HOME/.dotfiles/bin/ ]; then
-    if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
-        export PATH=$HOME/.dotfiles/bin:$PATH
-    fi
+# environment path (envpath)
+if [ -f $HOME/.envpath ]; then
+    # . ~/.envpath
+    source ~/.envpath
 fi
-
 
 # into /etc/zsh/zshrc (vscode terminal)
 # # Useful support for interacting with Terminal.app or other terminal programs
@@ -232,12 +223,6 @@ if [[ ! -v POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS ]]; then
 fi
 
 
-# environment path (envpath)
-if [ -f $HOME/.envpath ]; then
-    # . ~/.envpath
-    source ~/.envpath
-fi
-
 if [ -d $HOME/.dotfiles/env_custom/ ]; then
     local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
     for file in $files; do
@@ -404,7 +389,7 @@ zshaddhistory() {
     for ignore in "${HISTORY_IGNORES[@]}" ; do
         if [[ "${cmd%$'\n'}" =~ $ignore ]]; then
             return 1
-		fi
+        fi
     done
     return 0
 }
