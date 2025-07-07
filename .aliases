@@ -81,7 +81,10 @@ fi
 
 # alias ll='ls -1shF'
 # alias lla='ls -1ashF'
-unalias ll
+
+if [ -n "$(alias ll 2>/dev/null)" ]; then
+    unalias ll
+fi
 function ll()
 {
     lsoutput=$( ls -lhF --color=always $@ )
@@ -230,9 +233,9 @@ function psu() {
 
 function watcha() {
     if [ $# -eq 2 ]; then
-        watch --color -n $1 -x bash -c "source ~/.aliases; $2"
+        watch --color -n $1 -x bash -c "test -f && source ~/.envpath; test -f && source ~/.aliases; $2"
     else
-        watch --color -n 1 -x bash -c "source ~/.aliases; $@"
+        watch --color -n 1 -x bash -c "test -f && source ~/.envpath; source ~/.aliases; $@"
     fi
 }
 

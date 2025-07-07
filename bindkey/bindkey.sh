@@ -1,4 +1,5 @@
 
+if [ -n "$(echo $- | grep 'i')" ]; then
 
 set_o=$(set -o)
 emacs_mode=$(echo "$set_o" | grep "emacs" | awk '{ print $NF }')
@@ -24,5 +25,7 @@ elif grep -q "bash" <<< "$shell"; then
 
 fi
 
+fi
 
 fi
+
