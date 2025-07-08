@@ -73,6 +73,13 @@ alias grepq="grep --color=auto -rnIHF"
 if [ -f $HOME/.ssh/config ]; then
     alias ssh='ssh -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
     alias scp='scp -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
+    function sshinitd() {
+        ssh-keygen -f $HOME/.ssh/known_hosts -R "$@"
+        domain_ip=$(nslookup "$@" | grep "Address: " | awk '{print $NF}')
+        if [ -n "$domain_ip" ]; then
+            ssh-keygen -f $HOME/.ssh/known_hosts -R "$domain_ip"
+        fi
+    }
     alias sshinit='ssh-keygen -f $HOME/.ssh/known_hosts -R '
     alias ibrew="arch -x86_64 /usr/local/bin/brew"
 fi
@@ -471,7 +478,7 @@ fi
 function sudu() {
     if declare -f "$1" > /dev/null 2>&1; then
         echo "🔧 Running function '$1' with sudo..."
-        
+
         # 임시 파일에 함수 정의와 실행 코드 저장
         local temp_file=$(mktemp)
         {
@@ -480,10 +487,10 @@ function sudu() {
             declare -f "$1"
             echo "$@"
         } > "$temp_file"
-        
+
         # 실행 후 정리
         command sudo -E bash "$temp_file" && rm -f "$temp_file"
-        
+
     elif alias "$1" > /dev/null 2>&1; then
         echo "🔧 Running alias '$1' with sudo..."
         local alias_cmd=$(alias "$1" | sed "s/^[^=]*='\(.*\)'$/\1/")
