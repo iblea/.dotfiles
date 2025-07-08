@@ -30,6 +30,25 @@ ZN="" # ZONEID 직접입력
 
 
 
+function dns_flush() {
+
+    if [ "$(uname -s)" = "Darwin" ]; then
+        if [ -n "$(cat /etc/sudoers.d/* | grep 'dscacheutil' )" ]; then
+            sudo dscacheutil -flushcache
+        fi
+        if [ -n "$(cat /etc/sudoers.d/* | grep -P 'killall.*HUP.*mDNSResponder' )" ]; then
+            sudo killall -HUP mDNSResponder
+        fi
+    elif [ "$(uname -s)" = "Linux" ]; then
+        # sudo systemd-resolve --flush-caches
+        echo "Unsupported OS"
+        exit 1
+    else
+        echo "Unsupported OS"
+        exit 1
+    fi
+
+}
 
 if [ $# -le 1 ] || [ $# -ge 4 ]; then
     echo "Wrong Argument"
@@ -148,6 +167,7 @@ if [ -n "$AIDARY" ]; then
             echo "${name}[${type}] = '${content}' (${ttl},${proxied})"
         done
 
+        dns_flush
         exit 0
     fi
 
@@ -158,6 +178,7 @@ if [ -n "$AIDARY" ]; then
             --url "$V4/$ZN/dns_records/${AIDARY}" \
             -H "$H1" -H "$H2" \
             | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
+        dns_flush
         exit 0
     fi
 
@@ -169,6 +190,7 @@ if [ -n "$AIDARY" ]; then
         --data "{\"type\":\"${RECORD_TYPE}\",\"name\":\"${RECORD}\",\"content\":\"${CHANGED_IP}\",\"proxied\":$Proxied,\"ttl\":$TTL}" \
         | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
 
+    dns_flush
     exit 0
 fi
 
@@ -180,6 +202,7 @@ curl -sk --request POST \
     --data "{\"type\":\"${RECORD_TYPE}\",\"name\":\"${RECORD}\",\"content\":\"${CHANGED_IP}\",\"proxied\":$Proxied,\"ttl\":$TTL}" \
     | grep -Po '(?<="name":")[^"]*|(?<="content":")[^"]*|(?<=Z"},)[^}]*|(?<="success":false,)[^$]*|(?<=\s\s)[^$]*' | xargs
 
+dns_flush
 
 
 
