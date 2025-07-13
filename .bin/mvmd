@@ -8,6 +8,46 @@ fi
 dstpath="${@:${#}:1}"
 
 if [ ! -d "${dstpath}" ]; then
+    if [ $# -ne 2 ]; then
+        echo "mvmd wrong argument"
+        exit 1
+    fi
+
+    dstdir=$(dirname "${dstpath}")
+    dst_filename=$(basename "${dstpath}")
+
+    srcpath="${@:1:1}"
+    if [ ! -f "${srcpath}" ]; then
+        echo "cannot find file [${srcpath}]"
+        exit 1
+    fi
+
+    mv "${srcpath}" "${dstpath}"
+    src_filename=$(basename "${srcpath}")
+    src_dir=$(dirname "${srcpath}")
+
+    mdresources_dir="${src_dir}/mdresources/dir_${src_filename}_img"
+
+    if [ -d "${mdresources_dir}" ]; then
+        if [ ! -d "${dstdir}/mdresources" ]; then
+            mkdir "${dstdir}/mdresources"
+        fi
+        if [ ! -d "${dstdir}/mdresources/dir_${dst_filename}_img" ]; then
+            mkdir "${dstdir}/mdresources/dir_${dst_filename}_img"
+        fi
+        mv "${mdresources_dir}"/* "${dstdir}/mdresources/dir_${dst_filename}_img"
+    fi
+    rm -rf "${mdresources_dir}"
+
+    if test -n "$(find "${src_dir}/mdresources" -maxdepth 0 -type d -empty)" ; then
+        echo "directory empty, remove it [${src_dir}/mdresources]"
+        rmdir "${src_dir}/mdresources"
+    fi
+
+    exit 0
+fi
+
+if [ ! -d "${dstpath}" ]; then
     echo "no such directory [${dstpath}]"
     exit 1
 fi
