@@ -1292,10 +1292,12 @@ function fuunalias_alias()
 
 
 fuunalias_alias 'gb' 'git branch'
+fuunalias_alias 'got' 'cd "$(git rev-parse --show-toplevel || echo .)"'
 fuunalias_alias 'gba' 'git branch --all'
 fuunalias_alias 'gco' 'git checkout'
-fuunalias_alias 'gsh' 'git reset'
-fuunalias_alias 'grs' 'git restore'
+fuunalias_alias 'grs' 'git reset'
+fuunalias_alias 'gri' 'git reset'
+fuunalias_alias 'gro' 'git restore'
 fuunalias_alias 'gcf' 'git config'
 fuunalias_alias 'gcfl' 'git config --list'
 fuunalias_alias 'gs' 'git status --short'
@@ -1306,6 +1308,7 @@ fuunalias_alias 'gsti' 'git stash push'
 fuunalias_alias 'gstiu' 'git stash push -u'
 # keep staging file
 fuunalias_alias 'gstik' 'git stash push -k'
+# k - keep staging file, u - untracked file
 fuunalias_alias 'gstiku' 'git stash push -k -u'
 fuunalias_alias 'gstmp' ''
 fuunalias_alias 'gsta' ''
@@ -1625,6 +1628,21 @@ function gitsvnrev() {
         return 0
     fi
     git svn find-rev "$hash"
+}
+
+function gitsvninit() {
+    if [ $# -eq 1 ]; then
+        git svn init "$@" --prefix=origin/ --id=svn
+		return 0
+    fi
+	if [ $# -eq 2 ]; then
+		opts=(${@:2:${#}-1})
+		git svn init "$1" --prefix=origin/ --id=svn --svn-remote="$2"
+		return 0
+	fi
+	opts=(${@:3:${#}-1})
+    git svn init "$1" --prefix=origin/ --id=svn --svn-remote="$2" $opts
+
 }
 
 # [svn-remote "v5.0"]
