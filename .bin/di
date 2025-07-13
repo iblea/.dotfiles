@@ -1,13 +1,14 @@
 #!/bin/bash
 
+codepath=vi
+codeopt=""
+# [ -n "$(command -v code)" ] && codepath=code
+# [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
+# [ -n "$(command -v 'cursor')" ] && codepath=cursor
+codepath="$HOME/.dotfiles/.bin/code"
+
 if [ -n "$(command -v fzf)" ]; then
-    codepath=vi
-    codeopt=""
     size_0_cmd=""
-    # [ -n "$(command -v code)" ] && codepath=code
-    # [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
-    # [ -n "$(command -v 'cursor')" ] && codepath=cursor
-    codepath="$HOME/.dotfiles/.bin/code"
     WHICH_IS=$(/bin/bash -c "which which" 2>/dev/null)
     FZF_BIN_PATH=$($WHICH_IS fzf)
     # argument 가 2개 이상일 경우
@@ -21,7 +22,7 @@ if [ -n "$(command -v fzf)" ]; then
                 fi
                 search_path+=("$arg")
             done
-            $codepath $codeopt "${search_path[@]}"
+            "$codepath" $codeopt "${search_path[@]}"
             exit 0;
         fi
         is_first=1
@@ -56,7 +57,7 @@ if [ -n "$(command -v fzf)" ]; then
             fi
             search_path+=("$arg")
         done
-        $codepath $codeopt "${search_path[@]}"
+        "$codepath" $codeopt "${search_path[@]}"
         exit 0
     fi
     # argument가 1개일 경우
@@ -81,7 +82,7 @@ if [ -n "$(command -v fzf)" ]; then
             # rm -f /tmp/code-stdin-*
             # codeopt="--goto"
             # $codepath $codeopt $@ &
-            $codepath "$@"
+            "$codepath" "$@"
             exit 0
         else
             if [ ! -e "$@" ]; then
@@ -89,7 +90,7 @@ if [ -n "$(command -v fzf)" ]; then
                     onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
                     if [ -e "$onlyfile" ]; then
                         codeopt="--goto"
-                        $codepath $codeopt "$@"
+                        "$codepath" $codeopt "$@"
                         exit 0
                     fi
                 fi
@@ -134,7 +135,7 @@ if [ -n "$(command -v fzf)" ]; then
                     if [ -n "$tmpres" ]; then
                         openfile=$(echo "${tmpres}" | sed "s|^\./|${getdir}/|")
                         echo "find only one. open: $openfile"
-                        $codepath $codeopt "$tmpres"
+                        "$codepath" $codeopt "$tmpres"
                     else
                         echo "no result"
                     fi
@@ -156,7 +157,7 @@ if [ -n "$(command -v fzf)" ]; then
                 export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
                 # FZF_DEFAULT_COMMAND="fd \"inspection_\" --type file --follow --hidden --no-ignore -X grep -lI ." fzf
                 if [ -n "$fzfres" ]; then
-                    $codepath $codeopt "$fzfres"
+                    "$codepath" $codeopt "$fzfres"
                 fi
                 if [[ "$getdir" != "." ]]; then
                     builtin cd - > /dev/null
@@ -172,7 +173,7 @@ if [ -n "$(command -v fzf)" ]; then
                 # read $anykey
             fi
             # 1개이고 디렉토리가 아니면 바로 실행
-            $codepath $codeopt "$@"
+            "$codepath" $codeopt "$@"
             exit 0
         fi
     fi
@@ -242,7 +243,7 @@ if [ -n "$(command -v fzf)" ]; then
     fi
     export FZF_DEFAULT_COMMAND="$origin_fzf_cmd"
     if [ -n "$fzfres" ]; then
-        $codepath $codeopt "$fzfres"
+        "$codepath" $codeopt "$fzfres"
     fi
     # 디렉토리 이동했을 경우 원래 디렉토리로 이동
     if [ $# -eq 1 ]; then
@@ -258,35 +259,7 @@ if [ -n "$(command -v fzf)" ]; then
 else
 
     # no fzf di
-    codeopt=""
-    # codepath=vi
-    # [ -n "$(command -v code)" ] && codepath=code
-    # [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
-    # [ -n "$(command -v 'cursor')" ] && codepath=cursor
-    codepath="$HOME/.dotfiles/.bin/code"
-    # [ -n "$(command -v cursor)" ] && codepath=cursor
-    # FZF_BIN_PATH=$(/bin/which fzf)
     # argument 가 2개 이상일 경우
-    # if [ $# -ge 2 ]; then
-    #     search_path=()
-    #     for arg in "$@"; do
-    #         if [ "$1" = "touch" ]; then
-    #             $codepath $codeopt "${2}"
-    #             return ;
-    #         fi
-    #         if [ -d "$arg" ]; then
-    #             echo "\"$arg\" is directory (so skip)"
-    #             continue
-    #         fi
-    #         if [ ! -e "$@" ]; then
-    #             echo "file not found. create new file? (ctrl-c to stop)"
-    #             read $anykey
-    #         fi
-    #         search_path+=("$arg")
-    #     done
-    #     $codepath $codeopt "${search_path[@]}"
-    #     return;
-    # fi
     if [ $# -ge 2 ]; then
         search_path=()
         if [ "$1" = "touch" ]; then
@@ -297,7 +270,7 @@ else
                 fi
                 search_path+=("$arg")
             done
-            $codepath $codeopt "${search_path[@]}"
+            "$codepath" $codeopt "${search_path[@]}"
             exit 0;
         fi
         is_first=1
@@ -332,7 +305,7 @@ else
             fi
             search_path+=("$arg")
         done
-        $codepath $codeopt "${search_path[@]}"
+        "$codepath" $codeopt "${search_path[@]}"
         exit 0;
     fi
 
@@ -346,7 +319,7 @@ else
         elif [[ "$@" = "-" ]]; then
             rm -f /tmp/code-stdin-*
             codeopt="--goto"
-            $codepath $codeopt "$@" &
+            "$codepath" $codeopt "$@" &
             exit 0
         else
             if [ ! -e "$@" ]; then
@@ -354,7 +327,7 @@ else
                     onlyfile=$(echo "$@" | sed 's/:[0-9]*$//')
                     if [ -e "$onlyfile" ]; then
                         codeopt="--goto"
-                        $codepath $codeopt "$@"
+                        "$codepath" $codeopt "$@"
                         exit 0
                     fi
                 fi
@@ -362,7 +335,7 @@ else
                 read $anykey
             fi
             # 1개이고 디렉토리가 아니면 바로 실행
-            $codepath $codeopt "$@"
+            "$codepath" $codeopt "$@"
             exit 0
         fi
     fi
