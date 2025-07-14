@@ -1874,7 +1874,7 @@ alias base64_decode='base64 -d -i'
 
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
-    alias clds='claude --model=sonnet '
+    alias clds='claude --model=sonnet --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)"'
 fi
 
 
