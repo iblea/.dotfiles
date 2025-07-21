@@ -24,6 +24,8 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	Plug 'vim-scripts/TagHighlight'
 	Plug 'vim-scripts/EasyColour'
 
+	Plug  'powerman/vim-plugin-AnsiEsc'
+
 	" Monokai
 	Plug 'ku1ik/vim-monokai'
 

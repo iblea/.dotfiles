@@ -1,5 +1,9 @@
+" 원하는 파일 형식을 추가한다.
 autocmd BufRead,BufNewFile httpgw.log.* set filetype=gwlog
 autocmd BufRead,BufNewFile log_agent.log.* set filetype=gwlog
 autocmd BufRead,BufNewFile policy_agent.log.* set filetype=gwlog
 autocmd BufRead,BufNewFile arp_daemon.log.* set filetype=gwlog
-
+autocmd BufRead,BufNewFile health_check.log.* set filetype=gwlog
+autocmd BufRead,BufNewFile health_check_thread.log.* set filetype=gwlog
+autocmd BufRead,BufNewFile ipc_agent.log.* set filetype=gwlog
+autocmd BufRead,BufNewFile ipc_io_agent.log.* set filetype=gwlog
