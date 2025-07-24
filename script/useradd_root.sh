@@ -1,9 +1,21 @@
 #!/bin/bash
 
-USERNAME="test"
-PASSWORD="testtest"
-SHELL_PATH="/bin/bash"
+USERNAME=""
+PASSWORD=""
+SHELL_PATH=""
 
+if [ -z "$USERNAME" ]; then
+	echo "set USERNAME / PASSWORD / SHELL_PATH variable"
+fi
+
+if [ -z "$PASSWORD" ]; then
+	echo "set USERNAME / PASSWORD / SHELL_PATH variable"
+fi
+
+if [ -z "$SHELL_PATH" ]; then
+	SHELL_PATH="/bin/bash"
+	echo "set DEFAULT SHELL -> /bin/bash"
+fi
 
 is_exist=$(cat /etc/passwd | grep "^$USERNAME:")
 if [[ $is_exist != "" ]]; then
