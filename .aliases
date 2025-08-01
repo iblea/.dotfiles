@@ -82,6 +82,8 @@ if [ -f $HOME/.ssh/config ]; then
     }
     alias sshinit='ssh-keygen -f $HOME/.ssh/known_hosts -R '
     alias ibrew="arch -x86_64 /usr/local/bin/brew"
+else
+    touch $HOME/.ssh/config
 fi
 
 # some more ls aliases
@@ -255,9 +257,9 @@ if [ -d $HOME/.dotfiles/.bin/ ]; then
     fi
 fi
 
-if [ -n "$(command -v 'code-insiders')" ]; then
-    alias code='code-insiders'
-fi
+# if [ -n "$(command -v 'code-insiders')" ]; then
+#     alias code='code-insiders'
+# fi
 
 # =======================================================================
 
@@ -1865,6 +1867,26 @@ function idump()
         return
     fi
     $HOME/inetdump
+}
+
+
+function scpr()
+{
+    keyword="${@:${#}}"
+    ssh_host="${keyword%%:*}"
+
+    if [ "$ssh_host" = "rloc" ]; then
+        if [ -z "$SSH_LAST_LOCAL_SCP_DIR" ]; then
+            echo "Wrong argument"
+            echo "SSH_LAST_LOCAL_SCP_DIR"
+            return 1;
+        fi
+        scp $@ rloc:$SSH_LAST_LOCAL_SCP_DIR
+        return 0;
+    fi
+
+    scp $@
+    SSH_LAST_LOCAL_SCP_DIR="${keyword#*:}"
 }
 
 alias exesh='find . -name "*.sh" -type f -exec chmod 755 {} \;'
