@@ -1635,14 +1635,14 @@ function gitsvnrev() {
 function gitsvninit() {
     if [ $# -eq 1 ]; then
         git svn init "$@" --prefix=origin/ --id=svn
-		return 0
+        return 0
     fi
-	if [ $# -eq 2 ]; then
-		opts=(${@:2:${#}-1})
-		git svn init "$1" --prefix=origin/ --id=svn --svn-remote="$2"
-		return 0
-	fi
-	opts=(${@:3:${#}-1})
+    if [ $# -eq 2 ]; then
+        opts=(${@:2:${#}-1})
+        git svn init "$1" --prefix=origin/ --id=svn --svn-remote="$2"
+        return 0
+    fi
+    opts=(${@:3:${#}-1})
     git svn init "$1" --prefix=origin/ --id=svn --svn-remote="$2" $opts
 
 }
@@ -1875,7 +1875,7 @@ function scpr()
     keyword="${@:${#}}"
     ssh_host="${keyword%%:*}"
 
-    if [ "$ssh_host" = "rloc" ]; then
+    if [ "$ssh_host" != "rloc" ]; then
         if [ -z "$SSH_LAST_LOCAL_SCP_DIR" ]; then
             echo "Wrong argument"
             echo "SSH_LAST_LOCAL_SCP_DIR"
