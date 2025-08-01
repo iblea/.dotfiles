@@ -1881,11 +1881,11 @@ function scpr()
             echo "SSH_LAST_LOCAL_SCP_DIR"
             return 1;
         fi
-        scp $@ rloc:$SSH_LAST_LOCAL_SCP_DIR
+        scp -r $@ rloc:$SSH_LAST_LOCAL_SCP_DIR
         return 0;
     fi
 
-    scp $@
+    scp -r $@
     SSH_LAST_LOCAL_SCP_DIR="${keyword#*:}"
 }
 
