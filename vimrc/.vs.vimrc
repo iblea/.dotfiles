@@ -44,6 +44,8 @@ nnoremap <Leader>y g~w
 " set wrap
 noremap j gj
 noremap k gk
+noremap gj j
+noremap gk k
 
 
 nnoremap <C-y> <ESC>:e!<CR>G
