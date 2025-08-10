@@ -6,4 +6,5 @@ You can check the server connection information by referring to the `Host test` 
 **The source** location on the remote server is located at `/path/to/project1` and **the subproject** directory is located at `/path/to/project2`.
 Each directory is synchronized with the project located on the current cursor local via sftp.
 
+When executing SSH commands in Claude Code, SSH command errors occur, so use the format bash -c "<ssh command>" like bash -c "ssh user@host 'command'".
 
