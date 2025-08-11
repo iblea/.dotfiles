@@ -178,6 +178,11 @@ else
     export SSLKEYLOGFILE=$HOME/sslkeylog.log
 fi
 
+GITSTATUS_CACHE_DIR="$HOME/.zsh/.gitstatus"
+if [ ! -d "$GITSTATUS_CACHE_DIR" ]; then
+	mkdir -p "$GITSTATUS_CACHE_DIR"
+fi
+
 # ruby
 # export GEM_HOME=$HOME/gems
 # export PATH=$HOME/gems/bin:$PATH
