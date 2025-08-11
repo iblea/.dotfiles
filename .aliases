@@ -1523,6 +1523,8 @@ function glvaf() {
     echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
 }
 
+alias glavf='glvaf'
+
 function glc() {
     # git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' $@
     local AGO_LC_ALL="$LC_ALL"
