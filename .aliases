@@ -1466,6 +1466,11 @@ function gla() {
     export LC_ALL="$AGO_LC_ALL"
 }
 
+function glaf() {
+    content=$(gla | grep -C1 $@)
+    echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+}
+
 function glv() {
     local AGO_LC_ALL="$LC_ALL"
     if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
@@ -1493,6 +1498,29 @@ function glva() {
     --pretty='%Cred%H%Creset %Cgreen%ad%Creset%C(auto)%d%Creset %n%C(bold blue)<%an> [%ce] %Creset %n%B%n' \
     $@
     export LC_ALL="$AGO_LC_ALL"
+}
+
+function glvaf() {
+    content=$(glva | grep -A100 -B2 --color=always $@)
+    # echo "$content"
+    # NR==1 {print; next}
+
+    # - NR: Number of Records - 현재 라인 번호 (1부터 시작)
+    # - NR==1: 첫 번째 라인일 때의 조건 패턴
+    # - {print; next}: 액션 블록
+    # - print: 현재 라인 출력
+    # - next: 다음 라인으로 건너뛰기 (뒤의 패턴들 무시하고 다음 라인 처리)
+    # /^\*/
+    # - 정규표현식 패턴: 라인의 첫 번째 문자가 *인지 확인
+    # - ^: 라인의 시작을 의미
+    # - \*: * 문자 자체 (이스케이프 필요)
+    # {exit}
+    # - exit: awk 프로그램 종료
+    # {print}
+    # - 마지막에 있는 기본 액션
+    # - 패턴이 없으면 모든 라인에 적용됨
+    # - 위의 조건들에 해당하지 않는 라인들을 출력
+    echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
 }
 
 function glc() {
