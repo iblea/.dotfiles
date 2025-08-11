@@ -17,11 +17,21 @@ fi
 
 opts=()
 last_idx=$(($# ))
+hyphen_hyphen=""
 for i in $(seq 1 $last_idx); do
+    if [ -n "${hyphen_hyphen}" ]; then
+        keyword="${keyword}${!i}"
+        continue
+    fi
     if [ $i -eq $last_idx ]; then
         keyword="${!i}"
     else
-        opts+=("${!i}")
+        if [ "${!i}" = "--" ]; then
+            echo ".."
+            hyphen_hyphen="--"
+        else
+            opts+=("${!i}")
+        fi
     fi
 done
 
@@ -33,7 +43,7 @@ source $HOME/.dotfiles/grepscript/grep_exclude
 # grep --color=always -rnIHP ${search_str[@]} | sed -e "s/:/ | /2"
 # grep --color=always -rnIHP ${exclude_str[@]} $@ | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 
-grep --color=always -rnIHP ${opts[@]} ${exclude_str[@]} "$keyword" | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
+grep --color=always -rnIHP ${opts[@]} ${exclude_str[@]} ${hyphen_hyphen} "$keyword" | sed -e "s/\:\[m\[K\s*/ |[m[K /2"
 
 # grep --color=always -rnIHP ${exclude_str[@]} $@
 # echo "${exclude_str[@]}"
