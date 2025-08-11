@@ -1467,8 +1467,20 @@ function gla() {
 }
 
 function glaf() {
-    content=$(gla | grep -C1 $@)
-    echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+    content=$(gla | grep -C2 $@)
+    # echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+	echo "$content" | awk '
+    /^\*/ {
+        star_count++
+        if(star_count == 1) {
+            print
+            found_first = 1
+            next
+        } else {
+            exit
+        }
+    }
+    found_first == 1 { print }'
 }
 
 function glv() {
@@ -1501,7 +1513,7 @@ function glva() {
 }
 
 function glvaf() {
-    content=$(glva | grep -A100 -B2 --color=always $@)
+    content=$(glva | grep -A100 -B3 --color=always $@)
     # echo "$content"
     # NR==1 {print; next}
 
@@ -1520,7 +1532,19 @@ function glvaf() {
     # - 마지막에 있는 기본 액션
     # - 패턴이 없으면 모든 라인에 적용됨
     # - 위의 조건들에 해당하지 않는 라인들을 출력
-    echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+    # echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+	echo "$content" | awk '
+    /^\*/ {
+        star_count++
+        if(star_count == 1) {
+            print
+            found_first = 1
+            next
+        } else {
+            exit
+        }
+    }
+    found_first == 1 { print }'
 }
 
 alias glavf='glvaf'
