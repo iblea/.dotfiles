@@ -1951,7 +1951,9 @@ alias base64_decode='base64 -d -i'
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
     alias clda='claude --model=sonnet --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)"'
+    alias cldau='claude --model=opus --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)" --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests"'
     alias clds='claude --model=opus --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)"'
+    alias cldsu='claude --model=opus --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)" --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests"'
 fi
 
 
