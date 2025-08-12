@@ -1466,21 +1466,112 @@ function gla() {
     export LC_ALL="$AGO_LC_ALL"
 }
 
+
 function glaf() {
-    content=$(gla | grep -C2 $@)
-    # echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
-	echo "$content" | awk '
-    /^\*/ {
-        star_count++
-        if(star_count == 1) {
-            print
-            found_first = 1
-            next
-        } else {
-            exit
-        }
-    }
-    found_first == 1 { print }'
+
+    content=""
+    only_string_search=0
+    if [ "$1" = "-f" ]; then
+        only_string_search=1
+    elif [ "$1" = "-F" ]; then
+        only_string_search=1
+    fi
+
+    if [ $only_string_search -eq 1 ]; then
+        # remove first argument
+        shift
+        only_string_search=1
+        content="$(gla | grep -C2 --color=none -F -- "$*")"
+    else
+        content=$(gla | grep -C2 --color=none $@)
+    fi
+
+    # segments 배열 초기화
+    segments=()
+
+    # bash/zsh 모두 호환되는 통합 방식
+    local current_segment=""
+    while IFS= read -r line; do
+        # ANSI 컬러 코드를 제거한 버전으로 -- 체크
+        if [[ "$line" = "--" ]]; then
+            if [ -n "$current_segment" ]; then
+                segments+=("$current_segment")
+                current_segment=""
+            fi
+            continue
+        else
+            if [ -n "$current_segment" ]; then
+                current_segment="$current_segment"$'\n'"$line"
+            else
+                current_segment="$line"
+            fi
+        fi
+    done <<< "$content"
+
+    # 마지막 segment 추가
+    if [ -n "$current_segment" ]; then
+        segments+=("$current_segment")
+    fi
+
+    if [ $only_string_search -eq 1 ]; then
+        # 각 segment 처리 - 검색어를 하이라이트하여 출력
+        for segment in "${segments[@]}"; do
+            if [ -n "$segment" ]; then
+                # NR==1 {print; next}
+                # - NR: Number of Records - 현재 라인 번호 (1부터 시작)
+                # - NR==1: 첫 번째 라인일 때의 조건 패턴
+                # - {print; next}: 액션 블록
+                # - print: 현재 라인 출력
+                # - next: 다음 라인으로 건너뛰기 (뒤의 패턴들 무시하고 다음 라인 처리)
+                # /^\*/
+                # - 정규표현식 패턴: 라인의 첫 번째 문자가 *인지 확인
+                # - ^: 라인의 시작을 의미
+                # - \*: * 문자 자체 (이스케이프 필요)
+                # {exit}
+                # - exit: awk 프로그램 종료
+                # {print}
+                # - 마지막에 있는 기본 액션
+                # - 패턴이 없으면 모든 라인에 적용됨
+                # - 위의 조건들에 해당하지 않는 라인들을 출력
+                # echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+
+                # 먼저 awk로 첫 번째 커밋만 추출한 뒤, grep으로 색상 적용
+                echo "$segment" | awk '
+                /^\*/ {
+                    star_count++
+                    if(star_count == 1) {
+                        print
+                        found_first = 1
+                        next
+                    } else {
+                        exit
+                    }
+                }
+                found_first == 1 { print }' | GREP_COLOR='1;31' grep -F --color=always -e "$*" -e ""
+                echo ""  # segment 간 구분을 위한 빈 줄
+            fi
+        done
+    else
+        # 각 segment 처리 - 검색어를 하이라이트하여 출력
+        for segment in "${segments[@]}"; do
+            if [ -n "$segment" ]; then
+                # 먼저 awk로 첫 번째 커밋만 추출한 뒤, grep으로 색상 적용
+                echo "$segment" | awk '
+                /^\*/ {
+                    star_count++
+                    if(star_count == 1) {
+                        print
+                        found_first = 1
+                        next
+                    } else {
+                        exit
+                    }
+                }
+                found_first == 1 { print }' | grep --color=always -E "$@|$"
+                echo ""  # segment 간 구분을 위한 빈 줄
+            fi
+        done
+    fi
 }
 
 function glv() {
@@ -1513,38 +1604,110 @@ function glva() {
 }
 
 function glvaf() {
-    content=$(glva | grep -A100 -B3 --color=always $@)
-    # echo "$content"
-    # NR==1 {print; next}
 
-    # - NR: Number of Records - 현재 라인 번호 (1부터 시작)
-    # - NR==1: 첫 번째 라인일 때의 조건 패턴
-    # - {print; next}: 액션 블록
-    # - print: 현재 라인 출력
-    # - next: 다음 라인으로 건너뛰기 (뒤의 패턴들 무시하고 다음 라인 처리)
-    # /^\*/
-    # - 정규표현식 패턴: 라인의 첫 번째 문자가 *인지 확인
-    # - ^: 라인의 시작을 의미
-    # - \*: * 문자 자체 (이스케이프 필요)
-    # {exit}
-    # - exit: awk 프로그램 종료
-    # {print}
-    # - 마지막에 있는 기본 액션
-    # - 패턴이 없으면 모든 라인에 적용됨
-    # - 위의 조건들에 해당하지 않는 라인들을 출력
-    # echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
-	echo "$content" | awk '
-    /^\*/ {
-        star_count++
-        if(star_count == 1) {
-            print
-            found_first = 1
-            next
-        } else {
-            exit
-        }
-    }
-    found_first == 1 { print }'
+    content=""
+    only_string_search=0
+    if [ "$1" = "-f" ]; then
+        only_string_search=1
+    elif [ "$1" = "-F" ]; then
+        only_string_search=1
+    fi
+
+    if [ $only_string_search -eq 1 ]; then
+        # remove first argument
+        shift
+        only_string_search=1
+        content="$(glva | grep -A100 -B3 --color=none -F -- "$*")"
+    else
+        content=$(glva | grep -A100 -B3 --color=none $@)
+    fi
+
+    # segments 배열 초기화
+    segments=()
+
+    # bash/zsh 모두 호환되는 통합 방식
+    local current_segment=""
+    while IFS= read -r line; do
+        # ANSI 컬러 코드를 제거한 버전으로 -- 체크
+        if [[ "$line" = "--" ]]; then
+            if [ -n "$current_segment" ]; then
+                segments+=("$current_segment")
+                current_segment=""
+            fi
+            continue
+        else
+            if [ -n "$current_segment" ]; then
+                current_segment="$current_segment"$'\n'"$line"
+            else
+                current_segment="$line"
+            fi
+        fi
+    done <<< "$content"
+
+    # 마지막 segment 추가
+    if [ -n "$current_segment" ]; then
+        segments+=("$current_segment")
+    fi
+
+    if [ $only_string_search -eq 1 ]; then
+        # 각 segment 처리 - 검색어를 하이라이트하여 출력
+        for segment in "${segments[@]}"; do
+            if [ -n "$segment" ]; then
+                # NR==1 {print; next}
+                # - NR: Number of Records - 현재 라인 번호 (1부터 시작)
+                # - NR==1: 첫 번째 라인일 때의 조건 패턴
+                # - {print; next}: 액션 블록
+                # - print: 현재 라인 출력
+                # - next: 다음 라인으로 건너뛰기 (뒤의 패턴들 무시하고 다음 라인 처리)
+                # /^\*/
+                # - 정규표현식 패턴: 라인의 첫 번째 문자가 *인지 확인
+                # - ^: 라인의 시작을 의미
+                # - \*: * 문자 자체 (이스케이프 필요)
+                # {exit}
+                # - exit: awk 프로그램 종료
+                # {print}
+                # - 마지막에 있는 기본 액션
+                # - 패턴이 없으면 모든 라인에 적용됨
+                # - 위의 조건들에 해당하지 않는 라인들을 출력
+                # echo "$content" | awk 'NR==1 {print; next} /^\*/ {exit} {print}'
+
+                # 먼저 awk로 첫 번째 커밋만 추출한 뒤, grep으로 색상 적용
+                echo "$segment" | awk '
+                /^\*/ {
+                    star_count++
+                    if(star_count == 1) {
+                        print
+                        found_first = 1
+                        next
+                    } else {
+                        exit
+                    }
+                }
+                found_first == 1 { print }' | GREP_COLOR='1;31' grep -F --color=always -e "$*" -e ""
+                echo ""  # segment 간 구분을 위한 빈 줄
+            fi
+        done
+    else
+        # 각 segment 처리 - 검색어를 하이라이트하여 출력
+        for segment in "${segments[@]}"; do
+            if [ -n "$segment" ]; then
+                # 먼저 awk로 첫 번째 커밋만 추출한 뒤, grep으로 색상 적용
+                echo "$segment" | awk '
+                /^\*/ {
+                    star_count++
+                    if(star_count == 1) {
+                        print
+                        found_first = 1
+                        next
+                    } else {
+                        exit
+                    }
+                }
+                found_first == 1 { print }' | grep --color=always -E "$@|$"
+                echo ""  # segment 간 구분을 위한 빈 줄
+            fi
+        done
+    fi
 }
 
 alias glavf='glvaf'
@@ -1951,9 +2114,9 @@ alias base64_decode='base64 -d -i'
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
     alias clda='claude --model=sonnet --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)"'
-    alias cldau='claude --model=opus --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)" --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests"'
+    alias cldau='claude --model=sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat ~/.dotfiles/prompt/global_prompt.md)"'
     alias clds='claude --model=opus --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)"'
-    alias cldsu='claude --model=opus --append-system-prompt "$(cat ~/.dotfiles/prompt/global_prompt.md)" --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests"'
+    alias cldsu='claude --model=opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat ~/.dotfiles/prompt/global_prompt.md)"'
 fi
 
 

@@ -16,6 +16,7 @@ fi
 # fi
 
 opts=()
+keyword=""
 last_idx=$(($# ))
 hyphen_hyphen=""
 for i in $(seq 1 $last_idx); do
