@@ -1481,9 +1481,9 @@ function glaf() {
         # remove first argument
         shift
         only_string_search=1
-        content="$(gla | grep -C2 --color=none -F -- "$*")"
+        content="$(gla | grep -B1 --color=none -F -- "$*")"
     else
-        content=$(gla | grep -C2 --color=none $@)
+        content=$(gla | grep -B1 --color=none $@)
     fi
 
     # segments 배열 초기화
@@ -1619,6 +1619,7 @@ function glvaf() {
         only_string_search=1
         content="$(glva | grep -A100 -B3 --color=none -F -- "$*")"
     else
+        # glva | grep -A100 -B3 --color=always "#7375" | sed 'N;N;s/| \n| \n/===\n/;P;D;D'
         content=$(glva | grep -A100 -B3 --color=none $@)
     fi
 
