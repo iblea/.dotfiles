@@ -141,6 +141,10 @@ fi
 # karabiner
 if [[ "$(uname -s)" = "Darwin" ]]; then
     complex_path=karabiner/assets/complex_modifications
+    complex_parent_path="$(dirname $complex_path)"
+    if [ ! -d "$fixed_home/.config/$complex_parent_path" ]; then
+        mkdir -p "$fixed_home/.config/$complex_parent_path"
+    fi
     if [ -d "$fixed_home/.config/$complex_path" ]; then
         rm -rf "$fixed_home/.config/$complex_path"
     fi
