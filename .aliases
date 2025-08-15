@@ -2115,85 +2115,53 @@ alias base64_decode='base64 -d -i'
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
 
+	# alias vim=/usr/bin/vim
     cldi() {
         VIM_PROGRAM=$(vim --version | head -n 1 | awk '{ print $1 }')
         if [ "$VIM_PROGRAM" = "NVIM" ]; then
         if [ $# -eq 0 ] || [ "$1" = "s" ]; then
-            vim -c "set nonu" \
-                -c "set nornu" \
-                -c "set mouse=a" \
-                -c "set scrollback=10000" \
+            vim -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | tnoremap <C-i> \\<CR>" \
                 -c "terminal bash -c '$HOME/.dotfiles/.bin/clds; exit_code=\$?; exit \$exit_code'" \
                 -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
                 -c "startinsert"
         elif [ "$1" = "u" ] || [ "$1" = "su" ]; then
-            vim -c "set nonu" \
-                -c "set nornu" \
-                -c "set mouse=a" \
-                -c "set scrollback=10000" \
+            vim -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | tnoremap <C-i> \\<CR>" \
                 -c "terminal bash -c '$HOME/.dotfiles/.bin/cldsu; exit_code=\$?; exit \$exit_code'" \
                 -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
                 -c "startinsert"
         elif [ "$1d" = "a" ]; then
-            vim -c "set nonu" \
-                -c "set nornu" \
-                -c "set mouse=a" \
-                -c "set scrollback=10000" \
+            vim -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | tnoremap <C-i> \\<CR>" \
                 -c "terminal bash -c '$HOME/.dotfiles/.bin/clda; exit_code=\$?; exit \$exit_code'" \
                 -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
                 -c "startinsert"
         elif [ "$1" = "au" ]; then
-            vim -c "set nonu" \
-                -c "set nornu" \
-                -c "set mouse=a" \
-                -c "set scrollback=10000" \
+            vim -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | tnoremap <C-i> \\<CR>" \
                 -c "terminal bash -c '$HOME/.dotfiles/.bin/cldau; exit_code=\$?; exit \$exit_code'" \
                 -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
                 -c "startinsert"
         else
-            vim -c "set nonu" \
-                -c "set nornu" \
-                -c "set mouse=a" \
-                -c "set scrollback=10000" \
+            vim -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | tnoremap <C-i> \\<CR>" \
                 -c "terminal bash -c '$HOME/.dotfiles/.bin/clds; exit_code=\$?; exit \$exit_code'" \
                 -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
                 -c "startinsert"
         fi
         else
             if [ $# -eq 0 ] || [ "$1" = "s" ]; then
-                /usr/bin/vim -c "set nonu" \
-                    -c "set nornu" \
-                    -c "set mouse=a" \
-                    -c "set termwinscroll=10000" \
-                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
+				/usr/bin/vim -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+                    -c "terminal ++close ++curwin bash -c '$HOME/.dotfiles/.bin/clds'"
+                    # -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
             elif [ "$1" = "u" ] || [ "$1" = "su" ]; then
-                vim -c "set nonu" \
-                    -c "set nornu" \
-                    -c "set mouse=a" \
-                    -c "set termwinscroll=10000" \
-                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cldsu\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})" \
-                    -c "startinsert"
+				vim -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cldsu\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
             elif [ "$1d" = "a" ]; then
-                vim -c "set nonu" \
-                    -c "set nornu" \
-                    -c "set mouse=a" \
-                    -c "set termwinscroll=10000" \
-                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clda\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})" \
-                    -c "startinsert"
+				vim -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clda\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
             elif [ "$1" = "au" ]; then
-                vim -c "set nonu" \
-                    -c "set nornu" \
-                    -c "set mouse=a" \
-                    -c "set termwinscroll=10000" \
-                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cldau\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})" \
-                    -c "startinsert"
+				vim -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cldau\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
             else
-                vim -c "set nonu" \
-                    -c "set nornu" \
-                    -c "set mouse=a" \
-                    -c "set termwinscroll=10000" \
-                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})" \
-                    -c "startinsert"
+				vim -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+                    -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
             fi
         fi
     }
@@ -2211,7 +2179,7 @@ function vl() {
             -c "autocmd TermClose * quit!" \
             -c "startinsert"
     else
-        /usr/bin/vim -c "set nonu" \
+        vim -c "set nonu" \
             -c "set nornu" \
             -c "set mouse=a" \
             -c "set termwinscroll=10000" \

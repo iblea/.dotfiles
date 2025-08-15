@@ -135,6 +135,10 @@ if exists(":term")
 	nnoremap <silent> \t <ESC>:silent call VSterm()<CR>
 	tnoremap <C-@> <ESC>
 	tnoremap <c-g> <c-f>
+	tnoremap <S-@> <Space>
+	tnoremap <S-Space> <Space>
+	tnoremap <buffer> <S-CR> \\<CR>
+	tnoremap <buffer> <C-CR> \\<CR>
 	tnoremap <c-f> <c-w><c-w>
 	tnoremap <c-k> <c-\><c-n>
 	tnoremap <c-x> <c-\><c-n>

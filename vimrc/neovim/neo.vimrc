@@ -57,14 +57,19 @@ if exists(":term")
 	nnoremap <silent> <c-n><c-t> <ESC>:silent call VSterm_cw()<CR>
 	nnoremap <silent> \t <ESC>:silent call VSterm()<CR>
 	tnoremap <C-@> <ESC>
+	tnoremap <S-@> <Space>
+	tnoremap <S-Space> <Space>
 	tnoremap <c-g> <c-f>
 	tnoremap <c-f> <c-w><c-w>
 	tnoremap <c-k> <c-\><c-n>
 	tnoremap <c-x> <c-\><c-n>
 	tnoremap <c-j> <c-w><c-p>
 	tnoremap <c-l> <c-\><c-n><ESC>:suspend<CR>
+	tnoremap <S-CR> \<CR>
+	tnoremap <C-CR> \<CR>
+	tnoremap <M-CR> \<CR>
+	tnoremap <A-CR> \<CR>
 endif
-
 
 function! Get_visual_selection()
     " Why is this not a built-in Vim script function?!
