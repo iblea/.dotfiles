@@ -1,0 +1,2 @@
+#!/bin/bash
+claude --model=sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat ~/.dotfiles/prompt/global_prompt.md)"
