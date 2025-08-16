@@ -1,0 +1,19 @@
+#!/bin/bash
+
+VIM_PROGRAM=$(vim --version | head -n 1 | awk '{ print $1 }')
+if [ "$VIM_PROGRAM" = "NVIM" ]; then
+    vim -c "set nonu" \
+        -c "set nornu" \
+        -c "set mouse=a" \
+        -c "set scrollback=10000" \
+        -c "terminal" \
+        -c "autocmd TermClose * quit!" \
+        -c "startinsert"
+else
+    vim -c "set nonu" \
+        -c "set nornu" \
+        -c "set mouse=a" \
+        -c "set termwinscroll=10000" \
+        -c "terminal ++close ++curwin"
+fi
+
