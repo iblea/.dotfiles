@@ -35,18 +35,22 @@ fi
 
 if [ "$VIM_PROGRAM" = "n" ]; then
     $NVIM_PATH -c "set nonu" \
-        -c "set nornu" \
-        -c "set mouse=a" \
-        -c "set scrollback=10000" \
+        -c "set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0" \
+        -c "tnoremap <c-h> <LEFT>" \
+        -c "tnoremap <c-j> <DOWN>" \
+        -c "tnoremap <c-k> <UP>" \
+        -c "tnoremap <c-l> <RIGHT>" \
 		-c "terminal VIMTERM=1 \"$(which zsh)\"" \
         -c "autocmd TermClose * quit!" \
         -c "startinsert"
 else
     $VIM_PATH -c "set nonu" \
-        -c "set nornu" \
-        -c "set mouse=a" \
+        -c "set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0" \
+        -c "tnoremap <c-h> <LEFT>" \
+        -c "tnoremap <c-j> <DOWN>" \
+        -c "tnoremap <c-k> <UP>" \
+        -c "tnoremap <c-l> <RIGHT>" \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-        -c "set termwinscroll=10000" \
         -c "terminal ++env=VIMTERM=1 ++close ++curwin"
 fi
 
