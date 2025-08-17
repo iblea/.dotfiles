@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+content=""
+if [ ! -t 0 ]; then
+	content="$(cat)"
+fi
+
+if [ -z "$(command -v claude)" ]; then
+	echo "claude command not found"
+	exit 1
+fi
+
+
+PROMPT_PATH=$HOME/.dotfiles/prompt/global_prompt.md
+
+prompt_content=$(cat $PROMPT_PATH)
+
+if [ $# -eq 0 ]; then
+    claude --system-prompt "$prompt_content" -p "$content"
+	exit 0
+fi
+
+
+
+# echo "prompt content"
+# echo "$prompt_content"
+
+# claude --system-prompt "$prompt_content" -p ";kor 안녕"
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+claude --system-prompt "$prompt_content" -p "$@"
+
