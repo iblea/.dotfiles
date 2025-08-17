@@ -39,6 +39,19 @@ else
     CLAUDE_OPT="$2"
 fi
 
+if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
+	if [ "$CLAUDE_OPT" = "s" ]; then
+		$HOME/.dotfiles/.bin/clds
+	elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
+		$HOME/.dotfiles/.bin/cldsu
+	elif [ "$CLAUDE_OPT" = "a" ]; then
+		$HOME/.dotfiles/.bin/clda
+	elif [ "$CLAUDE_OPT" = "au" ]; then
+		$HOME/.dotfiles/.bin/cldau
+	fi
+	exit 0
+fi
+
 if [ "$VIM_PROGRAM" = "n" ]; then
     if [ "$CLAUDE_OPT" = "s" ]; then
         $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | tnoremap <C-i> \\<CR>" \

@@ -27,6 +27,10 @@ fi
 #     VIM_PROGRAM="o"
 # fi
 
+if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
+	echo "vim terminal already opened!"
+	exit 0
+fi
 
 
 if [ "$VIM_PROGRAM" = "n" ]; then
@@ -34,7 +38,7 @@ if [ "$VIM_PROGRAM" = "n" ]; then
         -c "set nornu" \
         -c "set mouse=a" \
         -c "set scrollback=10000" \
-        -c "terminal" \
+		-c "terminal VIMTERM=1 \"$(which zsh)\"" \
         -c "autocmd TermClose * quit!" \
         -c "startinsert"
 else
@@ -43,7 +47,7 @@ else
         -c "set mouse=a" \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
         -c "set termwinscroll=10000" \
-        -c "terminal ++close ++curwin"
+        -c "terminal ++env=VIMTERM=1 ++close ++curwin"
 fi
 
 exit 0
