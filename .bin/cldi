@@ -67,21 +67,26 @@ if [ "$VIM_PROGRAM" = "n" ]; then
             -c "startinsert"
     fi
 else
-	if [ "$CLAUDE_OPT" = "s" ]; then
+    if [ "$CLAUDE_OPT" = "s" ]; then
         $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
             -c "terminal ++close ++curwin bash -c '$HOME/.dotfiles/.bin/clds'"
             # -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
     elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
         $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
             -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cldsu\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
     elif [ "$CLAUDE_OPT" = "a" ]; then
         $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
             -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clda\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
     elif [ "$CLAUDE_OPT" = "au" ]; then
         $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
             -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cldau\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
     else
         $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | tnoremap <C-i> \\<CR>" \
+            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
             -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
     fi
 fi

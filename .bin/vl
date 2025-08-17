@@ -17,7 +17,7 @@ if [ $# -ge 1 ]; then
         CLAUDE_OPT="s"
     elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
         VIM_PROGRAM="o"
-	fi
+    fi
 fi
 
 # VIM_DEFAULT=$(vim --version | head -n 1 | awk '{ print $1 }')
@@ -41,6 +41,7 @@ else
     $VIM_PATH -c "set nonu" \
         -c "set nornu" \
         -c "set mouse=a" \
+        -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
         -c "set termwinscroll=10000" \
         -c "terminal ++close ++curwin"
 fi
