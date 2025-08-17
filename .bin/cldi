@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 VIM_PROGRAM=""
 CLAUDE_OPT="s"
@@ -22,8 +22,6 @@ fi
 
 # VIM_PROGRAM -> n: neovim, o: original vim
 # CLAUDE -> s: opus, a: sonnet
-
-echo "$VIM_PROGRAM"
 
 if [ $# -eq 0 ]; then
     CLAUDE_OPT="s"
@@ -87,3 +85,5 @@ else
             -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/clds\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
     fi
 fi
+
+exit 0

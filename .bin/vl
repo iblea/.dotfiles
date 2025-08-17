@@ -1,8 +1,36 @@
 #!/bin/bash
 
-VIM_PROGRAM=$(vim --version | head -n 1 | awk '{ print $1 }')
-if [ "$VIM_PROGRAM" = "NVIM" ]; then
-    vim -c "set nonu" \
+VIM_PROGRAM=""
+
+NVIM_PATH="nvim"
+VIM_PATH="vim"
+
+if [ -n $(which $NVIM_PATH) ]; then
+    VIM_PROGRAM="n"
+else
+    VIM_PROGRAM="o"
+fi
+
+if [ $# -ge 1 ]; then
+    if [ "$1" = "n" ] || [ "$1" = "N" ]; then
+        VIM_PROGRAM="n"
+        CLAUDE_OPT="s"
+    elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
+        VIM_PROGRAM="o"
+	fi
+fi
+
+# VIM_DEFAULT=$(vim --version | head -n 1 | awk '{ print $1 }')
+# if [ "$VIM_DEFAULT" = "NVIM" ]; then
+#     VIM_PROGRAM="n"
+# else
+#     VIM_PROGRAM="o"
+# fi
+
+
+
+if [ "$VIM_PROGRAM" = "n" ]; then
+    $NVIM_PATH -c "set nonu" \
         -c "set nornu" \
         -c "set mouse=a" \
         -c "set scrollback=10000" \
@@ -10,10 +38,11 @@ if [ "$VIM_PROGRAM" = "NVIM" ]; then
         -c "autocmd TermClose * quit!" \
         -c "startinsert"
 else
-    vim -c "set nonu" \
+    $VIM_PATH -c "set nonu" \
         -c "set nornu" \
         -c "set mouse=a" \
         -c "set termwinscroll=10000" \
         -c "terminal ++close ++curwin"
 fi
 
+exit 0

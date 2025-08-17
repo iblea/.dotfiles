@@ -1,5 +1,5 @@
 return {
-    "loctvl842/monokai-pro.nvim",
+    "iblea/monokai-pro.nvim",
     event = "VimEnter",
     dependencies = { },
     config = function()

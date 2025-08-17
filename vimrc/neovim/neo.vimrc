@@ -60,7 +60,7 @@ if exists(":term")
 	tnoremap <S-@> <Space>
 	tnoremap <S-Space> <Space>
 	tnoremap <c-g> <c-f>
-	tnoremap <c-f> <c-w><c-w>
+	" tnoremap <c-f> <c-w><c-w>
 	tnoremap <c-k> <c-\><c-n>
 	tnoremap <c-x> <c-\><c-n>
 	tnoremap <c-j> <c-w><c-p>
@@ -69,6 +69,7 @@ if exists(":term")
 	tnoremap <C-CR> \<CR>
 	tnoremap <M-CR> \<CR>
 	tnoremap <A-CR> \<CR>
+	let COLORTERM = 'truecolor'
 endif
 
 function! Get_visual_selection()

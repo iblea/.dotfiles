@@ -2115,6 +2115,7 @@ alias base64_decode='base64 -d -i'
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
     # alias vim=/usr/bin/vim
+    alias cldie=". $HOME/.dotfiles/.bin/cldi;"
     alias cl=cldi
 fi
 
