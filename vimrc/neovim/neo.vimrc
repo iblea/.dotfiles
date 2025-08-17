@@ -59,7 +59,7 @@ if exists(":term")
 	tnoremap <C-@> <ESC>
 	tnoremap <S-@> <Space>
 	tnoremap <S-Space> <Space>
-	tnoremap <c-g> <c-f>
+	tnoremap <c-g> <c-w><c-w>
 	" tnoremap <c-f> <c-w><c-w>
 	tnoremap <c-k> <c-\><c-n>
 	tnoremap <c-x> <c-\><c-n>
