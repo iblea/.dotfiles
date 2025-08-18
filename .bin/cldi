@@ -6,7 +6,7 @@ CLAUDE_OPT="s"
 NVIM_PATH="nvim"
 VIM_PATH="vim"
 
-if [ -n $(which $NVIM_PATH) ]; then
+if [ -n $(command -v $NVIM_PATH) ]; then
     VIM_PROGRAM="n"
 else
     VIM_PROGRAM="o"
