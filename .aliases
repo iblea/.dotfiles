@@ -2122,6 +2122,7 @@ fi
 # alias
 [ -f $HOME/.aliases_company ] && source ~/.aliases_company
 
+alias rm='rm -Ivr'
 
 return 0
 
