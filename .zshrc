@@ -161,12 +161,6 @@ fi
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # source ~/powerlevel10k/powerlevel10k.zsh-theme
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-if [ ! -d $HOME/.zsh/zcomp/ ]; then
-    mkdir -p $HOME/.zsh/zcomp/
-fi
-export ZDOTDIR="$HOME/.zsh/zcomp"
-
 # export setting
 export HISTFILE="$HOME/.zsh/.zsh_history"
 export LESS=-FRX
@@ -398,3 +392,4 @@ zshaddhistory() {
     done
     return 0
 }
+

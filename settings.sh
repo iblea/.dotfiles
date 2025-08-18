@@ -52,6 +52,7 @@ fi
 # set rcfile
 rc_files=(
     ".zshrc" ".zshrc"
+	".zshenv" ".zshenv"
     ".zsh/.p10k.zsh" ".zsh/.p10k.zsh"
     ".bashrc" ".bashrc"
     "vimrc/.vimrc" ".vimrc"
