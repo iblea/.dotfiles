@@ -6,7 +6,8 @@ CLAUDE_OPT="s"
 NVIM_PATH="nvim"
 VIM_PATH="vim"
 
-if [ -n $(command -v $NVIM_PATH) ]; then
+# If nvim command exists, set nvim as the default.
+if [ -n "$(command -v $NVIM_PATH)" ]; then
     VIM_PROGRAM="n"
 else
     VIM_PROGRAM="o"
@@ -39,80 +40,24 @@ else
     CLAUDE_OPT="$2"
 fi
 
+# If vim terminal is already opend
 if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
-    if [ "$CLAUDE_OPT" = "s" ]; then
-        $HOME/.dotfiles/.bin/cld "s"
-    elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
-        $HOME/.dotfiles/.bin/cld "su"
-    elif [ "$CLAUDE_OPT" = "a" ]; then
-        $HOME/.dotfiles/.bin/cld "a"
-    elif [ "$CLAUDE_OPT" = "au" ]; then
-        $HOME/.dotfiles/.bin/cld "au"
-    fi
+    $HOME/.dotfiles/.bin/cld "$CLAUDE_OPT"
     exit 0
 fi
 
+CLAUDE_COMMAND="$HOME/.dotfiles/.bin/cld"
 if [ "$VIM_PROGRAM" = "n" ]; then
-    if [ "$CLAUDE_OPT" = "s" ]; then
-		echo "opus"
-        $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "terminal bash -c '$HOME/.dotfiles/.bin/cld; exit_code=\$?; exit \$exit_code'" \
-            -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
-            -c "startinsert"
-    elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
-        $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "terminal bash -c '$HOME/.dotfiles/.bin/cld su; exit_code=\$?; exit \$exit_code'" \
-            -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
-            -c "startinsert"
-    elif [ "$CLAUDE_OPT" = "a" ]; then
-        $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "terminal bash -c '$HOME/.dotfiles/.bin/cld a; exit_code=\$?; exit \$exit_code'" \
-            -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
-            -c "startinsert"
-    elif [ "$CLAUDE_OPT" = "au" ]; then
-        $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "terminal bash -c '$HOME/.dotfiles/.bin/cld au; exit_code=\$?; exit \$exit_code'" \
-            -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
-            -c "startinsert"
-    else
-        $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "terminal bash -c '$HOME/.dotfiles/.bin/cld; exit_code=\$?; exit \$exit_code'" \
-            -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
-            -c "startinsert"
-    fi
+    $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | execute 'tnoremap <C-i> \\<CR>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
+        -c "terminal bash -c '${CLAUDE_COMMAND} ${CLAUDE_OPT}; exit_code=\$?; exit \$exit_code'" \
+        -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
+        -c "startinsert"
 else
-    if [ "$CLAUDE_OPT" = "s" ]; then
-        $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-            -c "terminal ++close ++curwin bash -c '$HOME/.dotfiles/.bin/cld'"
-            # -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cld\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
-    elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
-        $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-            -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cld su\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
-    elif [ "$CLAUDE_OPT" = "a" ]; then
-        $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-            -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cld a\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
-    elif [ "$CLAUDE_OPT" = "au" ]; then
-        $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-            -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cld au\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
-    else
-        $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | tnoremap <C-i> \\<CR>" \
-            -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-            -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-            -c "call term_start('bash -c \"$HOME/.dotfiles/.bin/cld\"', {'curwin': 1, 'term_finish': 'close', 'exit_cb': {job, status -> execute('quit!')}})"
-    fi
+    $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | execute 'tnoremap <C-i> \\<CR>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
+        -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
+        -c "terminal ++close ++curwin bash -c '${CLAUDE_COMMAND} ${CLAUDE_OPT}'"
 fi
 
 exit 0
