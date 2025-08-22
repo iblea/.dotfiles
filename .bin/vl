@@ -27,7 +27,10 @@ fi
 #     VIM_PROGRAM="o"
 # fi
 
-if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
+# if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
+# if [ -n "$MYVIMRC" ]; then
+IS_VIMTERM="$(ps -p $PPID -o comm=)"
+if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
 	echo "vim terminal already opened!"
 	exit 0
 fi
@@ -37,15 +40,17 @@ if [ "$VIM_PROGRAM" = "n" ]; then
     $NVIM_PATH -c "set nonu" \
         -c "set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-		-c "terminal VIMTERM=1 \"$(which zsh)\"" \
+		-c "terminal \"$(which zsh)\"" \
         -c "autocmd TermClose * quit!" \
         -c "startinsert"
+		# -c "terminal VIMTERM=1 \"$(which zsh)\"" \
 else
     $VIM_PATH -c "set nonu" \
         -c "set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-		-c "let \$VIMTERM=1 | let \$SHELL=\"$(which zsh)\" | terminal ++close ++curwin"
+		-c "let \$SHELL=\"$(which zsh)\" | terminal ++close ++curwin"
+		# -c "let \$VIMTERM=1 | let \$SHELL=\"$(which zsh)\" | terminal ++close ++curwin"
 fi
 
 exit 0

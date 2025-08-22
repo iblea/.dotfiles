@@ -32,17 +32,52 @@ elif [ $# -eq 1 ]; then
         CLAUDE_OPT="s"
     elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
         VIM_PROGRAM="o"
+        CLAUDE_OPT="s"
     else
         CLAUDE_OPT="$1"
     fi
+    shift
 else
-    VIM_PROGRAM="$1"
-    CLAUDE_OPT="$2"
+    # first option is vim argument
+    if [ "$1" = "n" ] || [ "$1" = "N" ]; then
+        VIM_PROGRAM="n"
+        # second option is claude argument
+        if [ "$2" = "s" ] || [ "$2" = "u" ] ||  [ "$2" == "su" ] || [ "$2" == "a" ] || [ "$2" == "au" ]; then
+            CLAUDE_OPT="$2"
+            shift
+        else
+            CLAUDE_OPT="s"
+        fi
+        shift
+    # first option is vim argument
+    elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
+        VIM_PROGRAM="o"
+        # second option is claude argument
+        if [ "$2" = "s" ] || [ "$2" = "u" ] ||  [ "$2" == "su" ] || [ "$2" == "a" ] || [ "$2" == "au" ]; then
+            CLAUDE_OPT="$2"
+            shift
+        else
+            CLAUDE_OPT="s"
+        fi
+        shift
+    #else
+    else
+        # first option is claude argument
+        if [ "$1" = "s" ] || [ "$1" = "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ]; then
+            CLAUDE_OPT="$1"
+            shift
+        else
+            CLAUDE_OPT="s"
+        fi
+    fi
 fi
 
 # If vim terminal is already opend
-if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
-    $HOME/.dotfiles/.bin/cld "$CLAUDE_OPT"
+# if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
+# if [ -n "$MYVIMRC" ]; then
+IS_VIMTERM="$(ps -p $PPID -o comm=)"
+if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
+    $HOME/.dotfiles/.bin/cld "$CLAUDE_OPT" $@
     exit 0
 fi
 
@@ -50,14 +85,14 @@ CLAUDE_COMMAND="$HOME/.dotfiles/.bin/cld"
 if [ "$VIM_PROGRAM" = "n" ]; then
     $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | execute 'tnoremap <C-i> \\<CR>'" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
-        -c "terminal bash -c '${CLAUDE_COMMAND} ${CLAUDE_OPT}; exit_code=\$?; exit \$exit_code'" \
+        -c "terminal bash -c '${CLAUDE_COMMAND} ${CLAUDE_OPT} $@; exit_code=\$?; exit \$exit_code'" \
         -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
         -c "startinsert"
 else
     $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | execute 'tnoremap <C-i> \\<CR>'" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-        -c "terminal ++close ++curwin bash -c '${CLAUDE_COMMAND} ${CLAUDE_OPT}'"
+        -c "terminal ++close ++curwin bash -c '${CLAUDE_COMMAND} ${CLAUDE_OPT} $@'"
 fi
 
 exit 0
