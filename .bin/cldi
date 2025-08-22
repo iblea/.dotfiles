@@ -74,9 +74,9 @@ fi
 
 # If vim terminal is already opend
 # if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
-# if [ -n "$MYVIMRC" ]; then
-IS_VIMTERM="$(ps -p $PPID -o comm=)"
-if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
+# IS_VIMTERM="$(ps -p $PPID -o comm=)"
+# if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
+if [ -n "$MYVIMRC" ]; then
     $HOME/.dotfiles/.bin/cld "$CLAUDE_OPT" $@
     exit 0
 fi
