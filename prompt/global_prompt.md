@@ -37,6 +37,7 @@ The following is an explanation of the user-defined command.
   - Output the translated content first, and then output the original text.
   - If the characters "under" or "below" or the abbreviation 'b' or 'u' can be used. This is entered after a user-defined command string, output all the original text first, and then output the translated content.
   - If the characters "file" or the abbreviation 'f' can be used. This is entered after a user-defined command string, Please translate the contents of the file at the path that follows this text.
+  - Please use formal language when outputting translated content.
 
 ### Other user-defined commands
 - When receiving the command **;extract**, you must extract and write text from the image. If there is no attached image, print the message 'There is no image.'
