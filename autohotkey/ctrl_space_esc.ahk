@@ -1,6 +1,14 @@
 ; AutoHotkey v2 Script
 ; Ctrl+Space: 한글 입력 상태면 영어로 전환 후 ESC, 영어면 ESC만 발생
 
+; 관리자 권한으로 재실행 (필요시)
+if not A_IsAdmin {
+    try {
+        Run '*RunAs "' A_ScriptFullPath '"'
+    }
+    ExitApp
+}
+
 ; Ctrl+Space 핫키
 ^Space:: {
     imeState := fnGetImeState()
@@ -20,9 +28,9 @@ fnGetImeState(){
 	;MouseGetPos &vx, &vy, &ahk_Id, &ClassNN
 	;imeState := DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", ahk_Id, "Uint")
 	;SendMessage (0x0283,0x005,"",ahk_id)
-	
+
 	return fnImeCheck()
-	
+
 }
 
 fnImeCheck(){
@@ -32,7 +40,7 @@ fnImeCheck(){
 
 Send_ImeControl(DefaultIMEWnd, wParam, lParam)
 {
-	DetectHiddenWindows true                           
+	DetectHiddenWindows true
 	rst := SendMessage(0x283,wParam,lParam,,"ahk_id " DefaultIMEWnd)
 	return rst
 }
@@ -48,9 +56,9 @@ fnWatchCursor(){
 	if(imeState = 1){
 		ToolTip "KOR", x+8, y+8
 	}else{
-		ToolTip 
+		ToolTip
 	}
-	
+
 }
 
 ; n+k 또는 k+n 조합으로 IME 전환
@@ -58,7 +66,7 @@ fnWatchCursor(){
     ih := InputHook("T0.08 L1")  ; 50ms 타임아웃, 1글자만 받기
     ih.Start()
     ih.Wait()
-    
+
     ; k가 입력되었는지 확인
     if (ih.Input = "k") {
         ; n과 k를 백스페이스로 지우기
@@ -66,6 +74,9 @@ fnWatchCursor(){
         Send("{BS 1}")
         ; IME 토글
         Send("{vk15sc138}")
+    } else if (ih.Input != "") {
+        ; k가 아닌 다른 키가 입력된 경우 해당 키를 다시 전송
+        Send(ih.Input)
     }
 }
 
@@ -73,7 +84,7 @@ fnWatchCursor(){
     ih := InputHook("T0.08 L1")  ; 50ms 타임아웃, 1글자만 받기
     ih.Start()
     ih.Wait()
-    
+
     ; n이 입력되었는지 확인
     if (ih.Input = "n") {
         ; k와 n을 백스페이스로 지우기
@@ -81,6 +92,9 @@ fnWatchCursor(){
         Send("{BS 1}")
         ; IME 토글
         Send("{vk15sc138}")
+    } else if (ih.Input != "") {
+        ; n이 아닌 다른 키가 입력된 경우 해당 키를 다시 전송
+        Send(ih.Input)
     }
 }
 
@@ -93,7 +107,7 @@ fnWatchCursor(){
         ih := InputHook("T0.08 L1")
         ih.Start()
         ih.Wait()
-        
+
         ; ㅏ가 입력되었는지 확인 (SC024 = j키 위치)
         if (ih.Input = "j") {
             ; ㅜ와 ㅏ를 백스페이스로 지우기
@@ -101,6 +115,9 @@ fnWatchCursor(){
             Send("{BS 1}")
             ; IME 토글
             Send("{vk15sc138}")
+        } else if (ih.Input != "") {
+            ; j가 아닌 다른 키가 입력된 경우 해당 키를 다시 전송
+            Send(ih.Input)
         }
     }
 }
@@ -112,7 +129,7 @@ fnWatchCursor(){
         ih := InputHook("T0.08 L1")
         ih.Start()
         ih.Wait()
-        
+
         ; ㅜ가 입력되었는지 확인 (SC016 = t키 위치)
         if (ih.Input = "t") {
             ; ㅏ와 ㅜ를 백스페이스로 지우기
@@ -120,6 +137,9 @@ fnWatchCursor(){
             Send("{BS 1}")
             ; IME 토글
             Send("{vk15sc138}")
+        } else if (ih.Input != "") {
+            ; t가 아닌 다른 키가 입력된 경우 해당 키를 다시 전송
+            Send(ih.Input)
         }
     }
 }
