@@ -3,7 +3,7 @@ local wezterm = require 'wezterm'
 local wezterm_font_config = wezterm.font_with_fallback {
     {
         italic = false,
-        family = 'WindowsCommandPrompt Nerd Font',
+        family = 'Cascadia Code NFMMOT',
         -- family = 'BigBlueTermPlus Nerd Font',
         weight = 'Regular',
         stretch = 'Expanded',
