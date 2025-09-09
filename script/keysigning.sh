@@ -121,7 +121,7 @@ EOF
         --upload-file /tmp/mail.txt
 
     curl_exit_code=$?
-    rm -f /tmp/mail.txt
+    /bin/rm -f /tmp/mail.txt
 
     if [ $curl_exit_code -eq 0 ]; then
         echo "SUCCESS: 메일 전송 성공 <$MAIL_FROM> -> <$MAIL_TO>"

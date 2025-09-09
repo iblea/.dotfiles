@@ -41,7 +41,7 @@ else
 fi
 
 if [ -f "$HOME/.zshrc" ]; then
-	rm -f "$HOME/.zshrc"
+	/bin/rm -f "$HOME/.zshrc"
 fi
 
 echo ""

@@ -8,8 +8,8 @@ if [ "$process" != "" ]; then
     exit 0
 fi
 
-test -d /Applications/KakaoTalkDev.app && rm -rf /Applications/KakaoTalkDev.app
-test -d /Applications/DuelKakaoTalk.app && rm -rf /Applications/DuelKakaoTalk.app
+test -d /Applications/KakaoTalkDev.app && /bin/rm -rf /Applications/KakaoTalkDev.app
+test -d /Applications/DuelKakaoTalk.app && /bin/rm -rf /Applications/DuelKakaoTalk.app
 echo "remove old Duel KakaoTalk"
 
 cp -a /Applications/KakaoTalk.app /Applications/KakaoTalkDev.app

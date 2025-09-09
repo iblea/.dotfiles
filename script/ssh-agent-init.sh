@@ -56,7 +56,7 @@ unset SSH_AUTH_DIR
 ssh_agent_found=$(ssh_agent_process_find )
 if [[ "${ssh_agent_found}" = "0" ]]; then
     if [ -S  "${SSH_AUTH_SOCK}" ] || [ -f  "${SSH_AUTH_SOCK}" ]; then
-        rm -f "${SSH_AUTH_SOCK}"
+        /bin/rm -f "${SSH_AUTH_SOCK}"
     fi
     eval $(ssh-agent -s -a "${SSH_AUTH_SOCK}") > /dev/null
 fi
