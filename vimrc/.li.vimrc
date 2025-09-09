@@ -320,6 +320,10 @@ if g:colors_name == 'default'
     hi! comment ctermfg=72
 endif
 
+" vnoremap <leader>y :'<,'>w ++enc=cp949 !clip.exe<CR>
+" vnoremap <leader>y :w ++enc=cp949 !clip.exe<CR>
+vnoremap <leader>y y:call system('clip.exe', @")<CR>
+
 " highlight link EchoDocPopup Pmenu
 
 func! WinEnterFunction()
