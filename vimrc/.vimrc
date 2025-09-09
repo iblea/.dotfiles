@@ -6,11 +6,13 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 
 	Plug 'preservim/nerdtree'
 	" Plug 'vim-scripts/AutoComplPop'
-	" Plug 'iblea/AutoComplPop'
-	if version >= 900
-	Plug 'girishji/vimcomplete'
-	Plug 'github/copilot.vim'
-	endif
+	Plug 'iblea/AutoComplPop'
+
+	" if version >= 900
+	" Plug 'girishji/vimcomplete'
+	" Plug 'github/copilot.vim'
+	" endif
+	
 	" Plug 'lifepillar/vim-mucomplete'
 	Plug 'vim-airline/vim-airline'
 	Plug 'vim-airline/vim-airline-themes'
