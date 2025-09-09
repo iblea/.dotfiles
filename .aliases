@@ -297,22 +297,23 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
     #     fi
     # }
 
+    WINUSERNAME="jhhwang"
     function goc() { cd /mnt/c/$@; }
     function god() { cd /mnt/d/$@; }
     function goe() { cd /mnt/e/$@; }
     function govscode() { cd /mnt/c/jvscode/data/user-data/User/$@; }
-    function gohome() { cd /mnt/c/Users/ghkd0/$@; }
+    function gohome() { cd /mnt/c/Users/$WINUSERNAME/$@; }
     function golog() { cd /mnt/e/mylog/$@; }
-    function godown() { cd /mnt/c/Users/ghkd0/Downloads/$@; }
-    function godesktop() { cd /mnt/c/Users/ghkd0/Desktop/$@; }
+    function godown() { cd /mnt/c/Users/$WINUSERNAME/Downloads/$@; }
+    function godesktop() { cd /mnt/c/Users/$WINUSERNAME/Desktop/$@; }
 
     # "/mnt/c/Program\\ Files/Beyond\\ Compare\\ 4/BComp.exe"
     # alias diffb='"/mnt/c/Program Files/Beyond Compare 4/BComp.exe"'
     alias diffb='~/.bcomp.sh'
 
-    alias curla="/mnt/c/Users/ghkd0/Videos/.aaa_testcurl.sh"
-    alias curlq="/mnt/c/Users/ghkd0/Videos/.qqq_testcurl.sh"
-    alias curls="/mnt/c/Users/ghkd0/Videos/.rrr_testcurl.sh"
+    alias curla="/mnt/c/Users/$WINUSERNAME/Videos/.aaa_testcurl.sh"
+    alias curlq="/mnt/c/Users/$WINUSERNAME/Videos/.qqq_testcurl.sh"
+    alias curls="/mnt/c/Users/$WINUSERNAME/Videos/.rrr_testcurl.sh"
 
     [[ "$TERM_PROGRAM" != "vscode" ]] && (builtin cd $HOME)
 # mac command
