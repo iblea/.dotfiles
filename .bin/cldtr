@@ -4,18 +4,18 @@
 CLAUDE_OPT=""
 
 if [ $# -eq 0 ]; then
-    CLAUDE_OPT="s"
+    CLAUDE_OPT="a"
 else
     if [ "$1" == "s" ] || [ "$1" == "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ]; then
         CLAUDE_OPT="$1"
         shift
     else
-        CLAUDE_OPT="s"
+        CLAUDE_OPT="a"
     fi
 fi
 
 
-PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
+PROMPT_PATH="$HOME/.dotfiles/prompt/translate_file_prompt.md"
 
 if [ "$CLAUDE_OPT" = "s" ]; then
     claude --model=opus --append-system-prompt "$(cat $PROMPT_PATH)" $@
