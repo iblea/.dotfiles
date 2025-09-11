@@ -464,6 +464,53 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         rm -f $HOME/.config/aider/history.input.md
     }
 
+    function gethostip() {
+        if [ $# -ne 1 ]; then
+            return 1;
+        fi
+        TARGET_MAC="$1"
+        # ipconfig /all 출력을 UTF-8로 변환하고 처리
+        ipconfig.exe /all 2>/dev/null | iconv -f CP949 -t UTF-8 | awk -v mac="$TARGET_MAC" '
+            BEGIN { 
+                # MAC 주소를 대문자로 변환
+                gsub(/-/, "-", mac)
+                mac = toupper(mac)
+                found = 0 
+            }
+            # 물리적 주소 라인을 찾으면
+            /물리적 주소|Physical Address/ {
+                # MAC 주소 추출 (콜론 뒤의 값)
+                split($0, arr, ": ")
+                if (length(arr) > 1) {
+                    current_mac = arr[2]
+                    gsub(/[[:space:]]/, "", current_mac)  # 공백 제거
+                    current_mac = toupper(current_mac)     # 대문자로 변환
+                    
+                    # 목표 MAC 주소와 일치하면 플래그 설정
+                    if (current_mac == mac) {
+                        found = 1
+                    }
+                }
+            }
+            # MAC 주소를 찾은 후 IPv4 주소 라인을 찾으면
+            found == 1 && /IPv4/ {
+                # IPv4 주소 추출
+                split($0, arr, ": ")
+                if (length(arr) > 1) {
+                    ip = arr[2]
+                    # "기본 설정" 또는 "Preferred" 텍스트 제거
+                    gsub(/\(.*\)/, "", ip)
+                    gsub(/[[:space:]]/, "", ip)  # 공백 제거
+                    print ip
+                    exit
+                }
+            }
+            # 새로운 어댑터 섹션이 시작되면 플래그 초기화
+            /^[가-힣A-Za-z].*:$/ && found == 1 && !/IPv4/ {
+                found = 0
+            }
+        '
+    }
 
 else
     alias diffb='~/.bcomp.sh'
