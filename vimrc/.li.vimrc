@@ -322,7 +322,8 @@ endif
 
 " vnoremap <leader>y :'<,'>w ++enc=cp949 !clip.exe<CR>
 " vnoremap <leader>y :w ++enc=cp949 !clip.exe<CR>
-vnoremap <leader>y y:call system('clip.exe', @")<CR>
+" vnoremap <leader>y y:call system('clip.exe', @")<CR>
+vnoremap <leader>y y:call system('iconv -f utf-8 -t utf-16le \| clip.exe', @")<CR>
 
 " highlight link EchoDocPopup Pmenu
 
