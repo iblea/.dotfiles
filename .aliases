@@ -1309,6 +1309,9 @@ if [ ! -f ~/.gitconfig ]; then
 
     # defaultBranch
     git config --global init.defaultBranch main
+
+    # http.sslVerify
+    git config --global http.sslVerify false
 fi
 
 
