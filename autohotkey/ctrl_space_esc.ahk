@@ -99,50 +99,63 @@ fnWatchCursor(){
 }
 
 ; 한글 자판에서 ㅜ+ㅏ 또는 ㅏ+ㅜ 조합으로 IME 전환
-; ㅜ (SC016 = t키 위치)
-~SC016:: {
+; InputHook을 사용하여 실제 입력된 문자를 감지
+global lastChar := ""
+global lastCharTime := 0
+global inputHookActive := false
+
+; 모든 키 입력을 감지하는 InputHook
+StartInputMonitor() {
+    global
+    if (!inputHookActive) {
+        ih := InputHook("V I1")  ; Visible, 1글자씩
+        ih.OnChar := CheckCharCombination
+        ih.Start()
+        inputHookActive := true
+    }
+}
+
+CheckCharCombination(ih, char) {
+    global lastChar, lastCharTime
 
     imeState := fnGetImeState()
     if (imeState = 1) {  ; 한글 입력 상태일 때만
-        ih := InputHook("T0.08 L1")
-        ih.Start()
-        ih.Wait()
+        currentTime := A_TickCount
 
-        ; ㅏ가 입력되었는지 확인 (SC024 = j키 위치)
-        if (ih.Input = "j") {
-            ; ㅜ와 ㅏ를 백스페이스로 지우기
-            ; Send("{BS 2}")
-            Send("{BS 1}")
-            ; IME 토글
-            Send("{vk15sc138}")
-        } else if (ih.Input != "") {
-            ; j가 아닌 다른 키가 입력된 경우 해당 키를 다시 전송
-            Send(ih.Input)
+        ; ㅜ+ㅏ 또는 ㅏ+ㅜ 조합 확인
+        if ((char = "ㅏ" && lastChar = "ㅜ") || (char = "ㅜ" && lastChar = "ㅏ")) {
+            if ((currentTime - lastCharTime) <= 50) {
+                ; 조합 확인! IME 토글
+                Send("{BS 2}")  ; 두 문자 모두 삭제
+                Send("{vk15sc138}")
+                lastChar := ""
+                return
+            }
+        }
+
+        ; 현재 문자 저장 (ㅜ 또는 ㅏ인 경우만)
+        if (char = "ㅜ" || char = "ㅏ") {
+            lastChar := char
+            lastCharTime := currentTime
+        } else {
+            lastChar := ""
         }
     }
 }
 
-; ㅏ (SC024 = j키 위치)
-~SC024:: {
-    imeState := fnGetImeState()
-    if (imeState = 1) {  ; 한글 입력 상태일 때만
-        ih := InputHook("T0.08 L1")
-        ih.Start()
-        ih.Wait()
+; 스크립트 시작 시 InputHook 활성화
+StartInputMonitor()
 
-        ; ㅜ가 입력되었는지 확인 (SC016 = t키 위치)
-        if (ih.Input = "t") {
-            ; ㅏ와 ㅜ를 백스페이스로 지우기
-            ; Send("{BS 2}")
-            Send("{BS 1}")
-            ; IME 토글
-            Send("{vk15sc138}")
-        } else if (ih.Input != "") {
-            ; t가 아닌 다른 키가 입력된 경우 해당 키를 다시 전송
-            Send(ih.Input)
-        }
+; 50ms 후 문자 리셋 함수
+ResetChar() {
+    global lastChar, lastCharTime
+    if (A_TickCount - lastCharTime > 50) {
+        lastChar := ""
     }
 }
+
+; 타이머 설정
+SetTimer(ResetChar, 10)
 
 ; Shift+Windows+H/J/K/L을 방향키로 매핑
 +#h::Send("{Left}")   ; Shift+Win+H → 왼쪽
@@ -155,3 +168,4 @@ fnWatchCursor(){
 ^+#j::Send("+{Down}")   ; Ctrl+Shift+Win+J → Shift+아래
 ^+#k::Send("+{Up}")     ; Ctrl+Shift+Win+K → Shift+위
 ^+#l::Send("+{Right}")  ; Ctrl+Shift+Win+L → Shift+오른쪽
+
