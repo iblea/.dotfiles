@@ -1,0 +1,42 @@
+#!/bin/bash
+
+VIM_PROGRAM=""
+CLAUDE_OPT="s"
+
+NVIM_PATH="nvim"
+VIM_PATH="vim"
+
+# If nvim command exists, set nvim as the default.
+if [ -n "$(command -v $NVIM_PATH)" ]; then
+    VIM_PROGRAM="n"
+else
+    VIM_PROGRAM="o"
+fi
+
+
+# If vim terminal is already opend
+# if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
+# IS_VIMTERM="$(ps -p $PPID -o comm=)"
+# if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
+if [ -n "$MYVIMRC" ]; then
+    $HOME/.dotfiles/.bin/cod
+    exit 0
+fi
+
+
+CODEX_COMMAND="$HOME/.dotfiles/.bin/cod"
+if [ "$VIM_PROGRAM" = "n" ]; then
+    $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | execute 'tnoremap <C-i> \\<CR>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
+        -c "terminal bash -c '${CODEX_COMMAND} $@; exit_code=\$?; exit \$exit_code'" \
+        -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
+        -c "startinsert"
+else
+    $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | execute 'tnoremap <C-i> \\<CR>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
+        -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
+        -c "terminal ++close ++curwin ${CODEX_COMMAND} $@"
+        # -c "terminal ++close ++curwin bash -c '${CODEX_COMMAND} $@'"
+fi
+
+exit 0
