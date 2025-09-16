@@ -52,7 +52,7 @@ fi
 # set rcfile
 rc_files=(
     ".zshrc" ".zshrc"
-	".zshenv" ".zshenv"
+    ".zshenv" ".zshenv"
     ".zsh/.p10k.zsh" ".zsh/.p10k.zsh"
     ".bashrc" ".bashrc"
     "vimrc/.vimrc" ".vimrc"
@@ -221,11 +221,33 @@ fi
 
 if [[ "$(uname -s)" = "Darwin" ]]; then
 if [ -d "$HOME/Library/Application Support/com.mitchellh.ghostty" ]; then
-	rm -f "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
-	ln -s "$settings_full_dir/ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+    rm -f "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+    ln -s "$settings_full_dir/ghostty/config" "$HOME/Library/Application Support/com.mitchellh.ghostty/config"
 fi
 fi
 
+# if [ -z "$(command -v claude)" ]; then
+#     if [ ! -d "$HOME/.claude" ]; then
+#         mkdir -p "$HOME/.claude"
+#     fi
+#     ln -s "$HOME/.dotfiles/prompt/global_prompt.md" "$HOME/.claude/CLAUDE.md"
+# fi
+
+
+if [ -z "$(command -v codex)" ]; then
+    if [ ! -d  "$HOME/.codex" ]; then
+        mkdir -p "$HOME/.codex"
+    fi
+    ln -s "$HOME/.dotfiles/prompt/global_prompt.md" "$HOME/.codex/AGENTS.md"
+fi
+
+
+if [ -z "$(command -v opencode)" ]; then
+    if [ ! -d  "$HOME/.config/opencode" ]; then
+        mkdir -p "$HOME/.config/opencode"
+    fi
+    ln -s "$HOME/.dotfiles/prompt/global_prompt.md" "$HOME/.config/opencode/AGENTS.md"
+fi
 
 # zoxide
 # curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
