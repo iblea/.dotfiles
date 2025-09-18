@@ -105,6 +105,22 @@ if [ -d "$HOME/.codeium/windsurf/bin" ]; then
 	fi
 fi
 
+# .bun/bin
+if [ -d "$HOME/.bun/bin/" ]; then
+	if ! grep -q "$HOME/.bun/bin" <<< "$PATH"; then
+        export BUN_INSTALL="$HOME/.bun"
+		export PATH="$HOME/.bun/bin:$PATH"
+	fi
+    # bun completions
+    [ -s "$HOME/.bun/_bun" ] && source "/home/jhhwang/.bun/_bun"
+fi
+
+# go custom bin
+if [ -d "/usr/local/go/bin" ]; then
+	if ! grep -q "/usr/local/go/bin" <<< "$PATH"; then
+		export PATH="/usr/local/go/bin:$PATH"
+	fi
+fi
 
 
 
