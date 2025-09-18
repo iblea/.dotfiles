@@ -1,0 +1,60 @@
+{
+  "model": "anthropic/claude-opus-4-1",
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "sequential-thinking": {
+      "type": "local",
+      "command": [ "npx", "-y", "@modelcontextprotocol/server-sequential-thinking" ],
+      "enabled": true
+    },
+    "Context7": {
+      "type": "local",
+      "command": [ "npx", "-y", "@upstash/context7-mcp" ],
+      "enabled": true
+    }
+  },
+  "provider": {
+    "openai": {
+      "models": {
+        "gpt-5": {
+          "options": {
+            "reasoningEffort": "medium",
+            "textVerbosity": "low",
+            "reasoningSummary": "auto",
+            "include": ["reasoning.encrypted_content"]
+          }
+        }
+      }
+    },
+    "anthropic": {
+      "models": {
+        "claude-sonnet-4-0": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        },
+        "claude-opus-4-1": {
+          "options": {
+            "thinking": {
+              "type": "enabled",
+              "budgetTokens": 16000
+            }
+          }
+        }
+      }
+    }
+  },
+  "keybinds": {
+    "leader": "ctrl+alt+x",
+    "agent_cycle": "ctrl+tab",
+    "agent_cycle_reverse": "shift+tab",
+    "input_newline": "shift+enter,ctrl+enter,ctrl+j",
+    "messages_page_up": "pgup,ctrl+alt+f",
+    "messages_page_down": "pgdown,ctrl+alt+b",
+    "messages_half_page_up": "ctrl+alt+a",
+    "messages_half_page_down": "ctrl+alt+d"
+  }
+}
