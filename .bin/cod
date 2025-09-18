@@ -1,4 +1,9 @@
 #!/bin/bash
 
-codex --search $@
+# codex --search $@
+# ~/.codex/config.toml
+# [tools]
+# web_search = true
+
+codex $@
 
