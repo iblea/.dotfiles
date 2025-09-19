@@ -65,6 +65,7 @@
   "mode": {
     "plan": {
       "mode": "primary",
+	  "prompt": "{file:./AGENTS.md}",
       "write": false,
       "edit": false,
       "bash": true,
