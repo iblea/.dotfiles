@@ -2,11 +2,6 @@
   "model": "anthropic/claude-opus-4-1",
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "sequential-thinking": {
-      "type": "local",
-      "command": [ "npx", "-y", "@modelcontextprotocol/server-sequential-thinking" ],
-      "enabled": true
-    },
     "Context7": {
       "type": "local",
       "command": [ "npx", "-y", "@upstash/context7-mcp" ],
@@ -54,7 +49,8 @@
     "input_newline": "shift+enter,ctrl+enter,ctrl+j",
     "messages_page_up": "pgup,ctrl+alt+f",
     "messages_page_down": "pgdown,ctrl+alt+b",
-    "messages_half_page_up": "ctrl+alt+a",
-    "messages_half_page_down": "ctrl+alt+d"
+    "messages_half_page_up": "ctrl+alt+a,alt+i,ctrl+q",
+    "messages_half_page_down": "ctrl+alt+d,alt+o,ctrl+w",
+	"input_paste": "ctrl+v,ctrl+alt+v,<leader>v"
   }
 }

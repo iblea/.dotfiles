@@ -1,0 +1,1 @@
+../prompt/global_prompt.md
