@@ -63,8 +63,8 @@
     "input_paste": "ctrl+v,ctrl+alt+v,<leader>v"
   },
   "mode": {
-    "mode": "primary",
     "plan": {
+      "mode": "primary",
       "write": false,
       "edit": false,
       "bash": true,
