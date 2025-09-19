@@ -1,6 +1,15 @@
 {
-  "model": "anthropic/claude-opus-4-1",
   "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-opus-4-1",
+  "theme": "monokai",
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "allow",
+      "git push": "ask"
+    },
+    "webfetch": "allow"
+  },
   "mcp": {
     "Context7": {
       "type": "local",
@@ -51,6 +60,19 @@
     "messages_page_down": "pgdown,ctrl+alt+b",
     "messages_half_page_up": "ctrl+alt+a,alt+i,ctrl+q",
     "messages_half_page_down": "ctrl+alt+d,alt+o,ctrl+w",
-	"input_paste": "ctrl+v,ctrl+alt+v,<leader>v"
+    "input_paste": "ctrl+v,ctrl+alt+v,<leader>v"
+  },
+  "mode": {
+    "mode": "primary",
+    "plan": {
+      "write": false,
+      "edit": false,
+      "bash": true,
+      "read": true,
+      "grep": true,
+      "glob": true,
+      "list": true,
+      "webfetch": true
+    }
   }
 }
