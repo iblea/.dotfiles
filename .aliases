@@ -185,6 +185,29 @@ function psf() {
 
 }
 
+function psfid() {
+    process_name="$*"
+    # ps -aef | grep --color=always "$process_name" | grep -v "grep --color.*always.*$process_name"
+    if [ $# -eq 0 ]; then
+        echo "Wrong Argument"
+        return 1
+    fi
+
+    IFS='' process_names=( $@ )
+    processes="$(ps -aef)"
+
+    total_process_ids=""
+    for process_name in "${process_names[@]}" ; do
+        process_ids=$(echo -e "${processes}" | grep -a --color=always "$process_name" | grep -a -v "grep --color.*always.*$process_name" | awk '{ printf "%s ", $2}')
+        total_process_ids+="$process_ids"
+    done
+    echo -n "$total_process_ids"
+    if [ -n "$total_process_ids" ]; then
+        echo -e "\b"
+    fi
+}
+
+
 function perft() {
     if [ $# -eq 0 ]; then
         perf top
