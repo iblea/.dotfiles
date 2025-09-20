@@ -11,7 +11,8 @@ When engaging in thinking or reasoning, express the process of deriving the answ
 - `./TODO.md` (`TODO.md`) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `TODO.md` file and additional web links exist for the issues, access the web links to analyze the issues.
   - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format. Work on them one by one, and when you complete a task, mark it as completed (`[x]`).
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
-  - When all tasks in a subcategory are completed, commit with `git commit` using the commit message marked with `#####` in that subcategory. If there is no commit message marked with `#####`, create a commit message arbitrarily and perform git commit.
+  - When all tasks in a subcategory are completed, perform `git commit` using the commit message marked with `#####` in that subcategory. If there is no commit message marked with `#####`, create a commit message arbitrarily and perform git commit.
+    - If a message `##### NO COMMIT` exists, do not perform a git commit.
   - The todo list format is as follows:
     ```markdown
     # ISSUES
@@ -25,8 +26,16 @@ When engaging in thinking or reasoning, express the process of deriving the answ
     - [ ] todo task 3
 
     ### Task 2
+    (If there is no commit message marked with `#####`, create a commit message arbitrarily and perform `git commit`.)
     - [ ] todo task 1
     - [ ] todo task 2
+
+    ### Task 3
+    (Don't commit if there is a message `##### NO COMMIT`.)
+    ##### NO COMMIT
+    - [ ] todo task 1
+    - [ ] todo task 2
+    - [ ] todo task 3
     ```
 
 - `./BUILD.md` (`BUILD.md`) contains information about compilation and build methods for the project, code formatting (code style), rules to follow, static analysis tools, dynamic analysis tools, testing methods, etc. When code is modified, refer to this file to unify code style and use build, test, and analysis tools to verify the modified logic.
