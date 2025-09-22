@@ -22,6 +22,7 @@
       "mcp__sequential-thinking__sequentialthinking"
     ],
     "deny": [],
+    "ask": [],
     "defaultMode": "plan"
   },
   "verbose": true,
