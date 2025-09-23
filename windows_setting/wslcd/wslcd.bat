@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 
 echo WSL 바로가기 경로로 이동 중...
 
-set "link_dir=C:\Users\user\Desktop"
+set "link_dir=%USERPROFILE%\Desktop"
 set "link_file=src.lnk"
 
 REM PowerShell로 src.lnk의 대상 경로 획득
@@ -55,7 +55,7 @@ REM ) else (
     if !errorlevel! equ 0 (
         echo 성공적으로 이동했습니다: !target_path!
         echo Windows 명령창을 유지합니다.
-        REM cmd /k
+        cmd /k
     ) else (
         echo 에러: 해당 경로로 이동할 수 없습니다: !target_path!
         pause

@@ -4,7 +4,7 @@
 chcp 65001 | Out-Null
 Write-Host "Moving to WSL shortcut path..." -ForegroundColor Green
 
-$link_dir = "C:\Users\user\Desktop"
+$link_dir = "$env:USERPROFILE\Desktop"
 $link_path = "src.lnk"
 
 try {
