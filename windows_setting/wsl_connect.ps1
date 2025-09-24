@@ -1,17 +1,18 @@
 # PowerShell.exe -noexit C:\test.ps1
-$remoteport = bash.exe -c "ifconfig eth0 | grep 'inet '"
-$found = $remoteport -match '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}';
+# $remoteport = bash.exe -c "ifconfig eth0 | grep 'inet '"
+# $found = $remoteport -match '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}';
+# if( $found ){
+#   $remoteport = $matches[0];
+# } else{
+#   echo "The Script Exited, the ip address of WSL 2 cannot be found";
+#   exit;
+# }
 
-if( $found ){
-  $remoteport = $matches[0];
-} else{
-  echo "The Script Exited, the ip address of WSL 2 cannot be found";
-  exit;
-}
+$wslip = (wsl hostname -I).trim()
 
 #[Ports]
 #All the ports you want to forward separated by coma
-$ports=@(9232,8888,44433,3333,4000,8080);
+$ports=@(2222,8888,44433,3333,4000,8080);
 
 
 #[Static ip]
@@ -29,14 +30,14 @@ iex "New-NetFireWallRule -DisplayName 'WSL 2 Firewall Unlock' -Direction Inbound
 
 # iex "netsh interface portproxy reset";
 
+echo "bind ip: $addr"
+echo "wsl  ip: $wslip"
 for( $i = 0; $i -lt $ports.length; $i++ ){
   $port = $ports[$i];
   echo $port
-  echo $addr
-  echo $remoteport
   iex "netsh interface portproxy delete v4tov4 listenport=$port listenaddress=$addr";
-  iex "netsh interface portproxy add v4tov4 listenport=$port listenaddress=$addr connectport=$port connectaddress=$remoteport";
-  # iex "netsh interface portproxy add v4tov4 listenport=$port connectport=$port connectaddress=$remoteport";
+  iex "netsh interface portproxy add v4tov4 listenport=$port listenaddress=$addr connectport=$port connectaddress=$wslip";
+  # iex "netsh interface portproxy add v4tov4 listenport=$port connectport=$port connectaddress=$wslip";
 }
 
 # Invoke-Expression "netsh interface portproxy show v4tov4";

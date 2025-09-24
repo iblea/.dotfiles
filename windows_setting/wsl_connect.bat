@@ -20,13 +20,21 @@ echo "Success to get admin permission"
 echo.
 
 REM powershell.exe "$env:APPDATA\..\wsl_connect.ps1"
-if exist "%APPDATA%\..\wsl_connect.ps1" (
-powershell.exe "%APPDATA%\..\wsl_connect.ps1"
-powershell.exe "Start-Service sshd"
+REM if exist "%APPDATA%\..\wsl_connect.ps1" (
+REM powershell.exe "%APPDATA%\..\wsl_connect.ps1"
+REM powershell.exe "Start-Service sshd"
+if exist "%USERPROFILE%\wsl_connect.ps1" (
 
-"C:\Windows\System32\bash.exe" -c "sudo service ssh start"
-"C:\Windows\System32\bash.exe" -c "sudo service nginx start"
-"C:\Windows\System32\bash.exe" -c "sudo service php7.2-fpm start"
+REM powershell.exe "%USERPROFILE%\wsl_connect.ps1"
+REM powershell.exe "Start-Service sshd"
+
+powershell.exe -ExecutionPolicy Bypass -File "%USERPROFILE%\wsl_connect.ps1"
+REM powershell.exe -ExecutionPolicy Bypass -File "Start-Service sshd"
+"C:\Windows\System32\bash.exe" -c "sudo systemctl start ssh.service"
+
+REM "C:\Windows\System32\bash.exe" -c "sudo service ssh start"
+REM "C:\Windows\System32\bash.exe" -c "sudo service nginx start"
+REM "C:\Windows\System32\bash.exe" -c "sudo service php7.2-fpm start"
 ) else (
 echo "not found wsl_connect.ps1 script"
 )
