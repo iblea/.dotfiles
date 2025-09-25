@@ -6,7 +6,7 @@ input=$(cat)
 
 # Extract information
 model=$(echo "$input" | jq -r '.model.display_name // "Claude"')
-username=$(whoami)
+# username=$(whoami)
 cwd=$(echo "$input" | jq -r '.workspace.current_dir')
 transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
 
@@ -88,7 +88,7 @@ status_line+="\033[${MODEL_FG}m  $model \033[0m"
 status_line+="\033[${MODEL_FG}m$SEP\033[0m"
 
 # User segment
-status_line+="\033[${USER_FG}m  $username \033[0m"
+# status_line+="\033[${USER_FG}m  $username \033[0m"
 status_line+="\033[${USER_FG}m$SEP\033[0m"
 
 # Directory segment
