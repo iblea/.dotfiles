@@ -54,6 +54,12 @@
         "@modelcontextprotocol/server-sequential-thinking"
       ]
     },
+    "sequential-thinking-improved": {
+      "command": "node",
+      "args": [
+        "/usr/lib/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+      ]
+    },
     "playwright": {
       "command": "npx",
       "args": [
