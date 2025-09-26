@@ -81,6 +81,13 @@ if [ -n "$(command -v java)" ]; then
 	fi
 fi
 
+# bun path
+if [ -d "$HOME/.bun/bin" ]; then
+	if ! grep -q "$HOME/.bun/bin" <<< "$PATH"; then
+		export PATH="$HOME/.bun/bin:$PATH"
+	fi
+fi
+
 # go path
 if [ -n "$(command -v go)" ]; then
 	goversion=$(go version | awk -F ' ' '{ print $3 }' | sed 's/^go//')
@@ -112,7 +119,7 @@ if [ -d "$HOME/.bun/bin/" ]; then
 		export PATH="$HOME/.bun/bin:$PATH"
 	fi
     # bun completions
-    [ -s "$HOME/.bun/_bun" ] && source "/home/jhhwang/.bun/_bun"
+    [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 fi
 
 # go custom bin
