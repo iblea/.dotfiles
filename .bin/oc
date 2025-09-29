@@ -13,11 +13,11 @@ else
     shift
 fi
 
-if [ "$MODEL_SELECT" = "s" ]; then
-    opencode --model "anthropic/claude-sonnet-4-0"
-elif [ "$MODEL_SELECT" = "s" ]; then
-    opencode --model "anthropic/claude-opus-4-1"
+if [ "$MODEL_SELECT" = "s" ] || [ "$MODEL_SELECT" = "S" ]; then
+    TERM=screen opencode --model "anthropic/claude-sonnet-4-0"
+elif [ "$MODEL_SELECT" = "o" ]  || [ "$MODEL_SELECT" = "O" ]; then
+    TERM=screen opencode --model "anthropic/claude-opus-4-1"
 else
-    opencode --model "anthropic/claude-sonnet-4-0"
+    TERM=screen opencode --model "anthropic/claude-sonnet-4-0"
 fi
 
