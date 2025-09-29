@@ -6,13 +6,15 @@ CLAUDE_OPT=""
 if [ $# -eq 0 ]; then
     CLAUDE_OPT="s"
 else
-    if [ "$1" == "s" ] || [ "$1" == "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ]; then
+    if [ "$1" == "s" ] || [ "$1" == "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ] || [ "$1" == "h" ] || [ "$1" == "hu" ]; then
         CLAUDE_OPT="$1"
         shift
     else
         CLAUDE_OPT="s"
     fi
 fi
+
+CLAUDE_OPT=$(echo $CLAUDE_OPT | sed 's/.*/\L&/')
 
 
 PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
@@ -25,6 +27,10 @@ elif [ "$CLAUDE_OPT" = "a" ]; then
     claude --model=sonnet --append-system-prompt "$(cat $PROMPT_PATH)" $@
 elif [ "$CLAUDE_OPT" = "au" ]; then
     claude --model=sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH) $@"
+elif [ "$CLAUDE_OPT" = "h" ]; then
+    claude --model=haiku --append-system-prompt "$(cat $PROMPT_PATH)" $@
+elif [ "$CLAUDE_OPT" = "hu" ]; then
+    claude --model=haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH) $@"
 else
     claude --model=opus --append-system-prompt "$(cat $PROMPT_PATH)" $@
 fi
