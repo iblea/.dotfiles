@@ -80,7 +80,7 @@ The following is an explanation of the user-defined command.
 - The characters "save" or the abbreviation 'sv' can be used. This is entered after a user-defined command string, Please save the translated content and original text as `translate_byai.md` file.
   - If there is an existing `translate_byai.md` file, delete all the existing contents of the file and write it.
 - The characters "mod" can be used. Add translated content from the lower line of the selected content of the file.
-  - example: `@test.md#L53-210 ;kor mod` -> Translate the content from line 53 to line 210 into Korean. After that, newline character(`\n`) enters additional and add the translated content from line 212.
+  - example: `@test.md#L53-210 ;kor mod` or (`@test.md:53-210 ;kor mod`) -> Translate the content from line 53 to line 210 into Korean. After that, newline character(`\n`) enters additional and add the translated content from line 212.
   - If you have not selected a specific line or block in the file, add translated content in sections or paragraphs.
     - example: `@test.md ;kor mod` -> Translate everything in the file into paragraphs, or sections, and add translated content.
   - If you haven't translated the contents of the file, don't do anything about it.

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+VSCODE_FIRST=1
+
 function custom_vi() {
     clear
     echo "Do you want to open file with vi?"
@@ -29,97 +31,109 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 
     if [ -n "$GIT_ASKPASS" ]; then
 
-        # if  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-        #     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-        #     exit 0
-        # elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-        #     "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-        #     exit 0
-        # elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-        #     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-        #     exit 0
-        # elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-        #     "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-        #     exit 0
-        # fi
-
-        if  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-            exit 0
-        elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-            exit 0
-        elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-            exit 0
-        elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-            exit 0
+        if [ $VSCODE_FIRST -eq 1 ]; then
+            if  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            fi
+        else
+            if  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+                exit 0
+            fi
         fi
-
         exit 0
     fi
 
-    # if [ -d "/Applications/Visual Studio Code.app" ]; then
-    #     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-    # elif [ -d "/Applications/Cursor.app" ]; then
-    #     "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-    if [ -d "/Applications/Cursor.app" ]; then
-        "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-    elif [ -d "/Applications/Visual Studio Code.app" ]; then
-        "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+    if [ $VSCODE_FIRST -eq 1 ]; then
+        if [ -d "/Applications/Visual Studio Code.app" ]; then
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+        elif [ -d "/Applications/Cursor.app" ]; then
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+        else
+            vim "$@"
+        fi
     else
-        vim "$@"
+        if [ -d "/Applications/Cursor.app" ]; then
+            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
+        elif [ -d "/Applications/Visual Studio Code.app" ]; then
+            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+        else
+            vim "$@"
+        fi
     fi
-
     exit 0
 else
     if [ -n "$GIT_ASKPASS" ]; then
-
-        # if  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-        #     code "$@"
-        #     exit 0
-        # elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-        #     cursor "$@"
-        #     exit 0
-        # elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-        #     code "$@"
-        #     exit 0
-        # elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-        #     cursor "$@"
-        #     exit 0
-        # fi
-
-        if  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-            cursor "$@"
-            exit 0
-        elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-            code "$@"
-            exit 0
-        elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-            cursor "$@"
-            exit 0
-        elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-            code "$@"
-            exit 0
+        if [ $VSCODE_FIRST -eq 1 ]; then
+            if  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+                code "$@"
+                exit 0
+            elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+                cursor "$@"
+                exit 0
+            elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+                code "$@"
+                exit 0
+            elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+                cursor "$@"
+                exit 0
+            fi
+        else
+            if  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+                cursor "$@"
+                exit 0
+            elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+                code "$@"
+                exit 0
+            elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+                cursor "$@"
+                exit 0
+            elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+                code "$@"
+                exit 0
+            fi
         fi
-
         exit 0
     fi
 
-    # if [ -n "$(command -v code)" ]; then
-    #     code "$@"
-    # elif [ -n "$(command -v cursor)" ]; then
-    #     cursor "$@"
-    if [ -n "$(command -v cursor)" ]; then
-        cursor "$@"
-    elif [ -n "$(command -v code)" ]; then
-        code "$@"
+    if [ $VSCODE_FIRST -eq 1 ]; then
+        if [ -n "$(command -v code)" ]; then
+            code "$@"
+        elif [ -n "$(command -v cursor)" ]; then
+            cursor "$@"
+        else
+            # vim "$@"
+            custom_vi "$@"
+        fi
     else
-        # vim "$@"
-        custom_vi "$@"
+        if [ -n "$(command -v cursor)" ]; then
+            cursor "$@"
+        elif [ -n "$(command -v code)" ]; then
+            code "$@"
+        else
+            # vim "$@"
+            custom_vi "$@"
+        fi
     fi
-
     exit 0
 fi
 
