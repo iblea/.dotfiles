@@ -25,19 +25,35 @@ When engaging in thinking or reasoning, express the process of deriving the answ
     ##### git commit message
     - [ ] todo task 1
     - [ ] todo task 2
+      - detail mission
+      - detail mission
     - [ ] todo task 3
 
     ### Task 2
     (If there is no commit message marked with `#####`, create a commit message arbitrarily and perform `git commit`.)
     - [ ] todo task 1
+      - detail mission
     - [ ] todo task 2
 
     ### Task 3
     (Don't commit if there is a message `##### NO COMMIT`.)
     ##### NO COMMIT
     - [ ] todo task 1
+      - detail mission
     - [ ] todo task 2
+      - detail mission
     - [ ] todo task 3
+
+    ### Task 4
+    (If there is a message `##### AUTO COMMIT`, create a commit message arbitrarily and perform `git commit`.)
+    ##### AUTO COMMIT
+    - [ ] todo task 1
+      - detail mission
+      - detail mission
+    - [ ] todo task 2
+      - detail mission
+    - [ ] todo task 3
+      - detail mission
     ```
 
 - `./BUILD.md` (`BUILD.md` (Don't be case sensitive to filename.)) contains information about compilation and build methods for the project, code formatting (code style), rules to follow, static analysis tools, dynamic analysis tools, testing methods, etc. When code is modified, refer to this file to unify code style and use build, test, and analysis tools to verify the modified logic.
@@ -66,6 +82,7 @@ The following is an explanation of the user-defined command.
 
 ### Related to translate command
 - Please use formal language when outputting translated content.
+- If you can use **sub agent or custom agent**, use the **translator** agent.
 
 - When receiving the command **;kor**, you must translate this content or image into Korean. (Do not modify the original text, and add the translated content starting from below the original text.)
 - When receiving the command **;eng**, you must translate this content or image into English. (Do not modify the original text, and add the translated content starting from below the original text.)
