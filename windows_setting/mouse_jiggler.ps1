@@ -10,11 +10,26 @@ while (Get-Process -Name "MouseJiggler" -ErrorAction SilentlyContinue) {
 }
 
 # 3. execute MouseJiggler
-.\MouseJiggler.exe -j -m -s 60
 
+echo "Start Mouse Jiggler.exe..."
+Start-Sleep 3
+# Start-Job -ScriptBlock {
+
+Start-Process cmd -ArgumentList "/c start """" "".\MouseJiggler.exe"" -j -m True -z False -s 60" -WindowStyle Hidden
+
+# Start-Process -FilePath ".\MouseJiggler.exe" `
+#     -ArgumentList "-j", "-m", "True", "-z", "False", "-s", "60" `
+#     -WorkingDirectory (Get-Location)
+
+#     -WindowStyle Hidden
+
+# }
+
+echo "daemon starter"
 
 # print process
 Get-Process -Name "MouseJiggler" -ErrorAction SilentlyContinue
 
-echo 'done'
+echo ''
+echo 'Run Jiggler'
 
