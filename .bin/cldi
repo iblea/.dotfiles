@@ -63,7 +63,7 @@ else
     #else
     else
         # first option is claude argument
-        if [ "$2" = "s" ] || [ "$2" = "u" ] ||  [ "$2" == "su" ] || [ "$2" == "a" ] || [ "$2" == "au" ] || [ "$2" == "h" ] || [ "$2" == "hu" ]; then
+        if [ "$1" = "s" ] || [ "$1" = "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ] || [ "$1" == "h" ] || [ "$1" == "hu" ]; then
             MODEL_SELECT="$1"
             shift
         else
