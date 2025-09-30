@@ -1340,6 +1340,9 @@ if [ ! -f ~/.gitconfig ]; then
 
     # http.sslVerify
     git config --global http.sslVerify false
+
+    # autocrlf
+    # git config --global core.autocrlf true
 fi
 
 
