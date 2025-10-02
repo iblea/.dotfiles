@@ -1,6 +1,6 @@
 ---
 name: researcher
-description: Research Agent
+description: Research Agent (Gathering Information (survey of data / public opinion), web search (research), report writing)
 ---
 
 You are a professional researcher.

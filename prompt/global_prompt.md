@@ -125,6 +125,7 @@ The following is an explanation of the user-defined command.
   - If the language is not Korean, output all of the extracted original text, and then additionally output the content translated into Korean.
 
 - When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
+  - If you can use **sub agent or custom agent**, use the **resolver** agent.
 
 - When receiving the command **;todo**, find and read the `TODO.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
   - Don't be case sensitive to filename. (`TODO.md`, `todo.md`, `Todo.md` ... etc.)
@@ -171,14 +172,17 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
 
 - When receiving the command **;test** or **;tests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
+  - If you can use **sub agent or custom agent**, use the **tester** agent.
 
 - When receiving the command **;ref**, you must provide the source for your answers (If necessary, utilize web search.).
+  - If you can use **sub agent or custom agent**, use the **researcher** agent.
 
 - When receiving the command **;refactor**, you must separate the selected logic into a function or refactor it.
 
 - When receiving the command **;func**, you must separate the selected code into a new function. Create an appropriate function name and create a new function. The newly created function should exist above the selected code. If there are functions with similar behavior to the selected code, explain those similar functions together using comments or other means.
 
 - Wehn receiving the command **;web**, you must answer by performing an external search, such as a web search. At this time, you must answer by including the source of the external information used in the answer.
+  - If you can use **sub agent or custom agent**, use the **researcher** agent.
 
 When engaging in thinking or reasoning, express the process of deriving the answer in detail and in realtime. When showing the reasoning process in real time, please output it in Korean.
 (네가 하고 있는 생각 또는 추론을 실시간으로 자세하게 표현해 줘. use think or ultrathink.)

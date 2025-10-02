@@ -5,5 +5,5 @@ In this case, unlike a regular response, refer to the user-defined command descr
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
 # Command behavior
-- use resolver agent.
-You must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
+- use tester agent.
+you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
