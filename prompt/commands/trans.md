@@ -5,7 +5,7 @@ In this case, unlike a regular response, refer to the user-defined command descr
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
 # Command behavior
-- You must use translator agent.
+- You must use translator agent unconditionally unconditionally.
 - This Command Format is `/trans <language> [under|below|b|u|file|f|save|sv|mod]`
 - You must translate the content into the language specified after `/trans` (The language that comes after `/trans` could be Korean or English.).
   - example: `/trans french` -> Translate the content into French.
