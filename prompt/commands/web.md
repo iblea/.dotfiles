@@ -5,4 +5,5 @@ In this case, unlike a regular response, refer to the user-defined command descr
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
 # Command behavior
+- use researcher agent.
 You must answer by performing an external search, such as a web search. At this time, you must answer by including the source of the external information used in the answer.
