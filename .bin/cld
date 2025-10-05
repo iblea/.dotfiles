@@ -10,7 +10,8 @@ else
         CLAUDE_OPT="$1"
         shift
     else
-        CLAUDE_OPT="s"
+        # CLAUDE_OPT="s"
+		echo -n ""
     fi
 fi
 

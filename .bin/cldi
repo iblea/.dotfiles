@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VIM_PROGRAM=""
-MODEL_SELECT="s"
+MODEL_SELECT="a"
 
 NVIM_PATH="nvim"
 VIM_PATH="vim"
@@ -25,14 +25,13 @@ fi
 # CLAUDE -> s: opus, a: sonnet
 
 if [ $# -eq 0 ]; then
-    MODEL_SELECT="s"
+    # MODEL_SELECT="s"
+	echo -n ""
 elif [ $# -eq 1 ]; then
     if [ "$1" = "n" ] || [ "$1" = "N" ]; then
         VIM_PROGRAM="n"
-        MODEL_SELECT="s"
     elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
         VIM_PROGRAM="o"
-        MODEL_SELECT="s"
     else
         MODEL_SELECT="$1"
     fi
@@ -46,7 +45,8 @@ else
             MODEL_SELECT="$2"
             shift
         else
-            MODEL_SELECT="s"
+            # MODEL_SELECT="s"
+			echo -n ""
         fi
         shift
     # first option is vim argument
@@ -57,7 +57,8 @@ else
             MODEL_SELECT="$2"
             shift
         else
-            MODEL_SELECT="s"
+            # MODEL_SELECT="s"
+			echo -n ""
         fi
         shift
     #else
@@ -67,7 +68,8 @@ else
             MODEL_SELECT="$1"
             shift
         else
-            MODEL_SELECT="s"
+            # MODEL_SELECT="s"
+			echo -n ""
         fi
     fi
 fi
