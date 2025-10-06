@@ -87,13 +87,13 @@ fi
 
 if [ "$VIM_PROGRAM" = "n" ]; then
     $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call chansend(b:terminal_job_id, \"\<C-o>\")<CR>'" \
-        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><esc>:suspend<cr>'" \
         -c "terminal bash -c '${AGENT_COMMAND} ${MODEL_SELECT} $@; exit_code=\$?; exit \$exit_code'" \
         -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
         -c "startinsert"
 else
     $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call term_sendkeys(bufnr(\"%\"), \"\<C-o>\")<CR>i<C-\><C-n>'" \
-        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><esc>:suspend<cr>' " \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
         -c "terminal ++close ++curwin ${AGENT_COMMAND} ${MODEL_SELECT} $@"
         # -c "terminal ++close ++curwin bash -c '${AGENT_COMMAND} ${MODEL_SELECT} $@'"
