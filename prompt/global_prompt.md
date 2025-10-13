@@ -11,6 +11,24 @@ When engaging in thinking or reasoning, express the process of deriving the answ
 - `./TODO.md` (`TODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `TODO.md` (`todo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
   - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format. Work on them one by one, and when you complete a task, mark it as completed (`[x]`).
     - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `TODO.md`.
+      - example
+        - You are on this mission.
+          ```markdown
+          - [ ] 1. solve this mission. Improve the performance of this code.
+            - detail description 1
+            - detail description 2
+            - detail description 3
+          ```
+        - You have completed your mission successfully.
+          After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
+          Please work as below.
+          **You must not add, delete, or modify anything else.**
+          ```markdown
+          - [x] 1. solve this mission. Improve the performance of this code.
+            - detail description 1
+            - detail description 2
+            - detail description 3
+          ```
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
   - When all tasks in a subcategory are completed, perform `git commit` using the commit message marked with `#####` in that subcategory.
     - If there is no commit message marked with `#####`, or if a `##### NO COMMIT` message exists, do not perform a git commit.
