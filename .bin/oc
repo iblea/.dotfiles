@@ -14,10 +14,10 @@ else
 fi
 
 if [ "$MODEL_SELECT" = "s" ] || [ "$MODEL_SELECT" = "S" ]; then
-    TERM=screen opencode --model "anthropic/claude-sonnet-4-0"
+    TERM=screen opencode --model "anthropic/claude-sonnet-4-5"
 elif [ "$MODEL_SELECT" = "o" ]  || [ "$MODEL_SELECT" = "O" ]; then
     TERM=screen opencode --model "anthropic/claude-opus-4-1"
 else
-    TERM=screen opencode --model "anthropic/claude-sonnet-4-0"
+    TERM=screen opencode
 fi
 
