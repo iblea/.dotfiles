@@ -16,10 +16,23 @@ else
 fi
 
 CLAUDE_OPT=$(echo $CLAUDE_OPT | sed 's/.*/\L&/')
-if ( grep -q -- "--dan" <<< "$*" ); then
-    BYPASS_OPT="--dangerously-skip-permissions"
-    shift
-fi
+
+for opt in "$@"; do
+    if [ "$opt" = "--dan" ]; then
+        BYPASS_OPT="--dangerously-skip-permissions"
+        set -- "${@/--dan/}"
+        break
+    elif [ "$opt" = "-d" ]; then
+        BYPASS_OPT="--dangerously-skip-permissions"
+        set -- "${@/-d/}"
+        break
+    fi
+done
+
+# if ( grep -q -- "--dan" <<< "$*" ); then
+#     BYPASS_OPT="--dangerously-skip-permissions"
+#     shift
+# fi
 
 
 PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
