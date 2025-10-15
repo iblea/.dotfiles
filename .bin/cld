@@ -1,10 +1,10 @@
 #!/bin/bash
 
 
-CLAUDE_OPT=""
+CLAUDE_OPT="a"
 
 if [ $# -eq 0 ]; then
-    CLAUDE_OPT="s"
+    CLAUDE_OPT="a"
 else
     if [ "$1" == "s" ] || [ "$1" == "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ] || [ "$1" == "h" ] || [ "$1" == "hu" ]; then
         CLAUDE_OPT="$1"
@@ -50,6 +50,6 @@ elif [ "$CLAUDE_OPT" = "h" ]; then
 elif [ "$CLAUDE_OPT" = "hu" ]; then
     claude --model=haiku $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH) $@"
 else
-    claude --model=opus $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    claude --model=sonnet $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
 fi
 
