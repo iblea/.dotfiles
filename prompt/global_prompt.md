@@ -148,6 +148,12 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;todo**, find and read the `TODO.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
   - Don't be case sensitive to filename. (`TODO.md`, `todo.md`, `Todo.md` ... etc.)
   - If subcategories task name or task number is entered after the `/todo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
+    - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: `/todo @path/to/TODO.md#L23` or `/todo @./TODO.md:23` or `/todo @./TODO.md#L23-30` etc.)
+      - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
+        - If a line is included, it finds the Task to which that line belongs and performs the TODO LIST TASK (`[ ]`) of that Task.
+        - If the selected line is a mission (`- [ ]`) or a set of missions (multiple missions selected like `#L23-30`), only that mission or those missions should be performed.
+      - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: `/todo @./TODO.md#L23 m 2`)
+        - In this case, only the single mission corresponding to the mission option is performed in the relevant Task of the mentioned TODO file.
   - mission is optional. ex: `/todo task 1 mission 1`
     - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `/todo task 1 m 2`).
     - The mission option refers to a single `- [ ]` item within a Task in the TODO.md file.
