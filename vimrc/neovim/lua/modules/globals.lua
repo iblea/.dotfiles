@@ -5,7 +5,7 @@ api.nvim_set_var("lsp_servers", {
   -- "bashls",
   -- "cssls",
   -- "clangd",
-  "lua_ls",
+  -- "lua_ls",
   -- "pylsp"
 })
 
