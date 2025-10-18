@@ -26,6 +26,9 @@ if [ ! -d "$CLAUDE_DIR/commands" ]; then
 fi
 ln -s "$HOME/.dotfiles/prompt/commands" "$CLAUDE_DIR/commands/di"
 
+echo "setup settings.json"
+cp -r "$HOME/.dotfiles/claudecode/settings.json" "$HOME/.claude/settings.json"
+
 echo "install mcp servers"
 npm install -g @modelcontextprotocol/server-sequential-thinking
 npm install -g @upstash/context7-mcp
