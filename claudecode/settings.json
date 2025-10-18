@@ -1,4 +1,9 @@
 {
+  "alwaysThinkingEnabled": false,
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/statusline-command.sh"
+  },
   "permissions": {
     "allow": [
       "Bash(ls:*)",
@@ -22,19 +27,15 @@
       "mcp__sequential-thinking__sequentialthinking"
     ],
     "deny": [],
-    "ask": [],
-    "defaultMode": "plan"
+    "ask": []
   },
+  "enableAllProjectMcpServers": true,
+  "bypassPermissionsModeAccepted": true,
   "verbose": true,
   "model": "sonnet",
-  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
   ],
-  "statusLine": {
-    "type": "command",
-    "command": "$HOME/.claude/statusline-command.sh"
-  },
   "mcpServers": {
     "context7": {
       "type": "stdio",
@@ -57,7 +58,7 @@
     "sequential-thinking-improved": {
       "command": "node",
       "args": [
-	    "$(npm root -g)/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+	    "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
       ]
     },
     "playwright": {

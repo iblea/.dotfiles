@@ -118,7 +118,7 @@ ${thought}
             //         }]
             // };
 
-            // Format the thought into Claude Code
+            // Format the thought into Claude Code (markdown format print)
             const formattedThought = this.formatThoughtForClaudeCode(validatedInput);
             return {
                 content: [{
