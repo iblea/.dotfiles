@@ -7,11 +7,12 @@ NVIM_PATH="nvim"
 VIM_PATH="vim"
 
 # If nvim command exists, set nvim as the default.
-if [ -n "$(command -v $NVIM_PATH)" ]; then
-    VIM_PROGRAM="n"
-else
-    VIM_PROGRAM="o"
-fi
+# if [ -n "$(command -v $NVIM_PATH)" ]; then
+#     VIM_PROGRAM="n"
+# else
+#     VIM_PROGRAM="o"
+# fi
+VIM_PROGRAM="o"
 
 # VIM_DEFAULT=$(vim --version | head -n 1 | awk '{ print $1 }')
 # if [ "$VIM_DEFAULT" = "NVIM" ]; then
