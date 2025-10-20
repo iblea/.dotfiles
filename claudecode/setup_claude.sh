@@ -39,7 +39,17 @@ echo "\$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequ
 echo "CHANGE ~/.claude.json , ~/.claude/settings.json YOUR_API_KEY"
 
 echo "setup prompt"
-ln -s "$HOME/.dotfiles/prompt/global_prompt.md" "$CLAUDE_DIR/"
+if [ ! -e "$CLAUDE_DIR/global_prompt.md" ]; then
+    ln -s "$HOME/.dotfiles/prompt/global_prompt.md" "$CLAUDE_DIR/"
+fi
+if [ ! -f "$CLAUDE_DIR/CLAUDE.md" ]; then
+    touch "$CLAUDE_DIR/CLAUDE.md"
+fi
+CLAUDE_PROMPT_CHECK=$(grep '^@global_prompt.md$' "$CLAUDE_DIR/CLAUDE.md")
+if [ -n "$CLAUDE_PROMPT_CHECK" ]; then
+    echo -e "@global_prompt.md\n\n$(cat $CLAUDE_DIR/CLAUDE.md)" > "$CLAUDE_DIR/CLAUDE.md"
+fi
+
 echo "add this in '\$HOME/.claude/CLAUDE.md'"
 echo "@global_prompt.md"
 

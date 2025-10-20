@@ -11,7 +11,7 @@ else
         shift
     else
         # CLAUDE_OPT="s"
-		echo -n ""
+        echo -n ""
     fi
 fi
 
@@ -35,21 +35,56 @@ done
 # fi
 
 
-PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
+# PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
+# ~/.claude/CLAUDE.md -> @global_prompt.md
+# ln -s $HOME/.dotfiles/prompt/global_prompt.md $HOME/.claude/
+# if [ -n "$(grep '^@global_prompt.md$' CLAUDE.md)" ]; then
+#     echo -e "hello world!\n$(cat $HOME/.claude/CLAUDE.md)" > $HOME/.claude/CLAUDE.md
+#     echo -e "@global_prompt.md\n\n$(cat $HOME/.claude/CLAUDE.md)" > $HOME/.claude/CLAUDE.md
+# fi
+PROMPT_PATH=""
 
 if [ "$CLAUDE_OPT" = "s" ]; then
-    claude --model=opus $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=opus $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=opus $BYPASS_OPT $@
+    fi
 elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
-    claude --model=opus $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" $@
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=opus $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=opus $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" $@
+    fi
 elif [ "$CLAUDE_OPT" = "a" ]; then
-    claude --model=sonnet $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=sonnet $BYPASS_OPT $@
+    fi
 elif [ "$CLAUDE_OPT" = "au" ]; then
-    claude --model=sonnet $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH) $@"
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" $@
+    fi
 elif [ "$CLAUDE_OPT" = "h" ]; then
-    claude --model=haiku $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=haiku $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=haiku $BYPASS_OPT $@
+    fi
 elif [ "$CLAUDE_OPT" = "hu" ]; then
-    claude --model=haiku $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH) $@"
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=haiku $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=haiku $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" $@
+    fi
 else
-    claude --model=sonnet $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=sonnet $BYPASS_OPT $@
+    fi
 fi
 
