@@ -346,11 +346,11 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
         TARGET_MAC="$1"
         # ipconfig /all 출력을 UTF-8로 변환하고 처리
         ipconfig.exe /all 2>/dev/null | iconv -f CP949 -t UTF-8 | awk -v mac="$TARGET_MAC" '
-            BEGIN { 
+            BEGIN {
                 # MAC 주소를 대문자로 변환
                 gsub(/-/, "-", mac)
                 mac = toupper(mac)
-                found = 0 
+                found = 0
             }
             # 물리적 주소 라인을 찾으면
             /물리적 주소|Physical Address/ {
@@ -360,7 +360,7 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
                     current_mac = arr[2]
                     gsub(/[[:space:]]/, "", current_mac)  # 공백 제거
                     current_mac = toupper(current_mac)     # 대문자로 변환
-                    
+
                     # 목표 MAC 주소와 일치하면 플래그 설정
                     if (current_mac == mac) {
                         found = 1
@@ -1221,41 +1221,70 @@ function wnfind() {
 # docker alias ==============================
 # sh - docker - origin
 function docbash() {
-    if [ $# -eq 1 ]; then
-        homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
-        if [[ "$homedir" = "" ]]; then
-            homedir="/"
-        fi
-        docker exec -u 0 -w $homedir -it "$1" bash
-    elif [ $# -eq 2 ]; then
-        homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
-        if [[ "$homedir" = "" ]]; then
-            homedir="/"
-        fi
-        docker exec -u $2 -w $homedir -it "$1" bash
-    else
+    if [ $# -eq 0 ]; then
         echo "wrong argument"
+        return 1
+    fi
+    container_name="$1"
+    username=""
+    if [ $# -eq 1 ]; then
+        homedir=$(docker exec -u 0 "$container_name" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u 0 -w $homedir -it "$container_name" bash
+    elif [ $# -eq 2 ]; then
+        username="$2"
+        homedir=$(docker exec -u 0 "$container_name" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u "$username" -w $homedir -it "$container_name" bash
+    else
+        username="$2"
+        shift
+        shift
+        docker exec -u "$username" -i "$container_name" $@
         return
     fi
 }
 
 # sh - docker
 function docsh() {
-    if [ $# -eq 1 ]; then
-        homedir=$(docker exec -u 0 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
-        if [[ "$homedir" = "" ]]; then
-            homedir="/"
-        fi
-        docker exec -u 0 -w $homedir -it "$1" zsh
-    elif [ $# -eq 2 ]; then
-        homedir=$(docker exec -u $2 "$1" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
-        if [[ "$homedir" = "" ]]; then
-            homedir="/"
-        fi
-        docker exec -u $2 -w $homedir -it "$1" zsh
-    else
+    if [ $# -eq 0 ]; then
         echo "wrong argument"
-        return
+        return 1
+    fi
+    container_name="$1"
+    username=""
+    if [ $# -eq 1 ]; then
+        homedir=$(docker exec -u 0 "$container_name" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u 0 -it "$container_name" which zsh
+        if [ $? -eq 0 ]; then
+            docker exec -u 0 -w $homedir -it "$container_name" zsh
+        else
+            docker exec -u 0 -w $homedir -it "$container_name" bash
+        fi
+    elif [ $# -eq 2 ]; then
+        username="$2"
+        homedir=$(docker exec -u "$username" "$container_name" env | grep "^HOME=" | awk -F 'HOME=' '{print $2}')
+        if [[ "$homedir" = "" ]]; then
+            homedir="/"
+        fi
+        docker exec -u "$username" -it "$container_name" which zsh
+        if [ $? -eq 0 ]; then
+            docker exec -u "$username" -w $homedir -it "$container_name" zsh
+        else
+            docker exec -u "$username" -w $homedir -it "$container_name" bash
+        fi
+    else
+        username="$2"
+        shift
+        shift
+        docker exec -u "$username" -i "$container_name" $@
     fi
 }
 
