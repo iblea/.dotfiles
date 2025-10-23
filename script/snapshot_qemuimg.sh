@@ -83,6 +83,17 @@ function list_snapshot() {
     qemu-img snapshot -l "${IMAGE_PATH}"
 }
 
+function ask_change_vm() {
+	read -s -n1 -p "change VM? (y/n): " answer
+	echo
+	if [[ "$answer" != "y" ]] && [[ "$answer" != "yes" ]]; then
+		exit 0
+	fi
+	select_vm
+	echo
+    help_func
+}
+
 
 if [ "$1" = "help" ]; then
 	help_func
@@ -126,6 +137,8 @@ fi
 
 if [ $# -le 0 ]; then
 	list_snapshot
+	echo
+	ask_change_vm
     exit 0
 fi
 
