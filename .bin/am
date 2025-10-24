@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ -z "$(command -v tmux)" ]; then
+    echo "tmux command not found"
+    exit 1
+fi
+
+# 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
+SESSION_NAME="amp_$(date +%s)_$$"
+TMUX_CONF="$HOME/.dotfiles/.tmux.conf"
+exec tmux -f "$TMUX_CONF" new-session -s "$SESSION_NAME" "sleep 0.1 && clear && ; amp $@; tmux kill-session -t $SESSION_NAME"
+
+# # VSCode 터미널에서 색상 쿼리 escape sequence 제거
+# if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
+#     exec tmux new-session -s "$SESSION_NAME" "sleep 0.1 && clear && claude; tmux kill-session -t $SESSION_NAME"
+# else
+#     exec tmux new-session -s "$SESSION_NAME" "claude; tmux kill-session -t $SESSION_NAME"
+# fi
+
