@@ -2218,7 +2218,7 @@ function scpr()
     SSH_LAST_LOCAL_SCP_DIR="${keyword#*:}"
 }
 
-alias exesh='find . -name "*.sh" -type f -exec chmod 755 {} \;'
+alias shexe='find . -name "*.sh" -type f -exec chmod 755 {} \;'
 
 alias base64_encode='base64 -w 0'
 alias base64_decode='base64 -d -i'
