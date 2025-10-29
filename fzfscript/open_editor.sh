@@ -7,22 +7,26 @@ elif grep -q "ERROR: cannot find" <<< "$@"; then
 fi
 
 PATH_BACKUP="$PATH"
+code_path="$(which code)"
 export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
-if [ -n "$(command -v code)" ]; then
-    code --goto "$@"
-    exit 0
+if [ -n "$(command -v code)" ] || [ -n "$(command -v cursor)" ]; then
+	"$code_path" --goto $@
+	exit 0
 fi
-
-if [ -n "$(command -v code-insiders)" ]; then
-    code-insiders --goto "$@"
-    exit 0
-fi
-
-if [ -n "$(command -v cursor)" ]; then
-    cursor --goto "$@"
-    exit 0
-fi
-
+# if [ -n "$(command -v code)" ]; then
+#     code --goto "$@"
+#     exit 0
+# fi
+# 
+# if [ -n "$(command -v code-insiders)" ]; then
+#     code-insiders --goto "$@"
+#     exit 0
+# fi
+# 
+# if [ -n "$(command -v cursor)" ]; then
+#     cursor --goto "$@"
+#     exit 0
+# fi
 
 fileinfo="$@"
 # echo "fileinfo : $fileinfo"
