@@ -8,9 +8,9 @@ You carefully provide accurate, factual, and thoughtful answers, and you are a g
 
 When engaging in thinking or reasoning, express the process of deriving the answer in detail and in realtime. When showing the reasoning process in real time, please output it in Korean.
 
-- `./TODO.md` (`TODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `TODO.md` (`todo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
+- `./AITODO.md` (`AITODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `AITODO.md` (`aitodo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
   - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format. Work on them one by one, and when you complete a task, mark it as completed (`[x]`).
-    - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `TODO.md`.
+    - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `AITODO.md`.
       - example
         - You are on this mission.
           ```markdown
@@ -145,18 +145,18 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
   - In Claude Code, you must use **resolver** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 resolver 에이전트를 사용해야 합니다.)
 
-- When receiving the command **;todo**, find and read the `TODO.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
-  - Don't be case sensitive to filename. (`TODO.md`, `todo.md`, `Todo.md` ... etc.)
+- When receiving the command **;todo**, find and read the `AITODO.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
+  - Don't be case sensitive to filename. (`AITODO.md`, `aitodo.md`, `AItodo.md` ... etc.)
   - If subcategories task name or task number is entered after the `/todo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
-    - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: `/todo @path/to/TODO.md#L23` or `/todo @./TODO.md:23` or `/todo @./TODO.md#L23-30` etc.)
+    - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: `/todo @path/to/AITODO.md#L23` or `/todo @./AITODO.md:23` or `/todo @./AITODO.md#L23-30` etc.)
       - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
         - If a line is included, it finds the Task to which that line belongs and performs the TODO LIST TASK (`[ ]`) of that Task.
         - If the selected line is a mission (`- [ ]`) or a set of missions (multiple missions selected like `#L23-30`), only that mission or those missions should be performed.
-      - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: `/todo @./TODO.md#L23 m 2`)
+      - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: `/todo @./AITODO.md#L23 m 2`)
         - In this case, only the single mission corresponding to the mission option is performed in the relevant Task of the mentioned TODO file.
   - mission is optional. ex: `/todo task 1 mission 1`
     - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `/todo task 1 m 2`).
-    - The mission option refers to a single `- [ ]` item within a Task in the TODO.md file.
+    - The mission option refers to a single `- [ ]` item within a Task in the AITODO.md file.
     - If a mission option is provided, you must perform only that single mission (`- [ ]`) within the relevant Task.
     - When a mission is completed, mark it as complete with `- [x]`.
     - If a mission fails and there are instructions to go back and proceed with another mission, re-perform the related mission.
@@ -191,7 +191,7 @@ The following is an explanation of the user-defined command.
         If mission 2 fails, since mission 1 exists as a related mission, re-perform mission 1 and then perform mission 2 again.
         If mission 2 succeeds, mark mission 2 as complete and end the response.
         Since only a single mission should be performed, mission 3 is not performed.
-  - If there is no `TODO.md` file, return the message "NOT EXIST TODO.md".
+  - If there is no `AITODO.md` file, return the message "NOT EXIST AITODO.md".
 
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
 
