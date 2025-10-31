@@ -55,3 +55,13 @@ echo "@global_prompt.md"
 
 echo "modify $HOME/.claude.json"
 
+
+echo "Plugin update"
+echo "/plugin marketplace add anthropics/skills"
+claude plugin marketplace add anthropics/skills
+echo "/plugin install document-skills@anthropic-agent-skills"
+claude plugin install document-skills@anthropic-agent-skills
+echo "/plugin install webapp-testing@anthropic-agent-skills"
+claude plugin install webapp-testing@anthropic-agent-skills
+
+
