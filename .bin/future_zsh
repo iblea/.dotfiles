@@ -1,0 +1,94 @@
+#!/bin/bash
+
+if [[ -z "$ZSH_TICK_MONITORING_URL" ]]; then
+    exit 1
+fi
+
+TICKER='ES1!'
+NOT_SAVE=0
+VERBOSE=0
+if [ $# -eq 1 ]; then
+    if [[ "$1" = "ALL" ]] || [[ "$1" = "all" ]] || [[ "$1" = "-a" ]] || [[ "$1" = "a" ]]; then
+        TICKER=""
+        NOT_SAVE=1
+    fi
+    if [[ "$1" = "v" ]] || [[ "$1" = "-v" ]]; then
+        VERBOSE=1
+        NOT_SAVE=1
+    else
+        TICKER="$1"
+    fi
+fi
+if [ $# -eq 2 ]; then
+    if [[ "$2" = "ALL" ]] || [[ "$2" = "all" ]] || [[ "$2" = "-a" ]] || [[ "$2" = "a" ]]; then
+        TICKER=""
+        NOT_SAVE=1
+    fi
+    if [[ "$1" = "v" ]] || [[ "$1" = "-v" ]]; then
+        VERBOSE=1
+        NOT_SAVE=1
+    fi
+    TICKER="$2"
+fi
+
+function get_stock_ticker() {
+    if [ -z "$TICKER" ]; then
+        curl -sk --connect-timeout 1 --max-time 2 "$ZSH_TICK_MONITORING_URL"
+    else
+        if [ $VERBOSE -eq 1 ]; then
+            curl -sk --connect-timeout 1 --max-time 2 "${ZSH_TICK_MONITORING_URL}?ticker=${TICKER}"
+        else
+            curl -sk --connect-timeout 1 --max-time 2 "${ZSH_TICK_MONITORING_URL}?ticker=${TICKER}" | grep "^price: " | awk -F ": " '{ print $NF }'
+        fi
+    fi
+    if [ $? -ne 0 ]; then
+        echo -n "???"
+    fi
+}
+
+if [ $NOT_SAVE -eq 1 ]; then
+    get_stock_ticker
+    exit 0
+fi
+
+# Get ZSH Tick Tmp directory
+TMP_TICK_DIR="$HOME/.config/zsh_tick_monitoring/"
+if [ ! -d "$TMP_TICK_DIR" ]; then
+    mkdir -p "$TMP_TICK_DIR"
+fi
+ZSH_TICK_MONITORING_LAST_PARSETIME=""
+
+# Tick Last Parse Time Get
+ZSH_TICK_MONITORING_LAST_PARSETIME=""
+ZSH_TICK_CACHE_DATA=""
+if [ -f "$TMP_TICK_DIR/last_checktime" ]; then
+    ZSH_TICK_MONITORING_LAST_PARSETIME=$(cat "$TMP_TICK_DIR/last_checktime")
+    ZSH_TICK_CACHE_DATA="$(cat "$TMP_TICK_DIR/cache_data")"
+    if [[ "ZSH_TICK_CACHE_DATA" = "???" ]]; then
+        ZSH_TICK_MONITORING_LAST_PARSETIME=""
+        ZSH_TICK_CACHE_DATA=""
+    fi
+fi
+
+# cached file not found
+if [ -z "$ZSH_TICK_MONITORING_LAST_PARSETIME" ]; then
+    tick_data=$(get_stock_ticker)
+    echo -n "$(date +%s)" > "$TMP_TICK_DIR/last_checktime"
+    echo -n "$tick_data" > "$TMP_TICK_DIR/cache_data"
+    echo -n "$tick_data"
+    exit 0
+fi
+
+CURRENT_UNIXTIME="$(date +%s)"
+# cache time expired (10 sec)
+if [ $CURRENT_UNIXTIME -ge $(expr $ZSH_TICK_MONITORING_LAST_PARSETIME + 10) ]; then
+    tick_data=$(get_stock_ticker)
+    echo -n "$(date +%s)" > "$TMP_TICK_DIR/last_checktime"
+    echo -n "$tick_data" > "$TMP_TICK_DIR/cache_data"
+    echo -n "$tick_data"
+    exit 0
+fi
+
+# print cached time
+echo -n "$ZSH_TICK_CACHE_DATA"
+

@@ -109,6 +109,7 @@
     per_directory_history   # Oh My Zsh per-directory-history local/global indicator
     # cpu_arch              # CPU architecture
     # time                    # current time
+    future_zsh              # custom future_zsh script output
 
     # =========================[ Line #2 ]=========================
     newline
@@ -1797,6 +1798,15 @@
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
   (( ! $+functions[p10k] )) || p10k reload
+}
+
+# Custom segment: future_zsh
+# This function is called every time the prompt is rendered
+function prompt_future_zsh() {
+  local output="$($HOME/.dotfiles/.bin/future_zsh)"
+  if [[ -n "$output" ]]; then
+    p10k segment -f 105 -t "($output)"
+  fi
 }
 
 # Tell `p10k configure` which file it should overwrite.

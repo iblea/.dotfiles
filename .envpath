@@ -18,6 +18,11 @@ if [ -n "$LC_ALL" ]; then
 	fi
 fi
 
+export ZSH_TICK_MONITORING_URL=""
+if [ -f "$HOME/.config/zsh_tick_monitoring/url" ]; then
+	export ZSH_TICK_MONITORING_URL="$(cat $HOME/.config/zsh_tick_monitoring/url)"
+fi
+
 if [[ "$(uname -s)" = "Darwin" ]]; then
 
 	if [ -d /opt/homebrew ]; then
@@ -253,3 +258,6 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 		fi
 	fi
 fi
+
+
+
