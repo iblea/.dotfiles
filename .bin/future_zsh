@@ -67,6 +67,9 @@ if [ -f "$TMP_TICK_DIR/last_checktime" ]; then
     if [[ "ZSH_TICK_CACHE_DATA" = "???" ]]; then
         ZSH_TICK_MONITORING_LAST_PARSETIME=""
         ZSH_TICK_CACHE_DATA=""
+    elif [ -z "ZSH_TICK_CACHE_DATA" ]; then
+        ZSH_TICK_MONITORING_LAST_PARSETIME=""
+        ZSH_TICK_CACHE_DATA=""
     fi
 fi
 
