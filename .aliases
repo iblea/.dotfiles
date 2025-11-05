@@ -2223,6 +2223,19 @@ alias shexe='find . -name "*.sh" -type f -exec chmod 755 {} \;'
 alias base64_encode='base64 -w 0'
 alias base64_decode='base64 -d -i'
 
+function clt() {
+    if [ ! -f "AITODO.md" ]; then
+        cp -r $HOME/.dotfiles/prompt/SAMPLE_AITODO.md AITODO.md
+    fi
+    if [ $# -ge 1 ] && [[ "$1" = "o" ]]; then
+        code AITODO.md
+    else
+        vi AITODO.md
+    fi
+}
+
+alias clto="clt o"
+
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
     # alias vim=/usr/bin/vim
