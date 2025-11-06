@@ -65,7 +65,8 @@
       "command": "npx",
       "args": [
         "-y",
-        "@playwright/mcp@latest"
+        "@playwright/mcp@latest",
+        "--executable-path=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
       ]
     },
     "github": {
@@ -73,6 +74,18 @@
       "url": "https://api.githubcopilot.com/mcp",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
+      }
+    },
+    "gitlab": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@zereight/mcp-gitlab"
+      ],
+      "env": {
+        "GITLAB_PERSONAL_ACCESS_TOKEN": "YOUR_PERSONAL_KEY",
+        "GITLAB_API_URL": "https://YOUR_CUSTOM_DOMAIN/api/v4/",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
       }
     }
   }
