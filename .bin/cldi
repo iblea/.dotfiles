@@ -70,8 +70,9 @@ fi
 if [ "$VIM_PROGRAM" = "n" ]; then
     # Properly escape arguments for bash -c
     ESCAPED_ARGS=$(printf '%q ' "$@")
+        # -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>'" \
     $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=${SCROLLBACK} | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call chansend(b:terminal_job_id, \"\<C-o>\")<CR>' | execute 'tnoremap <c-y> <c-\><c-n><ESC>pa'" \
-        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>'" \
         -c "terminal bash -c '${AGENT_COMMAND} ${ESCAPED_ARGS}; exit_code=\$?; exit \$exit_code'" \
         -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
         -c "startinsert"
@@ -79,8 +80,10 @@ if [ "$VIM_PROGRAM" = "n" ]; then
 else
     # Properly escape arguments for vim terminal
     ESCAPED_ARGS=$(printf '%q ' "$@")
+        # -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>' " \
     $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=${SCROLLBACK} | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call term_sendkeys(bufnr(\"%\"), \"\<C-o>\")<CR>i<C-\><C-n>' | execute 'tnoremap <c-y> <c-\><c-n><ESC>pa'" \
-        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>' " \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>'" \
+        -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <c-j>' | execute 'tnoremap <c-k> <Nop>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>' " \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
         -c "terminal ++close ++curwin bash -c \"${AGENT_COMMAND} ${ESCAPED_ARGS}; exit_code=\\\$?; exit \\\$exit_code\""
     # echo "original vim"
