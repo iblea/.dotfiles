@@ -18,13 +18,9 @@ fi
 CLAUDE_OPT=$(echo $CLAUDE_OPT | sed 's/.*/\L&/')
 
 for opt in "$@"; do
-    if [ "$opt" = "--dan" ]; then
+    if [[ "$opt" = "--dan" ]] || [[ "$opt" = "-d" ]] || [[ "$opt" = "dan" ]]; then
         BYPASS_OPT="--dangerously-skip-permissions"
-        set -- "${@/--dan/}"
-        break
-    elif [ "$opt" = "-d" ]; then
-        BYPASS_OPT="--dangerously-skip-permissions"
-        set -- "${@/-d/}"
+        set -- "${@/${opt}/}"
         break
     fi
 done

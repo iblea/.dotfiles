@@ -1,10 +1,18 @@
 #!/bin/bash
 
+if [ -z "$(command -v claude)" ]; then
+	echo "claude is not installed"
+	echo "https://docs.claude.com/en/docs/claude-code/setup"
+	echo "npm install -g @anthropic-ai/claude-code"
+	echo "curl -fsSL 'https://claude.ai/install.sh' | bash"
+	exit 1
+fi
+
 VIM_PROGRAM=""
-MODEL_SELECT="a"
 
 NVIM_PATH="nvim"
 VIM_PATH="vim"
+SCROLLBACK=2500
 
 # If nvim command exists, set nvim as the default.
 # if [ -n "$(command -v $NVIM_PATH)" ]; then
@@ -26,52 +34,24 @@ VIM_PROGRAM="o"
 # CLAUDE -> s: opus, a: sonnet
 
 if [ $# -eq 0 ]; then
-    # MODEL_SELECT="s"
-	echo -n ""
+    pass
 elif [ $# -eq 1 ]; then
     if [ "$1" = "n" ] || [ "$1" = "N" ]; then
         VIM_PROGRAM="n"
+        shift
     elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
         VIM_PROGRAM="o"
-    else
-        MODEL_SELECT="$1"
+        shift
     fi
-    shift
 else
     # first option is vim argument
     if [ "$1" = "n" ] || [ "$1" = "N" ]; then
         VIM_PROGRAM="n"
-        # second option is claude argument
-        if [ "$2" = "s" ] || [ "$2" = "u" ] ||  [ "$2" == "su" ] || [ "$2" == "a" ] || [ "$2" == "au" ] || [ "$2" == "h" ] || [ "$2" == "hu" ]; then
-            MODEL_SELECT="$2"
-            shift
-        else
-            # MODEL_SELECT="s"
-			echo -n ""
-        fi
         shift
     # first option is vim argument
     elif [ "$1" = "o" ] || [ "$1" = "O" ]; then
         VIM_PROGRAM="o"
-        # second option is claude argument
-        if [ "$2" = "s" ] || [ "$2" = "u" ] ||  [ "$2" == "su" ] || [ "$2" == "a" ] || [ "$2" == "au" ] || [ "$2" == "h" ] || [ "$2" == "hu" ]; then
-            MODEL_SELECT="$2"
-            shift
-        else
-            # MODEL_SELECT="s"
-			echo -n ""
-        fi
         shift
-    #else
-    else
-        # first option is claude argument
-        if [ "$1" = "s" ] || [ "$1" = "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ] || [ "$1" == "h" ] || [ "$1" == "hu" ]; then
-            MODEL_SELECT="$1"
-            shift
-        else
-            # MODEL_SELECT="s"
-			echo -n ""
-        fi
     fi
 fi
 
@@ -82,27 +62,28 @@ AGENT_COMMAND="$HOME/.dotfiles/.bin/cld"
 # IS_VIMTERM="$(ps -p $PPID -o comm=)"
 # if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
 if [ -n "$MYVIMRC" ]; then
-    "$AGENT_COMMAND" "$MODEL_SELECT" $@
+    "$AGENT_COMMAND" $@
     exit 0
 fi
-echo "args: '$@'"
+# echo "args: '$@'"
 
 if [ "$VIM_PROGRAM" = "n" ]; then
     # Properly escape arguments for bash -c
     ESCAPED_ARGS=$(printf '%q ' "$@")
-    $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call chansend(b:terminal_job_id, \"\<C-o>\")<CR>' | execute 'tnoremap <c-y> <c-\><c-n><ESC>pa'" \
+    $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=${SCROLLBACK} | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call chansend(b:terminal_job_id, \"\<C-o>\")<CR>' | execute 'tnoremap <c-y> <c-\><c-n><ESC>pa'" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>'" \
-        -c "terminal bash -c '${AGENT_COMMAND} ${MODEL_SELECT} ${ESCAPED_ARGS}; exit_code=\$?; exit \$exit_code'" \
+        -c "terminal bash -c '${AGENT_COMMAND} ${ESCAPED_ARGS}; exit_code=\$?; exit \$exit_code'" \
         -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
         -c "startinsert"
+    echo "neovim"
 else
     # Properly escape arguments for vim terminal
     ESCAPED_ARGS=$(printf '%q ' "$@")
-    $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=10000 | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call term_sendkeys(bufnr(\"%\"), \"\<C-o>\")<CR>i<C-\><C-n>' | execute 'tnoremap <c-y> <c-\><c-n><ESC>pa'" \
+    $VIM_PATH -c "set nonu | set nornu | set mouse=a | set termwinscroll=${SCROLLBACK} | set scrolloff=0 | execute 'nnoremap <c-o> <ESC>:call term_sendkeys(bufnr(\"%\"), \"\<C-o>\")<CR>i<C-\><C-n>' | execute 'tnoremap <c-y> <c-\><c-n><ESC>pa'" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>' | execute 'tnoremap <c-z> <c-\><c-n><ESC>:suspend<cr>' " \
         -c "set shell=$(which zsh | sed 's/ /\\ /g')" \
-        -c "terminal ++close ++curwin bash -c \"${AGENT_COMMAND} ${MODEL_SELECT} ${ESCAPED_ARGS}; exit_code=\\\$?; exit \\\$exit_code\""
-    echo "original vim"
+        -c "terminal ++close ++curwin bash -c \"${AGENT_COMMAND} ${ESCAPED_ARGS}; exit_code=\\\$?; exit \\\$exit_code\""
+    # echo "original vim"
 fi
 
 exit 0
