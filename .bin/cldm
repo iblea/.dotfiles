@@ -9,6 +9,7 @@ if [ -z "$(command -v claude)" ]; then
 	echo "claude is not installed"
 	echo "https://docs.claude.com/en/docs/claude-code/setup"
 	echo "npm install -g @anthropic-ai/claude-code"
+	echo "curl -fsSL 'https://claude.ai/install.sh' | bash"
 	exit 1
 fi
 
