@@ -12,6 +12,25 @@ if [ -z "$(command -v gemini)" ]; then
 	exit 1
 fi
 
+if [ $# -eq 1 ]; then
+	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+		gemini --help
+		exit 0
+	fi
+	if [ "$1" = "ls" ] || [ "$1" = "-ls" ] || [ "$1" = "--list-sessions" ]; then
+		gemini --list-sessions
+		exit 0
+	fi
+fi
+
+if [ $# -eq 2 ]; then
+	if [ "$1" = "ds" ] || [ "$1" = "-ds" ] || [ "$1" = "--delete-session" ]; then
+		gemini --delete-session $2
+		gemini --list-sessions
+		exit 0
+	fi
+fi
+
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="gemini_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/.tmux.conf"
