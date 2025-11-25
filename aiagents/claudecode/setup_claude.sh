@@ -15,7 +15,7 @@ if [ ! -d "$CLAUDE_DIR" ]; then
 fi
 
 echo "setup status-line"
-ln -s "$HOME/.dotfiles/claudecode/statusline-command.sh" "$CLAUDE_DIR/"
+ln -s "$HOME/.dotfiles/aiagents/claudecode/statusline-command.sh" "$CLAUDE_DIR/"
 
 echo "setup agents directory"
 ln -s "$HOME/.dotfiles/prompt/agents" "$CLAUDE_DIR/"
@@ -27,13 +27,13 @@ fi
 ln -s "$HOME/.dotfiles/prompt/commands" "$CLAUDE_DIR/commands/di"
 
 echo "setup settings.json"
-cp -r "$HOME/.dotfiles/claudecode/settings.json" "$HOME/.claude/settings.json"
+cp -r "$HOME/.dotfiles/aiagents/claudecode/settings.json" "$HOME/.claude/settings.json"
 
 echo "install mcp servers"
 npm install -g @modelcontextprotocol/server-sequential-thinking
 npm install -g @upstash/context7-mcp
 npm install -g @playwright/mcp@latest
-cp -r "$HOME/.dotfiles/claudecode/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+cp -r "$HOME/.dotfiles/aiagents/claudecode/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 echo "sequential thinking mcp script modify. (check this path)"
 echo "\$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 echo "CHANGE ~/.claude.json , ~/.claude/settings.json YOUR_API_KEY"
