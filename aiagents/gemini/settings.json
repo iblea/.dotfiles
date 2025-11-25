@@ -1,0 +1,58 @@
+{
+  "tools": {
+    "allowed": [
+      "run_shell_command(git status)",
+      "run_shell_command(git diff)",
+      "run_shell_command(git log)",
+      "run_shell_command(ls *)",
+      "run_shell_command(curl *)",
+      "run_shell_command(grep *)",
+      "run_shell_command(rg *)",
+      "run_shell_command(find *)",
+      "run_shell_command(fd *)",
+      "run_shell_command(cat *)",
+      "run_shell_command(exec ssh *)",
+      "run_shell_command(ssh *)",
+      "google_web_search",
+      "web_fetch",
+      "read_file",
+      "list_directory",
+      "glob",
+      "search_file_content",
+      "codebase_investigator"
+    ]
+  },
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "ctx7sk-9df1d683-bf95-4fdd-9f3f-516d0edba8d2"
+      ],
+      "env": {}
+    },
+    "sequential-thinking": {
+      "command": "node",
+      "args": [
+        "/opt/homebrew/lib/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+      ]
+    }
+  },
+  "ide": {
+    "enabled": true,
+    "hasSeenNudge": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "useAlternateBuffer": false
+  },
+  "general": {
+    "previewFeatures": true
+  }
+}
