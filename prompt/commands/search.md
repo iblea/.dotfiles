@@ -6,6 +6,7 @@ Remember that the response method for user-defined commands should take priority
 
 # Command behavior
 - You must use researcher agent unconditionally.
+- If necessary, use multiple tools such as web_search.
 
 When receiving the command **;search**, You should research, organize, and explain the data.
 You should gather up-to-date information through web searches, etc., and create a reliable report based on it.

@@ -33,6 +33,7 @@ Understand the current date and time accurately through commands such as `date`,
   - Bloomberg, JP Morgan 등 대형 금융사들의 의견 (목표가 설정/수정 (상향조정,하향조정,상승/하락예측 등)) 을 조사하라.
   - 경제 지표(고용률(실업률), LEI, 미국 미시간 소비자 심리 지수, 장단기 금리차 등)와 여러 심리 지수(공탐지수 등)를 참고하라.
   - Use `researcher` Agent.
+  - If necessary, use multiple tools such as web_search.
 - 기본적 분석(fundamental analysis), 현재 이벤트(뉴스) 및 기술적 분석(차트 분석)을 진행한 내용을 바탕으로 현재 추세를 분석해 설명하고, 향후 목표가를 설정하라.
 - 일봉 기준 Trading View의 S5FI, S5TH (S&P500 Breath 지표) 의 현재 수치를 표시하고 이를 참고해 전체적인 미국 시황을 분석하라.
   - 20에 가까우면 과매도 (매수 타이밍)
