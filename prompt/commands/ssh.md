@@ -16,3 +16,4 @@ If you cannot execute the command, output "Error: Don't execute command."
   - If the user-defined-command `/ssh win` entered and you want to execute `whoami` bash command, you execute `exec ssh win 'whoami'` and return the result.
     - ssh config file is `~/.ssh/config`
   - If the user-defined-command `/ssh root@192.168.0.5` entered and you want to execute `ls -al` bash command, you execute `exec ssh root@192.168.0.5 'whoami'` and return the result.
+

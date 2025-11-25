@@ -26,3 +26,4 @@ Remember that the response method for user-defined commands should take priority
   - If you have not selected a specific line or block in the file, add translated content in sections or paragraphs.
     - example: `@test.md /trans kor mod` -> Translate everything in the file into paragraphs, or sections, and add translated content.
   - If you haven't translated the contents of the file, don't do anything about it.
+

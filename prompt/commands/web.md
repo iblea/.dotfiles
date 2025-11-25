@@ -7,3 +7,4 @@ Remember that the response method for user-defined commands should take priority
 # Command behavior
 - You must use researcher agent unconditionally.
 You must answer by performing an external search, such as a web search. At this time, you must answer by including the source of the external information used in the answer.
+
