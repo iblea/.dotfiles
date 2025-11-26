@@ -33,21 +33,53 @@ fi
 
 GLOBAL_OPTIONS=()
 OPTS=()
+MODEL_OPTS=()
 
+MODEL_CONTINUE_FLAG=0
 for arg in "$@"; do
+	if [ $MODEL_CONTINUE_FLAG -eq 1 ]; then
+		MODEL_OPTS+=("$arg")
+		MODEL_CONTINUE_FLAG=0
+		continue
+	fi
 	if [ "$arg" = "-d" ] || [ "$arg" = "d" ] || [ "$arg" = "--dangerous" ] || [ "$arg" = "-y" ] || [ "$arg" = "--yolo" ]; then
 		GLOBAL_OPTIONS+=("--yolo")
-	elif [ "$arg" = "-a" ] || [ "$arg" = "a" ] || [ "$arg" = "--all" ]; then
+	elif [ "$arg" = "-a" ]|| [ "$arg" = "--all" ]; then
 		GLOBAL_OPTIONS+=("--include-directories /")
+	elif [ "$arg" = "-m" ] || [ "$arg" = "--model" ]; then
+		MODEL_CONTINUE_FLAG=1
+		MODEL_OPTS=("--model")
+		continue
+	elif [ "$arg" = "p" ] || [ "$arg" = "pro" ]; then
+		if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+			MODEL_OPTS+=("--model" "pro")
+		fi
+	elif [ "$arg" = "f" ]; then
+		if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+			MODEL_OPTS+=("--model" "flash")
+		fi
+	elif [ "$arg" = "fl" ]; then
+		if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+			MODEL_OPTS+=("--model" "flash-lite")
+		fi
+	elif [ "$arg" = "a" ] || [ "$arg" = "auto" ]; then
+		if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+			MODEL_OPTS+=("--model" "auto")
+		fi
 	else
 		OPTS+=("$arg")
 	fi
 done
 
+# default model
+if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+	MODEL_OPTS+=("--model" "pro")
+fi
+
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="gemini_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/.tmux.conf"
-exec tmux -f "$TMUX_CONF" new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${GLOBAL_OPTIONS} ${OPTS} && tmux kill-session -t $SESSION_NAME"
+exec tmux -f "$TMUX_CONF" new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME"
 # if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
 #     exec tmux new-session -s "$SESSION_NAME" "sleep 0.1 && clear && claude; tmux kill-session -t $SESSION_NAME"
 # else
