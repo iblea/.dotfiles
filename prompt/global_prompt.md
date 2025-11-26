@@ -145,17 +145,17 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
   - In Claude Code, you must use **resolver** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 resolver 에이전트를 사용해야 합니다.)
 
-- When receiving the command **;todo**, find and read the `AITODO.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
+- When receiving the command **;aitodo**, find and read the `AITODO.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
   - Don't be case sensitive to filename. (`AITODO.md`, `aitodo.md`, `AItodo.md` ... etc.)
-  - If subcategories task name or task number is entered after the `;todo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
-    - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: ";todo `@path/to/AITODO.md#L23`" or ";todo `@./AITODO.md:23`" or ";todo `@./AITODO.md#L23-30`" etc.)
+  - If subcategories task name or task number is entered after the `;aitodo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
+    - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: ";aitodo `@path/to/AITODO.md#L23`" or ";aitodo `@./AITODO.md:23`" or ";aitodo `@./AITODO.md#L23-30`" etc.)
       - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
         - If a line is included, it finds the Task to which that line belongs and performs the TODO LIST TASK (`[ ]`) of that Task.
         - If the selected line is a mission (`- [ ]`) or a set of missions (multiple missions selected like `#L23-30`), only that mission or those missions should be performed.
-      - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: ";todo `@./AITODO.md#L23 m 2`")
+      - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: ";aitodo `@./AITODO.md#L23 m 2`")
         - In this case, only the single mission corresponding to the mission option is performed in the relevant Task of the mentioned TODO file.
-  - mission is optional. ex: `;todo task 1 mission 1`
-    - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `;todo task 1 m 2`).
+  - mission is optional. ex: `;aitodo task 1 mission 1`
+    - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `;aitodo task 1 m 2`).
     - The mission option refers to a single `- [ ]` item within a Task in the AITODO.md file.
     - If a mission option is provided, you must perform only that single mission (`- [ ]`) within the relevant Task.
     - When a mission is completed, mark it as complete with `- [x]`.
@@ -174,7 +174,7 @@ The following is an explanation of the user-defined command.
           - [ ] make a logic to do something.
           - [ ] Verify the performance. The logic you created must produce results within 1 second.
         ```
-        - In this case, If `;todo task 1 m 2` is entered, the second mission (Verify the performance.) will be performed.
+        - In this case, If `;aitodo task 1 m 2` is entered, the second mission (Verify the performance.) will be performed.
     - After the m option, a number may not be entered.
       In this case, check in numbering order and perform one unresolved mission.
       If there are related missions, perform those missions as well.
