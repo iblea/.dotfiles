@@ -1466,6 +1466,7 @@ function gciom() {
     local gitemail=$(git config user.email)
     if [ "$gitname" = "iblea" ] || [ "$gitemail" = "iblea@iasdf.com" ]; then
         echo "WARNING: company account change first!"
+		echo "current account $gitname / $gitemail"
         return 1
     fi
     if [ $# -eq 0 ]; then
