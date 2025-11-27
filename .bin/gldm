@@ -32,6 +32,7 @@ if [ $# -eq 2 ]; then
 fi
 
 GLOBAL_OPTIONS=()
+RESTRICTED_MODE=0
 OPTS=()
 MODEL_OPTS=()
 
@@ -44,8 +45,10 @@ for arg in "$@"; do
 	fi
 	if [ "$arg" = "-d" ] || [ "$arg" = "d" ] || [ "$arg" = "--dangerous" ] || [ "$arg" = "-y" ] || [ "$arg" = "--yolo" ]; then
 		GLOBAL_OPTIONS+=("--yolo")
-	elif [ "$arg" = "-a" ]|| [ "$arg" = "--all" ]; then
-		GLOBAL_OPTIONS+=("--include-directories /")
+	elif [ "$arg" = "-res" ] || [ "$arg" = "res" ] || [ "$arg" = "--restrict" ] || [ "$arg" = "--restricted" ]; then
+		RESTRICTED_MODE=1
+	# elif [ "$arg" = "-a" ]|| [ "$arg" = "--all" ]; then
+	# 	GLOBAL_OPTIONS+=("--include-directories" "/")
 	elif [ "$arg" = "-m" ] || [ "$arg" = "--model" ]; then
 		MODEL_CONTINUE_FLAG=1
 		MODEL_OPTS=("--model")
@@ -74,6 +77,10 @@ done
 # default model
 if [ ${#MODEL_OPTS[@]} -le 0 ]; then
 	MODEL_OPTS+=("--model" "pro")
+fi
+
+if [ $RESTRICTED_MODE -eq 0 ]; then
+	GLOBAL_OPTIONS+=("--include-directories" "/")
 fi
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
