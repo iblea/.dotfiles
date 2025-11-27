@@ -1464,7 +1464,7 @@ function gci() {
 function gciom() {
     local gitname=$(git config user.name)
     local gitemail=$(git config user.email)
-    if [ "$gitname" = "iblea" ] || [ "$gitemail" = "iblea@iasdf.com" ]; then
+    if [[ "$gitname" = "iblea" ]] || [[ "$gitemail" = "iblea@iasdf.com" ]]; then
         echo "WARNING: company account change first!"
 		echo "current account $gitname / $gitemail"
         return 1
@@ -1477,7 +1477,18 @@ function gciom() {
     git commit $@
 }
 
-
+function gltag() {
+    if [[ "$1" = "-a" ]] || [[ "$1" = "--all" ]]; then
+        git tag --list --format="%(objectname) %(refname:short)"
+    elif [[ "$1" = "head" ]] || [[ "$1" = "HEAD" ]]; then
+        local head_hash=$(git rev-parse HEAD)
+        echo "HEAD hash: $head_hash"
+        git tag --list --format="%(objectname) %(refname:short)" | grep "^$head_hash "
+    else
+        git tag --list --format="%(objectname:short) %(refname:short)"
+    fi
+    # git push <remote> <tagname>
+}
 
 
 function gstai() {
