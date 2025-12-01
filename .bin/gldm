@@ -42,7 +42,9 @@ for arg in "$@"; do
 		MODEL_CONTINUE_FLAG=0
 		continue
 	fi
-	if [ "$arg" = "-d" ] || [ "$arg" = "d" ] || [ "$arg" = "--dangerous" ] || [ "$arg" = "-y" ] || [ "$arg" = "--yolo" ]; then
+	if [ "$arg" = "-c" ]; then
+		GLOBAL_OPTIONS+=("-r")
+	elif [ "$arg" = "-d" ] || [ "$arg" = "d" ] || [ "$arg" = "--dangerous" ] || [ "$arg" = "-y" ] || [ "$arg" = "--yolo" ]; then
 		GLOBAL_OPTIONS+=("--yolo")
 	elif [ "$arg" = "-a" ]|| [ "$arg" = "--all" ]; then
 		GLOBAL_OPTIONS+=("--include-directories" "/")

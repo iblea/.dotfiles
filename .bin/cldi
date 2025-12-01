@@ -20,7 +20,7 @@ SCROLLBACK=2500
 # else
 #     VIM_PROGRAM="o"
 # fi
-VIM_PROGRAM="o"
+VIM_PROGRAM="n"
 
 # VIM_DEFAULT=$(vim --version | head -n 1 | awk '{ print $1 }')
 # if [ "$VIM_DEFAULT" = "NVIM" ]; then
