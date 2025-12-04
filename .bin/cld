@@ -64,6 +64,19 @@ elif [ "$CLAUDE_OPT" = "au" ]; then
     else
         claude --model=sonnet $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" $@
     fi
+elif [ "$CLAUDE_OPT" = "o" ]; then
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=sonnet $BYPASS_OPT $@
+    fi
+elif [ "$CLAUDE_OPT" = "ou" ]; then
+    if [ -f "$PROMPT_PATH" ] ;then
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" $@
+    else
+        claude --model=sonnet $BYPASS_OPT --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" $@
+    fi
+
 elif [ "$CLAUDE_OPT" = "h" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
         claude --model=haiku $BYPASS_OPT --append-system-prompt "$(cat $PROMPT_PATH)" $@
