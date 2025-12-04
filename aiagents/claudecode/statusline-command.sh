@@ -103,15 +103,15 @@ else
     status_line+="\033[${DIR_FG}m$SEP\033[0m"
 fi
 
-if [ -n "$(command -v ccusage)" ]; then
-    # Calculate usage
-    usage_percentage=$(calculate_usage "$transcript_path")
-    usage_display=$(generate_progress_bar "$usage_percentage")
-    usage_color=$(get_usage_color "$usage_percentage")
-
-    # Usage segment
-    status_line+="\033[${usage_color}m  $usage_display \033[0m"
-fi
+# if [ -n "$(command -v ccusage)" ]; then
+#     # Calculate usage
+#     usage_percentage=$(calculate_usage "$transcript_path")
+#     usage_display=$(generate_progress_bar "$usage_percentage")
+#     usage_color=$(get_usage_color "$usage_percentage")
+# 
+#     # Usage segment
+#     status_line+="\033[${usage_color}m  $usage_display \033[0m"
+# fi
 
 # Output the status line
 echo -e "$status_line"
