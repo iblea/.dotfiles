@@ -6,13 +6,16 @@ CLAUDE_OPT="a"
 if [ $# -eq 0 ]; then
     CLAUDE_OPT="a"
 else
-    if [ "$1" == "s" ] || [ "$1" == "u" ] ||  [ "$1" == "su" ] || [ "$1" == "a" ] || [ "$1" == "au" ] || [ "$1" == "h" ] || [ "$1" == "hu" ]; then
-        CLAUDE_OPT="$1"
-        shift
-    else
-        # CLAUDE_OPT="s"
-        echo -n ""
-    fi
+    case "$1" in
+        s|u|su|a|au|h|hu|o|ou|d|du)
+            CLAUDE_OPT="$1"
+            shift
+            ;;
+        *)
+            # CLAUDE_OPT="s"
+            echo -n ""
+            ;;
+    esac
 fi
 
 CLAUDE_OPT=$(echo $CLAUDE_OPT | sed 's/.*/\L&/')
