@@ -30,10 +30,11 @@
     "deny": [],
     "ask": []
   },
+  "model": "sonnet",
+  "autoCompactEnabled": false,
   "enableAllProjectMcpServers": true,
   "bypassPermissionsModeAccepted": true,
   "verbose": true,
-  "model": "sonnet",
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
   ],
