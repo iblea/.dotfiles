@@ -19,6 +19,12 @@ if [ -z "$(command -v cld)" ]; then
 	exit 1
 fi
 
+if [ $# -eq 1 ] && ( [ "$1" = "-h" ] || [ "$1" = "--help" ] ); then
+	claude --help
+	exit 0
+fi
+
+
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="claude_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/.tmux.conf"
