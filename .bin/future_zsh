@@ -7,6 +7,8 @@ fi
 TICKER='ES1!'
 NOT_SAVE=0
 VERBOSE=0
+TMP_TICK_DIR="$HOME/.config/zsh_tick_monitoring/"
+
 if [ $# -eq 1 ]; then
     if [[ "$1" = "ALL" ]] || [[ "$1" = "all" ]] || [[ "$1" = "-a" ]] || [[ "$1" = "a" ]]; then
         TICKER=""
@@ -31,6 +33,28 @@ if [ $# -eq 2 ]; then
     TICKER="$2"
 fi
 
+ERROR_COUNT=0
+if [ -f "$TMP_TICK_DIR/error_count" ]; then
+    ERROR_COUNT=$(cat "$TMP_TICK_DIR/error_count")
+fi
+
+function error_count_plus1() {
+    ERROR_COUNT=$((ERROR_COUNT + 1))
+    echo -n "$ERROR_COUNT" > "$TMP_TICK_DIR/error_count"
+}
+
+function error_count_init() {
+    # $TMP_TICK_DIR/error_count
+    echo -n "0" > "$TMP_TICK_DIR/error_count"
+    ERROR_COUNT=0
+}
+
+if [ $ERROR_COUNT -ge 10 ]; then
+    echo -n "ERR"
+    exit 0
+fi
+
+
 function get_stock_ticker() {
     if [ -z "$TICKER" ]; then
         curl -sk --connect-timeout 1 --max-time 2 "$ZSH_TICK_MONITORING_URL"
@@ -43,6 +67,9 @@ function get_stock_ticker() {
     fi
     if [ $? -ne 0 ]; then
         echo -n "???"
+        error_count_plus1
+    else
+        error_count_init
     fi
 }
 
@@ -52,11 +79,9 @@ if [ $NOT_SAVE -eq 1 ]; then
 fi
 
 # Get ZSH Tick Tmp directory
-TMP_TICK_DIR="$HOME/.config/zsh_tick_monitoring/"
 if [ ! -d "$TMP_TICK_DIR" ]; then
     mkdir -p "$TMP_TICK_DIR"
 fi
-ZSH_TICK_MONITORING_LAST_PARSETIME=""
 
 # Tick Last Parse Time Get
 ZSH_TICK_MONITORING_LAST_PARSETIME=""
