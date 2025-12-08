@@ -213,7 +213,7 @@ The following is an explanation of the user-defined command.
         Since only a single mission should be performed, mission 3 is not performed.
   - If there is no `AITODO.md` file, return the message "NOT EXIST AITODO.md".
 
-- When receiving the command **;sk** or **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
+- When receiving the command **;a** or **;sk** or **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
 - When receiving the command **;ci**, it means the same as saying "continue" or "계속".
 - When receiving the command **;o** or **;dd** or **;ㅇㅇ**, it means the same as saying "yes", "ok" or "응", "네".
 - When receiving the command **;x** or **;ss** or **;ㄴㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
