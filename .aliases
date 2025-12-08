@@ -2252,21 +2252,42 @@ alias base64_encode='base64 -w 0'
 alias base64_decode='base64 -d -i'
 
 function aito() {
+    local OPEN_PROGRAM="vi"
+    local VAULT_PATH=""
+    local VALUT_NAME=""
+    local VAULT_URL=""
+    if [ $# -ge 1 ]; then
+        for opt in "$@"; do
+            if [[ "$opt" = "o" ]] || [[ "$opt" = "c" ]]; then
+                OPEN_PROGRAM="code"
+            elif [[ "$opt" = "v" ]]; then
+                OPEN_PROGRAM="/Applications/Obsidian.app/Contents/MacOS/Obsidian"
+                VAULT_PATH="$HOME/.notepad/"
+                VALUT_NAME=".notepad"
+                # If input "", open root dir
+                VAULT_RELATIVE_DIR="markdownviewer"
+                VAULT_URL="obsidian://open?vault=${VALUT_NAME}&file=/${VAULT_RELATIVE_DIR}/aitodo&silent=true"
+            elif [[ "$opt" = "init" ]]; then
+                cp -r $HOME/.dotfiles/prompt/SAMPLE_AITODO.md aitodo.md
+            fi
+        done
+    fi
     if [ ! -f "aitodo.md" ]; then
         cp -r $HOME/.dotfiles/prompt/SAMPLE_AITODO.md aitodo.md
     fi
-    if [ $# -ge 1 ]; then
-        if [[ "$1" = "o" ]] || [[ "$1" = "c" ]]; then
-            code aitodo.md
-        else
-            vi aitodo.md
-        fi
+    if [ -n "${VAULT_URL}" ]; then
+        test ! -d "${VAULT_PATH}${VAULT_RELATIVE_DIR}" && mkdir -p "${VAULT_PATH}${VAULT_RELATIVE_DIR}"
+        test -f "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md" && rm -f "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md"
+        ln -s "$(pwd)/aitodo.md" "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md"
+        # "$OPEN_PROGRAM" "obsidian://new?vault=${VAULT_NAME}" 2>&1 >/dev/null &
+        "$OPEN_PROGRAM" "${VAULT_URL}" 2>&1 >/dev/null &
     else
-        vi aitodo.md
+        "$OPEN_PROGRAM" aitodo.md
     fi
 }
 
 alias aitoc="aito o"
+alias aitov="aito v"
 
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
