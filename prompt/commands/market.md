@@ -17,7 +17,7 @@ When input is received in the format `/market <ticker code(ticker)/stock name>`,
   - `/market Gold futures` -> Analyze the market situation for Gold futures index(COMEX).
   - `/market BTC` -> Analyze the market situation for Bitcoin.
 
-Understand the current date and time accurately through commands such as `date`, and then analyze the previous day or the previous chapter based on this reference.
+Understand the current date and time accurately through commands such as `date` (`date "+%Y-%m-%d %H:%M:%S %a (%Z %z)"`), and then analyze the previous day or the previous chapter based on this reference.
 
 
 # Prompt
