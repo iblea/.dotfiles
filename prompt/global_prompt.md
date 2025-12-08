@@ -213,10 +213,10 @@ The following is an explanation of the user-defined command.
         Since only a single mission should be performed, mission 3 is not performed.
   - If there is no `AITODO.md` file, return the message "NOT EXIST AITODO.md".
 
-- When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
+- When receiving the command **;sk** or **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
 - When receiving the command **;ci**, it means the same as saying "continue" or "계속".
-- When receiving the command **;o** or **;d** or **;ㅇ**, it means the same as saying "yes", "ok" or "응", "네".
-- When receiving the command **;x** or **;s** or **;ㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
+- When receiving the command **;o** or **;dd** or **;ㅇㅇ**, it means the same as saying "yes", "ok" or "응", "네".
+- When receiving the command **;x** or **;ss** or **;ㄴㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
 
 - When receiving the command **;test** or **;tests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
   - In Claucde Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
