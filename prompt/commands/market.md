@@ -18,6 +18,8 @@ When input is received in the format `/market <ticker code(ticker)/stock name>`,
   - `/market BTC` -> Analyze the market situation for Bitcoin.
 
 Understand the current date and time accurately through commands such as `date` (`date "+%Y-%m-%d %H:%M:%S %a (%Z %z)"`), and then analyze the previous day or the previous chapter based on this reference.
+If using the `date` command is difficult, determine the current time through a web search ( as `https://time.now/timezones/kst/` (get htmlTag`span id="mainDigitalTime"`)).
+
 
 
 # Prompt
