@@ -1,6 +1,98 @@
 {
-    "title": "jk to esc",
+    "title": "hk to esc",
     "rules": [
+        {
+            "description": "hk to (ko to ABC) esc",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "h" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [
+                        {
+                            "key_code": "escape",
+                            "lazy": false
+                        },
+                        {
+                            "select_input_source": {
+                                "input_source_id": "com.apple.keylayout.ABC",
+                                "language": "en"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "hk to (ko to en_US) esc",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "h" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [
+                        {
+                            "key_code": "escape",
+                            "lazy": false
+                        },
+                        {
+                            "select_input_source": {
+                                "input_source_id": "com.apple.keylayout.US",
+                                "language": "en"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "hk to esc only",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "h" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [{ "key_code": "escape" }]
+                }
+            ]
+        },
+        {
+            "description": "hk to change en/ko",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "simultaneous": [
+                            { "key_code": "h" },
+                            { "key_code": "k" }
+                        ]
+                    },
+                    "to": [{ "key_code": "f19" }]
+                }
+            ]
+        },
+
+
+
+
+
+
+
+
+
+
         {
             "description": "jk to (ko to ABC) esc",
             "manipulators": [
@@ -77,89 +169,6 @@
                         "simultaneous": [
                             { "key_code": "j" },
                             { "key_code": "k" }
-                        ]
-                    },
-                    "to": [{ "key_code": "f19" }]
-                }
-            ]
-        },
-        {
-            "description": "nk to (ko to ABC) esc",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "simultaneous": [
-                            { "key_code": "k" },
-                            { "key_code": "n" }
-                        ]
-                    },
-                    "to": [
-                        {
-                            "key_code": "escape",
-                            "lazy": false
-                        },
-                        {
-                            "select_input_source": {
-                                "input_source_id": "com.apple.keylayout.ABC",
-                                "language": "en"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "description": "nk to (ko to en_US) esc",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "simultaneous": [
-                            { "key_code": "k" },
-                            { "key_code": "n" }
-                        ]
-                    },
-                    "to": [
-                        {
-                            "key_code": "escape",
-                            "lazy": false
-                        },
-                        {
-                            "select_input_source": {
-                                "input_source_id": "com.apple.keylayout.US",
-                                "language": "en"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "description": "nk to esc only",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "simultaneous": [
-                            { "key_code": "k" },
-                            { "key_code": "n" }
-                        ]
-                    },
-                    "to": [{ "key_code": "escape" }]
-                }
-            ]
-        },
-
-        {
-            "description": "nk to change en/ko",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "simultaneous": [
-                            { "key_code": "k" },
-                            { "key_code": "n" }
                         ]
                     },
                     "to": [{ "key_code": "f19" }]
