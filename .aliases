@@ -2261,7 +2261,8 @@ function aito() {
             if [[ "$opt" = "o" ]] || [[ "$opt" = "c" ]]; then
                 OPEN_PROGRAM="code"
             elif [[ "$opt" = "v" ]]; then
-                OPEN_PROGRAM="/Applications/Obsidian.app/Contents/MacOS/Obsidian"
+                # OPEN_PROGRAM="/Applications/Obsidian.app/Contents/MacOS/Obsidian"
+                OPEN_PROGRAM="/Applications/Obsidian.app"
                 VAULT_PATH="$HOME/.notepad/"
                 VALUT_NAME=".notepad"
                 # If input "", open root dir
@@ -2280,7 +2281,8 @@ function aito() {
         test -f "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md" && rm -f "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md"
         ln -s "$(pwd)/aitodo.md" "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md"
         # "$OPEN_PROGRAM" "obsidian://new?vault=${VAULT_NAME}" 2>&1 >/dev/null &
-        "$OPEN_PROGRAM" "${VAULT_URL}" 2>&1 >/dev/null &
+        open -a "$OPEN_PROGRAM" "${VAULT_URL}" 2>&1 >/dev/null
+		echo "open done!"
     else
         "$OPEN_PROGRAM" aitodo.md
     fi
