@@ -11,6 +11,7 @@ return {
         })
         override = function()
             return {
+			    Normal = { fg = "#bcbcbc" }
                 -- Normal = { bg = "#000000" }
             }
         end

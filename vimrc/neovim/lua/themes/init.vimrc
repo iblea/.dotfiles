@@ -2,9 +2,10 @@
 
 if g:colors_name == 'monokai' || g:colors_name == 'monokai-pro' || g:colors_name == 'monokai-pro-classic'
     " colorscheme monokai
-    hi! Normal ctermfg=231 ctermbg=NONE guifg=#f8f8f2 guibg=NONE
+    hi! Normal ctermfg=250 ctermbg=NONE guifg=#bcbcbc guibg=NONE
 else
-	hi! Normal ctermfg=252 ctermbg=NONE guifg=#C9D1D9 guibg=NONE
+	" hi! Normal ctermfg=252 ctermbg=NONE guifg=#C9D1D9 guibg=NONE
+	hi! Normal ctermfg=250 ctermbg=NONE guifg=#bcbcbc guibg=NONE
 endif
 
 
