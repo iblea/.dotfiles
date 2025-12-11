@@ -289,9 +289,14 @@ Refer to the `AITODO` section in `ETC` for the `AITODO.md` file structure and de
             - detail description 3
           ```
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
-  - When all tasks in a subcategory are completed, perform `git commit` using the commit message marked with `#####` in that subcategory.
-    - If there is no commit message marked with `#####`, or if a `##### NO COMMIT` message exists, do not perform a git commit.
-    - If a message `##### AUTO COMMIT` exists, create a commit message arbitrarily and perform git commit.
+  - When all tasks in a subcategory are completed, perform `git commit` based on `#####` marker:
+    | Marker | Behavior |
+    |--------|----------|
+    | `##### [commit message]` | Commit with this message when all tasks completed |
+    | `##### NO COMMIT` | Do not commit even if all tasks completed |
+    | `##### AUTO COMMIT` | Create commit message automatically and commit |
+    | No `#####` marker | Do not commit |
+
   - If there are instructions to re-perform another mission, perform the mission that needs to be re-performed.
     - **Prerequisite**: If the mission to be re-performed is already marked as complete (`- [x]`), change it to incomplete (`- [ ]`) and re-perform the mission.
   - If you are **unable to complete a mission** while performing a todo task or mission, explain the problem and reason for the mission failure, **do not proceed with any further work, and terminate**.
@@ -320,32 +325,11 @@ Refer to the `AITODO` section in `ETC` for the `AITODO.md` file structure and de
       - detail mission
       - detail mission
     - [ ] 3. task mission 3
+      - detail mission
 
     ### Task 2
-    (If there is no commit message marked with `#####`, don't perform `git commit`.)
     - [ ] 1. task mission 1
-      - detail mission
     - [ ] 2. task mission 2
-
-    ### Task 3
-    (Don't commit if there is a message `##### NO COMMIT`.)
-    ##### NO COMMIT
-    - [ ] task mission 1
-      - detail mission
-    - [ ] task mission 2
-      - detail mission
-    - [ ] task mission 3
-
-    ### Task 4
-    (If there is a message `##### AUTO COMMIT`, create a commit message arbitrarily and perform `git commit`.)
-    ##### AUTO COMMIT
-    - [ ] ...mission...
-      - detail mission
-      - detail mission
-    - [ ] ...mission...
-      - detail mission
-    - [ ] ...mission...
-      - detail mission
     ```
 
 ### BUILD.md (build.md)
