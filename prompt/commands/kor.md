@@ -15,7 +15,7 @@ Remember that the response method for user-defined commands should take priority
 ### This is an optional string that can follow this command. (ex: `/kor below`, `/kor under`, etc.)
 - The characters `under` or `below` or the abbreviation `b` or `u` can be used. This is entered after a user-definㅓd command string, output all the original text first, and then output the translated content.
 - The characters `file` or the abbreviation `f` can be used. This is entered after a user-defined command string, translate the contents of the file at the path that follows this text.
-- The characters `verify` or `verbose` or the abbreviation `v` or `ver` can be used. This is entered after a user-defined command string, re-translate the content you translated back into the language before translation.
+- The characters `verify` or `verbose` or the abbreviation `v` or `vb` or `ver` can be used. This is entered after a user-defined command string, re-translate the content you translated back into the language before translation.
   - ex: `/kor ver I'm very hungry` -> `"나는 매우 배고프다."` -> `I'm so hungry.`
     - Because the `/kor` command was entered, the sentence "I'm very hungry." must be translated into English.
     - Because the `ver` option was entered after the `/kor` command, the translated sentence "나는 매우 배고프다." must be re-translated back into the language before translation, which is Korean.

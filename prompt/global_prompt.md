@@ -163,7 +163,7 @@ The following is an explanation of the user-defined command.
 ### This is an optional string that can follow this command. (ex: `;eng below`, `;eng under`, etc.)
 - The characters `under` or `below` or the abbreviation `b` or `u` can be used. This is entered after a user-definㅓd command string, output all the original text first, and then output the translated content.
 - The characters `file` or the abbreviation `f` can be used. This is entered after a user-defined command string, translate the contents of the file at the path that follows this text.
-- The characters `verify` or `verbose` or the abbreviation `v` or `ver` can be used. This is entered after a user-defined command string, re-translate the content you translated back into the language before translation.
+- The characters `verify` or `verbose` or the abbreviation `v` or `vb` or `ver` can be used. This is entered after a user-defined command string, re-translate the content you translated back into the language before translation.
   - ex: `;eng ver 나는 지금 몹시 배고프다.` -> `I'm very hungry now.` -> `난 지금 매우 배고프다.`
     - Because the `;eng` command was entered, the sentence "나는 지금 몹시 배고프다." must be translated into English.
     - Because the `ver` option was entered after the `;eng` command, the translated sentence "I'm very hungry now." must be re-translated back into the language before translation, which is Korean.
