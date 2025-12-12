@@ -97,7 +97,7 @@ The following is an explanation of the user-defined command.
 | `;refactor` | Refactor selected code | - |
 | `;func` | Extract code into new function | - |
 | `;web` | Answer with web search | researcher |
-| `;search` | Research and create report | researcher |
+| `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
 | `;review` | Review code or architecture | code-reviewer, architect-reviewer |
 | `;aitodo` | Execute TODO tasks from AITODO.md | - |
 
@@ -194,6 +194,30 @@ The following is an explanation of the user-defined command.
   You should also be proficient in data analysis and statistical methodology, so that you can visualize and deliver data effectively.
   You should provide creative insights and integrated perspectives based on a deep understanding of the subject.
   - In Claude Code, You must use **researcher** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 researcher 에이전트를 사용해야 합니다.)
+  - The `th` or `dis` option may be entered after the `;search` command. In this case, you must unconditionally search for or refer to related academic papers.
+    - Use Web Search, arXiv, Google Scholar, Semantic Scholar API, etc. to search for papers.
+    - Analyze the user query to extract core concepts and expand search terms. (synonyms, related terms, academic terminology)
+    - Summarize the searched papers and explain them in an easy-to-understand manner.
+    - Track the references (backward) and citations (forward) of key papers.
+    - Critical Rules
+      - Never fabricate papers. If uncertain, explicitly state "verification required".
+      - Include verifiable links (DOI, arXiv ID) for all papers.
+      - If direct access is not possible, verify actual existence through web search.
+      - If metadata (author, year, title) is uncertain, explicitly indicate this.
+          - Display the year of publication, citation count, and conference/journal ranking to filter paper quality.
+    - Standardize the output format for papers.
+      - Output each paper in the following format:
+        ```
+        ## [논문 제목]
+        (내용)
+        - **저자 (Authors)**:
+        - **출처 (Source)**: (학회/저널, 연도) (Conference/Journal, Year)
+        - **링크 (Link)**: (DOI 또는 arXiv URL)
+        - **핵심 기여 (Key Contribution)**: (2-3문장)
+        - **방법론 (Methodology)**:
+        - **한계점 (Limitatiions)**:
+        - **신뢰도 (Reliability)**: ✓ 확인됨 | ⚠ 검증 필요
+        ```
 
 - When receiving the command **;review**, This needs to be reviewed. (The subject of the review can vary, such as code, software architecture, etc.)
   - The input can be in the form `/review @[file] [msg]`.
