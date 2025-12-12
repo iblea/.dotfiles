@@ -6,22 +6,26 @@ if [ -z "$(command -v tmux)" ]; then
 fi
 
 if [ -z "$(command -v claude)" ]; then
-	echo "claude is not installed"
-	echo "https://docs.claude.com/en/docs/claude-code/setup"
-	echo "npm install -g @anthropic-ai/claude-code"
-	echo "curl -fsSL 'https://claude.ai/install.sh' | bash"
-	exit 1
+    echo "claude is not installed"
+    echo "https://docs.claude.com/en/docs/claude-code/setup"
+    echo "npm install -g @anthropic-ai/claude-code"
+    echo "curl -fsSL 'https://claude.ai/install.sh' | bash"
+    exit 1
 fi
 
 if [ -z "$(command -v cld)" ]; then
-	echo "failed to find cld binary"
-	echo "check PATH environment variable"
-	exit 1
+    echo "failed to find cld binary"
+    echo "check PATH environment variable"
+    exit 1
 fi
 
 if [ $# -eq 1 ] && ( [ "$1" = "-h" ] || [ "$1" = "--help" ] ); then
-	claude --help
-	exit 0
+    claude --help
+    exit 0
+fi
+if [ $# -eq 1 ] && [ "$1" = "update" ]; then
+    claude update
+    exit 0
 fi
 
 
