@@ -83,7 +83,7 @@ if [ "$VIM_PROGRAM" = "n" ]; then
         -c "terminal bash -c '${AGENT_COMMAND} ${ESCAPED_ARGS}; exit_code=\$?; exit \$exit_code'" \
         -c "autocmd TermClose * if v:event.status == 0 | quit | endif" \
         -c "startinsert"
-    echo "neovim"
+    # echo "neovim"
 else
     # Properly escape arguments for vim terminal
     ESCAPED_ARGS=$(printf '%q ' "$@")
