@@ -1449,6 +1449,17 @@ fuunalias_alias 'gpshfc' 'git push --force'
 fuunalias_alias 'gcpick' 'git cherry-pick'
 fuunalias_alias 'gcpicknci' 'git cherry-pick --no-commit'
 
+# skip worktree
+function gitswt() {
+    git update-index --skip-worktree $@
+}
+function gitunswt() {
+    git update-index --no-skip-worktree $@
+}
+function gitlswt() {
+    git ls-files -v | grep '^S'
+}
+
 # fuunalias_alias 'gci' 'git commit'
 fuunalias_alias 'gci' ''
 
@@ -2136,6 +2147,7 @@ function greverts()
 
 # ==============================================================================
 
+alias dateymd='date "+%Y-%m-%d %H:%M:%S %a (%Z %z)"'
 alias dateunix='date "+%s"'
 function unixtimeint() {
     if [ $# -ne 1 ]; then
