@@ -239,7 +239,7 @@ The following is an explanation of the user-defined command.
 Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and detailed information about it.
 
 - When receiving the command **;aitodo**, find and read the `aitodo.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
-  - Don't be case sensitive to filename. (`AITODO.md`, `aitodo.md`, `AItodo.md` ... etc.)
+  - Don't be case sensitive to filename. (`aitodo.md`, `AITODO.md`, `AItodo.md` ... etc.)
   - If subcategories task name or task number is entered after the `;aitodo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
     - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: ";aitodo `@path/to/aitodo.md#L23`" or ";aitodo `@./aitodo.md:23`" or ";aitodo `@./aitodo.md#L23-30`" etc.)
       - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
