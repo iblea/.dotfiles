@@ -1,5 +1,8 @@
 #!/bin/bash
 
+opencode $@
+exit $?
+
 MODEL_SELECT=""
 if [ $# -eq 0 ]; then
     MODEL_SELECT="s"

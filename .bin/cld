@@ -29,7 +29,7 @@ for (( i=1; i<=$#; i++ )); do
     opt="${!i}"
     if [[ "$opt" = "--dan" ]] || [[ "$opt" = "-d" ]] || [[ "$opt" = "dan" ]]; then
         OTHER_OPTS+=("--dangerously-skip-permissions")
-    elif [ "${opt}" = "--cd" ] || [ "${opt}" = "-cd" ] || [ "${opt}" = "cd" ]; then
+    elif [[ "${opt}" = "--cd" ]] || [[ "${opt}" = "-cd" ]] || [[ "${opt}" = "cd" ]]; then
         ((i++))
         if [ $i -gt $# ]; then
             echo "missing directory argument for --cd option"
@@ -41,6 +41,10 @@ for (( i=1; i<=$#; i++ )); do
             exit 1
         fi
         cd "$opt"
+    elif [[ "${opt}" = "vs" ]] || [[ "${opt}" = "-vs" ]] || [[ "${opt}" = "vsc" ]] || [[ "${opt}" = "-vsc" ]]; then
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        fi
     else
         OTHER_OPTS+=("$opt")
     fi
@@ -60,6 +64,17 @@ done
 #     echo -e "@global_prompt.md\n\n$(cat $HOME/.claude/CLAUDE.md)" > $HOME/.claude/CLAUDE.md
 # fi
 PROMPT_PATH=""
+
+if [ -z "$EDITOR" ]; then
+    if [ "$(command -v nvim)" ]; then
+        export EDITOR="nvim"
+    else
+        export EDITOR="vim"
+    fi
+    # if [ -n "$GIT_ASKPASS" ]; then
+    #     export EDITOR="code"
+    # fi
+fi
 
 if [ "$CLAUDE_OPT" = "s" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
