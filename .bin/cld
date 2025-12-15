@@ -45,6 +45,16 @@ for (( i=1; i<=$#; i++ )); do
         if [ -n "$GIT_ASKPASS" ]; then
             export EDITOR="code"
         fi
+    elif [[ "${opt}" = "vi" ]] || [[ "${opt}" = "-vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    elif [[ "${opt}" = "vim" ]] || [[ "${opt}" = "-vim" ]]; then
+        export EDITOR="vim"
+    elif [[ "${opt}" = "nvi" ]] || [[ "${opt}" = "-nvi" ]] || [[ "${opt}" = "nvim" ]] || [[ "${opt}" = "-nvim" ]]; then
+        export EDITOR="nvim"
     else
         OTHER_OPTS+=("$opt")
     fi
@@ -66,14 +76,13 @@ done
 PROMPT_PATH=""
 
 if [ -z "$EDITOR" ]; then
-    if [ "$(command -v nvim)" ]; then
+    if [ -n "$GIT_ASKPASS" ]; then
+        export EDITOR="code"
+    elif [ "$(command -v nvim)" ]; then
         export EDITOR="nvim"
     else
         export EDITOR="vim"
     fi
-    # if [ -n "$GIT_ASKPASS" ]; then
-    #     export EDITOR="code"
-    # fi
 fi
 
 if [ "$CLAUDE_OPT" = "s" ]; then
