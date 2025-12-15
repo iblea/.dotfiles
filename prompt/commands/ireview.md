@@ -10,7 +10,7 @@ This command can take options.
 Therefore, arguments can be passed as variadic parameters.
 Please refer to the details below.
 
-The input can be in the form `/review @[file] [msg]`.
+The input can be in the form `/ireview @[file] [msg]`.
 The `[msg]` option is for user-defined requests.
 Both the msg and file fields may or may not be provided.
 

@@ -94,11 +94,11 @@ The following is an explanation of the user-defined command.
 | `;integrity` | Verify information reliability | - |
 | `;test` / `;tests` | Create unit tests | tester |
 | `;ref` | Provide sources for answers | researcher |
-| `;refactor` | Refactor selected code | - |
-| `;func` | Extract code into new function | - |
+| `;irefactor` | Refactor selected code | - |
+| `;ifunc` | Extract code into new function | - |
 | `;web` | Answer with web search | researcher |
 | `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
-| `;review` | Review code or architecture | CodeReviewer, ArchitectReviewer |
+| `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
 | `;aitodo` | Execute TODO tasks from AITODO.md | - |
 
 #### Translation Options
@@ -180,9 +180,9 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;ref**, you must provide the source for your answers (If necessary, utilize web search.).
   - In Claude Code, you must use **researcher** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 researcher 에이전트를 사용해야 합니다.)
 
-- When receiving the command **;refactor**, you must separate the selected logic into a function or refactor it.
+- When receiving the command **;irefactor**, you must separate the selected logic into a function or refactor it.
 
-- When receiving the command **;func**, you must separate the selected code into a new function. Create an appropriate function name and create a new function. The newly created function should exist above the selected code. If there are functions with similar behavior to the selected code, explain those similar functions together using comments or other means.
+- When receiving the command **;ifunc**, you must separate the selected code into a new function. Create an appropriate function name and create a new function. The newly created function should exist above the selected code. If there are functions with similar behavior to the selected code, explain those similar functions together using comments or other means.
 
 - When receiving the command **;web**, you must answer by performing an external search, such as a web search. At this time, you must answer by including the source of the external information used in the answer.
   - In Claude Code, You must use **researcher** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 researcher 에이전트를 사용해야 합니다.)
@@ -219,7 +219,7 @@ The following is an explanation of the user-defined command.
         - **신뢰도 (Reliability)**: ✓ 확인됨 | ⚠ 검증 필요
         ```
 
-- When receiving the command **;review**, This needs to be reviewed. (The subject of the review can vary, such as code, software architecture, etc.)
+- When receiving the command **;ireview**, This needs to be reviewed. (The subject of the review can vary, such as code, software architecture, etc.)
   - The input can be in the form `/review @[file] [msg]`.
     The `[msg]` option is for user-defined requests.
     Both the msg and file fields may or may not be provided.
