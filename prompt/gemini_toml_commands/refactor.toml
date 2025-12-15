@@ -23,11 +23,11 @@ If files in parent directories or other directories need to be refactored, proce
 - Restructure the code to minimize duplication.
 
 # Command behavior
-- You must use refactorer and code-reviewer agent unconditionally.
+- You must use refactorer and CodeReviewer agent unconditionally.
 
 Before modifying code, use the refactorer to establish a plan and execute it.
-After code modifications are complete, verify the code through the code-reviewer agent.
-If the code-reviewer agent's approval conditions are not satisfied, explain the reasons for the disapproval. (No additional work such as
+After code modifications are complete, verify the code through the CodeReviewer agent.
+If the CodeReviewer agent's approval conditions are not satisfied, explain the reasons for the disapproval. (No additional work such as
 refactoring will be performed thereafter.)
 
 """

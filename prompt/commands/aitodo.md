@@ -4,6 +4,14 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(c
 
+# Arguments
+$ARGUMENTS
+
+This command can take options.
+Therefore, arguments can be passed as variadic parameters.
+Please refer to the details below.
+
+
 # TODO FILE FORMAT & RULES
 - `./AITODO.md` (`AITODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `AITODO.md` (`aitodo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
   - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format. Work on them one by one, and when you complete a task, mark it as completed (`[x]`).

@@ -3,6 +3,13 @@
 This is **user-defined command**.
 You must refactor the code.
 
+# Arguments
+$ARGUMENTS
+
+This command can take options.
+Therefore, arguments can be passed as variadic parameters.
+Please refer to the details below.
+
 The input can be in the form `/refactor @[file] [msg]`.
 The `[msg]` option is for user-defined requests.
 Both the msg and file fields may or may not be provided.
@@ -20,11 +27,12 @@ If files in parent directories or other directories need to be refactored, proce
 - Use appropriate design patterns to increase maintainability.
 - Restructure the code to minimize duplication.
 
+
 # Command behavior
-- You must use refactorer and code-reviewer agent unconditionally.
+- You must use refactorer and CodeReviewer agent unconditionally.
 
 Before modifying code, use the refactorer to establish a plan and execute it.
-After code modifications are complete, verify the code through the code-reviewer agent.
-If the code-reviewer agent's approval conditions are not satisfied, explain the reasons for the disapproval. (No additional work such as
+After code modifications are complete, verify the code through the CodeReviewer agent.
+If the CodeReviewer agent's approval conditions are not satisfied, explain the reasons for the disapproval. (No additional work such as
 refactoring will be performed thereafter.)
 

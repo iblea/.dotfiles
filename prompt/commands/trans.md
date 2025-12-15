@@ -4,6 +4,30 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
+# Arguments
+$ARGUMENTS
+
+This command can take options.
+Therefore, arguments can be passed as variadic parameters.
+Please refer to the details below.
+If the last argument mentions a file path with (`@`), read the file and process its contents as Content.
+  - If it is (@example.md:10-20), only lines 10 to 20 of example.txt should be referenced.
+
+If content that is not Options is entered, it is processed as Content.
+For example, assume the message `/trans kor save You have to verify this certificate.` is entered.
+In this case, translate language is Korean, and the only option from the Options list is `save`.
+(Although a `verify` option exists additionally, the words between `save` and `verify` (You have to) are not all Options.)
+Therefore, for this command, you should behave as follows:
+Apply the additional instructions of the `save` option, and recognize the entire `You have to verify this certificate.` as Content. (Since "kor" was entered as the Language, it should be translated into Korean.)
+
+### Single Argument (1 Argument)
+Content: All Arguments
+
+### Multiple Arguments (2, 3, 4 Arguments ... etc)
+Options: All content **except the last arguments**
+Content: Last Arguments
+
+
 # Command behavior
 - You must use translator agent unconditionally unconditionally.
 - This Command Format is `/trans <language> [under|below|b|u|file|f|save|sv|mod]`

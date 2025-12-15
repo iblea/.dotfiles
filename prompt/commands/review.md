@@ -3,6 +3,13 @@
 This is **user-defined command**.
 You must review the code.
 
+# Arguments
+$ARGUMENTS
+
+This command can take options.
+Therefore, arguments can be passed as variadic parameters.
+Please refer to the details below.
+
 The input can be in the form `/review @[file] [msg]`.
 The `[msg]` option is for user-defined requests.
 Both the msg and file fields may or may not be provided.
@@ -16,6 +23,8 @@ If files related to that file need to be reviewed, proceed with the reviewing an
 If no `file` is mentioned with the @ symbol, review all files in the current directory and its subdirectories based on where the agent is located.
 If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
 
-- You must use code-reviewer (code-reviewer) agent unconditionally.
+
+# Command behavior
+- You must use CodeReviewer, ArchitectReviewer agent unconditionally.
 When there is a request to use static analysis tools, please analyze and review the code using static analysis tools.
 

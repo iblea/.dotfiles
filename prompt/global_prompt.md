@@ -98,7 +98,7 @@ The following is an explanation of the user-defined command.
 | `;func` | Extract code into new function | - |
 | `;web` | Answer with web search | researcher |
 | `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
-| `;review` | Review code or architecture | code-reviewer, architect-reviewer |
+| `;review` | Review code or architecture | CodeReviewer, ArchitectReviewer |
 | `;aitodo` | Execute TODO tasks from AITODO.md | - |
 
 #### Translation Options
@@ -229,7 +229,7 @@ The following is an explanation of the user-defined command.
     If files related to that file need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
   - If no `file` is mentioned with the @ symbol, review all files in the current directory and its subdirectories based on where the agent is located.
     If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
-  - If necessary, please use code-reviewer and architect-reviewer.
+  - If necessary, please use CodeReviewer and ArchitectReviewer.
     When there is a request to use static analysis tools, analyze and review the code using static analysis tools.
 
 

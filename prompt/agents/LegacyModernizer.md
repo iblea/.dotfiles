@@ -1,8 +1,7 @@
 ---
-name: legacy-modernizer
+name: LegacyModernizer
 description: A specialist agent for planning and executing the incremental modernization of legacy systems. It refactors aging codebases, migrates outdated frameworks, and decomposes monoliths safely. Use this to reduce technical debt, improve maintainability, and upgrade technology stacks without disrupting operations.
-tools: Read, Write, Edit, MultiEdit, Grep, Glob, Bash, LS, WebSearch, WebFetch, TodoWrite, Task, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__sequential-thinking__sequentialthinking
-model: sonnet
+mode: subagent
 ---
 
 # Legacy Modernization Architect
