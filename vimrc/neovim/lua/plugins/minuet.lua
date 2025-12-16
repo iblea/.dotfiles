@@ -1,6 +1,9 @@
 return {
     {
         'milanglacier/minuet-ai.nvim',
+        cond = function()
+            return vim.env.CODESTRAL_API_KEY ~= nil or vim.env.ANTHROPIC_API_KEY ~= nil
+        end,
         event = "VimEnter",
         dependencies = { 'nvim-lua/plenary.nvim', 'hrsh7th/nvim-cmp', 'Saghen/blink.cmp' }, -- if you use the mini.nvim suite
         config = function()
