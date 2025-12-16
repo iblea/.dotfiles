@@ -16,10 +16,35 @@ Please refer to the details below.
 - `./aitodo.md` (`AITODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `aitodo.md` (`aitodo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
   - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format. Work on them one by one, and when you complete a task, mark it as completed (`[x]`).
     - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
+      - example
+        - You are on this mission.
+          ```markdown
+          - [ ] 1. solve this mission. Improve the performance of this code.
+            - detail description 1
+            - detail description 2
+            - detail description 3
+          ```
+        - You have completed your mission successfully.
+          After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
+          Work as below.
+          **You must not add, delete, or modify anything else.**
+          ```markdown
+          - [x] 1. solve this mission. Improve the performance of this code.
+            - detail description 1
+            - detail description 2
+            - detail description 3
+          ```
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
-  - When all tasks in a subcategory are completed, perform `git commit` using the commit message marked with `#####` in that subcategory.
-    - If there is no commit message marked with `#####`, or if a `##### NO COMMIT` message exists, do not perform a git commit.
-    - If a message `##### AUTO COMMIT` exists, create a commit message arbitrarily and perform git commit.
+  - When all tasks in a subcategory are completed, perform `git commit` based on `#####` marker:
+    | Marker | Behavior |
+    |--------|----------|
+    | `##### [commit message]` | Commit with this message when all tasks completed |
+    | `##### NO COMMIT` | Do not commit even if all tasks completed |
+    | `##### AUTO COMMIT` | Create commit message automatically and commit |
+    | No `#####` marker | Do not commit |
+
+    - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `##### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
+
   - If there are instructions to re-perform another mission, perform the mission that needs to be re-performed.
     - **Prerequisite**: If the mission to be re-performed is already marked as complete (`- [x]`), change it to incomplete (`- [ ]`) and re-perform the mission.
   - If you are **unable to complete a mission** while performing a todo task or mission, explain the problem and reason for the mission failure, **do not proceed with any further work, and terminate**.
@@ -48,32 +73,11 @@ Please refer to the details below.
       - detail mission
       - detail mission
     - [ ] 3. task mission 3
+      - detail mission
 
     ### Task 2
-    (If there is no commit message marked with `#####`, don't perform `git commit`.)
     - [ ] 1. task mission 1
-      - detail mission
     - [ ] 2. task mission 2
-
-    ### Task 3
-    (Don't commit if there is a message `##### NO COMMIT`.)
-    ##### NO COMMIT
-    - [ ] task mission 1
-      - detail mission
-    - [ ] task mission 2
-      - detail mission
-    - [ ] task mission 3
-
-    ### Task 4
-    (If there is a message `##### AUTO COMMIT`, create a commit message arbitrarily and perform `git commit`.)
-    ##### AUTO COMMIT
-    - [ ] ...mission...
-      - detail mission
-      - detail mission
-    - [ ] ...mission...
-      - detail mission
-    - [ ] ...mission...
-      - detail mission
     ```
 
 # Command behavior
