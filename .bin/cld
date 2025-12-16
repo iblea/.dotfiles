@@ -85,6 +85,12 @@ if [ -z "$EDITOR" ]; then
     fi
 fi
 
+if [ "$EDITOR" = "nvim" ]; then
+	export EDITOR="nvim --cmd \"cd \$PWD\""
+elif [ "$EDITOR" = "vim" ]; then
+	export EDITOR="vim --cmd \"cd \$PWD\""
+fi
+
 if [ "$CLAUDE_OPT" = "s" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
         claude --model=sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}

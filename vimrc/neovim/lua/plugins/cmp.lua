@@ -73,7 +73,14 @@ return {
           keyword_length = 3,
           max_item_count = 10,
         },
-        { name = "path" },
+        {
+          name = "path",
+          option = {
+            get_cwd = function()
+              return vim.fn.getcwd()
+            end,
+          },
+        },
         { name = "neorg" },
         { name = "luasnip" },
         {

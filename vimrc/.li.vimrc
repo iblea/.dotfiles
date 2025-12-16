@@ -332,6 +332,12 @@ inoremap <C-d> <END>
 " highlight link EchoDocPopup Pmenu
 
 func! WinEnterFunction()
+    let l:dir = expand('%:p:h')
+    let l:filename = expand('%:t')
+    if (l:dir =~# '^/private/var/folders' || l:dir =~# '^/tmp') && l:filename =~# '^claude-prompt-.*\.md$'
+        return
+    endif
+    " silent! execute 'cd' l:dir
     silent! execute 'cd' expand('%:p:h')
 endfunc
 
