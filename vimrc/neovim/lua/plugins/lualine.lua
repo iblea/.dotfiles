@@ -11,7 +11,8 @@ return {
 
     local function lsp_client()
       local buf_ft = vim.bo.filetype
-      local buf_clients = vim.lsp.get_active_clients()
+      -- local buf_clients = vim.lsp.get_active_clients()
+      local buf_clients = vim.lsp.get_clients()
       local buf_client_names = {}
 
       -- add client
