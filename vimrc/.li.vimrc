@@ -326,6 +326,9 @@ endif
 " vnoremap <leader>y y:call system('clip.exe', @")<CR>
 vnoremap <leader>y y:call system('iconv -f utf-8 -t utf-16le \| clip.exe', @")<CR>
 
+inoremap <C-a> <HOME>
+inoremap <C-d> <END>
+
 " highlight link EchoDocPopup Pmenu
 
 func! WinEnterFunction()

@@ -119,6 +119,9 @@ vnoremap <silent> # <ESC>:call V_find_word_asc()<CR>
 nnoremap <silent> * <ESC>:call N_find_word_desc()<CR>
 nnoremap F <ESC>:call Prev_window()<CR>
 
+inoremap <C-a> <HOME>
+inoremap <C-d> <END>
+
 func! Prev_window()
     let l:curnr=winnr()
     if l:curnr==1

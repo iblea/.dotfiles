@@ -10,21 +10,19 @@ return {
     "onsails/lspkind-nvim",
     "octaltree/cmp-look"
   },
-  config = function()
+  opts = function()
     local cmp = require("cmp")
     local lspkind = require("lspkind")
     local compare = require("cmp.config.compare")
 
-    cmp.setup({
+    return {
       snippet = {
         expand = function(args)
           require("luasnip").lsp_expand(args.body)
         end,
       },
       window = {
-        completion = cmp.config.window.bordered({
-          -- winhighlight = "CursorLine:CmpCursorLine",
-        }),
+        completion = cmp.config.window.bordered({}),
         documentation = cmp.config.window.bordered(),
       },
       view = {
@@ -41,6 +39,7 @@ return {
             ["cmp-tw2css"] = "[TailwindCSS]",
             luasnip = "[Snip]",
             look = "[Dict]",
+            minuet = "[AI]",
           },
         }),
       },
@@ -66,8 +65,7 @@ return {
           compare.order,
         },
       },
-      sources = cmp.config.sources({
-        -- { name = "nvim_lsp", trigger_characters = { "-" } },
+      sources = {
         { name = "nvim_lsp" },
         { name = "cmp-tw2css" },
         {
@@ -77,9 +75,7 @@ return {
         },
         { name = "path" },
         { name = "neorg" },
-        {
-          name = "luasnip",
-        },
+        { name = "luasnip" },
         {
           name = "look",
           keyword_length = 2,
@@ -90,10 +86,14 @@ return {
           },
         },
         { name = "crates" },
-      }),
-    })
+      },
+    }
+  end,
+  config = function(_, opts)
+    local cmp = require("cmp")
+    cmp.setup(opts)
 
-    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+    -- cmdline 설정
     cmp.setup.cmdline(":", {
       sources = cmp.config.sources({
         { name = "path" },
