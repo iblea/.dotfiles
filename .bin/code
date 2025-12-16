@@ -1,6 +1,14 @@
 #!/bin/bash
 
-VSCODE_FIRST=1
+# 0 - VSCode
+# 1 - Cursor
+# 2 - AntiGravity
+EDITOR_PRIORITY=0
+
+IS_DARWIN=0
+VSCODE_LOCAL_PATH="/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+CURSOR_LOCAL_PATH="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
+ANTIGRAVITY_LOCAL_PATH="/Applications/Antigravity.app/Contents/Resources/app/bin/antigravity"
 
 function custom_vi() {
     clear
@@ -27,113 +35,118 @@ fi
 PATH_BACKUP="$PATH"
 export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
 
-if [[ "$(uname -s)" = "Darwin" ]]; then
+function all_chcker() {
 
     if [ -n "$GIT_ASKPASS" ]; then
 
-        if [ $VSCODE_FIRST -eq 1 ]; then
-            if  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            fi
+        if grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
+            "$VSCODE_LOCAL_PATH" "$@"
+            exit 0
+        elif grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
+            "$VSCODE_LOCAL_PATH" "$@"
+            exit 0
+        elif grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
+            "$CURSOR_LOCAL_PATH" "$@"
+            exit 0
+        elif grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
+            "$CURSOR_LOCAL_PATH" "$@"
+            exit 0
+        elif grep -q "Antigravity\.app" <<< "$GIT_ASKPASS"; then
+            "$ANTIGRAVITY_LOCAL_PATH" "$@"
+            exit 0
+        elif grep -q "\.antigravity-server" <<< "$GIT_ASKPASS"; then
+            "$ANTIGRAVITY_LOCAL_PATH" "$@"
+            exit 0
+        fi
+
+        if [ $IS_DARWIN -eq 1 ]; then
+            vim "$@"
         else
-            if  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-                "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-                "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-                exit 0
-            fi
+            custom_vi "$@"
         fi
         exit 0
-    fi
 
-    if [ $VSCODE_FIRST -eq 1 ]; then
-        if [ -d "/Applications/Visual Studio Code.app" ]; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
-        elif [ -d "/Applications/Cursor.app" ]; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-        else
-            vim "$@"
-        fi
     else
-        if [ -d "/Applications/Cursor.app" ]; then
-            "/Applications/Cursor.app/Contents/Resources/app/bin/code" "$@"
-        elif [ -d "/Applications/Visual Studio Code.app" ]; then
-            "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" "$@"
+
+        if [ $EDITOR_PRIORITY -eq 0 ]; then
+            if [ $IS_DARWIN -eq 1 ]; then
+                if [ -f "$VSCODE_LOCAL_PATH" ]; then
+                    "$VSCODE_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+            else
+                local check_command=$(command -v "$VSCODE_LOCAL_PATH" 2>/dev/null)
+                if [ -n "$check_command" ]; then
+                    "$VSCODE_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+            fi
+        elif [ $EDITOR_PRIORITY -eq 1 ]; then
+            if [ $IS_DARWIN -eq 1 ]; then
+                if [ -f "$CURSOR_LOCAL_PATH" ]; then
+                    "$CURSOR_LOCAL_PATH" "$@"
+                    exit 0
+                elif [ -f "$VSCODE_LOCAL_PATH" ]; then
+                    "$VSCODE_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+            else
+                local check_command=$(command -v "$CURSOR_LOCAL_PATH" 2>/dev/null)
+                if [ -n "$check_command" ]; then
+                    "$CURSOR_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+                check_command=$(command -v "$VSCODE_LOCAL_PATH" 2>/dev/null)
+                if [ -n "$check_command" ]; then
+                    "$VSCODE_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+            fi
+        elif [ $EDITOR_PRIORITY -eq 2 ]; then
+            if [ $IS_DARWIN -eq 1 ]; then
+                if [ -f "$ANTIGRAVITY_LOCAL_PATH" ]; then
+                    "$ANTIGRAVITY_LOCAL_PATH" "$@"
+                    exit 0
+                elif [ -f "$VSCODE_LOCAL_PATH" ]; then
+                    "$VSCODE_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+            else
+                local check_command=$(command -v "$ANTIGRAVITY_LOCAL_PATH" 2>/dev/null)
+                if [ -n "$check_command" ]; then
+                    "$ANTIGRAVITY_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+                check_command=$(command -v "$VSCODE_LOCAL_PATH" 2>/dev/null)
+                if [ -n "$check_command" ]; then
+                    "$VSCODE_LOCAL_PATH" "$@"
+                    exit 0
+                fi
+            fi
         else
-            vim "$@"
+            if [ $IS_DARWIN -eq 1 ]; then
+                vim "$@"
+            else
+                custom_vi "$@"
+            fi
+            exit 0
         fi
+
     fi
+}
+
+EDITOR_FOUND_CHECK=0
+if [[ "$(uname -s)" = "Darwin" ]]; then
+    IS_DARWIN=1
+    all_chcker $@
     exit 0
 else
-    if [ -n "$GIT_ASKPASS" ]; then
-        if [ $VSCODE_FIRST -eq 1 ]; then
-            if  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-                code "$@"
-                exit 0
-            elif  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-                cursor "$@"
-                exit 0
-            elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-                code "$@"
-                exit 0
-            elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-                cursor "$@"
-                exit 0
-            fi
-        else
-            if  grep -q "\.cursor-server" <<< "$GIT_ASKPASS"; then
-                cursor "$@"
-                exit 0
-            elif  grep -q "\.vscode-server" <<< "$GIT_ASKPASS"; then
-                code "$@"
-                exit 0
-            elif  grep -q "Cursor\.app" <<< "$GIT_ASKPASS"; then
-                cursor "$@"
-                exit 0
-            elif  grep -q "Code\.app" <<< "$GIT_ASKPASS"; then
-                code "$@"
-                exit 0
-            fi
-        fi
-        exit 0
-    fi
+    IS_DARWIN=0
+    VSCODE_LOCAL_PATH="code"
+    CURSOR_LOCAL_PATH="cursor"
+    ANTIGRAVITY_LOCAL_PATH="antigravity"
 
-    if [ $VSCODE_FIRST -eq 1 ]; then
-        if [ -n "$(command -v code)" ]; then
-            code "$@"
-        elif [ -n "$(command -v cursor)" ]; then
-            cursor "$@"
-        else
-            # vim "$@"
-            custom_vi "$@"
-        fi
-    else
-        if [ -n "$(command -v cursor)" ]; then
-            cursor "$@"
-        elif [ -n "$(command -v code)" ]; then
-            code "$@"
-        else
-            # vim "$@"
-            custom_vi "$@"
-        fi
-    fi
+    all_chcker $@
     exit 0
 fi
 
