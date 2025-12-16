@@ -99,7 +99,8 @@ The following is an explanation of the user-defined command.
 | `;web` | Answer with web search | researcher |
 | `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
 | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
-| `;aitodo` | Execute TODO tasks from aitodo.md | - |
+| `;aitodo` | Execute TODO tasks from `aitodo.md` | - |
+| `;cai` | Convert file to `aitodo.md` format | - |
 
 #### Translation Options
 | Option | Description |
@@ -288,6 +289,13 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
 
 - When receiving the command **;cai**, modify the written file to match the file format of `aitodo.md`, and save it as the `aitodo.md` file in the directory where you are currently located.
   - If the `aitodo.md` file already exists, delete all the contents of the existing file and overwrite it with the newly written content.
+  - The following phrase must be included at the very top of the file: (The path of the original file to be converted must be specified.)
+    ```
+    - [Converted by file](file:///path/to/original_file.md)
+      - For more details, refer to the file.
+
+    ```
+
 
 
 # ETC (aitodo.md, build.md ...)
