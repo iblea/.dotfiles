@@ -8,12 +8,31 @@ fi
 
 # echo "$@" > $HOME/test-cldarg.txt
 signal="$PROGRAM-done-$$"
+CURRENT_LINES=$(tmux display-message -p '#{pane_height}')
 
 # vertical
 # tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
 
+tmux copy-mode
 # horizontal
-tmux split-window -v "$PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
+if [ $CURRENT_LINES -ge 26 ]; then
+	tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal"
+	# tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+else
+	tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal"
+	# tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+fi
+
+tmux last-pane
+tmux send-keys -X scroll-up
+tmux send-keys -X scroll-up
+tmux send-keys -X scroll-up
+tmux send-keys -X scroll-up
+tmux last-pane
+tmux wait-for $signal
+
+tmux send-keys -X cancel
+
 
 # tmux new-window -n "claude-code-tmp-editor-$$" "$PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
 
