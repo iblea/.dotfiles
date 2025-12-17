@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROGRAM="vim"
+PROGRAM="nvim"
 
 if [ -z "$TMUX" ]; then
 	exec $PROGRAM "$@"
