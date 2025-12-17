@@ -85,10 +85,12 @@ if [ -z "$EDITOR" ]; then
     fi
 fi
 
-if [ "$EDITOR" = "nvim" ]; then
-	export EDITOR="nvim --cmd \"cd \$PWD\""
-elif [ "$EDITOR" = "vim" ]; then
-	export EDITOR="vim --cmd \"cd \$PWD\""
+if [ -n "$TMUX" ]; then
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="codenvim"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="codevim"
+    fi
 fi
 
 if [ "$CLAUDE_OPT" = "s" ]; then

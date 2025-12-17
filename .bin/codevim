@@ -1,0 +1,21 @@
+#!/bin/bash
+
+PROGRAM="vim"
+
+if [ -z "$TMUX" ]; then
+	exec $PROGRAM "$@"
+fi
+
+# echo "$@" > $HOME/test-cldarg.txt
+signal="vim-done-$$"
+
+# vertical
+# tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
+
+# horizontal
+tmux split-window -v "$PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
+
+# tmux new-window -n "claude-code-tmp-editor-$$" "$PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
+
+# rm -f $HOME/test-cldarg.txt
+exit 0
