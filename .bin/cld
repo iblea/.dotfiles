@@ -3,6 +3,8 @@
 
 CLAUDE_OPT="a"
 
+DEFAULT_EDITOR="vi"
+
 if [ $# -eq 0 ]; then
     CLAUDE_OPT="a"
 else
@@ -76,12 +78,22 @@ done
 PROMPT_PATH=""
 
 if [ -z "$EDITOR" ]; then
-    if [ -n "$GIT_ASKPASS" ]; then
+    if [[ "$DEFAULT_EDITOR" = "code" ]]; then
         export EDITOR="code"
-    elif [ "$(command -v nvim)" ]; then
-        export EDITOR="nvim"
+    elif [[ "$DEFAULT_EDITOR" = "vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
     else
-        export EDITOR="vim"
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        elif [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
     fi
 fi
 
