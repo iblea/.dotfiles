@@ -124,11 +124,10 @@ fi
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="gemini_$(date +%s)_$$"
-TMUX_CONF="$HOME/.dotfiles/.tmux.conf"
+TMUX_CONF="$HOME/.dotfiles/tmux/tmux.gemini.conf"
 
 exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-    new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME" \
-    \; bind-key -n C-g send-keys C-x
+    new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME"
 
 # if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
 #     exec tmux new-session -s "$SESSION_NAME" "sleep 0.1 && clear && claude; tmux kill-session -t $SESSION_NAME"
