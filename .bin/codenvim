@@ -17,10 +17,10 @@ CURRENT_LINES=$(tmux display-message -p '#{pane_height}')
 tmux copy-mode
 # horizontal
 if [ $CURRENT_LINES -ge 26 ]; then
-	tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal"
+	tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
 	# tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
 else
-	tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal"
+	tmux split-window -v "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
 	# tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
 fi
 
