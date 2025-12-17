@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEFAULT_EDITOR="vi"
+
 if [ -z "$(command -v tmux)" ]; then
     echo "tmux command not found"
     exit 1
@@ -32,6 +34,43 @@ if [ $# -eq 2 ]; then
         exit 0
     fi
 fi
+
+if [ -z "$EDITOR" ]; then
+    if [[ "$DEFAULT_EDITOR" = "code" ]]; then
+        export EDITOR="code"
+    elif [[ "$DEFAULT_EDITOR" = "vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    else
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        elif [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    fi
+fi
+
+if [ -n "$TMUX" ]; then
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="codenvim"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="codevim"
+    fi
+else
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="nvim --cmd 'cd $PWD'"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="vim --cmd 'cd $PWD'"
+    fi
+fi
+
+
+
 
 GLOBAL_OPTIONS=()
 OPTS=()
@@ -83,7 +122,11 @@ fi
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="gemini_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/.tmux.conf"
-exec tmux -f "$TMUX_CONF" new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME"
+
+exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+	new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME" \
+    \; bind-key -n C-g send-keys C-x
+
 # if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
 #     exec tmux new-session -s "$SESSION_NAME" "sleep 0.1 && clear && claude; tmux kill-session -t $SESSION_NAME"
 # else
