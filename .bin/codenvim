@@ -19,6 +19,8 @@ tmux copy-mode
 if [ $CURRENT_LINES -ge 26 ]; then
 	tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
 	# tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+elif [ $CURRENT_LINES -ge 15 ]; then
+	tmux split-window -v -l 7 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
 else
 	tmux split-window -v "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
 	# tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
