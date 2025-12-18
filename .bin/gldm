@@ -15,10 +15,10 @@ if [ -z "$(command -v gemini)" ]; then
 fi
 
 if [ $# -eq 1 ]; then
-    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         gemini --help
         exit 0
-    elif [ "$1" = "update" ]; then
+    elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
         npm install -g @google/gemini-cli@latest
         if [ $? -ne 0 ]; then
             echo "update error"
@@ -29,7 +29,10 @@ if [ $# -eq 1 ]; then
             echo "npm install -g @google/gemini-cli"
         fi
         exit $?
-    elif [ "$1" = "ls" ] || [ "$1" = "-ls" ] || [ "$1" = "--list-sessions" ]; then
+    elif [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
+		gemini --version
+		exit $?
+    elif [[ "$1" = "ls" ]] || [[ "$1" = "-ls" ]] || [[ "$1" = "--list-sessions" ]]; then
         gemini --list-sessions
         exit 0
     fi
@@ -80,17 +83,17 @@ for arg in "$@"; do
         if [ ${#MODEL_OPTS[@]} -le 0 ]; then
             MODEL_OPTS+=("--model" "auto")
         fi
-    elif [ "$arg" = "vs" ] || [ "$arg" = "-vs" ] || ["$arg" = "code" ] || ["$arg" = "-code" ]; then
+    elif [[ "$arg" = "vs" ]] || [[ "$arg" = "-vs" ]] || [[ "$arg" = "code" ]] || [[ "$arg" = "-code" ]]; then
             export EDITOR="code"
-    elif [ "$arg" = "vi" ] || [ "$arg" = "-vi" ]; then
+    elif [[ "$arg" = "vi" ]] || [[ "$arg" = "-vi" ]]; then
             if [ -n "$(command -v nvim)" ]; then
                 export EDITOR="nvim"
             else
                 export EDITOR="vim"
             fi
-    elif [ "$arg" = "vim" ] || [ "$arg" = "-vim" ]; then
+    elif [[ "$arg" = "vim" ]] || [[ "$arg" = "-vim" ]]; then
             export EDITOR="vim"
-    elif [ "$arg" = "nvi" ] || [ "$arg" = "-nvi" ] || [ "$arg" = "nvim" ] || [ "$arg" = "-nvim" ]; then
+    elif [[ "$arg" = "nvi" ]] || [[ "$arg" = "-nvi" ]] || [[ "$arg" = "nvim" ]] || [[ "$arg" = "-nvim" ]]; then
             export EDITOR="nvim"
     else
         OPTS+=("$arg")

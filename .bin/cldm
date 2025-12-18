@@ -19,13 +19,17 @@ if [ -z "$(command -v cld)" ]; then
     exit 1
 fi
 
-if [ $# -eq 1 ] && ( [ "$1" = "-h" ] || [ "$1" = "--help" ] ); then
-    claude --help
-    exit 0
-fi
-if [ $# -eq 1 ] && [ "$1" = "update" ]; then
-    claude update
-    exit 0
+if [ $# -eq 1 ]; then
+    if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+        claude --help
+        exit $?
+    elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
+        claude update
+        exit $?
+    elif [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
+        claude --version
+        exit $?
+    fi
 fi
 
 
@@ -33,7 +37,7 @@ fi
 SESSION_NAME="claude_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-	new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && ; cld $@; tmux kill-session -t $SESSION_NAME"
+    new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && ; cld $@; tmux kill-session -t $SESSION_NAME"
 
 # # VSCode 터미널에서 색상 쿼리 escape sequence 제거
 # if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
