@@ -7,7 +7,7 @@ Remember that the response method for user-defined commands should take priority
 # Arguments
 $ARGUMENTS
 
-This command can take options.
+This command can take options (`-n` / `-next` / `t` / `task` / `m` / `mission`).
 Therefore, arguments can be passed as variadic parameters.
 Please refer to the details below.
 
@@ -109,9 +109,19 @@ Please refer to the details below.
     ```
 
 # Command behavior
-- This Command Format is `/aitodo [task] [mission]`
+- This Command Format is `/aitodo [-n/-next] [task] [mission]`
 - Find and read the `aitodo.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
-  - Don't be case sensitive to filename. (`aitodo.md`, `AITODO.md`, `AItodo.md` ... etc.)
+- The `-n` or `-next` option can be added after the `/aitodo` command and can be combined with other options (e.g., `/aitodo -next`, `/aitodo -n task 1`, `/aitodo -next task 1 m 2`).
+  - When this option is provided, after completing each mission, you MUST ask the user "Continue to the next mission?" before proceeding.
+  - Wait for the user's response:
+    - If the user responds positively (e.g., "yes", "ok", "continue", "ㅇㅇ", ";dd"), proceed to the next mission.
+    - If the user responds negatively (e.g., "no", "stop", "ㄴㄴ", ";ss"), stop execution and do not proceed to the next mission.
+  - This option overrides the default behavior of automatically proceeding to the next mission.
+  - **End-of-task behavior:**
+    - If a specific task was specified (e.g., `/aitodo task 1 -next`) and all missions in that task are completed, do NOT ask for confirmation. Simply report that all missions in the task have been completed.
+    - If no specific task was specified (e.g., `/aitodo -n`) and all missions in the current task are completed, check if there are remaining tasks with unresolved missions. If so, ask: "All missions in the current task are completed. Continue to the next task?"
+- Don't be case sensitive to filename. (`aitodo.md`, `AITODO.md`, `AItodo.md` ... etc.)
+- **⚠️ CRITICAL**: When processing missions, you MUST follow "Perform → Immediately mark [x] → Next mission" order. Batch processing is PROHIBITED. (Details: See `# TODO FILE FORMAT & RULES` section)
 - If subcategories task name or task number is entered after the `/aitodo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
   - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: "/aitodo `@path/to/aitodo.md#L23`" or "/aitodo `@./aitodo.md:23`" or "/aitodo `@./aitodo.md#L23-30`" etc.)
     - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
@@ -119,6 +129,7 @@ Please refer to the details below.
       - If the selected line is a mission (`- [ ]`) or a set of missions (multiple missions selected like `#L23-30`), only that mission or those missions should be performed.
     - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: "/aitodo `@./aitodo.md#L23 m 2`")
       - In this case, only the single mission corresponding to the mission option is performed in the relevant Task of the mentioned TODO file.
+    - `t` is an abbreviation for `task`. Therefore, `/aitodo t 1` is the same as `/aitodo task 1`.
 - mission is optional. ex: `/aitodo task 1 mission 1`
   - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `/aitodo task 1 m 2`).
   - The mission option refers to a single `- [ ]` item within a Task in the aitodo.md file.
