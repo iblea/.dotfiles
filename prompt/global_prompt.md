@@ -97,6 +97,9 @@ The following is an explanation of the user-defined command.
 | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
 | `;integrity` | Verify information reliability | - |
+| `;path` | Tell path of created file | - |
+| `;cim` / `;codenvim` | Open file in codenvim (background) | - |
+| `;code` | Open file in VS Code (background) | - |
 | `;test` / `;tests` | Create unit tests | tester |
 | `;ref` | Provide sources for answers | researcher |
 | `;irefactor` | Refactor selected code | - |
@@ -179,6 +182,13 @@ The following is an explanation of the user-defined command.
   - For the latest data or data where fact-checking is unclear, conduct additional external searches and cross-verify to confirm whether the information is correct.
   - If fact-checking remains unclear even after cross-verification, explicitly state "This information is unclear." (It is likely to be a rumor or unreliable information.)
   - When conducting external searches, you must clearly provide the sources and links you referenced.
+- When receiving the command **;path**, tell me the path of the file you created.
+- When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
+  - Example command: run_in_background with command `nohup codenvim <path>` or `nohup codenvim <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
+  - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
+- When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
+  - Example command: run_in_background with command `nohup code <path>` or `nohup code <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
+  - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
 
 - When receiving the command **;test** or **;tests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
   - In Claude Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
