@@ -1,43 +1,4 @@
 #!/bin/bash
 
-PROGRAM="nvim"
-
-if [ -z "$TMUX" ]; then
-	exec $PROGRAM "$@"
-fi
-
-# echo "$@" > $HOME/test-cldarg.txt
-signal="$PROGRAM-done-$$"
-CURRENT_LINES=$(tmux display-message -p '#{pane_height}')
-
-# vertical
-# tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
-
-
-tmux copy-mode
-# horizontal
-if [ $CURRENT_LINES -ge 26 ]; then
-	tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-	# tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
-elif [ $CURRENT_LINES -ge 15 ]; then
-	tmux split-window -v -l 7 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-else
-	tmux split-window -v "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-	# tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
-fi
-
-tmux last-pane
-tmux send-keys -X scroll-up
-tmux send-keys -X scroll-up
-tmux send-keys -X scroll-up
-tmux send-keys -X scroll-up
-tmux last-pane
-tmux wait-for $signal
-
-tmux send-keys -X cancel
-
-
-# tmux new-window -n "claude-code-tmp-editor-$$" "$PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
-
-# rm -f $HOME/test-cldarg.txt
-exit 0
+curpath=$(dirname "$(realpath $0)")
+VIM_PROGRAM="nvim" $curpath/codevim "$@"

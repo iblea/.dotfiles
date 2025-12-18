@@ -184,7 +184,7 @@ The following is an explanation of the user-defined command.
   - When conducting external searches, you must clearly provide the sources and links you referenced.
 - When receiving the command **;path**, tell me the path of the file you created.
 - When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
-  - Example command: run_in_background with command `nohup codenvim <path>` or `nohup codenvim <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
+  - Example command: `codenvim --nowait <path>`
   - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
 - When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
   - Example command: run_in_background with command `nohup code <path>` or `nohup code <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)

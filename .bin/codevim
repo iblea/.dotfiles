@@ -1,42 +1,89 @@
 #!/bin/bash
 
-PROGRAM="vim"
+# echo "VIM_PROG: $VIM_PROGRAM"
+if [ -z "$VIM_PROGRAM" ]; then
+	if [ -z "$(command -v nvim)" ]; then
+		VIM_PROGRAM="nvim"
+	else
+		VIM_PROGRAM="vim"
+	fi
+else
+	validate_var=$(command -v "$VIM_PROGRAM")
+	if [ -z "$validate_var" ]; then
+		if [ -z "$(command -v nvim)" ]; then
+			VIM_PROGRAM="nvim"
+		else
+			VIM_PROGRAM="vim"
+		fi
+	fi
+fi
+
+# echo "$#"
+# for _ext in "$@"; do
+# 	echo "$_ext"
+# done
+# exit 0
 
 if [ -z "$TMUX" ]; then
-	exec $PROGRAM "$@"
+	exec $VIM_PROGRAM "$@"
+fi
+
+NO_WAIT=0
+if [ $# -ge 1 ]; then
+	if [ "$1" = "--nowait" ]; then
+		NO_WAIT=1
+		shift
+	fi
 fi
 
 # echo "$@" > $HOME/test-cldarg.txt
-signal="$PROGRAM-done-$$"
+signal="$VIM_PROGRAM-done-$$"
 CURRENT_LINES=$(tmux display-message -p '#{pane_height}')
 
 # vertical
 # tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
 
-tmux copy-mode
-# horizontal
-if [ $CURRENT_LINES -ge 26 ]; then
-	tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-	# tmux split-window -v -l 13 "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
-elif [ $CURRENT_LINES -ge 15 ]; then
-	tmux split-window -v -l 7 "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-else
-	tmux split-window -v "$PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-	# tmux split-window -v "$PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+
+if [ $NO_WAIT -ne 1 ]; then
+	tmux copy-mode
 fi
 
-tmux last-pane
-tmux send-keys -X scroll-up
-tmux send-keys -X scroll-up
-tmux send-keys -X scroll-up
-tmux send-keys -X scroll-up
-tmux last-pane
-tmux wait-for $signal
+# horizontal
+if [ $CURRENT_LINES -ge 26 ]; then
+	if [ $NO_WAIT -eq 1 ]; then
+		tmux split-window -v -l 13 "$VIM_PROGRAM --cmd 'cd $PWD' '$@';"
+	else
+		tmux split-window -v -l 13 "$VIM_PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
+		# tmux split-window -v -l 13 "$VIM_PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+	fi
+elif [ $CURRENT_LINES -ge 15 ]; then
+	if [ $NO_WAIT -eq 1 ]; then
+		tmux split-window -v -l 7 "$VIM_PROGRAM --cmd 'cd $PWD' '$@';"
+	else
+		tmux split-window -v -l 7 "$VIM_PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
+	fi
+else
+	if [ $NO_WAIT -eq 1 ]; then
+		tmux split-window -v "$VIM_PROGRAM --cmd 'cd $PWD' '$@';"
+	else
+		tmux split-window -v "$VIM_PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
+		# tmux split-window -v "$VIM_PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+	fi
+fi
 
-tmux send-keys -X cancel
+if [ $NO_WAIT -ne 1 ]; then
+	tmux last-pane
+	tmux send-keys -X scroll-up
+	tmux send-keys -X scroll-up
+	tmux send-keys -X scroll-up
+	tmux send-keys -X scroll-up
+	tmux last-pane
+	tmux wait-for $signal
+	tmux send-keys -X cancel
+fi
 
-
-# tmux new-window -n "claude-code-tmp-editor-$$" "$PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
+# tmux new-window -n "claude-code-tmp-editor-$$" "$VIM_PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
 
 # rm -f $HOME/test-cldarg.txt
+
 exit 0
