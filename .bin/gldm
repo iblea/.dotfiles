@@ -19,8 +19,16 @@ if [ $# -eq 1 ]; then
         gemini --help
         exit 0
     elif [ "$1" = "update" ]; then
-        npm install -g @google/gemini-cli
-        exit 0
+        npm install -g @google/gemini-cli@latest
+        if [ $? -ne 0 ]; then
+            echo "update error"
+            echo "rm -rf \"$(npm root -g)/@google/gemini-cli\""
+            echo "rm -rf \"$(npm root -g)/@google/\".gemini-cli-*"
+            echo "npm cache clean --force"
+            echo "npm uninstall -g @google/gemini-cli"
+            echo "npm install -g @google/gemini-cli"
+        fi
+        exit $?
     elif [ "$1" = "ls" ] || [ "$1" = "-ls" ] || [ "$1" = "--list-sessions" ]; then
         gemini --list-sessions
         exit 0
