@@ -9,106 +9,103 @@ Remember that the response method for user-defined commands should take priority
 # Arguments
 $ARGUMENTS
 
-This command can take options (`-n` / `-next` / `t` / `task` / `m` / `mission`).
+This command can take options (`-n` / `-next` / `-nt` / `t` / `task` / `m` / `mission`).
 Therefore, arguments can be passed as variadic parameters.
 Please refer to the details below.
 
-
 # TODO FILE FORMAT & RULES
+### aitodo.md (AITODO.md)
+##### aitodo filename
 - `./aitodo.md` (`AITODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `aitodo.md` (`aitodo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
-  - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format.
-    **Mission Processing Order (MUST FOLLOW - Do NOT batch missions):**
-    1. Perform Mission 1
-    2. Mark Mission 1 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
-    3. Perform Mission 2
-    4. Mark Mission 2 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
-    5. Repeat until all missions are done...
 
-    **PROHIBITED:** Processing multiple missions first and marking them completed later in batch.
-    **REASON:** If a mission fails mid-task, progress tracking becomes impossible.
-  - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
-    - example
-      - You are on this mission.
-        ```markdown
-        - [ ] 1. solve this mission. Improve the performance of this code.
-          - detail description 1
-          - detail description 2
-          - detail description 3
-        ```
-      - You have completed your mission successfully.
-        After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
-        Work as below.
-        **You must not add, delete, or modify anything else.**
-        ```markdown
-        - [x] 1. solve this mission. Improve the performance of this code.
-          - detail description 1
-          - detail description 2
-          - detail description 3
-        ```
-  - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
-    - example
-      - You are on this mission.
-        ```markdown
-        - [ ] 1. solve this mission. Improve the performance of this code.
-          - detail description 1
-          - detail description 2
-          - detail description 3
-        ```
-      - You have completed your mission successfully.
-        After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
-        Work as below.
-        **You must not add, delete, or modify anything else.**
-        ```markdown
-        - [x] 1. solve this mission. Improve the performance of this code.
-          - detail description 1
-          - detail description 2
-          - detail description 3
-        ```
-  - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
-  - When all tasks in a subcategory are completed, perform `git commit` based on `######` marker:
-    | Marker | Behavior |
-    |--------|----------|
-    | `###### [commit message]` | Commit with this message when all tasks completed |
-    | `###### NO COMMIT` | Do not commit even if all tasks completed |
-    | `###### AUTO COMMIT` | Create commit message automatically and commit |
-    | No `######` marker | Do not commit |
+##### File Format
+- The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
+- Each task(`###`) contains missions you must perform in the form of `- [ ]`.
+- Detail missions that provide a detailed description of each mission's content(`- [ ]`) may exist.
 
-    - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `###### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
+##### Mission Completed (marking mission rule)
+- The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format.
+  **Mission Processing Order (MUST FOLLOW - Do NOT batch missions):**
+  1. Perform Mission 1
+  2. Mark Mission 1 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
+  3. Perform Mission 2
+  4. Mark Mission 2 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
+  5. Repeat until all missions are done...
 
-  - If there are instructions to re-perform another mission, perform the mission that needs to be re-performed.
-    - **Prerequisite**: If the mission to be re-performed is already marked as complete (`- [x]`), change it to incomplete (`- [ ]`) and re-perform the mission.
-  - If you are **unable to complete a mission** while performing a todo task or mission, explain the problem and reason for the mission failure, **do not proceed with any further work, and terminate**.
-    - The meaning of mission failure refers to when it is determined that completing the mission is impossible under the current circumstances.
-      (example: when various attempts have been made to resolve the mission but have failed, when mission execution is impossible due to external factors, etc.)
-    - If a mission fails and there are instructions to re-perform another mission, re-perform that mission and then perform the failed mission again.
-      - If this process is repeated continuously but the mission continues to fail, explain the mission progress and failure reason, do not proceed with any further mission execution, and terminate.
-    - example
-      - If mission 2 fails, do not perform subsequent missions (3, 4, 5 ...) and terminate.
-      - For example, if the content of mission 2 is "Access the `mlbdata.com` site and collect Brian player's 2024 batting average information.",
-        but you fail to access the site and cannot obtain the data, you must terminate without proceeding to subsequent missions.
-        Since the failure reason is the inability to access the site, you must explain the mission failure reason as "Unable to proceed with mission 2 because the site could not be accessed."
-        (Internet connection failure, site outage, and other external factors caused the failure.)
-      - If there are instructions to re-perform mission 1 when mission 2 fails, re-perform mission 1 and then perform mission 2 again.
-        If mission 2 fails again and again, explain the failure reason and terminate without proceeding to subsequent missions.
-  - The todo list format is as follows:
-    ```markdown
-    # ISSUES
-    content
+  **PROHIBITED:** Processing multiple missions first and marking them completed later in batch.
+  **REASON:** If a mission fails mid-task, progress tracking becomes impossible.
+- Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
+  - example
+    - You are on this mission.
+      ```markdown
+      - [ ] 1. solve this mission. Improve the performance of this code.
+        - detail description 1
+        - detail description 2
+        - detail description 3
+      ```
+    - You have completed your mission successfully.
+      After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
+      Work as below.
+      **You must not add, delete, or modify anything else.**
+      ```markdown
+      - [x] 1. solve this mission. Improve the performance of this code.
+        - detail description 1
+        - detail description 2
+        - detail description 3
+      ```
 
-    # TODO LIST
-    ### Task 1
-    ###### git commit message
-    - [ ] 1. task mission 1
-    - [ ] 2. task mission 2
-      - detail mission
-      - detail mission
-    - [ ] 3. task mission 3
-      - detail mission
+##### Task Commit
+- When all tasks in a subcategory are completed, perform `git commit` based on `######` marker:
+  | Marker | Behavior |
+  |--------|----------|
+  | `###### [commit message]` | Commit with this message when all tasks completed |
+  | `###### NO COMMIT` | Do not commit even if all tasks completed |
+  | `###### AUTO COMMIT` | Create commit message automatically and commit |
+  | No `######` marker | Do not commit |
 
-    ### Task 2
-    - [ ] 1. task mission 1
-    - [ ] 2. task mission 2
-    ```
+  - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `###### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
+
+##### re-perform mission
+- If there are instructions to re-perform another mission, perform the mission that needs to be re-performed.
+  - **Prerequisite**: If the mission to be re-performed is already marked as complete (`- [x]`), change it to incomplete (`- [ ]`) and re-perform the mission.
+
+##### Mission Fail
+- If you are **unable to complete a mission** while performing a todo task or mission, explain the problem and reason for the mission failure, **do not proceed with any further work, and terminate**.
+  - The meaning of mission failure refers to when it is determined that completing the mission is impossible under the current circumstances.
+    (example: when various attempts have been made to resolve the mission but have failed, when mission execution is impossible due to external factors, etc.)
+  - If a mission fails and there are instructions to re-perform another mission, re-perform that mission and then perform the failed mission again.
+    - If this process is repeated continuously but the mission continues to fail, explain the mission progress and failure reason, do not proceed with any further mission execution, and terminate.
+  - example
+    - If mission 2 fails, do not perform subsequent missions (3, 4, 5 ...) and terminate.
+    - For example, if the content of mission 2 is "Access the `mlbdata.com` site and collect Brian player's 2024 batting average information.",
+      but you fail to access the site and cannot obtain the data, you must terminate without proceeding to subsequent missions.
+      Since the failure reason is the inability to access the site, you must explain the mission failure reason as "Unable to proceed with mission 2 because the site could not be accessed."
+      (Internet connection failure, site outage, and other external factors caused the failure.)
+    - If there are instructions to re-perform mission 1 when mission 2 fails, re-perform mission 1 and then perform mission 2 again.
+      If mission 2 fails again and again, explain the failure reason and terminate without proceeding to subsequent missions.
+
+##### aitodo.md Format Example
+- The todo list format is as follows:
+
+```markdown
+# ISSUES
+content
+
+# TODO LIST
+### Task 1
+###### git commit message
+- [ ] 1. task mission 1
+- [ ] 2. task mission 2
+  - detail mission
+  - detail mission
+- [ ] 3. task mission 3
+  - detail mission
+
+### Task 2
+- [ ] 1. task mission 1
+- [ ] 2. task mission 2
+```
+
 
 # Command behavior
 - This Command Format is `/aitodo [-n/-next] [task] [mission]`
@@ -122,8 +119,21 @@ Please refer to the details below.
   - **End-of-task behavior:**
     - If a specific task was specified (e.g., `/aitodo task 1 -next`) and all missions in that task are completed, do NOT ask for confirmation. Simply report that all missions in the task have been completed.
     - If no specific task was specified (e.g., `/aitodo -n`) and all missions in the current task are completed, check if there are remaining tasks with unresolved missions. If so, ask: "All missions in the current task are completed. Continue to the next task?"
+  - In case of mission failure (refer to the `##### Mission Fail` content in the `### aitodo.md` section.)
+- The `-nt` option can be added after the `/aitodo` command and can be combined with other options (e.g., `/aitodo -nt`, `/aitodo -nt task 1`).
+  - This option cannot be used together with the `mission` option. (The option contents are contradictory.)
+    - ⚠️ CRITICAL: Therefore, if the `-nt` option is entered together with the `m` / `mission` option, output `wrong options` and do not proceed with the `/aitodo` command.
+  - This option is similar to the `-n` / `-next` option, but the scope is different. (The {`-n`/`-next`} option asks per mission unit, while the {`-nt`} option asks per task unit)
+  - When this option is provided, after completing each task, you MUST ask the user "Continue to the next task?" before proceeding.
+  - Wait for the user's response:
+    - If the user responds positively (e.g., "yes", "ok", "continue", "ㅇㅇ", ";dd"), proceed to the next task.
+    - If the user responds negatively (e.g., "no", "stop", "ㄴㄴ", ";ss"), stop execution and do not proceed to the next task.
+  - **End-of-task behavior:**
+    - If a specific task was specified (e.g., `/aitodo task 1 -nt`) and all missions in that task are completed, do NOT ask for confirmation. Simply report that all missions in the task have been completed.
+    - If no specific task was specified (e.g., `/aitodo -nt`) and all missions in the current task are completed, check if there are remaining tasks with unresolved missions. If so, ask: "All missions in the current task are completed. Continue to the next task?"
+  - In case of mission failure (refer to the `##### Mission Fail` content in the `### aitodo.md` section.)
 - Don't be case sensitive to filename. (`aitodo.md`, `AITODO.md`, `AItodo.md` ... etc.)
-- **⚠️ CRITICAL**: When processing missions, you MUST follow "Perform → Immediately mark [x] → Next mission" order. Batch processing is PROHIBITED. (Details: See `# TODO FILE FORMAT & RULES` section)
+- **⚠️ CRITICAL**: When processing missions, you MUST follow "Perform → Immediately mark [x] → Next mission" order. Batch processing is PROHIBITED. (Details: See `### aitodo.md` section)
 - If subcategories task name or task number is entered after the `/aitodo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
   - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: "/aitodo `@path/to/aitodo.md#L23`" or "/aitodo `@./aitodo.md:23`" or "/aitodo `@./aitodo.md#L23-30`" etc.)
     - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
