@@ -14,26 +14,54 @@ Please refer to the details below.
 
 # TODO FILE FORMAT & RULES
 - `./aitodo.md` (`AITODO.md` (Don't be case sensitive to filename.)) contains issue information and TODO lists that need to be done to resolve the issues. If there are issues written in the `aitodo.md` (`aitodo.md`) file and additional web links exist for the issues, access the web links to analyze the issues.
-  - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format. Work on them one by one, and when you complete a task, mark it as completed (`[x]`).
-    - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
-      - example
-        - You are on this mission.
-          ```markdown
-          - [ ] 1. solve this mission. Improve the performance of this code.
-            - detail description 1
-            - detail description 2
-            - detail description 3
-          ```
-        - You have completed your mission successfully.
-          After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
-          Work as below.
-          **You must not add, delete, or modify anything else.**
-          ```markdown
-          - [x] 1. solve this mission. Improve the performance of this code.
-            - detail description 1
-            - detail description 2
-            - detail description 3
-          ```
+  - The TODO LIST shows the tasks you need to work on in checkbox (`[ ]`) format.
+    **Mission Processing Order (MUST FOLLOW - Do NOT batch missions):**
+    1. Perform Mission 1
+    2. Mark Mission 1 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
+    3. Perform Mission 2
+    4. Mark Mission 2 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
+    5. Repeat until all missions are done...
+
+    **PROHIBITED:** Processing multiple missions first and marking them completed later in batch.
+    **REASON:** If a mission fails mid-task, progress tracking becomes impossible.
+  - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
+    - example
+      - You are on this mission.
+        ```markdown
+        - [ ] 1. solve this mission. Improve the performance of this code.
+          - detail description 1
+          - detail description 2
+          - detail description 3
+        ```
+      - You have completed your mission successfully.
+        After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
+        Work as below.
+        **You must not add, delete, or modify anything else.**
+        ```markdown
+        - [x] 1. solve this mission. Improve the performance of this code.
+          - detail description 1
+          - detail description 2
+          - detail description 3
+        ```
+  - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
+    - example
+      - You are on this mission.
+        ```markdown
+        - [ ] 1. solve this mission. Improve the performance of this code.
+          - detail description 1
+          - detail description 2
+          - detail description 3
+        ```
+      - You have completed your mission successfully.
+        After completing the task, only the `- [ ]` symbol must be marked with an x. -> `- [x]` (If you fail the mission, you should **never mark it**.)
+        Work as below.
+        **You must not add, delete, or modify anything else.**
+        ```markdown
+        - [x] 1. solve this mission. Improve the performance of this code.
+          - detail description 1
+          - detail description 2
+          - detail description 3
+        ```
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
   - When all tasks in a subcategory are completed, perform `git commit` based on `######` marker:
     | Marker | Behavior |
@@ -95,7 +123,7 @@ Please refer to the details below.
   - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `/aitodo task 1 m 2`).
   - The mission option refers to a single `- [ ]` item within a Task in the aitodo.md file.
   - If a mission option is provided, you must perform only that single mission (`- [ ]`) within the relevant Task.
-  - When a mission is completed, mark it as complete with `- [x]`.
+  - When a mission is completed, **immediately** mark it as complete with `- [x]` **before starting the next mission**.
   - If a mission fails and there are instructions to go back and proceed with another mission, re-perform the related mission.
     - example
       ```markdown
@@ -130,4 +158,3 @@ Please refer to the details below.
       Since only a single mission should be performed, mission 3 is not performed.
 
 - If there is no `aitodo.md` file, return the message "NOT EXIST aitodo.md".
-
