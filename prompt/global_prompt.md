@@ -100,7 +100,7 @@ The following is an explanation of the user-defined command.
 | `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
 | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
 | `;aitodo` | Execute TODO tasks from `aitodo.md` | - |
-| `;cai` | Convert file to `aitodo.md` format | - |
+| `;cai [nci]` | Convert file to `aitodo.md` format (`nci`: no commit) | - |
 
 #### Translation Options
 | Option | Description |
@@ -295,6 +295,8 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
       - For more details, refer to the file.
 
     ```
+  - Write the commit message in Korean whenever possible.
+  - When the `nci` (no commit) option is added after the **;cai** command (ex: `;cai nci`), do not add a commit message when converting to the `aitodo.md` file.
 
 
 
@@ -324,15 +326,15 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
             - detail description 3
           ```
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
-  - When all tasks in a subcategory are completed, perform `git commit` based on `#####` marker:
+  - When all tasks in a subcategory are completed, perform `git commit` based on `######` marker:
     | Marker | Behavior |
     |--------|----------|
-    | `##### [commit message]` | Commit with this message when all tasks completed |
-    | `##### NO COMMIT` | Do not commit even if all tasks completed |
-    | `##### AUTO COMMIT` | Create commit message automatically and commit |
-    | No `#####` marker | Do not commit |
+    | `###### [commit message]` | Commit with this message when all tasks completed |
+    | `###### NO COMMIT` | Do not commit even if all tasks completed |
+    | `###### AUTO COMMIT` | Create commit message automatically and commit |
+    | No `######` marker | Do not commit |
 
-    - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `##### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
+    - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `###### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
 
   - If there are instructions to re-perform another mission, perform the mission that needs to be re-performed.
     - **Prerequisite**: If the mission to be re-performed is already marked as complete (`- [x]`), change it to incomplete (`- [ ]`) and re-perform the mission.
@@ -356,7 +358,7 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
 
     # TODO LIST
     ### Task 1
-    ##### git commit message
+    ###### git commit message
     - [ ] 1. task mission 1
     - [ ] 2. task mission 2
       - detail mission

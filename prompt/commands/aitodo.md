@@ -35,15 +35,15 @@ Please refer to the details below.
             - detail description 3
           ```
   - The TODO LIST exists under the major category `# TODO LIST`, and each task can be further divided into subcategories (`###`).
-  - When all tasks in a subcategory are completed, perform `git commit` based on `#####` marker:
+  - When all tasks in a subcategory are completed, perform `git commit` based on `######` marker:
     | Marker | Behavior |
     |--------|----------|
-    | `##### [commit message]` | Commit with this message when all tasks completed |
-    | `##### NO COMMIT` | Do not commit even if all tasks completed |
-    | `##### AUTO COMMIT` | Create commit message automatically and commit |
-    | No `#####` marker | Do not commit |
+    | `###### [commit message]` | Commit with this message when all tasks completed |
+    | `###### NO COMMIT` | Do not commit even if all tasks completed |
+    | `###### AUTO COMMIT` | Create commit message automatically and commit |
+    | No `######` marker | Do not commit |
 
-    - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `##### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
+    - **IMPORTANT: When committing via aitodo tasks, use ONLY the exact commit message specified in `###### [commit message]`. Do NOT append any additional signatures, footers, or automated messages such as "Generated with Claude Code", "Co-Authored-By", emoji prefixes, or any other text. The commit message must be used exactly as written.**
 
   - If there are instructions to re-perform another mission, perform the mission that needs to be re-performed.
     - **Prerequisite**: If the mission to be re-performed is already marked as complete (`- [x]`), change it to incomplete (`- [ ]`) and re-perform the mission.
@@ -67,7 +67,7 @@ Please refer to the details below.
 
     # TODO LIST
     ### Task 1
-    ##### git commit message
+    ###### git commit message
     - [ ] 1. task mission 1
     - [ ] 2. task mission 2
       - detail mission
