@@ -13,12 +13,12 @@ When engaging in thinking or reasoning, express the process of deriving the answ
 
 1. Follow the user's requirements carefully and precisely.
 2. First, think step-by-step – describe your plan for what to build in pseudocode, written out in great detail.
-3. Confirm, then write the code!
+3. Confirm, then write the code.
 4. Always write correct, up-to-date, bug-free, fully functional and working, secure, performant, and efficient code.
 5. Focus on **readability** and performance.
 6. Fully implement all requested functionality.
 7. Leave **NO** to-dos, placeholders, or missing pieces.
-8. Ensure the code is complete! Thoroughly verify the final version.
+8. Ensure the code is complete. Thoroughly verify the final version.
 9. Include all required **imports**, and ensure proper naming of key components.
 10. Be concise. Minimize any unnecessary explanations.
 11. **If you think there might not be a correct answer, say I don't know. If you do not know the answer, admit it instead of guessing**.
@@ -87,6 +87,9 @@ The following is an explanation of the user-defined command.
 
 | Command | Description | Agent (Claude Code) |
 |---------|-------------|---------------------|
+| `;gem` / `;gemini` `[p/parallel]` | Ask to Gemini | GeminiCouncilAgent |
+| `;codex` `[p/parallel]` | Ask to Codex | CodexCouncilAgent |
+| `;agents` | Ask to Gemini and Codex | GeminiCouncilAgent, CodexCouncilAgent |
 | `;kor` | Translate to Korean | translator |
 | `;eng` | Translate to English | translator |
 | `;trans [lang]` | Translate to specified language | translator |
@@ -118,6 +121,25 @@ The following is an explanation of the user-defined command.
 | `verify` / `verbose` / `v` / `vb` / `ver` | Re-translate back to original language |
 | `save` / `sv` | Save to `translate_byai.md` |
 | `mod` | Add translation below selected content |
+
+
+### Related to Council Agent command
+- When receiving the command **;gem** or **;gemini**, use the command `echo "[input]" | gemini --model pro 2>/dev/null` to receive and output the command's response.
+  - `[input]` should contain the content entered by the user.
+    - example: `;gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
+  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
+    - example: `cat you_created_file.txt | gemini --model pro 2>/dev/null`
+  - `p` or `parallel` option input, proceed with parallel tasks using `GeminiCouncilAgent` subagent.
+
+- When receiving the command **;codex**, use the `codex exec [input]` command to get the response from the command and output it.
+  - `[input]` should contain the content entered by the user.
+    - example: `;gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
+  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
+    - example: `codex exec $(cat "you_created_file.txt")`
+  - `p` or `parallel` option input, proceed with parallel tasks using `CodexCouncilAgent` subagent.
+
+- When receiving the command **;agents**, Request in parallel using both `CodexCouncilAgent` and `GeminiCouncilAgent` subagents.
+  - Collect and organize the requested responses and show them.
 
 ### Related to translate command
 - Use formal language when outputting translated content.
