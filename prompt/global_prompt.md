@@ -85,36 +85,39 @@ The following is an explanation of the user-defined command.
 
 ### Quick Reference (Command List)
 
-| Command | Description | Agent (Claude Code) |
-|---------|-------------|---------------------|
-| `;gem` / `;gemini` `[p/parallel]` | Ask to Gemini | GeminiCouncilAgent |
-| `;codex` `[p/parallel]` | Ask to Codex | CodexCouncilAgent |
-| `;agents` | Ask to Gemini and Codex | GeminiCouncilAgent, CodexCouncilAgent |
-| `;kor` | Translate to Korean | translator |
-| `;eng` | Translate to English | translator |
-| `;trans [lang]` | Translate to specified language | translator |
-| `;extract` | Extract text from image | - |
-| `;err` | Analyze error and provide solution | resolver |
-| `;a` / `;sk` / `;ask` | Ask without modifying files | - |
-| `;ci` | Continue (계속) | - |
-| `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
-| `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
-| `;integrity` | Verify information reliability | - |
-| `;path` | Tell path of created file | - |
-| `;cim` / `;codenvim` | Open file in codenvim (background) | - |
-| `;code` | Open file in VS Code (background) | - |
-| `;test` / `;tests` | Create unit tests | tester |
-| `;ref` | Provide sources for answers | researcher |
-| `;irefactor` | Refactor selected code | - |
-| `;ifunc` | Extract code into new function | - |
-| `;web` | Answer with web search | researcher |
-| `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
-| `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
-| `;aitodo [-n/-next/-nt]` | Execute TODO tasks from `aitodo.md` (`-n`: confirm before each mission) | - |
-| `;cai [nci]` | Convert file to `aitodo.md` format (`nci`: no commit) | - |
-| `;maketodo [t/task/m/mission]` | Analyze user requirements to create/add an aitodo file | - |
+- Commands in the `Other` / `Council` / `AITODO` categories may not have descriptions in this section.
+  In such cases, refer to the `external_userdefined_command.md` file.
+  - There may be instructions to explicitly refer to the `external_userdefined_command.md` file for individual commands.
+    - In such cases, refer to the `external_userdefined_command.md` file and proceed according to those instructions.
+  - If you cannot refer to `external_userdefined_command.md` for the command, output "Unable to determine the exact command." and do nothing.
 
-#### Translation Options
+
+| Category | Command | Description | Agent (Claude Code) |
+|----------|---------|-------------|---------------------|
+| Translate | `;kor` | Translate to Korean | translator |
+| Translate | `;eng` | Translate to English | translator |
+| Translate | `;trans` / `translate` `[lang]` | Translate to specified language | translator |
+| Utility | `;extract` | Extract text from image | - |
+| Utility | `;ask` | Ask without modifying files | - |
+| Utility | `;ci` | Continue (계속) | - |
+| Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
+| Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
+| Utility | `;integrity` | Verify information reliability | - |
+| Utility | `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
+| Other | `;err` | Analyze error and provide solution | resolver |
+| Other | `;web` | Answer with web search | - |
+| Other | `;path` | Tell path of created file | - |
+| Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
+| Other | `;code` | Open file in VS Code (background) | - |
+| Other | `;irefactor` | Refactor selected code | - |
+| Other | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
+| Other | `;test` / `;tests` | Create unit tests | tester |
+| Council | `;ag` / `;agents` `[Agent Name]` | Ask to Other LLM | GeminiCouncilAgent, CodexCouncilAgent |
+| AITODO | `;aitodo [-n/-next/-nt]` | Execute TODO tasks from `aitodo.md` (`-n`: confirm before each mission) | - |
+| AITODO | `;cai [nci]` | Convert file to `aitodo.md` format (`nci`: no commit) | - |
+| AITODO | `;maketodo [t/task/m/mission]` | Analyze user requirements to create/add an aitodo file | - |
+
+##### Translation Category Options
 | Option | Description |
 |--------|-------------|
 | `below` / `under` / `b` / `u` | Output original first, then translation |
@@ -124,25 +127,7 @@ The following is an explanation of the user-defined command.
 | `mod` | Add translation below selected content |
 
 
-### Related to Council Agent command
-- When receiving the command **;gem** or **;gemini**, use the command `echo "[input]" | gemini --model pro 2>/dev/null` to receive and output the command's response.
-  - `[input]` should contain the content entered by the user.
-    - example: `;gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
-  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
-    - example: `cat you_created_file.txt | gemini --model pro 2>/dev/null`
-  - `p` or `parallel` option input, proceed with parallel tasks using `GeminiCouncilAgent` subagent.
-
-- When receiving the command **;codex**, use the `codex exec [input]` command to get the response from the command and output it.
-  - `[input]` should contain the content entered by the user.
-    - example: `;gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
-  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
-    - example: `codex exec $(cat "you_created_file.txt")`
-  - `p` or `parallel` option input, proceed with parallel tasks using `CodexCouncilAgent` subagent.
-
-- When receiving the command **;agents**, Request in parallel using both `CodexCouncilAgent` and `GeminiCouncilAgent` subagents.
-  - Collect and organize the requested responses and show them.
-
-### Related to translate command
+### User-Defined Category: Translate
 - Use formal language when outputting translated content.
 - In Claude Code, you must use **translator** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 translator 에이전트를 사용해야 합니다.)
 
@@ -153,7 +138,10 @@ The following is an explanation of the user-defined command.
   - If you need to add/delete/modify content in the editor, always preserve the original content. (Don't remove or modify the original content.) You are a professional translator. You can speak various languages including Korean, English, Chinese, and Japanese at a native level, and you possess a high level of vocabulary. **You only perform translation orders. Never add other explanations or additional content about the original text.**
   - Output the translated content first, and then output the original text.
 
-### This is an optional string that can follow this command. (ex: `;eng below`, `;eng under`, etc.)
+##### Translate Category Commands Options
+Translate Category commands can have optional strings (options) following the command.
+(ex: `;eng below`, `;eng under`, etc.)
+
 - The characters `under` or `below` or the abbreviation `b` or `u` can be used. This is entered after a user-defined command string, output all the original text first, and then output the translated content.
 - The characters `file` or the abbreviation `f` can be used. This is entered after a user-defined command string, translate the contents of the file at the path that follows this text.
 - The characters `verify` or `verbose` or the abbreviation `v` or `vb` or `ver` can be used. This is entered after a user-defined command string, re-translate the content you translated back into the language before translation.
@@ -187,14 +175,10 @@ The following is an explanation of the user-defined command.
     - example: `@test.md ;eng mod` -> Translate everything in the file into paragraphs, or sections, and add translated content.
   - If you haven't translated the contents of the file, don't do anything about it.
 
-### Other user-defined commands
+### User-Defined Category: Utility
 - When receiving the command **;extract**, you must extract and write text from the image. If there is no attached image, print the message 'There is no image.'
   - If the language is not Korean, output all of the extracted original text, and then additionally output the content translated into Korean.
-
-- When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
-  - In Claude Code, you must use **resolver** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 resolver 에이전트를 사용해야 합니다.)
-
-- When receiving the command **;a** or **;sk** or **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
+- When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
 - When receiving the command **;ci**, it means the same as saying "continue" or "계속".
 - When receiving the command **;o** or **;dd** or **;ㅇㅇ**, it means the same as saying "yes", "ok" or "응", "네".
 - When receiving the command **;x** or **;ss** or **;ㄴㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
@@ -205,26 +189,6 @@ The following is an explanation of the user-defined command.
   - For the latest data or data where fact-checking is unclear, conduct additional external searches and cross-verify to confirm whether the information is correct.
   - If fact-checking remains unclear even after cross-verification, explicitly state "This information is unclear." (It is likely to be a rumor or unreliable information.)
   - When conducting external searches, you must clearly provide the sources and links you referenced.
-- When receiving the command **;path**, tell me the path of the file you created.
-- When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
-  - Example command: `codenvim --nowait <path>`
-  - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
-- When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
-  - Example command: run_in_background with command `nohup code <path>` or `nohup code <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
-  - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
-
-- When receiving the command **;test** or **;tests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
-  - In Claude Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
-
-- When receiving the command **;ref**, you must provide the source for your answers (If necessary, utilize web search.).
-  - In Claude Code, you must use **researcher** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 researcher 에이전트를 사용해야 합니다.)
-
-- When receiving the command **;irefactor**, you must separate the selected logic into a function or refactor it.
-
-- When receiving the command **;ifunc**, you must separate the selected code into a new function. Create an appropriate function name and create a new function. The newly created function should exist above the selected code. If there are functions with similar behavior to the selected code, explain those similar functions together using comments or other means.
-
-- When receiving the command **;web**, you must answer by performing an external search, such as a web search. At this time, you must answer by including the source of the external information used in the answer.
-  - In Claude Code, You must use **researcher** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 researcher 에이전트를 사용해야 합니다.)
 
 - When receiving the command **;search**, You should research, organize, and explain the data.
   You should gather up-to-date information through web searches, etc., and create a reliable report based on it.
@@ -258,121 +222,65 @@ The following is an explanation of the user-defined command.
         - **신뢰도 (Reliability)**: ✓ 확인됨 | ⚠ 검증 필요
         ```
 
-- When receiving the command **;ireview**, This needs to be reviewed. (The subject of the review can vary, such as code, software architecture, etc.)
-  - The input can be in the form `/review @[file] [msg]`.
-    The `[msg]` option is for user-defined requests.
-    Both the msg and file fields may or may not be provided.
-  - If the `msg` field is provided, proceed with reviewing to satisfy those requirements.
-    If the `msg` field is not provided, Review comprehensively.
-  - If a `file` mentioned with the @ symbol is provided, Review only that file.
-    If files related to that file need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
-  - If no `file` is mentioned with the @ symbol, review all files in the current directory and its subdirectories based on where the agent is located.
-    If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
-  - If necessary, Use CodeReviewer and ArchitectReviewer.
-    When there is a request to use static analysis tools, analyze and review the code using static analysis tools.
+### User-Defined Category: Other (Coding)
+**CRITICAL: Refer to the `external_userdefined_command.md` file if the command description is not in this section.**
+  - There may be instructions to explicitly refer to the `external_userdefined_command.md` file for individual commands.
+    - In such cases, refer to the `external_userdefined_command.md` file and proceed according to those instructions.
+  - If you cannot refer to `external_userdefined_command.md` for the command, output "Unable to determine the exact command." and do nothing.
 
+- When receiving the command **;path**, tell me the path of the file you created.
 
+- When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
+  - Example command: `codenvim --nowait <path>`
+  - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
+
+- When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
+  - Example command: run_in_background with command `nohup code <path>` or `nohup code <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
+  - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
+
+- When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
+  - In Claude Code, you must use **resolver** sub-agent unconditionally.
+
+- When receiving the command **;web**, you must answer by performing an external search, such as a web search. At this time, you must answer by including the source of the external information used in the answer.
+
+- `;irefactor`: refer to the `external_userdefined_command.md` file for the description of the `;irefactor` command.
+- `;ireview`: refer to the `external_userdefined_command.md` file for the description of the `;ireview` command.
+- `;itest` / `;itests`: refer to the `external_userdefined_command.md` file for the description of the `;itest` / `;itests` command.
+
+### User-Defined Category: Council
+**CRITICAL: Refer to the `external_userdefined_command.md` file if the command description is not in this section.**
+  - There may be instructions to explicitly refer to the `external_userdefined_command.md` file for individual commands.
+    - In such cases, refer to the `external_userdefined_command.md` file and proceed according to those instructions.
+  - If you cannot refer to `external_userdefined_command.md` for the command, output "Unable to determine the exact command." and do nothing.
+
+| Agent Name | Command | Parallel Agents |
+|------------|---------|-----------------|
+| `all` | Request in parallel using both `CodexCouncilAgent` and `GeminiCouncilAgent` subagents. | `CodexCouncilAgent` / `GeminiCouncilAgent` |
+| `gem` / `gemini` | `echo "[input]" \| gemini --model pro 2>/dev/null` | `GeminiCouncilAgent` |
+| `codex` | `codex exec [input]` | `CodexCouncilAgent` |
+
+- When receiving the command **;ag `Agent Name`** or **;agents `Agent Name`**, execute the commands corresponding to each `Agent Name` by referring to the table.
+  - `[input]` should contain the content entered by the user.
+    - example
+      - `;ag gem` -> execute `gem` / `gemini` agnet command.
+        - `;ag gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
+  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
+    - example: `cat you_created_file.txt | gemini --model pro 2>/dev/null`
+  - `p` or `parallel` option input, Refer to the table and execute the subagents corresponding to each option in parallel.
+    - example: `;ag p gem` -> use `GeminiCouncilAgent` subagent.
+    - example: `;ag p all` -> use `CodexCouncilAgent` / `GeminiCouncilAgent` subagent.
 
 ### AITODO user-defined commands
+**CRITICAL: Refer to the `external_userdefined_command.md` file if the command description is not in this section.**
+  - There may be instructions to explicitly refer to the `external_userdefined_command.md` file for individual commands.
+    - In such cases, refer to the `external_userdefined_command.md` file and proceed according to those instructions.
+  - If you cannot refer to `external_userdefined_command.md` for the command, output "Unable to determine the exact command." and do nothing.
 
 Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and detailed information about it.
 
-- When receiving the command **;aitodo**, find and read the `aitodo.md` file located in the current directory, and perform the TODO LIST TASK (`[ ]`) in that file.
-  - The `-n` or `-next` option can be added after the `;aitodo` command and can be combined with other options (e.g., `;aitodo -next`, `;aitodo -n task 1`, `;aitodo -next task 1 m 2`).
-    - When this option is provided, after completing each mission, you MUST ask the user "Continue to the next mission?" before proceeding.
-    - Wait for the user's response:
-      - If the user responds positively (e.g., "yes", "ok", "continue", "ㅇㅇ", ";dd"), proceed to the next mission.
-      - If the user responds negatively (e.g., "no", "stop", "ㄴㄴ", ";ss"), stop execution and do not proceed to the next mission.
-    - This option overrides the default behavior of automatically proceeding to the next mission.
-    - **End-of-task behavior:**
-      - If a specific task was specified (e.g., `;aitodo task 1 -next`) and all missions in that task are completed, do NOT ask for confirmation. Simply report that all missions in the task have been completed.
-      - If no specific task was specified (e.g., `;aitodo -n`) and all missions in the current task are completed, check if there are remaining tasks with unresolved missions. If so, ask: "All missions in the current task are completed. Continue to the next task?"
-    - In case of mission failure (refer to the `##### Mission Fail` content in the `### aitodo.md` section.)
-  - The `-nt` option can be added after the `;aitodo` command and can be combined with other options (e.g., `;aitodo -nt`, `;aitodo -nt task 1`).
-    - This option cannot be used together with the `mission` option. (The option contents are contradictory.)
-      - ⚠️ CRITICAL: Therefore, if the `-nt` option is entered together with the `m` / `mission` option, output `wrong options` and do not proceed with the `;aitodo` command.
-    - This option is similar to the `-n` / `-next` option, but the scope is different. (The {`-n`/`-next`} option asks per mission unit, while the {`-nt`} option asks per task unit)
-    - When this option is provided, after completing each task, you MUST ask the user "Continue to the next task?" before proceeding.
-    - Wait for the user's response:
-      - If the user responds positively (e.g., "yes", "ok", "continue", "ㅇㅇ", ";dd"), proceed to the next task.
-      - If the user responds negatively (e.g., "no", "stop", "ㄴㄴ", ";ss"), stop execution and do not proceed to the next task.
-    - **End-of-task behavior:**
-      - If a specific task was specified (e.g., `;aitodo task 1 -nt`) and all missions in that task are completed, do NOT ask for confirmation. Simply report that all missions in the task have been completed.
-      - If no specific task was specified (e.g., `;aitodo -nt`) and all missions in the current task are completed, check if there are remaining tasks with unresolved missions. If so, ask: "All missions in the current task are completed. Continue to the next task?"
-    - In case of mission failure (refer to the `##### Mission Fail` content in the `### aitodo.md` section.)
-  - Don't be case sensitive to filename. (`aitodo.md`, `AITODO.md`, `AItodo.md` ... etc.)
-  - **⚠️ CRITICAL**: When processing missions, you MUST follow "Perform → Immediately mark [x] → Next mission" order. Batch processing is PROHIBITED. (Details: See `### aitodo.md` section)
-  - If subcategories task name or task number is entered after the `;aitodo` command, only proceed with the TODO LIST TASK (`[ ]`) for that specific Task.
-    - Instead of `task name or number`, it may be entered in a format that includes the todo file path and line. (example: ";aitodo `@path/to/aitodo.md#L23`" or ";aitodo `@./aitodo.md:23`" or ";aitodo `@./aitodo.md#L23-30`" etc.)
-      - In this case, instead of searching for the TODO file, it directly accesses the mentioned TODO file path and line.
-        - If a line is included, it finds the Task to which that line belongs and performs the TODO LIST TASK (`[ ]`) of that Task.
-        - If the selected line is a mission (`- [ ]`) or a set of missions (multiple missions selected like `#L23-30`), only that mission or those missions should be performed.
-      - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: ";aitodo `@./aitodo.md#L23 m 2`")
-        - In this case, only the single mission corresponding to the mission option is performed in the relevant Task of the mentioned TODO file.
-      - `t` is an abbreviation for `task`. Therefore, `;aitodo t 1` is the same as `;aitodo task 1`.
-  - mission is optional. ex: `;aitodo task 1 mission 1`
-    - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `;aitodo task 1 m 2`).
-    - The mission option refers to a single `- [ ]` item within a Task in the aitodo.md file.
-    - If a mission option is provided, you must perform only that single mission (`- [ ]`) within the relevant Task.
-    - When a mission is completed, **immediately** mark it as complete with `- [x]` **before starting the next mission**.
-    - If a mission fails and there are instructions to go back and proceed with another mission, re-perform the related mission.
-      - example
-        ```markdown
-          ### Task 1: task name
-          - [ ] 1. make a logic to do something.
-          - [ ] 2. Verify the performance. The logic you created must produce results within 1 second.
-            - If mission 2 fails, go back to mission 1 and re-perform it.
-        ```
-    - If there is no numbering indication for missions (- [ ] 1. ...something..., - [ ] 2. ...something... ...), they are in the order the missions were created.
-      - example
-        ```markdown
-          ### Task 1: task name
-          - [ ] make a logic to do something.
-          - [ ] Verify the performance. The logic you created must produce results within 1 second.
-        ```
-        - In this case, If `;aitodo task 1 m 2` is entered, the second mission (Verify the performance.) will be performed.
-    - After the m option, a number may not be entered.
-      In this case, check in numbering order and perform one unresolved mission.
-      If there are related missions, perform those missions as well.
-      - example
-        ```markdown
-          ### Task 1: task name
-          - [x] make a logic to do something.
-          - [ ] Verify the performance. The logic you created must produce results within 1 second.
-            - If this mission fails, go back to mission 1 and re-perform it.
-          - [ ] Write a report on the performance verification results.
-        ```
-      - Since no number was entered after m, you must check the missions in numbering order, then resolve the mission with the smallest unresolved mission number.
-        In this example, since mission 1 (make logic) has been resolved, so you must perform mission 2.
-        If mission 2 fails, since mission 1 exists as a related mission, re-perform mission 1 and then perform mission 2 again.
-        If mission 2 succeeds, mark mission 2 as complete and end the response.
-        Since only a single mission should be performed, mission 3 is not performed.
-  - If there is no `aitodo.md` file, return the message "NOT EXIST aitodo.md".
-
-- When receiving the command **;cai**, modify the written file to match the file format of `aitodo.md`, and save it as the `aitodo.md` file in the directory where you are currently located.
-  - If the `aitodo.md` file already exists, delete all the contents of the existing file and overwrite it with the newly written content.
-  - The following phrase must be included at the very top of the file: (The path of the original file to be converted must be specified.)
-    ```
-    - [Converted by file](file:///path/to/original_file.md)
-      - For more details, refer to the file.
-
-    ```
-  - Write the commit message in Korean whenever possible.
-  - When the `nci` (no commit) option is added after the **;cai** command (ex: `;cai nci`), do not add a commit message when converting to the `aitodo.md` file.
-  - Utilize the `Divide and Conquer` problem-solving approach. When there are very many or extensive requirements, you must appropriately separate them into detailed subtasks and divide them into `Tasks`/`Missions` to solve the problem.
-
-- When receiving the command **;maketodo**, Analyze user requirements to create/add an aitodo file.
-  - When creating/adding an `aitodo.md` file, you must strictly adhere to the `aitodo.md` file format and structure.
-    - If the `aitodo.md` file does not exist, create the file.
-    - If the `aitodo.md` file exists, add content to it.
-
-  - If the `t` / `task` / `m` / `mission` options are not entered, analyze the requirements, divide them appropriately into subtasks, and add detailed missions for each Task.
-    - Utilize the `Divide and Conquer` problem-solving approach. When there are very many or extensive requirements, you must appropriately separate them into detailed subtasks and divide them into `Tasks`/`Missions` to solve the problem.
-  - If the `t` / `task` option is additionally entered, analyze the requirements, add a **single task**, and add detailed missions to be performed in that task.
-  - If the `m` / `mission` option is additionally entered, analyze the requirements and add a **single mission**.
-    - The `m` / `mission` option must be entered together with the `t` / `task` option.
-      - The mission to be added should be added to the task of the entered `t` / `task`.
-
+- `;aitodo`: refer to the `external_userdefined_command.md` file for the description of the `;aitodo` command.
+- `;cai`: refer to the `external_userdefined_command.md` file for the description of the `;cai` command.
+- `;maketodo`: refer to the `external_userdefined_command.md` file for the description of the `;maketodo` command.
 
 # ETC (aitodo.md, build.md ...)
 
@@ -394,8 +302,26 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
   4. Mark Mission 2 as completed (`[x]`) in aitodo.md - **IMMEDIATELY after completion**
   5. Repeat until all missions are done...
 
-  **PROHIBITED:** Processing multiple missions first and marking them completed later in batch.
+  **PROHIBITED:** Processing multiple missions first and marking them completed later in batch. (do step-by-step.)
   **REASON:** If a mission fails mid-task, progress tracking becomes impossible.
+
+- Each mission MUST be processed **step by step**, NEVER in **batch**.
+  - Even if tasks are similar, you must NEVER batch process them.
+  - Examples:
+    - Example 1
+      - In the following example, you must NEVER create the file and write code at the same time.
+      - Since Mission 1 and Mission 2 are separated, you must first create an empty file `test.py`, mark the mission as complete, and then proceed to the next mission.
+      ```
+      - [ ] Create File `test.py`
+      - [ ] Make unit tests for the Agent class.
+      ```
+    - Example 2
+      - In the following example, you can create the file and write code at the same time.
+      - This is because there is an instruction in a single mission to create the `test.py` file and write code simultaneously.
+      ```
+      - [ ] Create File `test.py` and Make unit tests for the Agent class.
+      ```
+
 - Set only the completion mark (`[x]`). **Do not write** any additional descriptions (documenting the results) or details about the completion of the task on `aitodo.md`.
   - example
     - You are on this mission.

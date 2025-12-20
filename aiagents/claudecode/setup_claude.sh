@@ -42,16 +42,25 @@ echo "setup prompt"
 if [ ! -e "$CLAUDE_DIR/global_prompt.md" ]; then
     ln -s "$HOME/.dotfiles/prompt/global_prompt.md" "$CLAUDE_DIR/"
 fi
+if [ ! -e "$CLAUDE_DIR/external_userdefined_command.md" ]; then
+    ln -s "$HOME/.dotfiles/prompt/external_userdefined_command.md" "$CLAUDE_DIR/"
+fi
 if [ ! -f "$CLAUDE_DIR/CLAUDE.md" ]; then
     touch "$CLAUDE_DIR/CLAUDE.md"
 fi
-CLAUDE_PROMPT_CHECK=$(grep '^@global_prompt.md$' "$CLAUDE_DIR/CLAUDE.md")
-if [ -n "$CLAUDE_PROMPT_CHECK" ]; then
-    echo -e "@global_prompt.md\n\n$(cat $CLAUDE_DIR/CLAUDE.md)" > "$CLAUDE_DIR/CLAUDE.md"
+CLAUDE_PROMPT_CHECK_1=$(grep '^@global_prompt.md$' "$CLAUDE_DIR/CLAUDE.md")
+CLAUDE_PROMPT_CHECK_2=$(grep '^@external_userdefined_command.md$' "$CLAUDE_DIR/CLAUDE.md")
+if [ -n "$CLAUDE_PROMPT_CHECK_1" ]; then
+    echo -e "@global_prompt.md\n$(cat $CLAUDE_DIR/CLAUDE.md)" > "$CLAUDE_DIR/CLAUDE.md"
 fi
+if [ -n "$CLAUDE_PROMPT_CHECK_2" ]; then
+    echo -e "@external_userdefined_command.md\n$(cat $CLAUDE_DIR/CLAUDE.md)" > "$CLAUDE_DIR/CLAUDE.md"
+fi
+
 
 echo "add this in '\$HOME/.claude/CLAUDE.md'"
 echo "@global_prompt.md"
+echo "@external_userdefined_command.md"
 
 echo "modify $HOME/.claude.json"
 
