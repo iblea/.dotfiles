@@ -1,21 +1,5 @@
 
 ### User-Defined Category: Other (Coding)
-- When receiving the command **;path**, tell me the path of the file you created.
-
-- When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
-  - Example command: `codenvim --nowait <path>`
-  - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
-
-- When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
-  - Example command: run_in_background with command `nohup code <path>` or `nohup code <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
-  - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
-
-- When receiving the command **;test** or **;tests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
-  - In Claude Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
-
-- When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
-  - In Claude Code, you must use **resolver** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 resolver 에이전트를 사용해야 합니다.)
-
 - When receiving the command **;irefactor**, you must separate the selected logic into a function or refactor it.
   - Use `refactor` sub-agents.
 - When receiving the command **;ireview**, This needs to be reviewed. (The subject of the review can vary, such as code, software architecture, etc.)
@@ -30,6 +14,26 @@
     If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
   - If necessary, Use `CodeReviewer` and `ArchitectReviewer`.
     When there is a request to use static analysis tools, analyze and review the code using static analysis tools.
+- When receiving the command **;itest** or **;itests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
+  - In Claude Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
+
+### User-Defined Category: Council
+| Agent Name | Command | Parallel Agents |
+|------------|---------|-----------------|
+| `all` | Request in parallel using both `CodexCouncilAgent` and `GeminiCouncilAgent` subagents. | `CodexCouncilAgent` / `GeminiCouncilAgent` |
+| `gem` / `gemini` | `echo "[input]" \| gemini --model pro 2>/dev/null` | `GeminiCouncilAgent` |
+| `codex` | `codex exec [input]` | `CodexCouncilAgent` |
+
+- When receiving the command **;ag `Agent Name`** or **;agents `Agent Name`**, execute the commands corresponding to each `Agent Name` by referring to the table.
+  - `[input]` should contain the content entered by the user.
+    - example
+      - `;ag gem` -> execute `gem` / `gemini` agnet command.
+        - `;ag gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
+  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
+    - example: `cat you_created_file.txt | gemini --model pro 2>/dev/null`
+  - `p` or `parallel` option input, Refer to the table and execute the subagents corresponding to each option in parallel.
+    - example: `;ag p gem` -> use `GeminiCouncilAgent` subagent.
+    - example: `;ag p all` -> use `CodexCouncilAgent` / `GeminiCouncilAgent` subagent.
 
 ### AITODO user-defined commands
 Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and detailed information about it.

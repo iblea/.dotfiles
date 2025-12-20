@@ -253,22 +253,7 @@ Translate Category commands can have optional strings (options) following the co
     - In such cases, refer to the `external_userdefined_command.md` file and proceed according to those instructions.
   - If you cannot refer to `external_userdefined_command.md` for the command, output "Unable to determine the exact command." and do nothing.
 
-| Agent Name | Command | Parallel Agents |
-|------------|---------|-----------------|
-| `all` | Request in parallel using both `CodexCouncilAgent` and `GeminiCouncilAgent` subagents. | `CodexCouncilAgent` / `GeminiCouncilAgent` |
-| `gem` / `gemini` | `echo "[input]" \| gemini --model pro 2>/dev/null` | `GeminiCouncilAgent` |
-| `codex` | `codex exec [input]` | `CodexCouncilAgent` |
-
-- When receiving the command **;ag `Agent Name`** or **;agents `Agent Name`**, execute the commands corresponding to each `Agent Name` by referring to the table.
-  - `[input]` should contain the content entered by the user.
-    - example
-      - `;ag gem` -> execute `gem` / `gemini` agnet command.
-        - `;ag gem Hello, tell me today's weather.` -> `echo 'Hello, tell me today's weather' | gemini --model pro 2>/dev/null`
-  - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
-    - example: `cat you_created_file.txt | gemini --model pro 2>/dev/null`
-  - `p` or `parallel` option input, Refer to the table and execute the subagents corresponding to each option in parallel.
-    - example: `;ag p gem` -> use `GeminiCouncilAgent` subagent.
-    - example: `;ag p all` -> use `CodexCouncilAgent` / `GeminiCouncilAgent` subagent.
+- `;ag` / `;agents`: refer to the `external_userdefined_command.md` file for the description of the `;ag` / `;agents` command.
 
 ### AITODO user-defined commands
 **CRITICAL: Refer to the `external_userdefined_command.md` file if the command description is not in this section.**
