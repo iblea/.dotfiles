@@ -267,6 +267,7 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
 - `;cai`: refer to the `external_userdefined_command.md` file for the description of the `;cai` command.
 - `;maketodo`: refer to the `external_userdefined_command.md` file for the description of the `;maketodo` command.
 
+
 # ETC (aitodo.md, build.md ...)
 
 ### aitodo.md (AITODO.md)
