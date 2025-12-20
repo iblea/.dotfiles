@@ -112,6 +112,7 @@ The following is an explanation of the user-defined command.
 | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
 | `;aitodo [-n/-next/-nt]` | Execute TODO tasks from `aitodo.md` (`-n`: confirm before each mission) | - |
 | `;cai [nci]` | Convert file to `aitodo.md` format (`nci`: no commit) | - |
+| `;maketodo [t/task/m/mission]` | Analyze user requirements to create/add an aitodo file | - |
 
 #### Translation Options
 | Option | Description |
@@ -358,7 +359,19 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
     ```
   - Write the commit message in Korean whenever possible.
   - When the `nci` (no commit) option is added after the **;cai** command (ex: `;cai nci`), do not add a commit message when converting to the `aitodo.md` file.
+  - Utilize the `Divide and Conquer` problem-solving approach. When there are very many or extensive requirements, you must appropriately separate them into detailed subtasks and divide them into `Tasks`/`Missions` to solve the problem.
 
+- When receiving the command **;maketodo**, Analyze user requirements to create/add an aitodo file.
+  - When creating/adding an `aitodo.md` file, you must strictly adhere to the `aitodo.md` file format and structure.
+    - If the `aitodo.md` file does not exist, create the file.
+    - If the `aitodo.md` file exists, add content to it.
+
+  - If the `t` / `task` / `m` / `mission` options are not entered, analyze the requirements, divide them appropriately into subtasks, and add detailed missions for each Task.
+    - Utilize the `Divide and Conquer` problem-solving approach. When there are very many or extensive requirements, you must appropriately separate them into detailed subtasks and divide them into `Tasks`/`Missions` to solve the problem.
+  - If the `t` / `task` option is additionally entered, analyze the requirements, add a **single task**, and add detailed missions to be performed in that task.
+  - If the `m` / `mission` option is additionally entered, analyze the requirements and add a **single mission**.
+    - The `m` / `mission` option must be entered together with the `t` / `task` option.
+      - The mission to be added should be added to the task of the entered `t` / `task`.
 
 
 # ETC (aitodo.md, build.md ...)
