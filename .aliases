@@ -1477,7 +1477,7 @@ function gciom() {
     local gitemail=$(git config user.email)
     if [[ "$gitname" = "iblea" ]] || [[ "$gitemail" = "iblea@iasdf.com" ]]; then
         echo "WARNING: company account change first!"
-		echo "current account $gitname / $gitemail"
+        echo "current account $gitname / $gitemail"
         return 1
     fi
     if [ $# -eq 0 ]; then
@@ -2294,8 +2294,11 @@ function aito() {
         ln -s "$(pwd)/aitodo.md" "${VAULT_PATH}${VAULT_RELATIVE_DIR}/aitodo.md"
         # "$OPEN_PROGRAM" "obsidian://new?vault=${VAULT_NAME}" 2>&1 >/dev/null &
         open -a "$OPEN_PROGRAM" "${VAULT_URL}" 2>&1 >/dev/null
-		echo "open done!"
+        echo "open done!"
     else
+        if [ -n "$(command -v nvim)" ]; then
+            OPEN_PROGRAM="nvim"
+        fi
         "$OPEN_PROGRAM" aitodo.md
     fi
 }

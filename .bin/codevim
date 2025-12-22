@@ -33,6 +33,14 @@ if [ $# -ge 1 ]; then
 	if [ "$1" = "--nowait" ]; then
 		NO_WAIT=1
 		shift
+		if [ "$1" = "sv" ]; then
+			shift
+			set -- "/tmp/translate_byai.md" "$@"  # 새 값 + 나머지 인자로 재설정
+			if [ ! -f "/tmp/translate_byai.md" ]; then
+				echo "no file /tmp/translate_byai.md"
+				exit 1
+			fi
+		fi
 	fi
 fi
 

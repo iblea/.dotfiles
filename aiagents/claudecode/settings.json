@@ -22,6 +22,7 @@
       "Bash(codenvim:*)",
       "Bash(nohup codenvim:*)",
       "Bash(nohup code:*)",
+      "Bash(gemini:*)",
       "Glob",
       "Grep",
       "Read",
@@ -30,7 +31,9 @@
       "WebSearch",
       "WebFetch",
       "AskUserQuestion",
-      "mcp__sequential-thinking__sequentialthinking"
+      "mcp__sequential-thinking__sequentialthinking",
+      "Edit(//tmp/translate_byai.md)",
+      "Write(//tmp/translate_byai.md)"
     ],
     "deny": [],
     "ask": []

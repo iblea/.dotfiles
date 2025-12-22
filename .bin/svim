@@ -1,0 +1,9 @@
+#!/bin/bash
+
+curpath=$(dirname "$(realpath $0)")
+# VIM_PROGRAM="nvim" $curpath/codevim --nowait sv
+if [ ! -f "/tmp/translate_byai.md" ]; then
+	echo "no file /tmp/translate_byai.md"
+	exit 1
+fi
+VIM_PROGRAM="nvim" $curpath/codevim --nowait /tmp/translate_byai.md
