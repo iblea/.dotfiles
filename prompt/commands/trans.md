@@ -60,8 +60,8 @@ Content: Last Arguments
       난 지금 매우 배고프다.
       (You must translate "the content you translated"(I'm very hungry now.) back into "Korean", the original language the user inputted, and output it.)
       ```
-- The characters `save` or the abbreviation `sv` can be used. This is entered after a user-defined command string, Please save the translated content and original text as `translate_byai.md` file.
-  - If there is an existing `translate_byai.md` file, delete all the existing contents of the file and write it.
+- The characters `save` or the abbreviation `sv` can be used. This is entered after a user-defined command string, Please save the translated content and original text as `/tmp/translate_byai.md` file.
+  - If there is an existing `/tmp/translate_byai.md` file, delete all the existing contents of the file and write it.
 - The characters `mod` can be used. Add translated content from the lower line of the selected content of the file.
   - example
     - If the selected whole content is 5 to 20 lines, newline character(`\n`) enters additional and add the translated content from line 22.

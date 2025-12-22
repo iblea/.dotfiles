@@ -28,8 +28,8 @@ Output the translated content first, and then output the original text.
 ### This is an optional string that can follow the translation command. (ex: `;eng below`, `;kor save`, `;trans france file ./README.pdf`)
 - The characters "under" or "below" or the abbreviation 'b' or 'u' can be used. This is entered after a user-defined command string, output all the original text first, and then output the translated content.
 - The characters "file" or the abbreviation 'f' can be used. This is entered after a user-defined command string, Please translate the contents of the file at the path that follows this text.
-- The characters "save" or the abbreviation 'sv' can be used. This is entered after a user-defined command string, Please save the translated content and original text as `translate_byai.md` file.
-  - If there is an existing `translate_byai.md` file, delete all the existing contents of the file and write it.
+- The characters "save" or the abbreviation 'sv' can be used. This is entered after a user-defined command string, Please save the translated content and original text as `/tmp/translate_byai.md` file.
+  - If there is an existing `/tmp/translate_byai.md` file, delete all the existing contents of the file and write it.
 - The characters "mod" can be used. Add translated content from the lower line of the selected content of the file.
   - example
     - If the selected whole content is 5 to 20 lines, newline character(`\n`) enters additional and add the translated content from line 22.
