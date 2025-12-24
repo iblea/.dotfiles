@@ -120,11 +120,11 @@ fi
 # .bun/bin
 if [ -d "$HOME/.bun/bin/" ]; then
 	if ! grep -q "$HOME/.bun/bin" <<< "$PATH"; then
-        export BUN_INSTALL="$HOME/.bun"
+		export BUN_INSTALL="$HOME/.bun"
 		export PATH="$HOME/.bun/bin:$PATH"
 	fi
-    # bun completions
-    [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+	# bun completions
+	[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 fi
 
 # go custom bin
@@ -172,15 +172,10 @@ fi
 if [ -z "$NVM_DIR" ]; then
 	export NVM_DIR="$HOME/.nvm"
 	if [ -d "$NVM_DIR" ]; then
-	# [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-	if [ -n "$(command -v brew)" ]; then
-		source $(brew --prefix nvm)/nvm.sh
-	else
-		source /opt/homebrew/opt/nvm/nvm.sh
-	fi
-	if grep -q "bash" <<< "$(ps -p $$ -o 'comm=')"; then
-		[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
-	fi
+		$NVM_DIR/nvm.sh
+		# if grep -q "bash" <<< "$(ps -p $$ -o 'comm=')"; then
+		# 	[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+		# fi
 	fi
 fi
 
