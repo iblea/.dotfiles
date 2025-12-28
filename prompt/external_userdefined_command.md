@@ -112,6 +112,8 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
 
 - When receiving the command **;cai**, modify the written file to match the file format of `aitodo.md`, and save it as the `aitodo.md` file in the directory where you are currently located.
   - If the `aitodo.md` file already exists, delete all the contents of the existing file and overwrite it with the newly written content.
+    - When the `a` or `add` option is added after the **;cai** command (ex: `;cai a`), do not delete the content and overwrite it; instead, add content to the existing aitodo.md file.
+      - If the aitodo.md file does not exist, create a new one.
   - The following phrase must be included at the very top of the file: (The path of the original file to be converted must be specified.)
     ```
     - [Converted by file](file:///path/to/original_file.md)

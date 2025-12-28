@@ -119,7 +119,7 @@ The following is an explanation of the user-defined command.
 | Other | `;test` / `;tests` | Create unit tests | tester |
 | Council | `;ag` / `;agents` `[Agent Name]` | Ask to Other LLM | GeminiCouncilAgent, CodexCouncilAgent |
 | AITODO | `;aitodo [-n/-next/-nt]` | Execute TODO tasks from `aitodo.md` (`-n`: confirm before each mission) | - |
-| AITODO | `;cai [nci]` | Convert file to `aitodo.md` format (`nci`: no commit) | - |
+| AITODO | `;cai [nci/a/add]` | Convert file to `aitodo.md` format (`nci`: no commit, `a/add`: add to existing file) | - |
 | AITODO | `;maketodo [t/task/m/mission]` | Analyze user requirements to create/add an aitodo file | - |
 
 ##### Translation Category Options
