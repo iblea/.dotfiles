@@ -2311,6 +2311,25 @@ if [ -n "$(command -v claude)" ]; then
     # alias vim=/usr/bin/vim
     alias cldie=". $HOME/.dotfiles/.bin/cldi;"
     alias cl=cldi
+    function clcc() {
+        if [ $# -eq 0 ]; then
+            local answer=""
+            printf "really rm claude plan? (y/n): "
+            stty -echo -icanon 2>/dev/null
+            answer=$(dd bs=1 count=1 2>/dev/null)
+            stty echo 2>/dev/null
+            echo
+            if [[ "$answer" = "y" ]] || [[ "$answer" = "Y" ]]; then
+                rm -f "$HOME/.claude/plans/"*.md
+				echo "claude plan deleted!"
+            fi
+        elif [ $# -eq 1 ]; then
+            if [[ "$1" = "-y" ]]; then
+                rm -f "$HOME/.claude/plans/"*.md
+				echo "claude plan deleted!"
+            fi
+        fi
+    }
 fi
 
 # alias

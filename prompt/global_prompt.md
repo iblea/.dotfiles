@@ -113,7 +113,7 @@ The following is an explanation of the user-defined command.
 | Other | `;web` | Answer with web search | - |
 | Other | `;path` | Tell path of created file | - |
 | Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
-| Other | `;code` | Open file in VS Code (background) | - |
+| Other | `;code` | Open file in VS Code | - |
 | Other | `;irefactor` | Refactor selected code | - |
 | Other | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
 | Other | `;test` / `;tests` | Create unit tests | tester |
@@ -242,7 +242,7 @@ Translate Category commands can have optional strings (options) following the co
   - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
 
 - When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
-  - Example command: run_in_background with command `nohup code <path>` or `nohup code <path> > /dev/null 2>&1 &` (If run in background tool does not exist, use `&` command.)
+  - Example command: use the command `code <path>` or `code <path>`
   - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
 
 - When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
