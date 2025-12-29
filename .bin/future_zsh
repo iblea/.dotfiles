@@ -4,9 +4,10 @@ if [[ -z "$ZSH_TICK_MONITORING_URL" ]]; then
     exit 1
 fi
 
-TICKER='ES1!'
+TICKER='NQ1!'
 NOT_SAVE=0
 VERBOSE=0
+ERROR_COUNT=0
 TMP_TICK_DIR="$HOME/.config/zsh_tick_monitoring/"
 
 if [ $# -eq 1 ]; then
@@ -33,7 +34,6 @@ if [ $# -eq 2 ]; then
     TICKER="$2"
 fi
 
-ERROR_COUNT=0
 if [ -f "$TMP_TICK_DIR/error_count" ]; then
     ERROR_COUNT=$(cat "$TMP_TICK_DIR/error_count")
 fi
@@ -49,9 +49,37 @@ function error_count_init() {
     ERROR_COUNT=0
 }
 
-if [ $ERROR_COUNT -ge 10 ]; then
-    echo -n "ERR"
+if [ $ERROR_COUNT -ge 100 ]; then
+    # 1시간마다 인터넷 연결 재확인
+    LAST_INET_CHECK=0
+    if [ -f "$TMP_TICK_DIR/last_inet_check" ]; then
+        LAST_INET_CHECK=$(cat "$TMP_TICK_DIR/last_inet_check")
+    fi
+    CURRENT_TIME=$(date +%s)
+
+    if [ $CURRENT_TIME -ge $((LAST_INET_CHECK + 3600)) ]; then
+        echo -n "$CURRENT_TIME" > "$TMP_TICK_DIR/last_inet_check"
+        if curl -s --connect-timeout 0.5 -o /dev/null http://1.1.1.1 2>/dev/null; then
+            # 인터넷 연결됨 - 리셋하고 데이터 가져오기
+            error_count_init
+            tick_data=$(get_stock_ticker)
+            echo -n "$(date +%s)" > "$TMP_TICK_DIR/last_checktime"
+            echo -n "$tick_data" > "$TMP_TICK_DIR/cache_data"
+            echo -n "$tick_data"
+            exit 0
+        fi
+    fi
+    echo -n "ERR_INT"
     exit 0
+fi
+
+if [ $ERROR_COUNT -gt 5 ]; then
+    # 인터넷 연결 체크
+    if ! curl -s --connect-timeout 0.5 -o /dev/null http://1.1.1.1 2>/dev/null; then
+        echo -n "100" > "$TMP_TICK_DIR/error_count"
+        echo -n "ERR_INT"
+        exit 0
+    fi
 fi
 
 
