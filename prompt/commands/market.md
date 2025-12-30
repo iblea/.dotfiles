@@ -33,6 +33,7 @@ If using the `date` command is difficult, determine the current time through a w
 `date` 명령어 등을 통해 현재 날짜와 시간을 정확히 파악한 후, 이를 기준으로 전일 또는 직전 장을 분석하라.
 - 기술적 분석 (차트 분석) 진행
   - 기술적 분석을 진행할 때에는 이동평균선, 거래량, RSI, MACD, 스토캐스틱 등의 보조지표도 참고하라.
+    - 10분봉, 1시간봉, 일봉, 주봉에서 보조지표를 통해 단기/장기 과매수/과매도, 다이버전스, 추세, 지지/저항선, 눌림목, 매물대 등을 분석하라.
   - **오늘 및 최근 일주일간의 3분봉, 1시간봉**을 바탕으로 기술적 분석(차트분석)을 진행하라. (필요할 경우, 더 오래된 날짜의 차트를 참고해도 좋다.
   - 최근 3달간의 1일봉, 주봉 차트를 바탕으로 기술적 분석(차트분석)을 진행하라.
 - 기본적 분석(fundamental analysis) 진행
@@ -40,6 +41,33 @@ If using the `date` command is difficult, determine the current time through a w
     - 정보에 대한 진위여부를 교차 검증을 통해 파악하라.
   - Bloomberg, JP Morgan 등 대형 금융사들의 의견 (목표가 설정/수정 (상향조정,하향조정,상승/하락예측 등)) 을 조사하라.
   - 경제 지표(고용률(실업률), LEI, 미국 미시간 소비자 심리 지수, 장단기 금리차 등)와 여러 심리 지수(공탐지수 등)를 참고하라.
+  - 주식/파생/채권/금속/원자재 등의 기타 시장 지표를 참고해라.
+  - 주도 섹터와 해당 섹터의 주도주, 연관주를 파악해라.
+    - 대표 섹터 11개
+      - 에너지 (Energy)
+        - 석유/가스 등
+      - 원자재 (Matarials)l)
+        - 화학, 건축 자재, 금속/채광, 용기/포장지, 종이/임산물 등
+      - 산업재 (Industrial)
+        - 우주/항공, 국방(방산), 건설, 기계, 물류(해상/지상/운송 인프라) 등
+      - 경기소비재 (Consumer Discretionary)
+        - 자동차, 의류, 소매 등
+      - 필수소비재 (Consumer Staples)
+        - 식품, 음료, 담배, 가전 등
+      - 헬스케어 (Healthcare)
+        - 제약, 바이오, 생명공학 등
+      - 금융재 (Financial)
+        - 은행, 금융서비스, 보험 등
+      - 정보기술재 (Information Technology)
+      - 통신재 (Communications)
+        - 통신서비스, 미디어, 엔터테인먼트 등
+      - 유틸리티 (Utility)
+        - 전기, 가스, 수도, 복합, 재생전기 등
+      - 부동산/리츠 (Real Estate)
+        - 부동산, 호텔/리조트, 리츠, 임대
+    - ex (유사 연관주 예시):
+      - Silver -> HL(Hecla Mining: 은광) 등
+      - 반도체 -> NVDA, AMD, 005930(삼성전자), 000660(SK하이닉스보통주) 등
   - Use `researcher` Agent.
   - If necessary, use multiple tools such as web_search.
 - 기본적 분석(fundamental analysis), 현재 이벤트(뉴스) 및 기술적 분석(차트 분석)을 진행한 내용을 바탕으로 현재 추세를 분석해 설명하고, 향후 목표가를 설정하라.
