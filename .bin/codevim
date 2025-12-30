@@ -33,14 +33,28 @@ if [ $# -ge 1 ]; then
 	if [ "$1" = "--nowait" ]; then
 		NO_WAIT=1
 		shift
-		if [ "$1" = "sv" ]; then
-			shift
-			set -- "/tmp/translate_byai.md" "$@"  # 새 값 + 나머지 인자로 재설정
-			if [ ! -f "/tmp/translate_byai.md" ]; then
-				echo "no file /tmp/translate_byai.md"
-				exit 1
+		# if [ "$1" = "sv" ]; then
+		# 	shift
+		# 	# 새 값 + 나머지 인자로 재설정
+		# 	set -- "$@" "/tmp/translate_byai.md"
+		# 	if [ ! -f "/tmp/translate_byai.md" ]; then
+		# 		echo "no file /tmp/translate_byai.md"
+		# 		exit 1
+		# 	fi
+		# fi
+
+		for arg in "$@"; do
+			if [ "$arg" = "sv" ]; then
+				# 새 값 + 나머지 인자로 재설정
+				if [ ! -f "/tmp/translate_byai.md" ]; then
+					echo "no file /tmp/translate_byai.md"
+					exit 1
+				fi
+				shift
+				set -- "$@" "/tmp/translate_byai.md"
+				break
 			fi
-		fi
+		done
 	fi
 fi
 
@@ -57,25 +71,26 @@ if [ $NO_WAIT -ne 1 ]; then
 fi
 
 # horizontal
+# $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
+TMUX_CMD="$VIM_PROGRAM --cmd 'cd $PWD' $@"
+TMUX_CMD_WAIT="$VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@"
 if [ $CURRENT_LINES -ge 26 ]; then
 	if [ $NO_WAIT -eq 1 ]; then
-		tmux split-window -v -l 13 "$VIM_PROGRAM --cmd 'cd $PWD' '$@';"
+		tmux split-window -v -l 13 "$TMUX_CMD"
 	else
-		tmux split-window -v -l 13 "$VIM_PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-		# tmux split-window -v -l 13 "$VIM_PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+		tmux split-window -v -l 13 "$TMUX_CMD_WAIT; tmux wait-for -S $signal"
 	fi
 elif [ $CURRENT_LINES -ge 15 ]; then
 	if [ $NO_WAIT -eq 1 ]; then
-		tmux split-window -v -l 7 "$VIM_PROGRAM --cmd 'cd $PWD' '$@';"
+		tmux split-window -v -l 7 "$TMUX_CMD"
 	else
-		tmux split-window -v -l 7 "$VIM_PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
+		tmux split-window -v -l 7 "$TMUX_CMD_WAIT; tmux wait-for -S $signal"
 	fi
 else
 	if [ $NO_WAIT -eq 1 ]; then
-		tmux split-window -v "$VIM_PROGRAM --cmd 'cd $PWD' '$@';"
+		tmux split-window -v "$TMUX_CMD"
 	else
-		tmux split-window -v "$VIM_PROGRAM --cmd 'cd $PWD' -c '$' +startinsert! '$@'; tmux wait-for -S $signal"
-		# tmux split-window -v "$VIM_PROGRAM --cmd 'cd $PWD' '$@'; tmux wait-for -S $signal" \; wait-for $signal
+		tmux split-window -v "$TMUX_CMD_WAIT; tmux wait-for -S $signal"
 	fi
 fi
 
