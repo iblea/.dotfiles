@@ -1011,6 +1011,10 @@ function gitdiff() {
     git diff ${opts[@]} "${tail_commit}..${head_commit}"
 }
 
+function gitshow() {
+    git show -m -p --stat $@
+}
+
 # echo $SSH_CONNECTION
 
 
@@ -2321,12 +2325,12 @@ if [ -n "$(command -v claude)" ]; then
             echo
             if [[ "$answer" = "y" ]] || [[ "$answer" = "Y" ]]; then
                 rm -f "$HOME/.claude/plans/"*.md
-				echo "claude plan deleted!"
+                echo "claude plan deleted!"
             fi
         elif [ $# -eq 1 ]; then
             if [[ "$1" = "-y" ]]; then
                 rm -f "$HOME/.claude/plans/"*.md
-				echo "claude plan deleted!"
+                echo "claude plan deleted!"
             fi
         fi
     }
