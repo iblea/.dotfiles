@@ -169,16 +169,13 @@ if [ -n "$(command -v unzip)" ]; then
 	export ZIPINFO="-O cp949"
 fi
 
-if [ -z "$NVM_DIR" ]; then
-	export NVM_DIR="$HOME/.nvm"
-	if [ -d "$NVM_DIR" ]; then
-		$NVM_DIR/nvm.sh
-		# if grep -q "bash" <<< "$(ps -p $$ -o 'comm=')"; then
-		# 	[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
-		# fi
+if [ -d "$HOME/.nvm" ]; then
+	if [ -z "$NVM_DIR" ]; then
+		export NVM_DIR="$HOME/.nvm"
+		[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+		[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 	fi
 fi
-
 
 gnubin_list=(
 	"grep"
