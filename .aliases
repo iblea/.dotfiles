@@ -2323,13 +2323,23 @@ if [ -n "$(command -v claude)" ]; then
             answer=$(dd bs=1 count=1 2>/dev/null)
             stty echo 2>/dev/null
             echo
-            if [[ "$answer" = "y" ]] || [[ "$answer" = "Y" ]]; then
-                rm -f "$HOME/.claude/plans/"*.md
+            if [[ "$answer" = "s" ]] || [[ "$answer" = "S" ]] || ; then
+				echo "show +7"
+                bash -c "cd '$HOME/.claude/plans/'; find . -name '*.md' -type f -mtime +7"
+				return 0;
+			elif [[ "$answer" = "i" ]] || [[ "$answer" = "I" ]]; then
+				echo "show all"
+                bash -c "cd '$HOME/.claude/plans/'; find . -name '*.md' -type f"
+				return 0;
+            elif [[ "$answer" = "y" ]] || [[ "$answer" = "Y" ]]; then
+                bash -c "cd '$HOME/.claude/plans/'; find . -name '*.md' -type f -mtime +7 -exec rm -vf '{}' +"
+                # rm -f "$HOME/.claude/plans/"*.md
                 echo "claude plan deleted!"
             fi
         elif [ $# -eq 1 ]; then
             if [[ "$1" = "-y" ]]; then
-                rm -f "$HOME/.claude/plans/"*.md
+                bash -c "cd '$HOME/.claude/plans/'; find . -name '*.md' -type f -mtime +7 -exec rm -vf '{}' +"
+                # rm -f "$HOME/.claude/plans/"*.md
                 echo "claude plan deleted!"
             fi
         fi
