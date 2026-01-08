@@ -111,6 +111,8 @@ else
     fi
 fi
 
+export ENABLE_LSP_TOOL=true
+
 if [ "$CLAUDE_OPT" = "s" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
         claude --model=sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
