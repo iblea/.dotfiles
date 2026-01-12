@@ -2346,6 +2346,14 @@ if [ -n "$(command -v claude)" ]; then
     }
 fi
 
+function dush() {
+	if [ $# -eq 0 ]; then
+		du -sh ./
+		exit 0
+	fi
+	du --max-depth=1 -h ./
+}
+
 # alias
 [ -f $HOME/.aliases_company ] && source ~/.aliases_company
 
