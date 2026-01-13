@@ -8,8 +8,17 @@ DEFAULT_EDITOR="vi"
 if [ $# -eq 0 ]; then
     CLAUDE_OPT="a"
 else
-    if [ $# -eq 1 ] && ( [ "$1" = "-h" ] || [ "$1" = "--help" ] ); then
-        claude --help
+    if [ $# -eq 1 ]; then
+        if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+            claude --help
+            exit 0
+        elif [[ "$1" = "-v" ]] || [[ "$1" = "--version" ]]; then
+            claude --version
+            exit 0
+        fi
+    fi
+    if [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
+        claude update
         exit 0
     fi
     case "$1" in
