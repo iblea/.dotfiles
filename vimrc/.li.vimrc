@@ -328,6 +328,8 @@ vnoremap <leader>y y:call system('iconv -f utf-8 -t utf-16le \| clip.exe', @")<C
 
 inoremap <C-a> <HOME>
 inoremap <C-d> <END>
+iabbrev utk ultrathink
+" iabbrev utk<tab> ultrathink
 
 " highlight link EchoDocPopup Pmenu
 

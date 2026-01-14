@@ -161,3 +161,5 @@ if has("autocmd")
 	autocmd TermOpen * startinsert
 endif
 
+iabbrev utk ultrathink
+" iabbrev utk<Tab> ultrathink
