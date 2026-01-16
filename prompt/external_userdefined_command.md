@@ -17,6 +17,20 @@
 - When receiving the command **;itest** or **;itests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
   - In Claude Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
 
+- When receiving the command **;ssh**, If you are trying to execute a bash command, execute the command as `exec ssh <host/destination> '<command>'` or `ssh <host/destination> "<command>"`..
+  - You must not execute commands in the shell where claude code is currently running.
+  - Connect to the destination via ssh, then execute the command.
+  - If you cannot execute the command, output "Error: Don't execute command."
+  - If only the Host is entered, connect to the host via SSH and execute the subsequent commands.
+  - Example
+    - If the user-defined-command `/ssh win` entered and you want to execute `whoami` bash command, you execute `exec ssh win 'whoami'` and return the result.
+      - ssh config file is `~/.ssh/config`
+    - If the user-defined-command `/ssh root@192.168.0.5` entered and you want to execute `ls -al` bash command, you execute `exec ssh root@192.168.0.5 'whoami'` and return the result.
+    - If the user-defined-command `/ssh test install gcc (config file is current directory, sshconfig.conf name.)` entered, You must proceed as below.
+      - Assuming that the server is an Ubuntu server with apt installed, the command to install gcc is `apt-get install -y gcc`.
+        Also, since the user indicated that the ssh config file is located at sshconfig.conf in the current directory, you need to add the -F option like `exec ssh -F "$(pwd)/sshconfig.conf"`.
+        Therefore, you should execute the following command: `exec ssh -F "$(pwd)/sshconfig.conf" test "apt-get install -y gcc"`
+
 ### User-Defined Category: Council
 | Agent Name | Command | Parallel Agents |
 |------------|---------|-----------------|

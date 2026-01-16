@@ -23,6 +23,19 @@ When input is received in the format `/market <ticker code(ticker)/stock name>`,
 - Example
   - `/market TSLA` -> Analyze the market situation for Tesla.
   - `/market NASDAQ100` -> Analyze the market situation for NASDAQ100.
+    - `/market NQH26` -> (H: March) So, analyze the Nasdaq Futures contract expiring in March 2026.
+      - F: Jan
+      - G: Feb
+      - H: Mar
+      - J: Apr
+      - K: May
+      - M: Jun
+      - N: Jul
+      - Q: Aug
+      - U: Sep
+      - V: Oct
+      - X: Nov
+      - Z: Dec
   - `/market S&P500 선물` (S&P500 futures) -> Analyze the market situation for S&P500 futures index.
   - `/market KOSPI` -> Analyze the market situation for KOSPI index.
   - `/market Gold futures` -> Analyze the market situation for Gold futures index(COMEX).

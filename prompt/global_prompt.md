@@ -138,6 +138,7 @@ The following is an explanation of the user-defined command.
 | Other | `;irefactor` | Refactor selected code | - |
 | Other | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
 | Other | `;itest` / `;itests` | Create unit tests | tester |
+| Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
 | Council | `;ag` / `;agents` `[Agent Name]` | Ask to Other LLM | GeminiCouncilAgent, CodexCouncilAgent |
 | AITODO | `;aitodo [-n/-next/-nt]` | Execute TODO tasks from `aitodo.md` (`-n`: confirm before each mission) | - |
 | AITODO | `;cai [nci/a/add]` | Convert file to `aitodo.md` format (`nci`: no commit, `a/add`: add to existing file) | - |
@@ -277,6 +278,7 @@ Translate Category commands can have optional strings (options) following the co
 - `;irefactor`: refer to the `external_userdefined_command.md` file for the description of the `;irefactor` command.
 - `;ireview`: refer to the `external_userdefined_command.md` file for the description of the `;ireview` command.
 - `;itest` / `;itests`: refer to the `external_userdefined_command.md` file for the description of the `;itest` / `;itests` command.
+- `;ssh`: refer to the `external_userdefined_command.md` file for the description of the `;ssh` command.
 
 ### User-Defined Category: Council
 **⚠️ CRITICAL: Refer to the `external_userdefined_command.md` file if the command description is not in this section.**
