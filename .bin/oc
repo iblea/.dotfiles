@@ -1,13 +1,11 @@
 #!/bin/bash
 
 MODEL_SELECT=""
-if [ $# -eq 0 ]; then
-    MODEL_SELECT="s"
-elif [ $# -eq 1 ]; then
+if [ $# -eq 1 ]; then
     if [[ "$1" = "s" ]] || [[ "$1" = "o" ]]; then
         MODEL_SELECT="$1"
         shift
-    if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+    elif [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         opencode --help
         exit 0
     elif [[ "$1" = "-v" ]] || [[ "$1" = "--version" ]]; then
@@ -24,10 +22,10 @@ if [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] ||
     exit 0
 fi
 
-if [ "$MODEL_SELECT" = "s" ] || [ "$MODEL_SELECT" = "S" ]; then
+if [[ "$MODEL_SELECT" = "s" ]] || [[ "$MODEL_SELECT" = "S" ]]; then
     # TERM=screen opencode --model "anthropic/claude-sonnet-4-5"
     opencode --model "anthropic/claude-sonnet-4-5" $@
-elif [ "$MODEL_SELECT" = "o" ]  || [ "$MODEL_SELECT" = "O" ]; then
+elif [[ "$MODEL_SELECT" = "o" ]]  || [[ "$MODEL_SELECT" = "O" ]]; then
     # TERM=screen opencode --model "anthropic/claude-opus-4-5"
     opencode --model "anthropic/claude-opus-4-5" $@
 else
