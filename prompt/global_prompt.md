@@ -125,6 +125,7 @@ The following is an explanation of the user-defined command.
 | Translate | `;trans` / `translate` `[lang]` | Translate to specified language | translator |
 | Utility | `;extract` | Extract text from image | - |
 | Utility | `;ask` | Ask without modifying files | - |
+| Utility | `;cire` | Recommend a commit message | - |
 | Utility | `;ci` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
@@ -208,6 +209,9 @@ Translate Category commands can have optional strings (options) following the co
 - When receiving the command **;extract**, you must extract and write text from the image. If there is no attached image, print the message 'There is no image.'
   - If the language is not Korean, output all of the extracted original text, and then additionally output the content translated into Korean.
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
+- When receiving the command **;cire**, analyze the changes by referring to `git status`, `git diff`, `git diff --staged`, and the conversation history, and recommend a commit message.
+  - By default, provide the commit message in Korean.
+  - If an option for a specific language is additionally entered, respond in that language. (`;cire eng` - respond in English)
 - When receiving the command **;ci**, it means the same as saying "continue" or "계속".
 - When receiving the command **;o** or **;dd** or **;ㅇㅇ**, it means the same as saying "yes", "ok" or "응", "네".
 - When receiving the command **;x** or **;ss** or **;ㄴㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
