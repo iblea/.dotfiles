@@ -10,6 +10,7 @@ fi
 
 echo "This script overwrite agnets file."
 echo "so backup your file first if needed."
+echo "WARNING: ~/.claude/ , ~/.gemini 와 같이 에이전트 설정 경로에 위치한 상태에서 프롬프트를 실행시키십시오."
 printf "continue? (y/n): "
 stty -echo -icanon 2>/dev/null
 answer=$(dd bs=1 count=1 2>/dev/null)
