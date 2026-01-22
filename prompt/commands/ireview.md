@@ -20,7 +20,10 @@ If the `msg` field is not provided, please review comprehensively.
 If a `file` mentioned with the @ symbol is provided, please review only that file.
 If files related to that file need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
 
-If no `file` is mentioned with the @ symbol, review all files in the current directory and its subdirectories based on where the agent is located.
+If the keyword `cached`, `staged`, `staging`, or `stage` is provided instead of `@[file]` (e.g., `/ireview cached`, `/ireview staged`), execute `git diff --cached` (or `git diff --staged`) to review the staged changes.
+In this case, review the code changes that have been staged for commit.
+
+If no `file` is mentioned with the @ symbol and no `cached`/`staged` keyword is provided, review all files in the current directory and its subdirectories based on where the agent is located.
 If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
 
 

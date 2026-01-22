@@ -12,6 +12,8 @@
     If files related to that file need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
   - If no `file` is mentioned with the @ symbol, review all files in the current directory and its subdirectories based on where the agent is located.
     If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
+  - If the keyword `cached`, `staged`, `staging`, or `stage` is provided instead of `@[file]` (e.g., `/ireview cached`, `/ireview staged`), execute `git diff --cached` (or `git diff --staged`) to review the staged changes.
+    In this case, review the code changes that have been staged for commit.
   - If necessary, Use `CodeReviewer` and `ArchitectReviewer`.
     When there is a request to use static analysis tools, analyze and review the code using static analysis tools.
 - When receiving the command **;itest** or **;itests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
