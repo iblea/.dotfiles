@@ -1,5 +1,5 @@
 {
-  "alwaysThinkingEnabled": false,
+  "alwaysThinkingEnabled": true,
   "statusLine": {
     "type": "command",
     "command": "$HOME/.claude/statusline-command.sh"
@@ -41,7 +41,7 @@
     "deny": [],
     "ask": []
   },
-  "model": "sonnet",
+  "model": "opus",
   "autoCompactEnabled": false,
   "enableAllProjectMcpServers": true,
   "bypassPermissionsModeAccepted": true,
@@ -49,6 +49,24 @@
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
   ],
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": false,
+    "code-review@claude-plugins-official": true,
+    "playwright@claude-plugins-official": false,
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true,
+    "clarify@team-attention-plugins": true
+  },
+  "language": "한국어",
+  "alwaysThinkingEnabled": true,
+  "autoCompactEnabled": false,
+  "bypassPermissionsModeAccepted": true,
+  "verbose": true,
+  "env": {
+    "MAX_THINKING_TOKENS": "63999"
+  },
   "mcpServers": {
     "context7": {
       "type": "stdio",
@@ -100,6 +118,32 @@
         "GITLAB_API_URL": "https://YOUR_CUSTOM_DOMAIN/api/v4/",
         "NODE_TLS_REJECT_UNAUTHORIZED": "0"
       }
+    },
+    "automation": {
+      "command": "bun",
+      "args": [
+        "run",
+        "/Users/iblea/src/opensource/automation-mcp/index.ts",
+        "--stdio"
+      ]
     }
+  },
+  "disabledMcpServers": [
+    "automation",
+    "github",
+    "gitlab",
+    "playwright"
+  ],
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-done.sh"
+          }
+        ]
+      }
+    ]
   }
 }
