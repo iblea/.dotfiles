@@ -130,6 +130,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
 | Utility | `;integrity` | Verify information reliability | - |
+| Utility | `;temp [all/render]` | Save content in `/tmp/result_by_aiagent.md` | researcher |
 | Utility | `;search [th/dis]` | Research and create report (with papers if th/dis options entered) | researcher |
 | Other | `;err` | Analyze error and provide solution | resolver |
 | Other | `;web` | Answer with web search | - |
@@ -254,6 +255,21 @@ Translate Category commands can have optional strings (options) following the co
         - **한계점 (Limitatiions)**:
         - **신뢰도 (Reliability)**: ✓ 확인됨 | ⚠ 검증 필요
         ```
+
+
+- When receiving the command **;temp**, Save the content to the `/tmp/result_by_aiagent.md` file.
+  - When nothing is responded after the command: Save your answer to the previous question as a file. (This does not mean saving all answers to a file.)
+  - When the keyword `all` is entered: Save all questions and answers output to a file.
+  - When the keyword `render` is entered: Save the rendered/visual content when saving. Convert markdown source format to visually rendered format before saving.
+      - Markdown table (`| col | col |` with `|---|---|`) → Rendered table (box characters like `┌─┬─┐`, `│`, `└─┴─┘`)
+      - Markdown list (`-`, `*`) → Rendered bullet points (`•`, `◦`, etc)
+  - When content is entered: Save that content to a file.
+  By default (when the `render` keyword is not present), you must save content in markdown source format, not in visually rendered format.
+    - If input contains rendered/visual elements (box-drawing tables, formatted output), convert them back to markdown source format before saving.
+      - Rendered table (box characters like `┌─┬─┐`) → Markdown table (`| col | col |` with `|---|---|`)
+      - Rendered list → Markdown list (`-`, `*`, `1.`)
+    - If input is already in markdown format, save it as-is.
+
 
 ### User-Defined Category: Other (Coding)
 **⚠️ CRITICAL: Refer to the `external_userdefined_command.md` file if the command description is not in this section.**
