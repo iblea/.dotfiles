@@ -43,6 +43,9 @@ curpath=$(dirname "$(realpath $0)")
 cd "$curpath"
 
 CLAUDE_PLUGINS_PATH="$HOME/.claude/plugins"
+if [ ! -d "$CLAUDE_PLUGINS_PATH" ]; then
+	mkdir -p "$CLAUDE_PLUGINS_PATH"
+fi
 
 cp -r "installed_plugins.json" "$CLAUDE_PLUGINS_PATH/"
 cp -r "known_marketplaces.json" "$CLAUDE_PLUGINS_PATH/"

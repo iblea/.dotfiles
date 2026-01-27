@@ -42,6 +42,11 @@ curpath=$(dirname "$(realpath $0)")
 cd "$curpath"
 
 CLAUDE_PLUGINS_PATH="$HOME/.claude/plugins"
+if [ ! -d "$CLAUDE_PLUGINS_PATH" ]; then
+	echo "ERROR: no plugins data"
+	exit 1
+fi
+
 
 cp -r "$CLAUDE_PLUGINS_PATH/installed_plugins.json" ./
 cp -r "$CLAUDE_PLUGINS_PATH/known_marketplaces.json" ./
