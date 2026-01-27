@@ -1,8 +1,6 @@
 {
-  "alwaysThinkingEnabled": true,
-  "statusLine": {
-    "type": "command",
-    "command": "$HOME/.claude/statusline-command.sh"
+  "env": {
+    "MAX_THINKING_TOKENS": "63999"
   },
   "permissions": {
     "allow": [
@@ -42,13 +40,26 @@
     "ask": []
   },
   "model": "opus",
-  "autoCompactEnabled": false,
   "enableAllProjectMcpServers": true,
-  "bypassPermissionsModeAccepted": true,
-  "verbose": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
   ],
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-done.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
@@ -57,16 +68,14 @@
     "playwright@claude-plugins-official": false,
     "document-skills@anthropic-agent-skills": true,
     "example-skills@anthropic-agent-skills": true,
-    "clarify@team-attention-plugins": true
+    "clarify@team-attention-plugins": true,
+    "ralph-loop@claude-plugins-official": true
   },
   "language": "한국어",
   "alwaysThinkingEnabled": true,
   "autoCompactEnabled": false,
   "bypassPermissionsModeAccepted": true,
   "verbose": true,
-  "env": {
-    "MAX_THINKING_TOKENS": "63999"
-  },
   "mcpServers": {
     "context7": {
       "type": "stdio",
@@ -123,7 +132,7 @@
       "command": "bun",
       "args": [
         "run",
-        "/Users/iblea/src/opensource/automation-mcp/index.ts",
+        "$HOME/src/opensource/automation-mcp/index.ts",
         "--stdio"
       ]
     }
@@ -133,17 +142,5 @@
     "github",
     "gitlab",
     "playwright"
-  ],
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/notify-done.sh"
-          }
-        ]
-      }
-    ]
-  }
+  ]
 }
