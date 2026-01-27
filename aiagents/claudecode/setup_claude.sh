@@ -10,12 +10,15 @@ fi
 CLAUDE_DIR="$HOME/.claude"
 
 
+curpath=$(dirname "$(realpath $0)")
+# cd "$curpath"
+
 if [ ! -d "$CLAUDE_DIR" ]; then
     mkdir -p "$CLAUDE_DIR"
 fi
 
 echo "setup status-line"
-ln -s "$HOME/.dotfiles/aiagents/claudecode/statusline-command.sh" "$CLAUDE_DIR/"
+ln -s "$curpath/statusline-command.sh" "$CLAUDE_DIR/"
 
 echo "setup agents directory"
 ln -s "$HOME/.dotfiles/prompt/agents" "$CLAUDE_DIR/"
@@ -27,13 +30,13 @@ fi
 ln -s "$HOME/.dotfiles/prompt/commands" "$CLAUDE_DIR/commands/di"
 
 echo "setup settings.json"
-cp -r "$HOME/.dotfiles/aiagents/claudecode/settings.json" "$HOME/.claude/settings.json"
+cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
 
 echo "install mcp servers"
 npm install -g @modelcontextprotocol/server-sequential-thinking
 npm install -g @upstash/context7-mcp
 npm install -g @playwright/mcp@latest
-cp -r "$HOME/.dotfiles/aiagents/claudecode/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 echo "sequential thinking mcp script modify. (check this path)"
 echo "\$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 echo "CHANGE ~/.claude.json , ~/.claude/settings.json YOUR_API_KEY"
@@ -64,13 +67,18 @@ echo "@external_userdefined_command.md"
 
 echo "modify $HOME/.claude.json"
 
+echo "Skill update"
+ln -s "$curpath/skills" "$HOME/.claude/"
+
 
 echo "Plugin update"
-echo "/plugin marketplace add anthropics/skills"
-claude plugin marketplace add anthropics/skills
-echo "/plugin install document-skills@anthropic-agent-skills"
-claude plugin install document-skills@anthropic-agent-skills
-echo "/plugin install webapp-testing@anthropic-agent-skills"
-claude plugin install webapp-testing@anthropic-agent-skills
+plugins/apply.sh -y
+
+# echo "/plugin marketplace add anthropics/skills"
+# claude plugin marketplace add anthropics/skills
+# echo "/plugin install document-skills@anthropic-agent-skills"
+# claude plugin install document-skills@anthropic-agent-skills
+# echo "/plugin install webapp-testing@anthropic-agent-skills"
+# claude plugin install webapp-testing@anthropic-agent-skills
 
 

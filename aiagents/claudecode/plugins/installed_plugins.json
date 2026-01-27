@@ -1,0 +1,90 @@
+{
+  "version": 2,
+  "plugins": {
+    "context7@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/context7/e30768372b41",
+        "version": "e30768372b41",
+        "installedAt": "2025-12-20T05:15:15.065Z",
+        "lastUpdated": "2026-01-21T06:09:20.740Z"
+      }
+    ],
+    "pyright-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/pyright-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-20T05:15:44.807Z",
+        "lastUpdated": "2025-12-20T05:15:44.807Z"
+      }
+    ],
+    "clangd-lsp@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/clangd-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2025-12-20T05:15:51.317Z",
+        "lastUpdated": "2025-12-20T05:15:51.317Z"
+      }
+    ],
+    "code-review@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/code-review/e30768372b41",
+        "version": "e30768372b41",
+        "installedAt": "2025-12-20T05:21:17.663Z",
+        "lastUpdated": "2026-01-21T06:09:20.738Z"
+      }
+    ],
+    "playwright@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/playwright/e30768372b41",
+        "version": "e30768372b41",
+        "installedAt": "2025-12-20T05:21:23.695Z",
+        "lastUpdated": "2026-01-21T06:09:20.739Z"
+      }
+    ],
+    "document-skills@anthropic-agent-skills": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/document-skills/69c0b1a06741",
+        "version": "69c0b1a06741",
+        "installedAt": "2026-01-16T08:13:02.042Z",
+        "lastUpdated": "2026-01-16T08:13:02.042Z",
+        "gitCommitSha": "69c0b1a0674149f27b61b2635f935524b6add202"
+      }
+    ],
+    "example-skills@anthropic-agent-skills": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/example-skills/69c0b1a06741",
+        "version": "69c0b1a06741",
+        "installedAt": "2026-01-16T08:13:14.530Z",
+        "lastUpdated": "2026-01-16T08:13:14.530Z",
+        "gitCommitSha": "69c0b1a0674149f27b61b2635f935524b6add202"
+      }
+    ],
+    "clarify@team-attention-plugins": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/team-attention-plugins/clarify/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-01-17T06:23:09.632Z",
+        "lastUpdated": "2026-01-17T06:23:09.632Z",
+        "gitCommitSha": "419cbcb50e82a7ed32883276d6484474c21b027e"
+      }
+    ],
+    "ralph-loop@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/ralph-loop/e30768372b41",
+        "version": "e30768372b41",
+        "installedAt": "2026-01-23T02:33:31.531Z",
+        "lastUpdated": "2026-01-23T02:33:31.531Z",
+        "gitCommitSha": "e30768372b4150ca1bc0839d93283e8edc30d60d"
+      }
+    ]
+  }
+}

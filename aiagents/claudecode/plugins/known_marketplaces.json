@@ -1,0 +1,27 @@
+{
+  "anthropic-agent-skills": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/skills"
+    },
+    "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/anthropic-agent-skills",
+    "lastUpdated": "2026-01-27T06:02:24.285Z",
+    "autoUpdate": true
+  },
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/claude-plugins-official",
+    "lastUpdated": "2026-01-27T01:24:23.580Z"
+  },
+  "team-attention-plugins": {
+    "source": {
+      "source": "github",
+      "repo": "team-attention/plugins-for-claude-natives"
+    },
+    "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/team-attention-plugins",
+    "lastUpdated": "2026-01-17T06:22:54.156Z"
+  }
+}

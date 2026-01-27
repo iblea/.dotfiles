@@ -1,0 +1,34 @@
+# Agent Council Configuration
+# Add or remove council members as needed
+
+council:
+  # Council members configuration
+  # Each member needs:
+  #   - name: identifier for the agent
+  #   - command: CLI command to execute (prompt will be appended)
+  #   - emoji: display emoji (optional)
+  #   - color: ANSI color (RED, GREEN, BLUE, YELLOW, CYAN)
+
+  members:
+
+    - name: gemini
+      command: "gemini --model 'pro' 2>/dev/null"
+      emoji: "💎"
+      color: "GREEN"
+
+  # Chairman configuration (Claude will act as chairman)
+  chairman:
+    # role: auto|claude|codex|gemini|...
+    # - auto: infer from host tool (Claude Code => claude, Codex CLI => codex)
+    role: "auto"
+    description: "Synthesizes all opinions and provides final recommendation"
+    # Optional: run synthesis inside council.sh via CLI (otherwise the host agent synthesizes)
+    # command: "codex exec"
+
+    # Execution settings
+  settings:
+    parallel: true # Run agents in parallel
+    timeout: 120 # (Reserved) Timeout in seconds per agent (not enforced by the script yet)
+    show_thinking: true # Show "Thinking..." status
+    exclude_chairman_from_members: true # Avoid calling the chairman as a member by default
+    # synthesize: true       # Force Stage 3 synthesis inside council.sh (requires chairman.command or --chairman codex/gemini)
