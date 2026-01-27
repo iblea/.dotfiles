@@ -4,7 +4,7 @@ if [ -z "$(command -v claude)" ]; then
     echo "claude code is not installed"
     echo "install claude code"
     echo "npm install -g @anthropic-ai/claude-code"
-	echo "curl -fsSL https://claude.ai/install.sh | bash"
+    echo "curl -fsSL https://claude.ai/install.sh | bash"
     exit 1
 fi
 
@@ -26,7 +26,7 @@ ln -s "$HOME/.dotfiles/prompt/agents" "$CLAUDE_DIR/"
 
 echo "setup commands directory"
 if [ ! -d "$CLAUDE_DIR/commands" ]; then
-	mkdir -p "$CLAUDE_DIR/commands"
+    mkdir -p "$CLAUDE_DIR/commands"
 fi
 ln -s "$HOME/.dotfiles/prompt/commands" "$CLAUDE_DIR/commands/di"
 
@@ -34,10 +34,18 @@ echo "setup settings.json"
 cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
 
 echo "install mcp servers"
-npm install -g @modelcontextprotocol/server-sequential-thinking
-npm install -g @upstash/context7-mcp
-npm install -g @playwright/mcp@latest
-cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+
+if [ -n "$(command -v sudo)"]; then
+    sudo npm install -g @modelcontextprotocol/server-sequential-thinking
+    sudo npm install -g @upstash/context7-mcp
+    # sudo npm install -g @playwright/mcp@latest
+    sudo cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+else
+    npm install -g @modelcontextprotocol/server-sequential-thinking
+    npm install -g @upstash/context7-mcp
+    # npm install -g @playwright/mcp@latest
+    cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+fi
 echo "sequential thinking mcp script modify. (check this path)"
 echo "\$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 echo "CHANGE ~/.claude.json , ~/.claude/settings.json YOUR_API_KEY"
@@ -73,7 +81,7 @@ ln -s "$curpath/skills" "$HOME/.claude/"
 
 
 echo "Plugin update"
-plugins/apply.sh -y
+$curpath/plugins/apply.sh -y
 
 # echo "/plugin marketplace add anthropics/skills"
 # claude plugin marketplace add anthropics/skills
