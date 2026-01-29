@@ -1,0 +1,87 @@
+{
+  "$schema": "https://platform.claude.com/docs/schemas/claude-code/keybindings.json",
+  "bindings": [
+    {
+      "context": "Global",
+      "bindings": {
+        "escape": null,
+        "ctrl+t": "app:toggleTodos",
+        "ctrl+o": "app:toggleTranscript"
+      }
+    },
+    {
+      "context": "Chat",
+      "bindings": {
+        "escape": null,
+        "shift+tab": "chat:cycleMode",
+        "meta+p": "chat:modelPicker",
+        "meta+t": "chat:thinkingToggle",
+        "enter": "chat:submit",
+        "ctrl+_": "chat:undo",
+        "ctrl+g": "chat:externalEditor",
+        "ctrl+s": "chat:stash",
+        "ctrl+v": "chat:imagePaste",
+        "ctrl+r": "history:search",
+        "up": "history:previous",
+        "down": "history:next"
+      }
+    },
+    {
+      "context": "Autocomplete",
+      "bindings": {
+        "tab": "autocomplete:accept",
+        "escape": "autocomplete:dismiss",
+        "up": "autocomplete:previous",
+        "down": "autocomplete:next"
+      }
+    },
+    {
+      "context": "Confirmation",
+      "bindings": {
+        "y": "confirm:yes",
+        "enter": "confirm:yes",
+        "n": "confirm:no",
+        "escape": "confirm:no",
+        "up": "confirm:previous",
+        "down": "confirm:next",
+        "tab": "confirm:nextField",
+        "shift+tab": "confirm:previousField"
+      }
+    },
+    {
+      "context": "Transcript",
+      "bindings": {
+        "ctrl+e": "transcript:toggleShowAll",
+        "escape": "transcript:exit"
+      }
+    },
+    {
+      "context": "HistorySearch",
+      "bindings": {
+        "ctrl+r": "historySearch:next",
+        "escape": "historySearch:accept",
+        "tab": "historySearch:accept",
+        "enter": "historySearch:execute"
+      }
+    },
+    {
+      "context": "Task",
+      "bindings": {
+        "escape": null,
+        "ctrl+b": "task:background"
+      }
+    },
+    {
+      "context": "ThemePicker",
+      "bindings": {
+        "ctrl+t": "theme:toggleSyntaxHighlighting"
+      }
+    },
+    {
+      "context": "Help",
+      "bindings": {
+        "escape": "help:dismiss"
+      }
+    }
+  ]
+}

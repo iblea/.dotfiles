@@ -76,6 +76,12 @@ echo "@external_userdefined_command.md"
 
 echo "modify $HOME/.claude.json"
 
+echo "Keybindings update"
+if [ -f "$HOME/.claude/keybindings.json" ]; then
+	rm -f "$HOME/.claude/keybindings.json"
+fi
+ln -s "$curpath/keybindings.json" "$HOME/.claude/"
+
 echo "Skill update"
 ln -s "$curpath/skills" "$HOME/.claude/"
 
