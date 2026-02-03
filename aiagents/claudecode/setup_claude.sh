@@ -24,11 +24,12 @@ ln -s "$curpath/statusline-command.sh" "$CLAUDE_DIR/"
 echo "setup agents directory"
 ln -s "$HOME/.dotfiles/prompt/agents" "$CLAUDE_DIR/"
 
-echo "setup commands directory"
-if [ ! -d "$CLAUDE_DIR/commands" ]; then
-    mkdir -p "$CLAUDE_DIR/commands"
-fi
-ln -s "$HOME/.dotfiles/prompt/commands" "$CLAUDE_DIR/commands/di"
+echo "commands deprecated. (Move to skills)"
+# echo "setup commands directory"
+# if [ ! -d "$CLAUDE_DIR/commands" ]; then
+#     mkdir -p "$CLAUDE_DIR/commands"
+# fi
+# ln -s "$HOME/.dotfiles/prompt/commands" "$CLAUDE_DIR/commands/di"
 
 echo "setup settings.json"
 cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
@@ -83,7 +84,7 @@ fi
 ln -s "$curpath/keybindings.json" "$HOME/.claude/"
 
 echo "Skill update"
-ln -s "$curpath/skills" "$HOME/.claude/"
+ln -s "$HOME/.dotfiles/prompt/skills" "$CLAUDE_DIR/"
 
 
 echo "Plugin update"
