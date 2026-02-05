@@ -29,7 +29,7 @@ if [ $# -eq 1 ]; then
             echo "npm install -g @google/gemini-cli"
         fi
         exit $?
-    elif [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
+    elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
 		gemini --version
 		exit $?
     elif [[ "$1" = "ls" ]] || [[ "$1" = "-ls" ]] || [[ "$1" = "--list-sessions" ]]; then
