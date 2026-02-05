@@ -71,6 +71,7 @@ If using the `date` command is difficult, determine the current time through a w
         - 화학, 건축 자재, 금속/채광, 용기/포장지, 종이/임산물 등
       - 산업재 (Industrial)
         - 우주/항공, 국방(방산), 건설, 기계, 물류(해상/지상/운송 인프라) 등
+        - 산업재 중에서도 물류(해상/자상/운송 인프라) 섹터의 경우 제조업 지표가 잘 잘 나오거나, 경기 성장 신호가 나오면 물량이 늘어나는 기대감으로 인해 상승할 가능성이 크다.
       - 경기소비재 (Consumer Discretionary)
         - 자동차, 의류, 소매 등
       - 필수소비재 (Consumer Staples)
