@@ -61,6 +61,12 @@ return {
             action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
         },
         {
+            key = 'e',
+            mods = 'SUPER',
+            action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
+        },
+
+        {
             key = 'u',
             mods = 'SUPER',
             action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },

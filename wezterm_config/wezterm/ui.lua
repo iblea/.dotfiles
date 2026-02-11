@@ -3,7 +3,9 @@ local wezterm = require 'wezterm'
 local wezterm_font_config = wezterm.font_with_fallback {
     {
         italic = false,
-        family = 'Cascadia Code NFMMOT',
+        family = 'Cascadia Code NFOT',
+        -- family = 'Cascadia Code NFOVT',
+        -- family = 'Cascadia Code NFMMOT',
         -- family = 'BigBlueTermPlus Nerd Font',
         weight = 'Regular',
         stretch = 'Expanded',
@@ -28,11 +30,11 @@ return {
     use_fancy_tab_bar = false,
     -- font = wezterm.font 'WindowsCommandPrompt Nerd Font'
 
-    freetype_load_target = 'HorizontalLcd',
-    freetype_render_target = 'HorizontalLcd',
+    -- freetype_load_target = 'HorizontalLcd',
+    -- freetype_render_target = 'HorizontalLcd',
 
-    -- freetype_load_target = 'Normal',
-    -- freetype_render_target = 'Normal',
+    freetype_load_target = 'Normal',
+    freetype_render_target = 'Normal',
 
     -- dpi = 144.0,
     -- dpi = 72.0,
@@ -41,13 +43,17 @@ return {
     -- initial_cols = 140,
     -- initial_rows = 35,
     -- -- 2560x1440 144hz
-    font_size = 19.0,
-    initial_cols = 110,
-    initial_rows = 30,
-    line_height = 1.3,
-    cell_width = 0.85,
+    -- font_size = 19.0,
+    -- font_size = 17.0,
+    font_size = 15.0,
+    initial_cols = 80,
+    initial_rows = 25,
+    -- line_height = 1.3,
+    line_height = 1.1,
+    -- line_height = 1.0,
+    cell_width = 0.90,
     underline_thickness = 0,
-    underline_position = "-3pt",
+    -- underline_position = "-3pt",
     -- adjust_window_size_when_changing_font_size = false,
 
     font = wezterm_font_config,
