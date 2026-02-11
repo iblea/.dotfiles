@@ -133,6 +133,7 @@ The following is an explanation of the user-defined command.
 | Translate | `;kor` | Translate to Korean | translator |
 | Translate | `;eng` | Translate to English | translator |
 | Translate | `;trans` / `translate` `[lang]` | Translate to specified language | translator |
+| Utility | `;skill [skill name]` / `;sk [skill name]` | Use Skill | - |
 | Utility | `;extract` | Extract text from image | - |
 | Utility | `;ask` | Ask without modifying files | - |
 | Utility | `;cire` | Recommend a commit message | - |
@@ -217,6 +218,13 @@ Translate Category commands can have optional strings (options) following the co
   - If you haven't translated the contents of the file, don't do anything about it.
 
 ### User-Defined Category: Utility
+- When receiving the command **;sk** or **;skill**, You must unconditionally call/use the skill corresponding to `[skill name]`.
+  - A skill name argument can be provided.
+    - Use the skill that matches the skill name.
+    - If there is no skill matching the skill name, return the message "no skill" and end the conversation.
+  - If no skill name argument is provided, display the list of available skills, return the message "input skill name argument.", and end the conversation.
+  - Even if, after examining the context of the conversation, you determine that it seems unnecessary to use the skill, you must use the skill unconditionally. You must not skip using the skill.
+    - ex: `;skill eng "Hello World!"` : The `eng` skill instructs to translate the content into English. Although the subsequent content is already an English sentence and it may seem unnecessary to use the `eng` skill, since the `;skill` user defined command has been invoked, you must unconditionally call the `eng` skill.
 - When receiving the command **;extract**, you must extract and write text from the image. If there is no attached image, print the message 'There is no image.'
   - If the language is not Korean, output all of the extracted original text, and then additionally output the content translated into Korean.
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
