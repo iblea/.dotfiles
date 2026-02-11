@@ -233,6 +233,9 @@ unset is_zsh
 
 
 if [[ "$(uname -s)" = "Darwin" ]]; then
+	if [ -d "$HOME/.codex" ]; then
+		export CODEX_HOME="$HOME/.codex"
+	fi
 	if [ -d "/opt/homebrew/opt/llvm/" ]; then
 		if [ -d "/opt/homebrew/opt/llvm/lib" ]; then
 			if [ -z "${LDFLAGS}" ]; then
