@@ -30,9 +30,15 @@ if [ $# -eq 1 ]; then
     elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
         claude --version
         exit $?
-    elif [[ "$1" = "vi" ]]; then
-        NVIM_IDE=1
     fi
+elif [ $# -ge 1 ]; then
+    for (( i=1; i<=$#; i++ )); do
+        opt="${!i}"
+        if [[ "$opt" = "vi" ]] || [[ "$opt" = "-vi" ]] || [[ "$opt" = "nvi" ]] || [[ "$opt" = "-nvi" ]]; then
+            NVIM_IDE=1
+            break
+        fi
+    done
 fi
 
 
