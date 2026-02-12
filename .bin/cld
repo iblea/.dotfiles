@@ -76,6 +76,10 @@ done
 #     shift
 # fi
 
+if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
+	OTHER_OPTS+=("--ide")
+fi
+
 
 # PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
 # ~/.claude/CLAUDE.md -> @global_prompt.md
