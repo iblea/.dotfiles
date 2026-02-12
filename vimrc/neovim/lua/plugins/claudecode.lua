@@ -54,8 +54,11 @@ return {
                 end
               end
             end
-            vim.cmd("wincmd =")
-            vim.fn.jobstart("tmux select-window -t 2", { detach = true })
+            -- 버퍼 삭제 후 윈도우 레이아웃 반영을 위해 다음 이벤트 루프에서 실행
+            vim.schedule(function()
+              vim.cmd("wincmd =")
+              vim.fn.jobstart("tmux select-window -t 2", { detach = true })
+            end)
           end, 500)
         else
           -- diff OFF: 모든 버퍼 삭제 후 tmux window 이동

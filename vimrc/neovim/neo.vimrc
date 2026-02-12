@@ -164,17 +164,31 @@ endif
 iabbrev utk ultrathink
 " iabbrev utk<Tab> ultrathink
 
-" TMUX_CLAUDECODE_IDE_NVIM=1 환경: :q 시 버퍼만 정리하고 nvim 유지
+" TMUX_CLAUDECODE_IDE_NVIM=1 환경: 종료 명령 시 버퍼만 정리하고 nvim 유지
+" save: w 계열 - 저장 후 정리, force: ! 계열 - 미저장 무시, all: a 계열 - 모든 창/버퍼 정리
 if $TMUX_CLAUDECODE_IDE_NVIM == "1"
-  function! s:ClaudeSmartQuit()
+  function! s:ClaudeSmartQuit(save, force, all)
+    if a:save
+      if a:all
+        execute a:force ? 'silent! wa!' : 'wa'
+      else
+        execute a:force ? 'silent! w!' : 'w'
+      endif
+    endif
+
     let l:wins = filter(nvim_list_wins(), {_, w -> nvim_win_get_config(w).relative == ""})
-    if len(l:wins) > 1
-      quit
+    if !a:all && len(l:wins) > 1
+      execute a:force ? 'quit!' : 'quit'
       return
     endif
+
+    if a:all && len(l:wins) > 1
+      only!
+    endif
+
     let l:bufs = filter(nvim_list_bufs(), {_, b -> getbufvar(b, "&buflisted") && bufname(b) != ""})
     if len(l:bufs) >= 1
-      enew
+      enew!
       let l:new_buf = bufnr('%')
       for b in nvim_list_bufs()
         if b != l:new_buf && buflisted(b)
@@ -182,8 +196,15 @@ if $TMUX_CLAUDECODE_IDE_NVIM == "1"
         endif
       endfor
     else
-      quit
+      quit!
     endif
   endfunction
-  cnoreabbrev <expr> q getcmdtype() == ":" && getcmdline() ==# "q" ? "call <SID>ClaudeSmartQuit()" : "q"
+  cnoreabbrev <expr> q getcmdtype() == ":" && getcmdline() ==# "q" ? "call <SID>ClaudeSmartQuit(0,0,0)" : "q"
+  cnoreabbrev <expr> q! getcmdtype() == ":" && getcmdline() ==# "q!" ? "call <SID>ClaudeSmartQuit(0,1,0)" : "q!"
+  cnoreabbrev <expr> wq getcmdtype() == ":" && getcmdline() ==# "wq" ? "call <SID>ClaudeSmartQuit(1,0,0)" : "wq"
+  cnoreabbrev <expr> wq! getcmdtype() == ":" && getcmdline() ==# "wq!" ? "call <SID>ClaudeSmartQuit(1,1,0)" : "wq!"
+  cnoreabbrev <expr> qa getcmdtype() == ":" && getcmdline() ==# "qa" ? "call <SID>ClaudeSmartQuit(0,0,1)" : "qa"
+  cnoreabbrev <expr> qa! getcmdtype() == ":" && getcmdline() ==# "qa!" ? "call <SID>ClaudeSmartQuit(0,1,1)" : "qa!"
+  cnoreabbrev <expr> wqa getcmdtype() == ":" && getcmdline() ==# "wqa" ? "call <SID>ClaudeSmartQuit(1,0,1)" : "wqa"
+  cnoreabbrev <expr> wqa! getcmdtype() == ":" && getcmdline() ==# "wqa!" ? "call <SID>ClaudeSmartQuit(1,1,1)" : "wqa!"
 endif
