@@ -163,3 +163,27 @@ endif
 
 iabbrev utk ultrathink
 " iabbrev utk<Tab> ultrathink
+
+" TMUX_CLAUDECODE_IDE_NVIM=1 환경: :q 시 버퍼만 정리하고 nvim 유지
+if $TMUX_CLAUDECODE_IDE_NVIM == "1"
+  function! s:ClaudeSmartQuit()
+    let l:wins = filter(nvim_list_wins(), {_, w -> nvim_win_get_config(w).relative == ""})
+    if len(l:wins) > 1
+      quit
+      return
+    endif
+    let l:bufs = filter(nvim_list_bufs(), {_, b -> getbufvar(b, "&buflisted") && bufname(b) != ""})
+    if len(l:bufs) >= 1
+      enew
+      let l:new_buf = bufnr('%')
+      for b in nvim_list_bufs()
+        if b != l:new_buf && buflisted(b)
+          execute 'silent! bwipeout! ' . b
+        endif
+      endfor
+    else
+      quit
+    endif
+  endfunction
+  cnoreabbrev <expr> q getcmdtype() == ":" && getcmdline() ==# "q" ? "call <SID>ClaudeSmartQuit()" : "q"
+endif

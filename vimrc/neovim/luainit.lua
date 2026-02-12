@@ -23,6 +23,7 @@ local lazypath = get_lazy_path()
 vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = "s"
+vim.keymap.set("n", "s", "<Nop>")
 
 -- General settings
 require("modules.globals")
@@ -61,3 +62,20 @@ vim.cmd('colorscheme monokai-pro-classic')
 
 -- require("cmp-tw2css").setup()
 -- require("classy").setup()
+
+if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
+  -- split 방향 토글 (horizontal <-> vertical) + 크기 균등화
+  vim.keymap.set("n", "<leader>nn", function()
+    local layout = vim.fn.winlayout()
+    if layout[1] == "col" then
+      vim.cmd("wincmd H")
+    elseif layout[1] == "row" then
+      vim.cmd("wincmd J")
+    end
+    vim.cmd("wincmd =")
+  end, { desc = "Toggle split direction" })
+
+  -- 분할 창 크기 균등화
+  vim.keymap.set("n", "<C-=>", "<C-w>=", { desc = "Equalize window sizes" })
+end
+
