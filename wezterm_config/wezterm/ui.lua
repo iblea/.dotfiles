@@ -45,7 +45,7 @@ return {
     -- -- 2560x1440 144hz
     -- font_size = 19.0,
     -- font_size = 17.0,
-    font_size = 15.0,
+    font_size = 14.0,
     initial_cols = 80,
     initial_rows = 25,
     -- line_height = 1.3,
