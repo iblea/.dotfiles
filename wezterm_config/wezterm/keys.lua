@@ -74,8 +74,10 @@ return {
 
         { key = 'h', mods = 'SUPER', action = act.ActivatePaneDirection 'Prev', },
         { key = 'l', mods = 'SUPER', action = act.ActivatePaneDirection 'Next', },
-        { key = 'j', mods = 'SUPER', action = act.MoveTabRelative(-1) },
-        { key = 'k', mods = 'SUPER', action = act.MoveTabRelative(1) },
+        { key = 'j', mods = 'SUPER', action = act.ActivateTabRelative(-1) },
+        { key = 'k', mods = 'SUPER', action = act.ActivateTabRelative(1) },
+        { key = 'j', mods = 'SHIFT|SUPER', action = act.MoveTabRelative(-1) },
+        { key = 'k', mods = 'SHIFT|SUPER', action = act.MoveTabRelative(1) },
         { key = 'm', mods = 'SUPER', action = act.PaneSelect, },
 
 
