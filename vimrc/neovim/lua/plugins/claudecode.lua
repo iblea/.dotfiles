@@ -56,7 +56,7 @@ return {
             end
             vim.cmd("wincmd =")
             vim.fn.jobstart("tmux select-window -t 2", { detach = true })
-          end, 200)
+          end, 500)
         else
           -- diff OFF: 모든 버퍼 삭제 후 tmux window 이동
           vim.schedule(function()
