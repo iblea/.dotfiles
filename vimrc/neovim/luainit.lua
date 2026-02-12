@@ -77,5 +77,8 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
 
   -- 분할 창 크기 균등화
   vim.keymap.set("n", "<C-=>", "<C-w>=", { desc = "Equalize window sizes" })
+
+  vim.opt.wrap = true
+  vim.opt.diffopt:append("followwrap")
 end
 
