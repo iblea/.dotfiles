@@ -31,17 +31,25 @@ vim.diagnostic.config({
     show_header = true,
   },
   virtual_text = false,
-  signs = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.HINT] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+    },
+  },
   underline = true,
   update_in_insert = false,
   severity_sort = false,
 })
 
-local signs = { Error = "", Warn = "", Hint = "", Info = "" }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon .. " ", texthl = hl, numhl = hl })
-end
+-- deprecated in Neovim 0.11+, use vim.diagnostic.config signs.text instead
+-- local signs = { Error = "", Warn = "", Hint = "", Info = "" }
+-- for type, icon in pairs(signs) do
+--   local hl = "DiagnosticSign" .. type
+--   vim.fn.sign_define(hl, { text = icon .. " ", texthl = hl, numhl = hl })
+-- end
 
 local win = require("lspconfig.ui.windows")
 local _default_opts = win.default_opts

@@ -199,3 +199,39 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
   vim.opt.diffopt:append("followwrap")
 end
 
+-- Project-local config loader
+-- 프로젝트 루트의 .nvim.lua, .vscode/.nvim.lua 자동 로드
+local _loaded_project_configs = {}
+
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  callback = function()
+    local buf_dir = vim.fn.expand("%:p:h")
+
+    local root_match = vim.fs.find({ ".git", ".nvim.lua", ".vscode" }, {
+      upward = true,
+      path = buf_dir,
+    })
+    if #root_match == 0 then return end
+    local root = vim.fn.fnamemodify(root_match[1], ":h")
+    -- local root = vim.fn.getcwd()
+
+    if _loaded_project_configs[root] then return end
+    _loaded_project_configs[root] = true
+
+    local targets = {
+      root .. "/.nvim.lua",
+      root .. "/.vscode/.nvim.lua",
+    }
+    for _, path in ipairs(targets) do
+      if vim.fn.filereadable(path) == 1 then
+        -- local content = vim.secure.read(path)
+        -- if content then
+        --   local fn = load(content)
+        --   if fn then fn() end
+        -- end
+        dofile(path)
+      end
+    end
+  end,
+})
+

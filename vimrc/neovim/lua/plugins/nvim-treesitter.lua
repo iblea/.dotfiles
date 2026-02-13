@@ -34,6 +34,7 @@ return {
         "lua",
         "markdown",
         "markdown_inline",
+        "python",
         "scss",
         "tsx",
         "typescript",
