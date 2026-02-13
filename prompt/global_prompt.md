@@ -182,12 +182,12 @@ The following is an explanation of the user-defined command.
 
 ##### Translate Category Commands Options
 Translate Category commands can have optional strings (options) following the command.
-(ex: `;eng below`, `;eng under`, etc.)
+(example: `;eng below`, `;eng under`, etc.)
 
 - The characters `under` or `below` or the abbreviation `b` or `u` can be used. This is entered after a user-defined command string, output all the original text first, and then output the translated content.
 - The characters `file` or the abbreviation `f` can be used. This is entered after a user-defined command string, translate the contents of the file at the path that follows this text.
 - The characters `verify` or `verbose` or the abbreviation `v` or `vb` or `ver` can be used. This is entered after a user-defined command string, re-translate the content you translated back into the language before translation.
-  - ex: `;eng ver 나는 지금 몹시 배고프다.` -> `I'm very hungry now.` -> `난 지금 매우 배고프다.`
+  - example: `;eng ver 나는 지금 몹시 배고프다.` -> `I'm very hungry now.` -> `난 지금 매우 배고프다.`
     - Because the `;eng` command was entered, the sentence "나는 지금 몹시 배고프다." must be translated into English.
     - Because the `ver` option was entered after the `;eng` command, the translated sentence "I'm very hungry now." must be re-translated back into the language before translation, which is Korean.
     - **If this option is input, output the re-translated translation instead of outputting the original text.**
@@ -224,7 +224,7 @@ Translate Category commands can have optional strings (options) following the co
     - If there is no skill matching the skill name, return the message "no skill" and end the conversation.
   - If no skill name argument is provided, display the list of available skills, return the message "input skill name argument.", and end the conversation.
   - Even if, after examining the context of the conversation, you determine that it seems unnecessary to use the skill, you must use the skill unconditionally. You must not skip using the skill.
-    - ex: `;iskill eng "Hello World!"` : The `eng` skill instructs to translate the content into English. Although the subsequent content is already an English sentence and it may seem unnecessary to use the `eng` skill, since the `;iskill` user defined command has been invoked, you must unconditionally call the `eng` skill.
+    - example: `;iskill eng "Hello World!"` : The `eng` skill instructs to translate the content into English. Although the subsequent content is already an English sentence and it may seem unnecessary to use the `eng` skill, since the `;iskill` user defined command has been invoked, you must unconditionally call the `eng` skill.
 - When receiving the command **;extract**, you must extract and write text from the image. If there is no attached image, print the message 'There is no image.'
   - If the language is not Korean, output all of the extracted original text, and then additionally output the content translated into Korean.
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
@@ -301,11 +301,11 @@ Translate Category commands can have optional strings (options) following the co
   - Example command: `codenvim --nowait <path>`
   - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
   - If `sv` is entered as `<path>` (`;cim sv`), open the `/tmp/translate_byai.md` file with codenvim. (`codenvim --nowait /tmp/translate_byai.md`)
-    - When you need to position the cursor at a specific line in a FilePath, use `codenvim --nowait +<line> <path>`. (ex: `codenvim --nowait +100 testlog.log`)
+    - When you need to position the cursor at a specific line in a FilePath, use `codenvim --nowait +<line> <path>`. (example: `codenvim --nowait +100 testlog.log`)
 
 - When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
   - Example command: use the command `code --goto <path>` or `code --goto <path>`
-    - When you need to position the cursor at a specific line in a FilePath, use `code --goto <path>:<line>`. (ex: `code --goto testlog.log:100`)
+    - When you need to position the cursor at a specific line in a FilePath, use `code --goto <path>:<line>`. (example: `code --goto testlog.log:100`)
   - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
 
 - When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.

@@ -18,5 +18,4 @@ Command Format : `/isk [skill name] [content]`
 # Command behavior
 You must unconditionally call/use the skill corresponding to `[skill name]`.
   - Even if, after examining the context of the conversation, you determine that it seems unnecessary to use the skill, you must use the skill unconditionally. You must not skip using the skill.
-    - ex: `/isk eng "Hello World!"` : The `eng` skill instructs to translate the content into English. Although the subsequent content is already an English sentence and it may seem unnecessary to use the `eng` skill, since the `/isk` user defined command has been invoked, you must unconditionally call the `eng` skill.
-
+    - example: `/isk eng "Hello World!"` : The `eng` skill instructs to translate the content into English. Although the subsequent content is already an English sentence and it may seem unnecessary to use the `eng` skill, since the `/isk` user defined command has been invoked, you must unconditionally call the `eng` skill.

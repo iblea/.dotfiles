@@ -87,7 +87,7 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
       - After the mentioned TODO file and line are entered, the mission option may be additionally entered. (example: ";aitodo `@./aitodo.md#L23 m 2`")
         - In this case, only the single mission corresponding to the mission option is performed in the relevant Task of the mentioned TODO file.
       - `t` is an abbreviation for `task`. Therefore, `;aitodo t 1` is the same as `;aitodo task 1`.
-  - mission is optional. ex: `;aitodo task 1 mission 1`
+  - mission is optional. example: `;aitodo task 1 mission 1`
     - The mission option can be abbreviated with the characters `m` or `mi` (e.g. `;aitodo task 1 m 2`).
     - The mission option refers to a single `- [ ]` item within a Task in the aitodo.md file.
     - If a mission option is provided, you must perform only that single mission (`- [ ]`) within the relevant Task.
@@ -128,7 +128,7 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
 
 - When receiving the command **;cai**, modify the written file to match the file format of `aitodo.md`, and save it as the `aitodo.md` file in the directory where you are currently located.
   - If the `aitodo.md` file already exists, delete all the contents of the existing file and overwrite it with the newly written content.
-    - When the `a` or `add` option is added after the **;cai** command (ex: `;cai a`), do not delete the content and overwrite it; instead, add content to the existing aitodo.md file.
+    - When the `a` or `add` option is added after the **;cai** command (example: `;cai a`), do not delete the content and overwrite it; instead, add content to the existing aitodo.md file.
       - If the aitodo.md file does not exist, create a new one.
   - The following phrase must be included at the very top of the file: (The path of the original file to be converted must be specified.)
     ```
@@ -137,7 +137,7 @@ Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and de
 
     ```
   - Write the commit message in Korean whenever possible.
-  - When the `nci` (no commit) option is added after the **;cai** command (ex: `;cai nci`), do not add a commit message when converting to the `aitodo.md` file.
+  - When the `nci` (no commit) option is added after the **;cai** command (example: `;cai nci`), do not add a commit message when converting to the `aitodo.md` file.
   - Utilize the `Divide and Conquer` problem-solving approach. When there are very many or extensive requirements, you must appropriately separate them into detailed subtasks and divide them into `Tasks`/`Missions` to solve the problem.
 
 - When receiving the command **;maketodo**, Analyze user requirements to create/add an aitodo file.
