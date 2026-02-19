@@ -1,15 +1,14 @@
 #!/bin/bash
 
-if [ -z "$(command -v claude)" ]; then
-    echo "claude is not installed"
-    echo "https://docs.claude.com/en/docs/claude-code/setup"
-    echo "npm install -g @anthropic-ai/claude-code"
-    echo "curl -fsSL 'https://claude.ai/install.sh' | bash"
+if [ -z "$(command -v codex)" ]; then
+    echo "codex is not installed"
+    echo "npm install -g @openai/codex"
+	echo "brew install --cask codex"
     exit 1
 fi
 
-if [ -z "$(command -v cld)" ]; then
-    echo "failed to find cld binary"
+if [ -z "$(command -v codex)" ]; then
+    echo "failed to find codex binary"
     echo "check PATH environment variable"
     exit 1
 fi
@@ -22,13 +21,13 @@ fi
 NVIM_IDE=0
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
-        claude --help
+        codex --help
         exit $?
     elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
-        claude update
+        npm install -g @openai/codex
         exit $?
     elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
-        claude --version
+        codex --version
         exit $?
     fi
 fi
@@ -47,23 +46,23 @@ fi
 SESSION_NAME="claude_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 
-# export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
+export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
 if [ -n "$TMUX" ]; then
     export EDITOR="$EDITOR";
-    cld $@
+    codex $@
     exit 0
 elif [ "$NVIM_IDE" -eq 1 ]; then
-    # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
+    # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: codex 나중)
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
         new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" C-m \; \
+        send-keys -t "$SESSION_NAME:1" "export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && codex $@; tmux kill-session -t $SESSION_NAME" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
 else
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME"
+        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && codex $@; tmux kill-session -t $SESSION_NAME"
 fi
 
 

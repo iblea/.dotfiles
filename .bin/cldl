@@ -47,7 +47,21 @@ fi
 SESSION_NAME="claude_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 
+
+# export ANTHROPIC_BASE_URL=http://localhost:4000 
+# export ANTHROPIC_BASE_URL=http://localhost:8080
+# export ANTHROPIC_BASE_URL="http://127.0.0.1:7890"
+export ANTHROPIC_BASE_URL="http://127.0.0.1:4000"
+# export HTTP_PROXY=http://localhost:8080
+# export HTTPS_PROXY=http://localhost:8080 
+# export NODE_EXTRA_CA_CERTS=~/.mitmproxy/mitmproxy-ca-cert.pem
 # export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
+
+# sudo security add-trusted-cert -d -r trustRoot \
+#     -k /Library/Keychains/System.keychain \
+#     "$HOME/.mitmproxy/mitmproxy-ca-cert.pem"
+
+
 
 if [ -n "$TMUX" ]; then
     export EDITOR="$EDITOR";
