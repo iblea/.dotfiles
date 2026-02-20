@@ -125,7 +125,6 @@ else
 fi
 
 export ENABLE_LSP_TOOL=true
-echo "c opt: $CLAUDE_OPT"
 
 if [ "$CLAUDE_OPT" = "s" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
