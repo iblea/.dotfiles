@@ -1,12 +1,12 @@
 #!/bin/bash
 
 
-CLAUDE_OPT="a"
+CLAUDE_OPT=""
 
 DEFAULT_EDITOR="vi"
 
 if [ $# -eq 0 ]; then
-    CLAUDE_OPT="a"
+    CLAUDE_OPT=""
 else
     if [ $# -eq 1 ]; then
         if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
@@ -125,6 +125,7 @@ else
 fi
 
 export ENABLE_LSP_TOOL=true
+echo "c opt: $CLAUDE_OPT"
 
 if [ "$CLAUDE_OPT" = "s" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
@@ -164,9 +165,9 @@ elif [ "$CLAUDE_OPT" = "hu" ]; then
     fi
 else
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model='' --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=sonnet ${OTHER_OPTS[@]}
+        claude --model='' ${OTHER_OPTS[@]}
     fi
 fi
 
