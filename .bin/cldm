@@ -30,6 +30,9 @@ if [ $# -eq 1 ]; then
     elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
         claude --version
         exit $?
+    elif [[ "$1" = "changelog" ]] || [[ "$1" = "ch" ]] || [[ "$1" = "-ch" ]] || [[ "$1" = "--changelog" ]]; then
+        echo "github link: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        exit 0
     fi
 fi
 if [ $# -ge 1 ]; then
