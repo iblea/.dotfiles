@@ -2323,7 +2323,7 @@ if [ -n "$(command -v claude)" ]; then
             answer=$(dd bs=1 count=1 2>/dev/null)
             stty echo 2>/dev/null
             echo
-            if [[ "$answer" = "s" ]] || [[ "$answer" = "S" ]] || ; then
+            if [[ "$answer" = "s" ]] || [[ "$answer" = "S" ]]; then
 				echo "show +7"
                 bash -c "cd '$HOME/.claude/plans/'; find . -name '*.md' -type f -mtime +7"
 				return 0;
