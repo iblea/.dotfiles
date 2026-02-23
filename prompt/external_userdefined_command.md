@@ -14,7 +14,7 @@
     If files in parent directories or other directories need to be reviewed, proceed with the reviewing and additionally report the files that were reviewed.
   - If the keyword `cached`, `staged`, `staging`, or `stage` is provided instead of `@[file]` (e.g., `/ireview cached`, `/ireview staged`), execute `git diff --cached` (or `git diff --staged`) to review the staged changes.
     In this case, review the code changes that have been staged for commit.
-  - If necessary, Use `CodeReviewer` and `ArchitectReviewer`.
+  - If necessary, Use `code_reviewer` and `architect_reviewer`.
     When there is a request to use static analysis tools, analyze and review the code using static analysis tools.
 - When receiving the command **;itest** or **;itests**, you must create unit test code for the selected code, function, or file. (Mainly create boundary value tests.) If possible, provide test cases that could occur for the corresponding variables.
   - In Claude Code, you must use **tester** agent unconditionally. (서브 에이전트 또는 커스텀 에이전트를 사용할 수 있다면 반드시 tester 에이전트를 사용해야 합니다.)
@@ -36,9 +36,9 @@
 ### User-Defined Category: Council
 | Agent Name | Command | Parallel Agents |
 |------------|---------|-----------------|
-| `all` | Request in parallel using both `CodexCouncilAgent` and `GeminiCouncilAgent` subagents. | `CodexCouncilAgent` / `GeminiCouncilAgent` |
-| `gem` / `gemini` | `echo "[input]" \| gemini --model pro 2>/dev/null` | `GeminiCouncilAgent` |
-| `codex` | `codex exec [input]` | `CodexCouncilAgent` |
+| `all` | Request in parallel using both `codex_council_agent` and `gemini_council_agent` subagents. | `codex_council_agent` / `gemini_council_agent` |
+| `gem` / `gemini` | `echo "[input]" \| gemini --model pro 2>/dev/null` | `gemini_council_agent` |
+| `codex` | `codex exec [input]` | `codex_council_agent` |
 
 - When receiving the command **;ag `Agent Name`** or **;agents `Agent Name`**, execute the commands corresponding to each `Agent Name` by referring to the table.
   - `[input]` should contain the content entered by the user.
@@ -48,8 +48,8 @@
   - If special characters such as `"`, `'` are included in `[input]`, proceed by escaping them, or save the `[input]` phrase as a file and make the request using the cat command.
     - example: `cat you_created_file.txt | gemini --model pro 2>/dev/null`
   - `p` or `parallel` option input, Refer to the table and execute the subagents corresponding to each option in parallel.
-    - example: `;ag p gem` -> use `GeminiCouncilAgent` subagent.
-    - example: `;ag p all` -> use `CodexCouncilAgent` / `GeminiCouncilAgent` subagent.
+    - example: `;ag p gem` -> use `gemini_council_agent` subagent.
+    - example: `;ag p all` -> use `codex_council_agent` / `gemini_council_agent` subagent.
 
 ### AITODO user-defined commands
 Refer to the `AITODO` section in `ETC` for the `aitodo.md` file structure and detailed information about it.

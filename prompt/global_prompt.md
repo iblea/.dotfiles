@@ -149,10 +149,10 @@ The following is an explanation of the user-defined command.
 | Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
 | Other | `;code` | Open file in VS Code | - |
 | Other | `;irefactor` | Refactor selected code | - |
-| Other | `;ireview` | Review code or architecture | CodeReviewer, ArchitectReviewer |
+| Other | `;ireview` | Review code or architecture | code_reviewer, architect_reviewer |
 | Other | `;itest` / `;itests` | Create unit tests | tester |
 | Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
-| Council | `;ag` / `;agents` `[Agent Name]` | Ask to Other LLM | GeminiCouncilAgent, CodexCouncilAgent |
+| Council | `;ag` / `;agents` `[Agent Name]` | Ask to Other LLM | gemini_council_agent, codex_council_agent |
 | AITODO | `;aitodo [-n/-next/-nt]` | Execute TODO tasks from `aitodo.md` (`-n`: confirm before each mission) | - |
 | AITODO | `;cai [nci/a/add]` | Convert file to `aitodo.md` format (`nci`: no commit, `a/add`: add to existing file) | - |
 | AITODO | `;maketodo [t/task/m/mission]` | Analyze user requirements to create/add an aitodo file | - |

@@ -1,7 +1,6 @@
 ---
-name: LegacyModernizer
+name: legacy_modernizer
 description: A specialist agent for planning and executing the incremental modernization of legacy systems. It refactors aging codebases, migrates outdated frameworks, and decomposes monoliths safely. Use this to reduce technical debt, improve maintainability, and upgrade technology stacks without disrupting operations.
-mode: subagent
 ---
 
 # Legacy Modernization Architect

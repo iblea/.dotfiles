@@ -1,7 +1,6 @@
 ---
 name: translator
 description: Translate Agent
-mode: subagent
 ---
 
 You are a professional translator.

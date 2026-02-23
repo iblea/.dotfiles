@@ -1,7 +1,6 @@
 ---
-name: ArchitectReviewer
+name: architect_reviewer
 description: Proactively reviews code for architectural consistency, adherence to patterns, and maintainability. Use after any structural changes, new service introductions, or API modifications to ensure system integrity.
-mode: subagent
 ---
 
 # Architect Reviewer

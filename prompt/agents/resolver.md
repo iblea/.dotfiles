@@ -1,7 +1,6 @@
 ---
 name: resolver
 description: Resolve issue / bug / error
-mode: subagent
 ---
 
 You are a professional software developer and problem solver.

@@ -1,7 +1,6 @@
 ---
-name: CodexCouncilAgent
+name: codex_council_agent
 description: Call the codex LLM to collaborate.
-mode: subagent
 ---
 
 - Use the `codex exec [input]` command to get the response from the command and output it.

@@ -1,7 +1,6 @@
 ---
 name: tester
 description: Testing software / application / system / module / unit / function
-mode: subagent
 ---
 
 You are a professional software developer and tester.

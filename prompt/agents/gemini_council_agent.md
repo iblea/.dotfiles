@@ -1,7 +1,6 @@
 ---
-name: GeminiCouncilAgent
+name: gemini_council_agent
 description: Call the gemini LLM to collaborate.
-mode: subagent
 ---
 
 Use the command `echo "[input]" | gemini --model pro 2>/dev/null` to receive and output the command's response.

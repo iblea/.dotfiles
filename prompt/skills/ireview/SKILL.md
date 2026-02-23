@@ -1,6 +1,6 @@
 ---
 name: ireview
-description: Review code for quality, architecture, and best practices. Use when reviewing files, staged changes, or entire directories with CodeReviewer and ArchitectReviewer agents.
+description: Review code for quality, architecture, and best practices. Use when reviewing files, staged changes, or entire directories with code_reviewer and architect_reviewer agents.
 ---
 
 # This is user-defined command
@@ -32,6 +32,6 @@ If files in parent directories or other directories need to be reviewed, proceed
 
 
 # Command behavior
-- You must use CodeReviewer, ArchitectReviewer agent unconditionally.
+- You must use code_reviewer, architect_reviewer agent unconditionally.
 When there is a request to use static analysis tools, please analyze and review the code using static analysis tools.
 
