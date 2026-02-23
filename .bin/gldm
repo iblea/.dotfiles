@@ -35,6 +35,7 @@ if [ $# -eq 1 ]; then
         exit $?
     elif [[ "$1" = "changelog" ]] || [[ "$1" = "ch" ]] || [[ "$1" = "-ch" ]] || [[ "$1" = "--changelog" ]]; then
         echo "release note: https://geminicli.com/docs/changelogs/latest/"
+		echo "changelog   : https://geminicli.com/docs/changelogs/"
         echo "github  link: https://github.com/google-gemini/gemini-cli/releases"
         exit 0
     elif [[ "$1" = "ls" ]] || [[ "$1" = "-ls" ]] || [[ "$1" = "--list-sessions" ]]; then
