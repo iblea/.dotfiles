@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DEFAULT_EDITOR="vi"
+NVIM_IDE=0
 
 if [ -z "$(command -v tmux)" ]; then
     echo "tmux command not found"
@@ -17,7 +18,7 @@ fi
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         gemini --help
-        exit 0
+        exit $?
     elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
         npm install -g @google/gemini-cli@latest
         if [ $? -ne 0 ]; then
@@ -30,8 +31,12 @@ if [ $# -eq 1 ]; then
         fi
         exit $?
     elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
-		gemini --version
-		exit $?
+        gemini --version
+        exit $?
+    elif [[ "$1" = "changelog" ]] || [[ "$1" = "ch" ]] || [[ "$1" = "-ch" ]] || [[ "$1" = "--changelog" ]]; then
+        echo "release note: https://geminicli.com/docs/changelogs/latest/"
+        echo "github  link: https://github.com/google-gemini/gemini-cli/releases"
+        exit 0
     elif [[ "$1" = "ls" ]] || [[ "$1" = "-ls" ]] || [[ "$1" = "--list-sessions" ]]; then
         gemini --list-sessions
         exit 0
@@ -46,65 +51,28 @@ if [ $# -eq 2 ]; then
     fi
 fi
 
-GLOBAL_OPTIONS=()
-OPTS=()
-MODEL_OPTS=()
-
-MODEL_CONTINUE_FLAG=0
 for arg in "$@"; do
-    if [ $MODEL_CONTINUE_FLAG -eq 1 ]; then
-        MODEL_OPTS+=("$arg")
-        MODEL_CONTINUE_FLAG=0
-        continue
-    fi
-    if [ "$arg" = "-c" ]; then
-        GLOBAL_OPTIONS+=("-r")
-    elif [ "$arg" = "-d" ] || [ "$arg" = "d" ] || [ "$arg" = "--dangerous" ] || [ "$arg" = "-y" ] || [ "$arg" = "--yolo" ]; then
-        GLOBAL_OPTIONS+=("--yolo")
-    elif [ "$arg" = "-a" ]|| [ "$arg" = "--all" ]; then
-        GLOBAL_OPTIONS+=("--include-directories" "/")
-    elif [ "$arg" = "-m" ] || [ "$arg" = "--model" ]; then
-        MODEL_CONTINUE_FLAG=1
-        MODEL_OPTS=("--model")
-        continue
-    elif [ "$arg" = "p" ] || [ "$arg" = "pro" ]; then
-        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
-            MODEL_OPTS+=("--model" "pro")
-        fi
-    elif [ "$arg" = "f" ]; then
-        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
-            MODEL_OPTS+=("--model" "flash")
-        fi
-    elif [ "$arg" = "fl" ]; then
-        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
-            MODEL_OPTS+=("--model" "flash-lite")
-        fi
-    elif [ "$arg" = "a" ] || [ "$arg" = "auto" ]; then
-        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
-            MODEL_OPTS+=("--model" "auto")
-        fi
-    elif [[ "$arg" = "vs" ]] || [[ "$arg" = "-vs" ]] || [[ "$arg" = "code" ]] || [[ "$arg" = "-code" ]]; then
-            export EDITOR="code"
+    if [[ "$arg" = "vs" ]] || [[ "$arg" = "-vs" ]] || [[ "$arg" = "code" ]] || [[ "$arg" = "-code" ]]; then
+        export EDITOR="code"
+        shift
     elif [[ "$arg" = "vi" ]] || [[ "$arg" = "-vi" ]]; then
-            if [ -n "$(command -v nvim)" ]; then
-                export EDITOR="nvim"
-            else
-                export EDITOR="vim"
-            fi
-    elif [[ "$arg" = "vim" ]] || [[ "$arg" = "-vim" ]]; then
-            export EDITOR="vim"
-    elif [[ "$arg" = "nvi" ]] || [[ "$arg" = "-nvi" ]] || [[ "$arg" = "nvim" ]] || [[ "$arg" = "-nvim" ]]; then
+        if [ -n "$(command -v nvim)" ]; then
             export EDITOR="nvim"
-    else
-        OPTS+=("$arg")
+        else
+            export EDITOR="vim"
+        fi
+        NVIM_IDE=1
+        shift
+    elif [[ "$arg" = "vim" ]] || [[ "$arg" = "-vim" ]]; then
+        export EDITOR="vim"
+		shift
+        NVIM_IDE=1
+    elif [[ "$arg" = "nvi" ]] || [[ "$arg" = "-nvi" ]] || [[ "$arg" = "nvim" ]] || [[ "$arg" = "-nvim" ]]; then
+        export EDITOR="nvim"
+        NVIM_IDE=1
+        shift
     fi
 done
-
-# default model
-if [ ${#MODEL_OPTS[@]} -le 0 ]; then
-    MODEL_OPTS+=("--model" "pro")
-fi
-
 
 if [ -z "$EDITOR" ]; then
     if [[ "$DEFAULT_EDITOR" = "code" ]]; then
@@ -133,16 +101,50 @@ elif [[ "$EDITOR" = "vim" ]]; then
 fi
 
 
+# export HTTP_PROXY=http://localhost:8080
+# export HTTPS_PROXY=http://localhost:8080 
+# export NODE_EXTRA_CA_CERTS=~/.mitmproxy/mitmproxy-ca-cert.pem
+# export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
+
+# sudo security add-trusted-cert -d -r trustRoot \
+#     -k /Library/Keychains/System.keychain \
+#     "$HOME/.mitmproxy/mitmproxy-ca-cert.pem"
+
+
+
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="gemini_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/tmux/tmux.gemini.conf"
 
-exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-    new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME"
+# exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+#     new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gemini ${MODEL_OPTS[@]} ${GLOBAL_OPTIONS[@]} ${OPTS[@]} && tmux kill-session -t $SESSION_NAME"
 
 # if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
 #     exec tmux new-session -s "$SESSION_NAME" "sleep 0.1 && clear && claude; tmux kill-session -t $SESSION_NAME"
 # else
 #     exec tmux new-session -s "$SESSION_NAME" "claude; tmux kill-session -t $SESSION_NAME"
 # fi
+
+
+
+if [ -n "$TMUX" ]; then
+    export EDITOR="$EDITOR";
+    gld $@
+    exit 0
+elif [ "$NVIM_IDE" -eq 1 ]; then
+    # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
+    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" -d \; \
+        new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
+        send-keys -t "$SESSION_NAME:1" "export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && gld $@; tmux kill-session -t $SESSION_NAME" C-m \; \
+        select-window -t "$SESSION_NAME:1" \; \
+        attach-session -t "$SESSION_NAME"
+else
+    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && gld $@; tmux kill-session -t $SESSION_NAME"
+    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" "sleep 0.1 && clear && gld $@ && tmux kill-session -t $SESSION_NAME"
+fi
+
+
 

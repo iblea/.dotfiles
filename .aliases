@@ -1936,7 +1936,7 @@ function glr() {
 
 
 
-function gld() {
+function glcd() {
     local AGO_LC_ALL="$LC_ALL"
     if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
         export LC_ALL=ko_KR.UTF-8

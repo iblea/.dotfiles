@@ -1,0 +1,145 @@
+#!/bin/bash
+
+
+DEFAULT_EDITOR="vi"
+
+
+if [ $# -eq 1 ]; then
+    if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+        gemini --help
+        exit $?
+    elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
+        npm install -g @google/gemini-cli@latest
+        if [ $? -ne 0 ]; then
+            echo "update error"
+            echo "rm -rf \"$(npm root -g)/@google/gemini-cli\""
+            echo "rm -rf \"$(npm root -g)/@google/\".gemini-cli-*"
+            echo "npm cache clean --force"
+            echo "npm uninstall -g @google/gemini-cli"
+            echo "npm install -g @google/gemini-cli"
+        fi
+        exit $?
+    elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
+        gemini --version
+        exit $?
+    elif [[ "$1" = "changelog" ]] || [[ "$1" = "ch" ]] || [[ "$1" = "-ch" ]] || [[ "$1" = "--changelog" ]]; then
+        echo "release note: https://geminicli.com/docs/changelogs/latest/"
+        echo "github  link: https://github.com/google-gemini/gemini-cli/releases"
+        exit 0
+    elif [[ "$1" = "ls" ]] || [[ "$1" = "-ls" ]] || [[ "$1" = "--list-sessions" ]]; then
+        gemini --list-sessions
+        exit 0
+    fi
+fi
+
+
+
+OTHER_OPTS=()
+
+for (( i=1; i<=$#; i++ )); do
+    opt="${!i}"
+    if [ "$arg" = "p" ] || [ "$arg" = "pro" ]; then
+        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+            MODEL_OPTS+=("--model" "pro")
+        fi
+    elif [ "$arg" = "f" ]; then
+        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+            MODEL_OPTS+=("--model" "flash")
+        fi
+    elif [ "$arg" = "fl" ]; then
+        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+            MODEL_OPTS+=("--model" "flash-lite")
+        fi
+    elif [ "$arg" = "a" ] || [ "$arg" = "auto" ]; then
+        if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+            MODEL_OPTS+=("--model" "auto")
+        fi
+    elif [[ "$opt" = "--dan" ]] || [[ "$opt" = "-d" ]] || [[ "$opt" = "dan" ]] || [[ "$opt" = "-y" ]] || [[ "$opt" = "--yolo" ]] || [[ "$opt" = "yolo" ]]; then
+        OTHER_OPTS+=("--yolo")
+    elif [[ "${opt}" = "-c" ]] || [[ "${opt}" = "--continue" ]]; then
+        OTHER_OPTS+=("-r")
+    elif [ "$arg" = "-a" ]|| [ "$arg" = "--all" ]; then
+        OTHER_OPTS+=("--include-directories" "/")
+    elif [[ "${opt}" = "--cd" ]] || [[ "${opt}" = "-cd" ]] || [[ "${opt}" = "cd" ]]; then
+        ((i++))
+        if [ $i -gt $# ]; then
+            echo "missing directory argument for --cd option"
+            exit 1
+        fi
+        opt="${!i}"
+        if [ ! -d "$opt" ]; then
+            echo "directory not found: $opt"
+            exit 1
+        fi
+        cd "$opt"
+    elif [[ "${opt}" = "vs" ]] || [[ "${opt}" = "-vs" ]] || [[ "${opt}" = "vsc" ]] || [[ "${opt}" = "-vsc" ]]; then
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        fi
+    elif [[ "${opt}" = "vi" ]] || [[ "${opt}" = "-vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    elif [[ "${opt}" = "vim" ]] || [[ "${opt}" = "-vim" ]]; then
+        export EDITOR="vim"
+    elif [[ "${opt}" = "nvi" ]] || [[ "${opt}" = "-nvi" ]] || [[ "${opt}" = "nvim" ]] || [[ "${opt}" = "-nvim" ]]; then
+        export EDITOR="nvim"
+    else
+        OTHER_OPTS+=("$opt")
+    fi
+done
+
+
+
+
+# if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
+#     OTHER_OPTS+=("--ide")
+# fi
+
+PROMPT_PATH=""
+
+if [ -z "$EDITOR" ]; then
+    if [[ "$DEFAULT_EDITOR" = "code" ]]; then
+        export EDITOR="code"
+    elif [[ "$DEFAULT_EDITOR" = "vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    else
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        elif [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    fi
+fi
+
+if [ -n "$TMUX" ]; then
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="codenvim"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="codevim"
+    fi
+else
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="nvim --cmd 'cd $PWD'"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="vim --cmd 'cd $PWD'"
+    fi
+fi
+
+export ENABLE_LSP_TOOL=true
+
+if [ ${#MODEL_OPTS[@]} -le 0 ]; then
+    MODEL_OPTS+=("--model" "pro")
+fi
+
+
+gemini ${MODEL_OPTS[@]} ${OTHER_OPTS[@]}
+
