@@ -22,7 +22,8 @@ Please refer to the details below.
 When input is received in the format `/market <ticker code(ticker)/stock name>`, analyze the market situation related to the corresponding stock.
   - If enter `sector` as the `<ticker code(ticker/stock name>`, analyze each sector and summarize the sector-specific fluctuations, leading sectors, sector leaders, small and mid-cap stocks, and rapidly rising stocks for each sector.
     - Analyze sectors by period (1 day, 1 week, 1 month, quarterly, 1 year, long-term) and summarize the short-term leading sectors, long-term leading sectors, and the leading stocks within those leading sectors.
-    Additionally, analyze market conditions to predict which sectors will lead in the future and recommend the leading stocks in those sectors.
+    - Additionally, analyze market conditions to predict which sectors will lead in the future and recommend the leading stocks in those sectors.
+    - Analyze the trading strategies for the recommended stocks (holding period: short-term/swing/long-term), along with the specific entry, exit, and stop-loss points based on those trading setups.
 
 - Example
   - `/market TSLA` -> Analyze the market situation for Tesla.
