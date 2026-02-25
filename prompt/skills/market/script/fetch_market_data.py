@@ -172,7 +172,7 @@ def parse_args():
 def main():
     parser, args = parse_args()
 
-    if not args.find_symbol and not args.get_data:
+    if not args.find_symbol and not args.get_ticker_data:
         parser.print_help()
         sys.exit(0)
 
@@ -182,8 +182,8 @@ def main():
         find_symbol(keyword, exchange)
         return
 
-    if args.get_data:
-        if len(args.get_data) < 2:
+    if args.get_ticker_data:
+        if len(args.get_ticker_data) < 2:
             print("ERROR: -t 옵션은 최소 SYMBOL EXCHANGE 2개 인자가 필요합니다.")
             print("  예: -t NQ1! CME_MINI")
             sys.exit(1)
@@ -193,9 +193,9 @@ def main():
             print("ERROR: -d 옵션의 값은 1~5000 사이여야 합니다.")
             sys.exit(1)
 
-        symbol = args.get_data[0]
-        exchange = args.get_data[1]
-        label = args.get_data[2] if len(args.get_data) > 2 else None
+        symbol = args.get_ticker_data[0]
+        exchange = args.get_ticker_data[1]
+        label = args.get_ticker_data[2] if len(args.get_ticker_data) > 2 else None
         get_data(symbol, exchange, label, day=day)
 
 

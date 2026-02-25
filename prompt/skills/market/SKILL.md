@@ -124,6 +124,7 @@ If using the `date` command is difficult, determine the current time through a w
 # External Scripts
 
 모든 외부 스크립트 (external script) 는 `script/` 디렉토리에 위치합니다.
+`output/` 디렉토리에 생성된 csv 파일을 확인하고, 현재 날짜의 데이터가 존재할 경우, 스크립트를 추가로 실행하지 말고, 기존에 수집한 데이터를 활용하라.
 
 ### Technical Analysis Scripts
 `fetch_market_data.py`로 수집한 OHLCV CSV 데이터를 기반으로 기술적 분석을 자동 수행하는 스크립트들이다.
