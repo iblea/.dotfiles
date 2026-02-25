@@ -1,5 +1,7 @@
 
 
+vim.g.fileline_space = vim.g.fileline_space or 0
+
 -- https://github.com/krapjost/nvim-lua-guide-kr
 
 function get_lazy_path()
@@ -130,11 +132,12 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
     end
 
     local relative_path = get_claude_relative_path()
+    local sep = (vim.g.fileline_space == 1) and " " or ""
     local ref
     if start_line == end_line then
-      ref = string.format("@%s#L%d", relative_path, start_line)
+      ref = string.format("@%s%s#L%d", relative_path, sep, start_line)
     else
-      ref = string.format("@%s#L%d-#L%d", relative_path, start_line, end_line)
+      ref = string.format("@%s%s#L%d-#L%d", relative_path, sep, start_line, end_line)
     end
 
     vim.fn.system({"tmux", "send-keys", "-t", ":1", "-l", ref .. " "})
