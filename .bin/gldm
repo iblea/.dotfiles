@@ -21,6 +21,8 @@ if [ $# -eq 1 ]; then
         exit $?
     elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
         npm install -g @google/gemini-cli@latest
+        # npm install -g @google/gemini-cli@preview
+        # npm install -g @google/gemini-cli@nightly
         if [ $? -ne 0 ]; then
             echo "update error"
             echo "rm -rf \"$(npm root -g)/@google/gemini-cli\""
@@ -103,7 +105,7 @@ fi
 
 
 # export HTTP_PROXY=http://localhost:8080
-# export HTTPS_PROXY=http://localhost:8080 
+# export HTTPS_PROXY=http://localhost:8080
 # export NODE_EXTRA_CA_CERTS=~/.mitmproxy/mitmproxy-ca-cert.pem
 # export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
