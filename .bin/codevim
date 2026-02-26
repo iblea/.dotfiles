@@ -70,10 +70,11 @@ if [ $NO_WAIT -ne 1 ]; then
 	tmux copy-mode
 fi
 
+# echo "vim enter" >> /tmp/test.txt
 # horizontal
 # $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
-TMUX_CMD="$VIM_PROGRAM --cmd 'cd $PWD' $@"
-TMUX_CMD_WAIT="$VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@"
+TMUX_CMD="export AIAGENT_TMP_EDITOR=1; $VIM_PROGRAM --cmd 'cd $PWD' $@"
+TMUX_CMD_WAIT="export AIAGENT_TMP_EDITOR=1; $VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@; VIMRC=\$?; tmux set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && tmux set-hook -w pane-exited 'run-shell \"sleep 0.15 && tmux send-keys -t 1 Enter && tmux set-hook -uw pane-exited\"'"
 if [ $CURRENT_LINES -ge 26 ]; then
 	if [ $NO_WAIT -eq 1 ]; then
 		tmux split-window -v -l 13 "$TMUX_CMD"
@@ -103,7 +104,18 @@ if [ $NO_WAIT -ne 1 ]; then
 	tmux last-pane
 	tmux wait-for $signal
 	tmux send-keys -X cancel
+	VIM_EXIT=$(tmux show-environment CODEVIM_EXIT_$$ 2>/dev/null | cut -d= -f2)
+	tmux set-environment -u CODEVIM_EXIT_$$ 2>/dev/null
 fi
+
+unset AIAGENT_TMP_EDITOR
+VIM_EXIT=${VIM_EXIT:--1}
+# echo "vim quit (exit: $VIM_EXIT)" >> /tmp/test.txt
+
+# if [ "$VIM_EXIT" -eq 10 ]; then
+#     (sleep 0.15 && tmux send-keys -t 1 Enter) &
+#     disown
+# fi
 
 # tmux new-window -n "claude-code-tmp-editor-$$" "$VIM_PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
 

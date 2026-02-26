@@ -208,3 +208,15 @@ if $TMUX_CLAUDECODE_IDE_NVIM == "1"
   cnoreabbrev <expr> wqa getcmdtype() == ":" && getcmdline() ==# "wqa" ? "call <SID>ClaudeSmartQuit(1,0,1)" : "wqa"
   cnoreabbrev <expr> wqa! getcmdtype() == ":" && getcmdline() ==# "wqa!" ? "call <SID>ClaudeSmartQuit(1,1,1)" : "wqa!"
 endif
+
+" AIAGENT_TMP_EDITOR=1 환경: :q 시 자동 저장 후 exit code 10으로 종료
+if $AIAGENT_TMP_EDITOR == "1"
+  function! s:AiAgentQuit()
+    if line('$') == 1 && getline(1) == ''
+      cquit 11
+    endif
+    w
+    cquit 10
+  endfunction
+  cnoreabbrev <expr> q getcmdtype() == ":" && getcmdline() ==# "q" ? "call <SID>AiAgentQuit()" : "q"
+endif
