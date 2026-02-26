@@ -1,5 +1,4 @@
 @global_prompt.md
-@external_userdefined_command.md
 
 
 # DEFAULT LANGUAGE and TONE ENFORCEMENT

@@ -43,6 +43,6 @@ function overwrite_agentfile() {
 
 overwrite_agentfile "AGENTS.md" "$1"
 overwrite_agentfile "global_prompt.md"
-overwrite_agentfile "external_userdefined_command.md"
+# overwrite_agentfile "external_userdefined_command.md"
 
 echo "done."

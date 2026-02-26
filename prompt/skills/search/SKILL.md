@@ -8,15 +8,15 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
-# Arguments
+# SKILL Arguments
 $ARGUMENTS
 
 This command can take options.
 Therefore, arguments can be passed as variadic parameters.
-Please refer to the details below.
+Please refer to the details below. (`#SKILL OPTS` section)
 
 
-# Command behavior
+# SKILL behavior
 - You must use researcher agent unconditionally.
 - This Command Format is `/search [th/dis]`
 - If necessary, use multiple tools such as web_search.
@@ -28,7 +28,8 @@ You should clearly explain complex concepts and provide a balanced perspective b
 You should also be proficient in data analysis and statistical methodology, so that you can visualize and deliver data effectively.
 You should provide creative insights and integrated perspectives based on a deep understanding of the subject.
 
-### This is an optional string that can follow this command. (ex: `/search th`, `/search dis`, etc.)
+# SKILL OPTS
+This is an optional string that can follow this command. (ex: `/search th`, `/search dis`, etc.)
 
 - The `th` or `dis` option may be entered after the `/search` command. In this case, you must unconditionally search for or refer to related academic papers.
   - Use Web Search, arXiv, Google Scholar, Semantic Scholar API, etc. to search for papers.
