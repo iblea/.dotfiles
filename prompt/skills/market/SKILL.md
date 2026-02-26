@@ -8,7 +8,8 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
-# Arguments
+
+# SKILL Arguments
 $ARGUMENTS
 
 This command can take options.
@@ -16,7 +17,7 @@ Therefore, arguments can be passed as variadic parameters.
 Please refer to the details below.
 
 
-# Command behavior
+# SKILL behavior / options
 - You must use translator agent unconditionally.
 - This Command Format is `/market <stock code / stock name>`.
 When input is received in the format `/market <ticker code(ticker)/stock name>`, analyze the market situation related to the corresponding stock.

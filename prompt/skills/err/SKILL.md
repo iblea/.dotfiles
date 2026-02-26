@@ -8,15 +8,21 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
-# Arguments
+
+# SKILL Arguments
 $ARGUMENTS
 
 This command can take options.
 Therefore, arguments can be passed as variadic parameters.
-Please refer to the details below.
+Please refer to the details below. (`#SKILL OPTS` section)
 
 
-# Command behavior
+# SKILL Behavior
 - You must use resolver agent.
 You must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
 
+
+# SKILL OPTS
+This is an optional string that can follow this command.
+
+File or file range and error messages can be provided as arguments.

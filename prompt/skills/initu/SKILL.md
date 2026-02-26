@@ -8,21 +8,21 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
-# Arguments
+
+# SKILL Arguments
 $ARGUMENTS
 
 This command can take options.
 Therefore, arguments can be passed as variadic parameters.
-Please refer to the details below.
+Please refer to the details below. (`#SKILL OPTS` section)
 
-# Command Name
-**initu** (init file update)
 
-# Command Description
+# SKILL Description
 Update project initialization files (AGENTS.md, CLAUDE.md, GEMINI.md) based on the current conversation history.
 This command analyzes the conversation to identify any project-related changes that should be documented.
 
-# Command Behavior
+
+# SKILL Behavior
 
 ## Pre-Step: Parse arguments and validate options
 - Parse all arguments and options from input
@@ -123,7 +123,8 @@ When `--force` or `-f` option is used:
 5. Delete backup files
 6. Report: "Updates applied successfully (force mode)."
 
-# Options
+
+# SKILL OPTS
 - `--force` or `-f`: Skip confirmation and apply updates directly (use with caution)
 - `--dry-run` or `-d`: Only show proposed changes without applying or backing up
 - **Note**: `--force` and `--dry-run` are mutually exclusive. Using both will result in an error.

@@ -8,15 +8,12 @@ This is **user-defined command**.
 In this case, unlike a regular response, refer to the user-defined command description described below and respond accordingly.
 Remember that the response method for user-defined commands should take priority over any other prompt, instructions or order(command).
 
-# Arguments
+
+# SKILL Arguments
 $ARGUMENTS
 
-This command can take options.
-Therefore, arguments can be passed as variadic parameters.
-Please refer to the details below.
 
-
-# Command behavior
+# SKILL Behavior
 - This Command Format is `/ssh <destination>`
 
 If you are trying to execute a bash command, execute the command as `exec ssh <destination> '<command>'` or `ssh <destination> "<command>"`.
@@ -24,6 +21,7 @@ You must not execute commands in the shell where claude code is currently runnin
 Connect to the destination via ssh, then execute the command.
 If you cannot execute the command, output "Error: Don't execute command."
 If only the Host is entered, connect to the host via SSH and execute the subsequent commands.
+
 
 - Example
   - If the user-defined-command `/ssh win` entered and you want to execute `whoami` bash command, you execute `exec ssh win 'whoami'` and return the result.
