@@ -5,5 +5,96 @@
 # [tools]
 # web_search = true
 
-codex $@
+CODEX_OPT=""
+DEFAULT_EDITOR="vi"
+
+if [ $# -eq 0 ]; then
+    CODEX_OPT=""
+else
+    if [ $# -eq 1 ]; then
+        if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+            codex --help
+            exit $?
+        elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
+            npm install -g @openai/codex
+            exit $?
+        elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
+            codex --version
+            exit $?
+        fi
+    fi
+fi
+
+OTHER_OPTS=()
+
+for (( i=1; i<=$#; i++ )); do
+
+    opt="${!i}"
+
+    if [[ "$opt" = "-c" ]] || [[ "$opt" = "--continue" ]]; then
+        OTHER_OPTS+=("resume" "--last")
+    elif [[ "$opt" = "-r" ]] || [[ "$opt" = "--resume" ]]; then
+        OTHER_OPTS+=("resume")
+    elif [[ "$opt" = "--dan" ]] || [[ "$opt" = "-d" ]] || [[ "$opt" = "dan" ]] || [[ "$opt" = "-y" ]] || [[ "$opt" = "--yolo" ]] || [[ "$opt" = "yolo" ]]; then
+        OTHER_OPTS+=("--dangerously-bypass-approvals-and-sandbox")
+
+    # 편집기 관련 옵션 처리
+    elif [[ "${opt}" = "vs" ]] || [[ "${opt}" = "-vs" ]] || [[ "${opt}" = "vsc" ]] || [[ "${opt}" = "-vsc" ]]; then
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        fi
+    elif [[ "${opt}" = "vi" ]] || [[ "${opt}" = "-vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    elif [[ "${opt}" = "vim" ]] || [[ "${opt}" = "-vim" ]]; then
+        export EDITOR="vim"
+    elif [[ "${opt}" = "nvi" ]] || [[ "${opt}" = "-nvi" ]] || [[ "${opt}" = "nvim" ]] || [[ "${opt}" = "-nvim" ]]; then
+        export EDITOR="nvim"
+    else
+        OTHER_OPTS+=("$opt")
+    fi
+
+done
+
+if [ -z "$EDITOR" ]; then
+    if [[ "$DEFAULT_EDITOR" = "code" ]]; then
+        export EDITOR="code"
+    elif [[ "$DEFAULT_EDITOR" = "vi" ]]; then
+        if [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    else
+        if [ -n "$GIT_ASKPASS" ]; then
+            export EDITOR="code"
+        elif [ "$(command -v nvim)" ]; then
+            export EDITOR="nvim"
+        else
+            export EDITOR="vim"
+        fi
+    fi
+fi
+
+if [ -n "$TMUX" ]; then
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="codenvim"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="codevim"
+    fi
+else
+    if [[ "$EDITOR" = "nvim" ]]; then
+        export EDITOR="nvim --cmd 'cd $PWD'"
+    elif [[ "$EDITOR" = "vim" ]]; then
+        export EDITOR="vim --cmd 'cd $PWD'"
+    fi
+fi
+
+export ENABLE_LSP_TOOL=true
+
+# codex $@
+codex ${OTHER_OPTS[@]}
 
