@@ -179,7 +179,7 @@ nnoremap <Leader>v <C-W>=
 vnoremap <Leader>v <C-W>=
 nnoremap <Leader>r <c-w>K
 nnoremap <Leader>t <c-w>H
-nnoremap <Leader>p <ESC>:sp<CR>
+" nnoremap <Leader>p <ESC>:sp<CR>
 
 nnoremap <Leader>u :bp<CR>
 nnoremap <Leader>i :bn<CR>

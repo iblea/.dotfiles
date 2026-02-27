@@ -80,6 +80,12 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
   -- 분할 창 크기 균등화
   vim.keymap.set("n", "<C-=>", "<C-w>=", { desc = "Equalize window sizes" })
 
+  vim.opt.wrap = true
+  vim.opt.diffopt:append("followwrap")
+end
+
+-- TMUX 활성화 + 현재 pane이 0번이 아닐 때만 키매핑 활성화
+if vim.env.TMUX and vim.env.TMUX_PANE ~= "%0" then
   -- claude code 윈도우의 pwd 기준 상대경로 계산
   local function get_claude_relative_path()
     local file_path = vim.fn.expand("%:p")
@@ -197,9 +203,6 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
     print(ref)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end, { desc = "Print absolute path with lines" })
-
-  vim.opt.wrap = true
-  vim.opt.diffopt:append("followwrap")
 end
 
 -- Project-local config loader
