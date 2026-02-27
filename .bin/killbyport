@@ -1,0 +1,47 @@
+#!/bin/bash
+
+
+if [ $# -ne 1 ]; then
+    echo "Wrong Argument"
+    echo "input port only [0-65535]"
+    return 1
+fi
+
+
+FIND_PORT="$1"
+KILL_SIGNAL=9
+
+OS_TYPE=$(uname -s)
+
+if [ "$OS_TYPE" = "Darwin" ]; then
+    # macOS: lsof 사용 (netstat 옵션 체계가 다름)
+    # netstat -ntulp 동일: TCP LISTEN + UDP Idle
+    lsof -i :${FIND_PORT} -sTCP:LISTEN -sUDP:Idle -nP
+
+    while : ; do
+        PID=$(lsof -i :${FIND_PORT} -sTCP:LISTEN -sUDP:Idle -nP -t)
+        if [ -z "$PID" ]; then
+            break
+        fi
+        kill -${KILL_SIGNAL} $PID
+        sleep 0.5
+    done
+
+    lsof -i :${FIND_PORT} -sTCP:LISTEN -sUDP:Idle -nP
+else
+    # Linux: netstat 사용
+    # netstat -anp (t: tcp만, u: udp만, l: listen만)
+    netstat -ntulp | grep "$FIND_PORT"
+
+    while [ : ]; do
+        PID=$(netstat -antlp | grep ":${FIND_PORT}" | awk '{print $NF}' | awk -F '/' '{print $1}')
+        if [ -z "$PID" ]; then
+            break;
+        fi
+        kill -${KILL_SIGNAL} "$PID"
+        sleep 0.5
+    done
+
+    netstat -antulp | grep "$FIND_PORT"
+fi
+
