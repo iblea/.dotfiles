@@ -73,8 +73,8 @@ fi
 # echo "vim enter" >> /tmp/test.txt
 # horizontal
 # $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
-TMUX_CMD="export AIAGENT_TMP_EDITOR=1; $VIM_PROGRAM --cmd 'cd $PWD' $@"
-TMUX_CMD_WAIT="export AIAGENT_TMP_EDITOR=1; $VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@; VIMRC=\$?; tmux set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && tmux set-hook -w pane-exited 'run-shell \"sleep 0.13 && tmux send-keys -t 1 Escape && sleep 0.05 && tmux send-keys -t 1 Enter && tmux set-hook -uw pane-exited\"'"
+TMUX_CMD="tmux set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=1; $VIM_PROGRAM --cmd 'cd $PWD' $@"
+TMUX_CMD_WAIT="tmux set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=1; $VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@; VIMRC=\$?; tmux set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && tmux set-hook -w pane-exited 'run-shell \"sleep 0.13 && tmux send-keys -t 1 Escape && sleep 0.05 && tmux send-keys -t 1 Enter && tmux set-hook -uw pane-exited\"'"
 if [ $CURRENT_LINES -ge 26 ]; then
 	if [ $NO_WAIT -eq 1 ]; then
 		tmux split-window -v -l 13 "$TMUX_CMD"
