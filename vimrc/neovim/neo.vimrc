@@ -218,5 +218,6 @@ if $AIAGENT_TMP_EDITOR == "1"
     w
     cquit 10
   endfunction
-  cnoreabbrev <expr> q getcmdtype() == ":" && getcmdline() ==# "q" ? "call <SID>AiAgentQuit()" : "q"
+  cnoreabbrev <expr> qr getcmdtype() == ":" && getcmdline() ==# "qr" ? "call <SID>AiAgentQuit()" : "qr"
+  cnoreabbrev <expr> a getcmdtype() == ":" && getcmdline() ==# "a" ? "call <SID>AiAgentQuit()" : "a"
 endif
