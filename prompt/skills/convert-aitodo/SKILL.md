@@ -1,6 +1,6 @@
 ---
 name: convert-aitodo
-description: "Convert (plan) file to `aitodo.md` format. (This skill must only be used when there is an explicit call. (example: ;iskill convert-aitodo))"
+description: "Convert (plan) file to `aitodo.md` format. (This skill must only be used when there is an explicit call ('convert-aitodo' or 'cai'). (example: ;iskill convert-aitodo or ;i cai))"
 ---
 
 # This is user-defined command

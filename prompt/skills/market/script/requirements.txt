@@ -1,0 +1,12 @@
+certifi==2026.2.25
+charset-normalizer==3.4.4
+idna==3.11
+numpy==2.4.2
+pandas==3.0.1
+python-dateutil==2.9.0.post0
+requests==2.32.5
+setuptools==82.0.0
+six==1.17.0
+tvdatafeed @ git+https://github.com/rongardF/tvdatafeed.git@e6f6aaa7de439ac6e454d9b26d2760ded8dc4923
+urllib3==2.6.3
+websocket-client==1.9.0

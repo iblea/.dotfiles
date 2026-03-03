@@ -126,7 +126,10 @@ If using the `date` command is difficult, determine the current time through a w
 
 # External Scripts
 
-모든 외부 스크립트 (external script) 는 `script/` 디렉토리에 위치합니다.
+모든 외부 스크립트 (external script) 는 `script/` 디렉토리에 위치한다.
+설치 방법은 `install.sh` 를 참고하라. (외부 모듈은 `requirements.txt` 참고하라.)
+venv 환경에서 실행하는 것을 권장한다.
+default venv directory는 `venv_market` 이다. (ex: `source venv_market/bin/activate`)
 `output/` 디렉토리에 생성된 csv 파일을 확인하고, 현재 날짜의 데이터가 존재할 경우, 스크립트를 추가로 실행하지 말고, 기존에 수집한 데이터를 활용하라.
 
 ### Technical Analysis Scripts

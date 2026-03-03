@@ -1,6 +1,6 @@
 ---
 name: aitodo
-description: Execute TODO tasks from aitodo.md file step by step. Use when processing task lists with mission tracking, completion marking, and optional task/mission targeting.
+description: "Execute TODO tasks from aitodo.md file step by step. Use when processing task lists with mission tracking, completion marking, and optional task/mission targeting. When explicitly calling a skill by specifying 'aitodo', or 'ait', the skill must be used. (ex: ;isk aitodo)"
 ---
 
 # This is user-defined command
