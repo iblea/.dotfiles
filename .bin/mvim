@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -n "$(which nvim)" ]; then
+    nvim "$@"
+elif [ -n "$(which vim)" ]; then
+    vim $@
+else
+    vi $@
+fi

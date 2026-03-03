@@ -69,9 +69,13 @@ selection-background = #57584f
 selection-foreground = #fdfff1
 
 # font
-font-family = "OperatorMonoC Nerd Font"
-font-size = 16
+font-family = "Cascadia Code NFOT"
+font-size = 15
 # font-family = "CaskaydiaCove Nerd Font"
+adjust-cell-width=-20%
+# 한글 테스트가 이상합니다.
+font-thicken = false
+# font-thicken-strength = 100
 
 # cursor
 cursor-color = 74fb60

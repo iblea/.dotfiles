@@ -1326,7 +1326,8 @@ if [ ! -f ~/.gitconfig ]; then
     git config --global alias.last 'log -1 HEAD'
 
     # Git 편집 에디터 변경
-    git config --global core.editor "vim"
+    # git config --global core.editor "$(which nvim && nvim || vim)"
+    git config --global core.editor "mvim"
     # Git 원격 저장소에서 삭제된 branch를 로컬 저장소에서 자동으로 지우기
 
     git config --global fetch.prune true
