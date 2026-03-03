@@ -218,6 +218,15 @@ if $AIAGENT_TMP_EDITOR == "1"
     w
     cquit 10
   endfunction
+  " claude code tmux - ctrl+g external editor keybindings
   cnoreabbrev <expr> qr getcmdtype() == ":" && getcmdline() ==# "qr" ? "call <SID>AiAgentQuit()" : "qr"
   cnoreabbrev <expr> a getcmdtype() == ":" && getcmdline() ==# "a" ? "call <SID>AiAgentQuit()" : "a"
+  function! s:SmartQuit()
+    if tabpagenr('$') == 1 && winnr('$') == 1
+      call s:AiAgentQuit()
+    else
+      q
+    endif
+  endfunction
+  cnoremap <expr> <CR> getcmdtype() == ":" && getcmdline() ==# "q" ? "\<C-u>call <SID>SmartQuit()\<CR>" : "\<CR>"
 endif
