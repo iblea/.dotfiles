@@ -124,6 +124,7 @@ The following is an explanation of the user-defined command.
 | Category | Command | Description | Agent (Claude Code) |
 |----------|---------|-------------|---------------------|
 | Utility | `;i` / `;isk` / `;iskill [skill name] [skill opt]`/ `` | Use Skill | - |
+| Utility | `;t` / `;team` `[skill/agent name] [skill/agent opt]`/ `` | Create a team member. (use agent team.) | - |
 | Utility | `;ask` | Ask without modifying files | - |
 | Utility | `;cire` | Recommend a commit message | - |
 | Utility | `;ci` | Continue (계속) | - |
@@ -147,6 +148,12 @@ The following is an explanation of the user-defined command.
   - If no skill name argument is provided, display the list of available skills, return the message "input skill name argument.", and end the conversation.
   - Even if, after examining the context of the conversation, you determine that it seems unnecessary to use the skill, you must use the skill unconditionally. You must not skip using the skill.
     - example: `;iskill eng "Hello World!"` : The `eng` skill instructs to translate the content into English. Although the subsequent content is already an English sentence and it may seem unnecessary to use the `eng` skill, since the `;iskill` user defined command has been invoked, you must unconditionally call the `eng` skill.
+- When receiving the command **;t** or **;team**, You must unconditionally utilize an agent team to create team members and carry out tasks.
+ - A skill name or agent name argument can be provided.
+    - Use the agent team that matches the skill or agent name.
+    - If there is no agent team matching the skill or agent name, return the message "no skill or team" and end the conversation.
+  - If no skill name argument is provided, Create appropriate team members suited to the situation and carry out the tasks.
+  - Even if, after examining the context of the conversation, you determine that it seems unnecessary to create team members, you must unconditionally create team members and carry out the tasks. Since this command has been invoked, you must not skip creating team members.
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
 - When receiving the command **;cire**, analyze the changes by referring to `git status`, `git diff`, `git diff --staged`, and the conversation history, and recommend a commit message.
   - By default, provide the commit message in Korean.
