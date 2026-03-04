@@ -1,10 +1,14 @@
 {
   "env": {
-    "MAX_THINKING_TOKENS": "63999"
+    "MAX_THINKING_TOKENS": "63999",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_EFFORT_LEVELS": "max",
+    "CLAUDE_CODE_EFFORT_LEVEL": "high"
   },
   "permissions": {
     "allow": [
       "Bash(ls:*)",
+      "Bash(curl:*)",
       "Bash(cat:*)",
       "Bash(date:*)",
       "Bash(rg:*)",
@@ -73,6 +77,7 @@
   },
   "language": "한국어",
   "alwaysThinkingEnabled": true,
+  "teammateMode": "in-process",
   "autoCompactEnabled": false,
   "bypassPermissionsModeAccepted": true,
   "verbose": true,
@@ -142,5 +147,6 @@
     "github",
     "gitlab",
     "playwright"
-  ]
+  ],
+  "effortLevel": "high"
 }

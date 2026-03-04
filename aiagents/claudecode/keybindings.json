@@ -18,6 +18,7 @@
         "meta+p": "chat:modelPicker",
         "meta+t": "chat:thinkingToggle",
         "enter": "chat:submit",
+        "ctrl+y": "chat:submit",
         "up": "history:previous",
         "down": "history:next",
         "ctrl+_": "chat:undo",

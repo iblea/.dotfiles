@@ -131,39 +131,39 @@ export ENABLE_LSP_TOOL=true
 
 if [ "$CLAUDE_OPT" = "s" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model=Sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=sonnet ${OTHER_OPTS[@]}
+        claude --model=Sonnet ${OTHER_OPTS[@]}
     fi
 elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
+        claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
     fi
 elif [ "$CLAUDE_OPT" = "a" ] || [ "$CLAUDE_OPT" = "o" ] || [ "$CLAUDE_OPT" = "d" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=opus --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model=Opus --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=opus ${OTHER_OPTS[@]}
+        claude --model=Opus ${OTHER_OPTS[@]}
     fi
 elif [ "$CLAUDE_OPT" = "au" ] || [ "$CLAUDE_OPT" = "ou" ] || [ "$CLAUDE_OPT" = "du" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model=Opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
+        claude --model=Opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
     fi
 elif [ "$CLAUDE_OPT" = "h" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=haiku --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model=Haiku --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=haiku ${OTHER_OPTS[@]}
+        claude --model=Haiku ${OTHER_OPTS[@]}
     fi
 elif [ "$CLAUDE_OPT" = "hu" ]; then
     if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+        claude --model=Haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     else
-        claude --model=haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
+        claude --model=Haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
     fi
 else
     if [ -f "$PROMPT_PATH" ] ;then
