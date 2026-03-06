@@ -130,7 +130,24 @@ If using the `date` command is difficult, determine the current time through a w
 설치 방법은 `install.sh` 를 참고하라. (외부 모듈은 `requirements.txt` 참고하라.)
 venv 환경에서 실행하는 것을 권장한다.
 default venv directory는 `venv_market` 이다. (ex: `source venv_market/bin/activate`)
-`output/` 디렉토리에 생성된 csv 파일을 확인하고, 현재 날짜의 데이터가 존재할 경우, 스크립트를 추가로 실행하지 말고, 기존에 수집한 데이터를 활용하라.
+`output/` 디렉토리에 오늘 날짜의 CSV 파일이 존재할 경우, `market_data_recent.py`로 데이터 최신 여부를 검증하라.
+- **FRESH** → 기존 데이터를 그대로 활용하라. (재수집 불필요)
+- **STALE** → `fetch_market_data.py`로 해당 종목 데이터를 재수집하라.
+- 오늘 날짜의 파일이 없으면 → 바로 `fetch_market_data.py`로 수집하라.
+
+### 데이터 최신 여부 확인
+- **`market_data_recent.py`** - CSV 파일의 마지막 행 타임스탬프와 현재 시간을 인터벌 단위로 floor하여 비교. 최신이면 FRESH, 아니면 STALE을 출력한다.
+```bash
+python market_data_recent.py <csv_file> [<csv_file> ...]
+# 예시
+python market_data_recent.py output/NQ1_*.csv
+python market_data_recent.py output/NQ1_1d_20260304.csv output/NQ1_1h_20260304.csv
+```
+- Exit code: `0`=모든 파일 최신, `1`=재수집 필요한 파일 있음, `2`=에러
+- 출력 형식:
+  - `[FRESH]` - 최신 데이터, 재수집 불필요
+  - `[STALE]` - 오래된 데이터, 재수집 필요
+  - `[SKIP]` - 인터벌 판별 불가 등 에러
 
 ### Technical Analysis Scripts
 `fetch_market_data.py`로 수집한 OHLCV CSV 데이터를 기반으로 기술적 분석을 자동 수행하는 스크립트들이다.
@@ -175,8 +192,14 @@ python midlong_analysis.py output/ES1_1d_20260211.csv
 # 1. 심볼 검색
 python fetch_market_data.py -f AXTI
 
-# 2. 데이터 수집
+# 2-a. 오늘 날짜의 파일이 없는 경우 → 바로 수집
 python fetch_market_data.py -t AXTI NASDAQ AXTI
+
+# 2-b. 오늘 날짜의 파일이 있는 경우 → 최신 여부 확인 후 STALE이면 재수집
+python market_data_recent.py output/AXTI_*_20260305.csv
+# exit code 1 (STALE) → 재수집
+python fetch_market_data.py -t AXTI NASDAQ AXTI
+# exit code 0 (FRESH) → 재수집 불필요, 기존 데이터 활용
 
 # 3. 기술적 분석 실행
 python daily_indicator.py output/AXTI_1d_*.csv
