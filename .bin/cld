@@ -55,6 +55,8 @@ for (( i=1; i<=$#; i++ )); do
             exit 1
         fi
         cd "$opt"
+    elif [[ "${opt}" = "os" ]] || [[ "${opt}" = "-os" ]] || [[ "${opt}" = "--override-system-prompt" ]]; then
+        OTHER_OPTS+=("--system-prompt" "''")
     elif [[ "${opt}" = "vs" ]] || [[ "${opt}" = "-vs" ]] || [[ "${opt}" = "vsc" ]] || [[ "${opt}" = "-vsc" ]]; then
         if [ -n "$GIT_ASKPASS" ]; then
             export EDITOR="code"
