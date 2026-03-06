@@ -65,8 +65,16 @@ elif [ "$NVIM_IDE" -eq 1 ]; then
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
 else
+
+    # cld (window 1) + shell (window 2)
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME"
+        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" \; \
+        new-window -t "$SESSION_NAME" \; \
+        select-window -t "$SESSION_NAME:1"
+
+    # claude-code 만
+    # exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+    #     new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME"
 fi
 
 
