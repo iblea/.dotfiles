@@ -154,6 +154,31 @@ if [ "$1" = "add" ]; then
         exit 1
     fi
     snapshot_name="$2"
+
+    # 동일 이름 스냅샷 존재 여부 확인
+    existing_count=$(qemu-img snapshot -l "${IMAGE_PATH}" 2>/dev/null | awk -v name="$snapshot_name" '
+    /^ID[[:space:]]/ {
+        tag_start = index($0, "TAG")
+        vm_start = index($0, "VM_SIZE")
+        next
+    }
+    tag_start && vm_start && /^[0-9]/ {
+        tag = substr($0, tag_start, vm_start - tag_start)
+        gsub(/[[:space:]]+$/, "", tag)
+        if (tag == name) count++
+    }
+    END { print count+0 }
+    ')
+    if [ "$existing_count" -gt 0 ]; then
+        echo ""
+        echo "Error: snapshot name '${snapshot_name}' already exists! (${existing_count} found)"
+        echo ""
+        list_snapshot
+        echo ""
+        echo "Please use a different name."
+        exit 1
+    fi
+
 	echo "snapshot information"
 	echo "path: '${IMAGE_PATH}'"
 	echo "name: '${snapshot_name}'"
