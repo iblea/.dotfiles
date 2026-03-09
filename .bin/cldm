@@ -70,6 +70,8 @@ else
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" \; \
         new-window -t "$SESSION_NAME" \; \
+        clear-history -t "$SESSION_NAME:2" \; \
+        send-keys -t "$SESSION_NAME:2" "" C-m \; \
         select-window -t "$SESSION_NAME:1"
 
     # claude-code 만

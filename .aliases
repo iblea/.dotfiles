@@ -2365,23 +2365,25 @@ function showtmuxpane() {
             echo "Argument"
             echo "-h, --help: show help"
             echo ""
-            echo "-t: <pane number>"
+            echo "-t: <window number>"
             echo "-S: <start line>"
             echo ""
             echo "The -E option is set as the default value, and this cannot be changed."
-            echo "    Default Value: \$((\$(tmux display -p -t <pane_number> '#{pane_height}') - 2))"
+            echo "    Default Value: \$((\$(tmux display -p -t <window_number> '#{pane_height}') - 2))"
             echo "The p option is enabled, and this cannot be changed."
             return 0
-        else
-            tmux capture-pane -p -E $(($(tmux display -p -t 2 '#{pane_height}') - 2)) $@ 
-			return 0
         fi
-	else
-        local display_pane="$1"
-        shift
-        tmux capture-pane -t $display_pane -p -E $(($(tmux display -p -t $display_pane '#{pane_height}') - 2)) $@ 
-        # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
     fi
+    local display_window="$1"
+    shift
+	local windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
+	local is_exist=$(echo "$windowlist" | grep "^$display_window$")
+	if [ -z "$is_exist" ]; then
+		echo "window number is wrong"
+		return 1
+	fi
+    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 2)) $@ 
+    # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
 }
 
 # alias
