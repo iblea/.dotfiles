@@ -1,7 +1,10 @@
 #!/bin/bash
 
-curpath=$(dirname "$(realpath $0)")
+# 링킹 원본 파일 경로를 반환하지 않는 스크립트 현재 경로
+curpath=$(readlink -e $(dirname "$0"))
 cd "$curpath"
+echo "$curpath"
+exit 0
 
 SNAPSHOT_SAVE_FILE="$curpath/.name_of_snapshot_utm.txt"
 IMAGE_PATH=""
