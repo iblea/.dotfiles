@@ -2316,6 +2316,7 @@ if [ -n "$(command -v claude)" ]; then
     # alias vim=/usr/bin/vim
     alias cldie=". $HOME/.dotfiles/.bin/cldi;"
     alias cl=cldi
+	alias cldp="ANTHROPIC_API_KEY='' claude -p --output-format text "
     function clcc() {
         if [ $# -eq 0 ]; then
             local answer=""
