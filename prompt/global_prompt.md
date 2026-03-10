@@ -131,6 +131,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
 | Other | `;err` | Analyze error and provide solution | resolver |
+| Other | `;tm` / `;tmux` | Call skill `showtmuxpane` | - |
 | Other | `;path` | Tell path of created file | - |
 | Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
 | Other | `;code` | Open file in VS Code | - |
@@ -171,6 +172,9 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;x** or **;ss** or **;ㄴㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
 
 ### User-Defined Category: Other (Coding)
+
+- When receiving the command **;tmux** or **;tm**, call `showtmuxpane` skill and use it with options.
+
 - When receiving the command **;path**, tell me the path of the file you created.
 
 - When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
@@ -210,7 +214,6 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;cai**, call `convert-aitodo` skill and use it with options.
 
 - When receiving the command **;maketodo**, call `make-aitodo` skill and use it with options.
-
 
 # Important Content Reminder
 
