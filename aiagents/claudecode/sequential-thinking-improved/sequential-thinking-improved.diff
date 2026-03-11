@@ -1,0 +1,88 @@
+65c65,90
+<     processThought(input) {
+---
+>     formatThoughtForClaudeCode(thoughtData) {
+>         const { thoughtNumber, totalThoughts, thought, isRevision, revisesThought, branchFromThought, branchId } = thoughtData;
+>         let prefix = '';
+>         let context = '';
+> 
+>         if (isRevision) {
+>             prefix = chalk.yellow('🔄 Revision');
+>             context = ` (revising thought ${revisesThought})`;
+>         }
+>         else if (branchFromThought) {
+>             prefix = chalk.green('🌿 Branch');
+>             context = ` (from thought ${branchFromThought}, ID: ${branchId})`;
+>         }
+>         else {
+>             prefix = chalk.blue('💭 Thought');
+>             context = '';
+>         }
+>         const header = `${prefix} ${thoughtNumber}/${totalThoughts}${context}`;
+>         // Markdown format
+>         return `## ${header}
+> 
+> ${thought}
+> 
+> ---`;
+>     }
+>     processThought(input){
+78,81c103,122
+<             if (!this.disableThoughtLogging) {
+<                 const formattedThought = this.formatThought(validatedInput);
+<                 console.error(formattedThought);
+<             }
+---
+> 
+>             // if (!this.disableThoughtLogging) {
+>             //     const formattedThought = this.formatThought(validatedInput);
+>             //     console.error(formattedThought);
+>             // }
+>             // return {
+>             //     content: [{
+>             //             type: "text",
+>             //             text: JSON.stringify({
+>             //                 thoughtNumber: validatedInput.thoughtNumber,
+>             //                 totalThoughts: validatedInput.totalThoughts,
+>             //                 nextThoughtNeeded: validatedInput.nextThoughtNeeded,
+>             //                 branches: Object.keys(this.branches),
+>             //                 thoughtHistoryLength: this.thoughtHistory.length
+>             //             }, null, 2)
+>             //         }]
+>             // };
+> 
+>             // Format the thought into Claude Code
+>             const formattedThought = this.formatThoughtForClaudeCode(validatedInput);
+85,91c126
+<                         text: JSON.stringify({
+<                             thoughtNumber: validatedInput.thoughtNumber,
+<                             totalThoughts: validatedInput.totalThoughts,
+<                             nextThoughtNeeded: validatedInput.nextThoughtNeeded,
+<                             branches: Object.keys(this.branches),
+<                             thoughtHistoryLength: this.thoughtHistory.length
+<                         }, null, 2)
+---
+>                         text: formattedThought
+108a144
+> 
+211a248
+> 
+219a257
+> 
+220a259
+> 
+223a263
+> 
+235a276
+> 
+239c280
+<     console.error("Sequential Thinking MCP Server running on stdio");
+---
+>     console.error("Sequential Thinking MCP Server (Improved) running on stdio");
+240a282
+> 
+244c286
+< });
+---
+> });
+\ No newline at end of file
