@@ -1,6 +1,6 @@
 ---
 name: showtmuxpane
-description: "When it is necessary to reference the output results of a shell or command within a tmux environment, or when the skill is directly invoked via (';tm', ';tmux', ';i showtmuxpane', etc.,) use this skill."
+description: "This skill is used when it is necessary to reference the output results of a shell or command within a tmux environment, when it is necessary to manipulate tmux windows or panes (send-keys), or when the skill is directly invoked (via ';tm', ';tmux', ';i showtmuxpane', etc.)."
 ---
 
 # This is user-defined command
@@ -45,4 +45,17 @@ Therefore, the first option consists of a numeric value.
 
 Options for tmux capture-pane may be passed through directly.
 Additionally, based on the contents of the pane, instructions such as "Analyze the logs." or "Identify the issue based on the error logs." may be given.
+
+#### sendkeys or sk
+
+If this option is not provided, only the `capture-pane` command should be executed by default. (Commands such as `send-keys` must never be executed.)
+If this option is provided, a specific tmux window can be manipulated through commands such as `send-keys`.
+  - When the input is `;tm 2 sk`, the content of pane 2 should be referenced, and all subsequent command-related interactions must be conducted in pane 2.
+  - Since tmux operates as an interactive session, interactive CLI tools such as ssh, mysql, and psql can be used.
+
+- Example
+  - `;tm 2 sk apt is not working. Analyze the content and suggest an alternative installation method.`
+  - When the above command is entered, the content of pane 2 is analyzed using `showtmuxpane` or `capture-pane`.
+  - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in pane 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
+  - Then, depending on the user's response, the commands are executed in pane 2 through `send-keys` or similar methods.
 
