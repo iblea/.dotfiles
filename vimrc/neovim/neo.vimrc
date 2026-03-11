@@ -232,3 +232,9 @@ if $AIAGENT_TMP_EDITOR == "1"
   endfunction
   cnoremap <expr> <CR> getcmdtype() == ":" && getcmdline() ==# "q" ? "\<C-u>call <SID>SmartQuit()\<CR>" : "\<CR>"
 endif
+
+noremap <C-@> <ESC>
+inoremap <C-@> <ESC>
+
+noremap <C-Space> <ESC>
+inoremap <C-Space> <ESC>

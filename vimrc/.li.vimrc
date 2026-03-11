@@ -348,4 +348,6 @@ if has("autocmd")
     autocmd FileType gitcommit  setl ts=4
 endif
 
+noremap <C-@> <ESC>
+inoremap <C-@> <ESC>
 
