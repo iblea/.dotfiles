@@ -107,7 +107,8 @@
     "sequential-thinking-improved": {
       "command": "node",
       "args": [
-	    "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+	    "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js",
+        "$HOME/.dotfiles/aiagents/claudecode/sequential-thinking-improved/index.js"
       ]
     },
     "playwright": {
