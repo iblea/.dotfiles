@@ -11,7 +11,8 @@ fi
 CLAUDE_DIR="$HOME/.claude"
 
 
-curpath=$(dirname "$(realpath $0)")
+# curpath=$(dirname "$(realpath $0)")
+curpath=$(readlink -e $(dirname "$0"))
 # cd "$curpath"
 
 if [ ! -d "$CLAUDE_DIR" ]; then
@@ -35,6 +36,10 @@ echo "setup settings.json"
 cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
 
 echo "install mcp servers"
+
+if [ ! -d "$curpath/sequential-thinking-improved/node_modules" ]; then
+    "$curpath/sequential-thinking-improved/install.sh"
+fi
 
 if [ -n "$(command -v sudo)" ]; then
     sudo npm install -g @modelcontextprotocol/server-sequential-thinking
@@ -79,7 +84,7 @@ echo "modify $HOME/.claude.json"
 
 echo "Keybindings update"
 if [ -f "$HOME/.claude/keybindings.json" ]; then
-	rm -f "$HOME/.claude/keybindings.json"
+    rm -f "$HOME/.claude/keybindings.json"
 fi
 ln -s "$curpath/keybindings.json" "$HOME/.claude/"
 
