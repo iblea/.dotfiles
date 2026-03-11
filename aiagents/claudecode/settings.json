@@ -17,6 +17,8 @@
       "Bash(find:*)",
       "Bash(ssh:*)",
       "Bash(chmod:*)",
+      "Bash(echo:*)",
+      "Bash(test:*)",
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(git diff:*)",
@@ -25,6 +27,8 @@
       "Bash(gitshow:*)",
       "Bash(code:*)",
       "Bash(codenvim:*)",
+      "Bash(tmux capture-pane:*)",
+      "Bash(showtmuxpane:*)",
       "Bash(nohup codenvim:*)",
       "Bash(nohup code:*)",
       "Bash(gemini:*)",
@@ -43,7 +47,7 @@
     "deny": [],
     "ask": []
   },
-  "model": "opus",
+  "model": "Opus",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
@@ -148,5 +152,6 @@
     "gitlab",
     "playwright"
   ],
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true
 }
