@@ -36,7 +36,7 @@ cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
 
 echo "install mcp servers"
 
-if [ -n "$(command -v sudo)"]; then
+if [ -n "$(command -v sudo)" ]; then
     sudo npm install -g @modelcontextprotocol/server-sequential-thinking
     sudo npm install -g @upstash/context7-mcp
     # sudo npm install -g @playwright/mcp@latest
