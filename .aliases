@@ -2370,7 +2370,7 @@ function showtmuxpane() {
             echo "-S: <start line>"
             echo ""
             echo "The -E option is set as the default value, and this cannot be changed."
-            echo "    Default Value: \$((\$(tmux display -p -t <window_number> '#{pane_height}') - 2))"
+            echo "    Default Value: \$((\$(tmux display -p -t <window_number> '#{pane_height}') - 1))"
             echo "The p option is enabled, and this cannot be changed."
             return 0
         fi
@@ -2383,7 +2383,7 @@ function showtmuxpane() {
 		echo "window number is wrong"
 		return 1
 	fi
-    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 2)) $@ 
+    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) $@ 
     # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
 }
 

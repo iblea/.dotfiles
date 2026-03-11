@@ -50,12 +50,17 @@ Additionally, based on the contents of the pane, instructions such as "Analyze t
 
 If this option is not provided, only the `capture-pane` command should be executed by default. (Commands such as `send-keys` must never be executed.)
 If this option is provided, a specific tmux window can be manipulated through commands such as `send-keys`.
-  - When the input is `;tm 2 sk`, the content of pane 2 should be referenced, and all subsequent command-related interactions must be conducted in pane 2.
+  - When the input is `;tm 2 sk`, the content of window 2 should be referenced, and all subsequent command-related interactions must be conducted in window 2.
   - Since tmux operates as an interactive session, interactive CLI tools such as ssh, mysql, and psql can be used.
+  - After executing `send-keys`, run the `capture-pane` related command to check the results. At this time, DO NOT USE in sleep commands.
+    - example
+      - good: `tmux send-keys -t 2 '<command>' Enter && showtmuxpane 2 -S -10`
+      - bad: `tmux send-keys -t 2 '<command>' Enter && sleep 2 && showtmuxpane 2 -S -10`
+        - Sleep command is not necessary.
 
 - Example
   - `;tm 2 sk apt is not working. Analyze the content and suggest an alternative installation method.`
-  - When the above command is entered, the content of pane 2 is analyzed using `showtmuxpane` or `capture-pane`.
-  - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in pane 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
-  - Then, depending on the user's response, the commands are executed in pane 2 through `send-keys` or similar methods.
+  - When the above command is entered, the content of window 2 is analyzed using `showtmuxpane` or `capture-pane`.
+  - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in window 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
+  - Then, depending on the user's response, the commands are executed in window 2 through `send-keys` or similar methods.
 
