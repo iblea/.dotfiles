@@ -1,6 +1,6 @@
 ---
 name: showtmuxpane
-description: "This skill is used when it is necessary to reference the output results of a shell or command within a tmux environment, when it is necessary to manipulate tmux windows or panes (send-keys), or when the skill is directly invoked (via ';tm', ';tmux', ';i showtmuxpane', etc.)."
+description: "This skill is used when it is necessary to reference the output results of a shell or command within a tmux environment, when it is necessary to manipulate tmux windows or panes (send-keys), or when the skill is directly invoked (via ';t', ;tm', ';tmux', ';i showtmuxpane', etc.)."
 ---
 
 # This is user-defined command
