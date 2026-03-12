@@ -1,4 +1,4 @@
-fualias() { echo -n ""; }
+Fualias() { echo -n ""; }
 
 fuinit() {
 fualias $@ ; unset -f fualias; fualias () { echo -n ""; }
@@ -2383,21 +2383,36 @@ function showtmuxpane() {
         echo "window number is wrong"
         return 1
     fi
+
+
     local TAIL_OPT=0
     local HEAD_OPT=0
     OTHER_OPTS=()
-    for (( i=1; i<=$#; i++ )); do
-        opt="${!i}"
-        if [[ "$opt" = "-t" ]] || [[ "$opt" = "-T" ]] || [[ "$opt" = "--tail" ]]; then
-            ((i++))
-            TAIL_OPT="${!i}"
-        elif [[ "$opt" = "-h" ]] || [[ "$opt" = "-H" ]] || [[ "$opt" = "--head" ]]; then
-            ((i++))
-            HEAD_OPT="${!i}"
-        else
-            OTHER_OPTS+=("$opt")
-        fi
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -t|-T|--tail) TAIL_OPT="$2"; shift ;;
+            -h|-H|--head) HEAD_OPT="$2"; shift ;;
+            *) OTHER_OPTS+=("$1") ;;
+        esac
+        shift
     done
+
+    # for (( i=1; i<=$#; i++ )); do
+    #     eval "opt=\${$i}"
+    #     if [[ "$opt" = "-t" ]] || [[ "$opt" = "-T" ]] || [[ "$opt" = "--tail" ]]; then
+    #         ((i++))
+    #         TAIL_OPT="${!i}"
+    #     elif [[ "$opt" = "-h" ]] || [[ "$opt" = "-H" ]] || [[ "$opt" = "--head" ]]; then
+    #         ((i++))
+    #         HEAD_OPT="${!i}"
+    #     else
+    #         OTHER_OPTS+=("$opt")
+    #     fi
+    # done
+    # echo "TAIL_OPT: $TAIL_OPT"
+    # echo "HEAD_OPT: $HEAD_OPT"
+    # echo "OTHER_OPT: ${OTHER_OPTS[@]}"
 
     if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
         tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
