@@ -25,6 +25,79 @@ calculate_usage() {
     echo "$usage_percent"
 }
 
+# Get Claude Code process memory usage in MB
+# Works on both Darwin (macOS) and Linux (Ubuntu/Debian)
+# Traces parent process chain to find the node (Claude Code) process,
+# then sums RSS of it and all descendant processes.
+get_claude_memory() {
+    local pid=$$
+    local claude_pid=""
+
+    # Traverse parent process chain to find node (Claude Code) process
+    while [ "$pid" -gt 1 ] 2>/dev/null; do
+        pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+        [ -z "$pid" ] && break
+        [ "$pid" -le 1 ] && break
+
+        local cmd
+        cmd=$(ps -o comm= -p "$pid" 2>/dev/null)
+        if [[ "$cmd" == *"node"* ]] || [[ "$cmd" == *"claude"* ]]; then
+            claude_pid="$pid"
+            # Don't break; keep going up to find the topmost node process
+            # (Claude Code may spawn child node processes)
+        fi
+    done
+
+    if [ -z "$claude_pid" ]; then
+        echo ""
+        return
+    fi
+
+    # Collect all descendant PIDs using BFS
+    local all_pids="$claude_pid"
+    local queue="$claude_pid"
+    while [ -n "$queue" ]; do
+        local next_queue=""
+        for p in $queue; do
+            local children
+            children=$(pgrep -P "$p" 2>/dev/null)
+            if [ -n "$children" ]; then
+                all_pids="$all_pids $children"
+                next_queue="$next_queue $children"
+            fi
+        done
+        queue=$(echo "$next_queue" | xargs)
+    done
+
+    # Sum RSS of all processes (in KB)
+    local total_rss=0
+    for p in $all_pids; do
+        local rss
+        rss=$(ps -o rss= -p "$p" 2>/dev/null | tr -d ' ')
+        if [ -n "$rss" ] && [ "$rss" -gt 0 ] 2>/dev/null; then
+            total_rss=$((total_rss + rss))
+        fi
+    done
+
+    # KB -> MB
+    local mb=$((total_rss / 1024))
+    echo "${claude_pid}:${mb}"
+}
+
+# Get memory color based on MB usage
+get_memory_color() {
+    local mb=$1
+    if [ "$mb" -lt 500 ] 2>/dev/null; then
+        echo "32"  # Green - normal
+    elif [ "$mb" -lt 1000 ] 2>/dev/null; then
+        echo "33"  # Yellow - moderate
+    elif [ "$mb" -lt 2000 ] 2>/dev/null; then
+        echo "35"  # Magenta - high
+    else
+        echo "31"  # Red - very high (possible leak)
+    fi
+}
+
 # Generate progress bar
 generate_progress_bar() {
     local percentage=$1
@@ -103,12 +176,21 @@ else
     status_line+="\033[${DIR_FG}m$SEP\033[0m"
 fi
 
-if [ -n "$(command -v date)" ]; then
-    # Calculate usage
-	usage_display=$(date "+%Y-%m-%d %H:%M:%S")
-    usage_color=$(get_usage_color "$usage_percentage")
+# Memory usage segment
+mem_info=$(get_claude_memory)
+if [ -n "$mem_info" ]; then
+    claude_pid="${mem_info%%:*}"
+    mem_mb="${mem_info##*:}"
+    if [ -n "$mem_mb" ] && [ "$mem_mb" != "0" ]; then
+        mem_color=$(get_memory_color "$mem_mb")
+        status_line+="\033[${mem_color}m PID:${claude_pid} ${mem_mb}MB \033[0m"
+    fi
+fi
 
-    # Usage segment
+if [ -n "$(command -v date)" ]; then
+    # Time segment
+    usage_display=$(date "+%Y-%m-%d %H:%M:%S")
+    usage_color=$(get_usage_color "$usage_percentage")
     status_line+="\033[${usage_color}m  $usage_display \033[0m"
 fi
 
