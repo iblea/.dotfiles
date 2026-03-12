@@ -26,7 +26,7 @@ C_PATH="\033[38;5;67m"
 
 # ── Usage API Cache ──
 USAGE_CACHE="$HOME/.claude/.statusline-usage-cache.json"
-USAGE_CACHE_TTL=60
+USAGE_CACHE_TTL=180
 
 KERNEL_TYPE=$(uname -s)
 
@@ -164,11 +164,12 @@ refresh_usage_cache() {
     seven_day=$(echo "$response" | jq -r '.seven_day.utilization // "null"' 2>/dev/null)
     five_reset=$(echo "$response" | jq -r '.five_hour.resets_at // "null"' 2>/dev/null)
     seven_reset=$(echo "$response" | jq -r '.seven_day.resets_at // "null"' 2>/dev/null)
-    local now
+    local now parsed_at
     now=$(date +%s)
+    parsed_at=$(date "+%Y-%m-%d %H:%M:%S")
 
     cat > "$USAGE_CACHE" <<EOCACHE
-{"five_hour":$five_hour,"seven_day":$seven_day,"five_reset":"$five_reset","seven_reset":"$seven_reset","timestamp":$now}
+{"five_hour":$five_hour,"seven_day":$seven_day,"five_reset":"$five_reset","seven_reset":"$seven_reset","timestamp":$now,"parsed_at":"$parsed_at"}
 EOCACHE
 }
 
