@@ -64,3 +64,27 @@ If this option is provided, a specific tmux window can be manipulated through co
   - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in window 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
   - Then, depending on the user's response, the commands are executed in window 2 through `send-keys` or similar methods.
 
+#### tail or t (optional number: default 20)
+
+If this option is provided, Append `| tail -n <number>` after the capture-tmux command to output only the last `n` lines.
+
+- If the content after t is not a number, it is treated as if no number option was provided, and the default value of 20 is used for output.
+
+- example
+  - `;tm 2 t 10`: `showtmuxpane 2 | tail -n 10`
+  - `;tm 2 t`: `showtmuxpane 2 | tail -n 20`
+    - Since there is no content after `t`, the default value of 20 is used for output.
+  - `;tm 2 -S -5 t`: `showtmuxpane 2 -S -5 | tail -n 20`
+
+#### head or h (optional number: default 20)
+
+If this option is provided, Append `| head -n <number>` after the capture-tmux command to output only the first `n` lines.
+
+- If the content after t is not a number, it is treated as if no number option was provided, and the default value of 20 is used for output.
+
+- example
+  - `;tm 2 h 10`: `showtmuxpane 2 | head -n 10`
+  - `;tm 2 h`: `showtmuxpane 2 | head -n 20`
+    - Since there is no content after `h`, the default value of 20 is used for output.
+  - `;tm 2 -S -50 h`: `showtmuxpane 2 -S -50 | head -n 20`
+
