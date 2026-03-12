@@ -2,58 +2,284 @@
 
 # Read Claude Code context from stdin
 input=$(cat)
-# echo "$input" > /tmp/output.json
+# echo "$input" > /tmp/statusline_debug.json
 
-# Extract information
-model=$(echo "$input" | jq -r '.model.display_name // "Claude"')
-# username=$(whoami)
+# ── Extract information from stdin JSON ──
+model=$(echo "$input" | jq -r '.model.display_name // ""')
+[ -z "$model" ] && model="Claude"
 cwd=$(echo "$input" | jq -r '.workspace.current_dir')
 transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
+ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // ""')
+ctx_remaining=$(echo "$input" | jq -r '.context_window.remaining_percentage // ""')
 
-# Calculate usage percentage based on transcript file
-calculate_usage() {
-    # if [ -z "$(command -v ccusage)" ]; then
-    #     echo "0"
-    #     return
-    # fi
-    max_token_plan="max"
-    usage_percent=$(ccusage blocks --active --token-limit "$max_token_plan" | grep "Current Usage:" | tail -n 1 | sed -n 's/.*(\([0-9]*\).[0-9]*%).*/\1/p')
-    # 10.5%
-    # ccusage blocks --active --token-limit "$max_token_plan" | grep "Current Usage:" | tail -n 1 | sed -n 's/.*(\([0-9.]*\)%).*/\1/p'
-    # 10% Truncate decimal points
-    # ccusage blocks --active --token-limit "$max_token_plan" | grep "Current Usage:" | tail -n 1 | sed -n 's/.*(\([0-9]*\).[0-9]*%).*/\1/p'
-    echo "$usage_percent"
+# ── ANSI Colors ──
+C_RESET="\033[0m"
+C_DIM="\033[2m"
+C_RED="\033[31m"
+C_GREEN="\033[32m"
+C_YELLOW="\033[33m"
+C_BLUE="\033[34m"
+C_MAGENTA="\033[35m"
+C_CYAN="\033[36m"
+C_GRAY="\033[38;5;249m"
+C_PATH="\033[38;5;67m"
+
+# ── Usage API Cache ──
+USAGE_CACHE="$HOME/.claude/.statusline-usage-cache.json"
+USAGE_CACHE_TTL=60
+
+KERNEL_TYPE=$(uname -s)
+
+# ── Helper: colored context bar (10 chars) ──
+colored_bar() {
+    local percent=${1:-0}
+    local width=10
+    local filled=$(( (percent * width) / 100 ))
+    local empty=$(( width - filled ))
+    local color
+    if [ "$percent" -ge 85 ] 2>/dev/null; then
+        color="$C_RED"
+    elif [ "$percent" -ge 70 ] 2>/dev/null; then
+        color="$C_YELLOW"
+    else
+        color="$C_GREEN"
+    fi
+    local bar=""
+    for ((i=0; i<filled; i++)); do bar+="█"; done
+    local ebar=""
+    for ((i=0; i<empty; i++)); do ebar+="░"; done
+    echo "${color}${bar}${C_DIM}${ebar}${C_RESET}"
 }
 
-# Get Claude Code process memory usage in MB
-# Works on both Darwin (macOS) and Linux (Ubuntu/Debian)
-# Traces parent process chain to find the node (Claude Code) process,
-# then sums RSS of it and all descendant processes.
+# ── Helper: context color ──
+get_ctx_color() {
+    local percent=${1:-0}
+    if [ "$percent" -ge 85 ] 2>/dev/null; then
+        echo "$C_RED"
+    elif [ "$percent" -ge 70 ] 2>/dev/null; then
+        echo "$C_YELLOW"
+    else
+        echo "$C_GREEN"
+    fi
+}
+
+# ── Helper: usage quota bar (10 chars) ──
+quota_bar() {
+    local percent=${1:-0}
+    local width=10
+    local filled=$(( (percent * width) / 100 ))
+    local empty=$(( width - filled ))
+    local color
+    if [ "$percent" -ge 90 ] 2>/dev/null; then
+        color="$C_RED"
+    elif [ "$percent" -ge 75 ] 2>/dev/null; then
+        color="$C_MAGENTA"
+    else
+        color="$C_BLUE"
+    fi
+    local bar=""
+    for ((i=0; i<filled; i++)); do bar+="█"; done
+    local ebar=""
+    for ((i=0; i<empty; i++)); do ebar+="░"; done
+    echo "${color}${bar}${C_DIM}${ebar}${C_RESET}"
+}
+
+# ── Helper: usage percent color ──
+get_usage_pct_color() {
+    local percent=${1:-0}
+    if [ "$percent" -ge 90 ] 2>/dev/null; then
+        echo "$C_RED"
+    elif [ "$percent" -ge 75 ] 2>/dev/null; then
+        echo "$C_MAGENTA"
+    else
+        echo "$C_BLUE"
+    fi
+}
+
+# ── Get plan name from credentials ──
+get_plan_name() {
+    local sub_type=""
+    if [ "$KERNEL_TYPE" = "Darwin" ]; then
+        local creds
+        creds=$(/usr/bin/security find-generic-password -s "Claude Code-credentials" -a "$USER" -w 2>/dev/null)
+        if [ -n "$creds" ]; then
+            sub_type=$(echo "$creds" | jq -r '.claudeAiOauth.subscriptionType // ""' 2>/dev/null)
+        fi
+    else
+        local creds_file="$HOME/.claude/.credentials.json"
+        if [ -f "$creds_file" ]; then
+            sub_type=$(jq -r '.claudeAiOauth.subscriptionType // ""' "$creds_file" 2>/dev/null)
+        fi
+    fi
+    # Normalize
+    local lower=$(echo "$sub_type" | tr '[:upper:]' '[:lower:]')
+    case "$lower" in
+        *max*) echo "Max" ;;
+        *pro*) echo "Pro" ;;
+        *team*) echo "Team" ;;
+        *) echo "" ;;
+    esac
+}
+
+# ── Refresh usage cache in background ──
+refresh_usage_cache() {
+    local token=""
+    if [ "$KERNEL_TYPE" = "Darwin" ]; then
+        local creds
+        creds=$(/usr/bin/security find-generic-password -s "Claude Code-credentials" -a "$USER" -w 2>/dev/null)
+        if [ -n "$creds" ]; then
+            token=$(echo "$creds" | jq -r '.claudeAiOauth.accessToken // ""' 2>/dev/null)
+        fi
+    else
+        local creds_file="$HOME/.claude/.credentials.json"
+        if [ -f "$creds_file" ]; then
+            token=$(jq -r '.claudeAiOauth.accessToken // ""' "$creds_file" 2>/dev/null)
+        fi
+    fi
+    [ -z "$token" ] && return
+
+    # Get current Claude Code version
+    local cc_version
+    cc_version=$(claude --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    [ -z "$cc_version" ] && cc_version="2.1.74"
+
+    local response
+    response=$(curl -s --max-time 5 \
+        -H "Authorization: Bearer $token" \
+        -H "Content-Type: application/json" \
+        -H "anthropic-beta: oauth-2025-04-20" \
+        -H "User-Agent: claude-code/${cc_version}" \
+        "https://api.anthropic.com/api/oauth/usage" 2>/dev/null)
+    [ -z "$response" ] && return
+
+    # Check for API error (e.g., token expired, rate limited)
+    local api_error
+    api_error=$(echo "$response" | jq -r '.error.type // ""' 2>/dev/null)
+    if [ -n "$api_error" ]; then
+        return
+    fi
+
+    local five_hour seven_day five_reset seven_reset
+    five_hour=$(echo "$response" | jq -r '.five_hour.utilization // "null"' 2>/dev/null)
+    seven_day=$(echo "$response" | jq -r '.seven_day.utilization // "null"' 2>/dev/null)
+    five_reset=$(echo "$response" | jq -r '.five_hour.resets_at // "null"' 2>/dev/null)
+    seven_reset=$(echo "$response" | jq -r '.seven_day.resets_at // "null"' 2>/dev/null)
+    local now
+    now=$(date +%s)
+
+    cat > "$USAGE_CACHE" <<EOCACHE
+{"five_hour":$five_hour,"seven_day":$seven_day,"five_reset":"$five_reset","seven_reset":"$seven_reset","timestamp":$now}
+EOCACHE
+}
+
+# ── Read usage from cache, trigger background refresh if stale ──
+get_usage_data() {
+    local now
+    now=$(date +%s)
+    if [ -f "$USAGE_CACHE" ]; then
+        local cache_ts
+        cache_ts=$(jq -r '.timestamp // 0' "$USAGE_CACHE" 2>/dev/null)
+        local age=$((now - cache_ts))
+        if [ "$age" -ge "$USAGE_CACHE_TTL" ]; then
+            refresh_usage_cache &
+        fi
+        cat "$USAGE_CACHE"
+    else
+        # First run: synchronous fetch (one-time cost)
+        refresh_usage_cache
+        if [ -f "$USAGE_CACHE" ]; then
+            cat "$USAGE_CACHE"
+        fi
+    fi
+}
+
+# ── Helper: parse ISO8601 timestamp to epoch (supports GNU date & macOS /bin/date) ──
+parse_iso_to_epoch() {
+    local ts="$1"
+    [ -z "$ts" ] || [ "$ts" = "null" ] && return
+    local stripped="${ts%%.*}"  # remove fractional seconds
+    stripped="${stripped%%Z}"   # remove trailing Z
+    local epoch
+    # Try GNU date first (works on Linux, and macOS with coreutils)
+    epoch=$(date -d "$ts" +%s 2>/dev/null)
+    if [ -n "$epoch" ]; then
+        echo "$epoch"
+        return
+    fi
+    # Fallback: macOS native /bin/date
+    epoch=$(/bin/date -j -f "%Y-%m-%dT%H:%M:%S" "$stripped" +%s 2>/dev/null)
+    if [ -n "$epoch" ]; then
+        echo "$epoch"
+        return
+    fi
+    # Last resort: python3
+    epoch=$(python3 -c "from datetime import datetime; print(int(datetime.fromisoformat('${ts}'.replace('Z','+00:00')).timestamp()))" 2>/dev/null)
+    [ -n "$epoch" ] && echo "$epoch"
+}
+
+# ── Format reset time as relative duration ──
+format_reset_time() {
+    local reset_str="$1"
+    [ "$reset_str" = "null" ] || [ -z "$reset_str" ] && return
+    local now reset_epoch diff_s
+    now=$(date +%s)
+    reset_epoch=$(parse_iso_to_epoch "$reset_str")
+    [ -z "$reset_epoch" ] && return
+    diff_s=$((reset_epoch - now))
+    [ "$diff_s" -le 0 ] && return
+    local diff_m=$(( (diff_s + 59) / 60 ))
+    if [ "$diff_m" -lt 60 ]; then
+        echo "${diff_m}m"
+    else
+        local h=$((diff_m / 60))
+        local m=$((diff_m % 60))
+        if [ "$m" -gt 0 ]; then
+            echo "${h}h ${m}m"
+        else
+            echo "${h}h"
+        fi
+    fi
+}
+
+# ── Calculate session duration from transcript ──
+get_session_duration() {
+    [ -z "$transcript_path" ] || [ ! -f "$transcript_path" ] && return
+    local first_ts
+    # First line may have null timestamp (file-history-snapshot), find first non-null
+    first_ts=$(head -20 "$transcript_path" 2>/dev/null | jq -r '.timestamp // empty' 2>/dev/null | head -1)
+    [ -z "$first_ts" ] && return
+    local start_epoch now
+    start_epoch=$(parse_iso_to_epoch "$first_ts")
+    [ -z "$start_epoch" ] && return
+    now=$(date +%s)
+    local diff_s=$((now - start_epoch))
+    local mins=$((diff_s / 60))
+    if [ "$mins" -lt 1 ]; then
+        echo "<1m"
+    elif [ "$mins" -lt 60 ]; then
+        echo "${mins}m"
+    else
+        local h=$((mins / 60))
+        local m=$((mins % 60))
+        echo "${h}h ${m}m"
+    fi
+}
+
+# ── Get Claude Code process memory (PID:MB) ──
 get_claude_memory() {
     local pid=$$
     local claude_pid=""
-
-    # Traverse parent process chain to find node (Claude Code) process
     while [ "$pid" -gt 1 ] 2>/dev/null; do
         pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
         [ -z "$pid" ] && break
         [ "$pid" -le 1 ] && break
-
         local cmd
         cmd=$(ps -o comm= -p "$pid" 2>/dev/null)
         if [[ "$cmd" == *"node"* ]] || [[ "$cmd" == *"claude"* ]]; then
             claude_pid="$pid"
-            # Don't break; keep going up to find the topmost node process
-            # (Claude Code may spawn child node processes)
         fi
     done
-
-    if [ -z "$claude_pid" ]; then
-        echo ""
-        return
-    fi
-
-    # Collect all descendant PIDs using BFS
+    [ -z "$claude_pid" ] && return
     local all_pids="$claude_pid"
     local queue="$claude_pid"
     while [ -n "$queue" ]; do
@@ -68,8 +294,6 @@ get_claude_memory() {
         done
         queue=$(echo "$next_queue" | xargs)
     done
-
-    # Sum RSS of all processes (in KB)
     local total_rss=0
     for p in $all_pids; do
         local rss
@@ -78,131 +302,171 @@ get_claude_memory() {
             total_rss=$((total_rss + rss))
         fi
     done
-
-    # KB -> MB
     local mb=$((total_rss / 1024))
     echo "${claude_pid}:${mb}"
 }
 
-# Get memory color based on MB usage
 get_memory_color() {
     local mb=$1
     if [ "$mb" -lt 500 ] 2>/dev/null; then
-        echo "32"  # Green - normal
+        echo "$C_GREEN"
     elif [ "$mb" -lt 1000 ] 2>/dev/null; then
-        echo "33"  # Yellow - moderate
+        echo "$C_YELLOW"
     elif [ "$mb" -lt 2000 ] 2>/dev/null; then
-        echo "35"  # Magenta - high
+        echo "$C_MAGENTA"
     else
-        echo "31"  # Red - very high (possible leak)
+        echo "$C_RED"
     fi
 }
 
-# Generate progress bar
-generate_progress_bar() {
-    local percentage=$1
-    local bar_length=10
-    local filled_length=$(( (percentage * bar_length) / 100 ))
-    local empty_length=$(( bar_length - filled_length ))
+# ════════════════════════════════════════════
+# Collect data
+# ════════════════════════════════════════════
 
-    local bar=""
-    for ((i=0; i<filled_length; i++)); do
-        bar+="█"
-    done
-    for ((i=0; i<empty_length; i++)); do
-        bar+="░"
-    done
-
-    echo "[$bar] ${percentage}%"
-}
-
-# Get usage color based on percentage
-get_usage_color() {
-    local percentage=$1
-    if [[ $percentage -lt 50 ]]; then
-        echo "32"  # Green
-    elif [[ $percentage -lt 80 ]]; then
-        echo "33"  # Yellow
-    else
-        echo "31"  # Red
-    fi
-}
-
-# Abbreviate home directory with ~
+# CWD display (abbreviate home, truncate left if > 50 chars)
 if [[ "$cwd" == "$HOME"* ]]; then
     cwd_display="~${cwd#$HOME}"
 else
     cwd_display="$cwd"
 fi
+if [ "${#cwd_display}" -gt 50 ]; then
+    cwd_display="...${cwd_display: -47}"
+fi
 
-# Get git branch if in a git repo (skip locks for performance)
+# Git branch
 git_branch=""
-if git rev-parse --git-dir >/dev/null 2>&1; then
-    branch=$(git symbolic-ref --short HEAD 2>/dev/null || git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
-    if [[ -n "$branch" ]]; then
-        git_branch="$branch"
-    fi
+if git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
+    git_branch=$(git -C "$cwd" symbolic-ref --short HEAD 2>/dev/null || \
+                 git -C "$cwd" describe --tags --exact-match 2>/dev/null || \
+                 git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
 fi
 
-# Text-only colors (no backgrounds) with powerline separators
-# Using ANSI color codes that work well in dimmed terminal output
-SEP=""  # Powerline separator
-MODEL_FG="34"    # Blue text for model
-USER_FG="32"     # Green text for user
-DIR_FG="33"      # Yellow text for directory
-GIT_FG="31"      # Red text for git
-RESET="0"        # Reset
+# Plan name
+plan_name=$(get_plan_name)
 
-# Build the status line
-status_line=""
-
-# Model segment
-status_line+="\033[${MODEL_FG}m  $model \033[0m"
-status_line+="\033[${MODEL_FG}m$SEP\033[0m"
-
-# User segment
-# status_line+="\033[${USER_FG}m  $username \033[0m"
-status_line+="\033[${USER_FG}m$SEP\033[0m"
-
-# Directory segment
-status_line+="\033[${DIR_FG}m  $cwd_display \033[0m"
-
-# Git segment (only if in a git repo)
-if [[ -n "$git_branch" ]]; then
-    status_line+="\033[${DIR_FG}m$SEP\033[0m"
-    status_line+="\033[${GIT_FG}m  $git_branch \033[0m"
-    status_line+="\033[${GIT_FG}m$SEP\033[0m"
-else
-    status_line+="\033[${DIR_FG}m$SEP\033[0m"
-fi
-
-# Memory usage segment
+# Memory
 mem_info=$(get_claude_memory)
+claude_pid=""
+mem_mb=""
 if [ -n "$mem_info" ]; then
     claude_pid="${mem_info%%:*}"
     mem_mb="${mem_info##*:}"
-    if [ -n "$mem_mb" ] && [ "$mem_mb" != "0" ]; then
-        mem_color=$(get_memory_color "$mem_mb")
-        status_line+="\033[${mem_color}m ${claude_pid} / ${mem_mb}MB \033[0m"
+fi
+
+# Usage API data
+usage_json=$(get_usage_data)
+five_hour=""
+five_reset_display=""
+seven_day=""
+seven_reset_display=""
+if [ -n "$usage_json" ]; then
+    five_hour=$(echo "$usage_json" | jq -r '.five_hour // ""' 2>/dev/null)
+    five_reset_raw=$(echo "$usage_json" | jq -r '.five_reset // "null"' 2>/dev/null)
+    five_reset_display=$(format_reset_time "$five_reset_raw")
+    seven_day=$(echo "$usage_json" | jq -r '.seven_day // ""' 2>/dev/null)
+    seven_reset_raw=$(echo "$usage_json" | jq -r '.seven_reset // "null"' 2>/dev/null)
+    seven_reset_display=$(format_reset_time "$seven_reset_raw")
+fi
+
+# Session duration
+session_dur=$(get_session_duration)
+
+# ════════════════════════════════════════════
+# LINE 1: [Model | Plan] ContextBar XX% | project git:(branch) | PID / MEM
+# ════════════════════════════════════════════
+line1=""
+
+# Model + Plan badge
+model_badge="$model"
+if [ -n "$plan_name" ]; then
+    model_badge="$model | $plan_name"
+fi
+line1+="${C_CYAN}[${model_badge}]${C_RESET}"
+
+# Git branch
+if [ -n "$git_branch" ]; then
+    line1+=" | ${C_MAGENTA}${git_branch}${C_RESET}"
+else
+    line1+=" | ${C_GRAY}X${C_RESET}"
+fi
+
+# Full path
+line1+=" | ${C_PATH}${cwd_display}${C_RESET}"
+
+# PID | Memory
+if [ -n "$mem_mb" ] && [ "$mem_mb" != "0" ]; then
+    mem_color=$(get_memory_color "$mem_mb")
+    line1+=" | ${mem_color}${claude_pid} | ${mem_mb}MB${C_RESET}"
+fi
+
+# ════════════════════════════════════════════
+# LINE 2: 5h: QuotaBar XX% (reset Xh Xm) | Duration | HH:MM:SS
+# ════════════════════════════════════════════
+line2=""
+line2_parts=()
+
+# 5-hour usage + 7-day usage combined: <5h>% (<remain>) | <7d>% (<remain>)
+# 5-hour usage
+if [ -n "$five_hour" ] && [ "$five_hour" != "null" ] && [ "$five_hour" != "" ]; then
+    five_int=$(printf "%.0f" "$five_hour" 2>/dev/null)
+    qcolor=$(get_usage_pct_color "$five_int")
+    five_display="${qcolor}${five_int}%${C_RESET}"
+    if [ -n "$five_reset_display" ]; then
+        five_display+=" ${C_GRAY}(${five_reset_display})${C_RESET}"
     fi
+    line2_parts+=("$five_display")
+else
+    line2_parts+=("${C_GRAY}?${C_RESET}")
 fi
 
-if [ -n "$(command -v date)" ]; then
-    # Time segment
-    usage_display=$(date "+%Y-%m-%d %H:%M:%S")
-    usage_color=$(get_usage_color "$usage_percentage")
-    status_line+="\033[${usage_color}m  $usage_display \033[0m"
+# 7-day usage
+if [ -n "$seven_day" ] && [ "$seven_day" != "null" ] && [ "$seven_day" != "" ]; then
+    seven_int=$(printf "%.0f" "$seven_day" 2>/dev/null)
+    scolor=$(get_usage_pct_color "$seven_int")
+    seven_display="${scolor}${seven_int}%${C_RESET}"
+    if [ -n "$seven_reset_display" ]; then
+        seven_display+=" ${C_GRAY}(${seven_reset_display})${C_RESET}"
+    fi
+    line2_parts+=("$seven_display")
+else
+    line2_parts+=("${C_GRAY}?${C_RESET}")
 fi
 
-# if [ -n "$(command -v ccusage)" ]; then
-#     # Calculate usage
-#     usage_percentage=$(calculate_usage "$transcript_path")
-#     usage_display=$(generate_progress_bar "$usage_percentage")
-#     usage_color=$(get_usage_color "$usage_percentage")
-# 
-#     # Usage segment
-#     status_line+="\033[${usage_color}m  $usage_display \033[0m"
-# fi
+# Context bar + remaining % (always show; default to 0% used / 100% remaining if no messages yet)
+if [ -z "$ctx_used" ] || [ "$ctx_used" = "null" ]; then
+    ctx_used=0
+fi
+if [ -z "$ctx_remaining" ] || [ "$ctx_remaining" = "null" ]; then
+    ctx_remaining=100
+fi
+ctx_bar=$(colored_bar "$ctx_used")
+local_ctx_color="$C_GREEN"
+if [ "$ctx_remaining" -lt 10 ] 2>/dev/null; then
+    local_ctx_color="$C_RED"
+elif [ "$ctx_remaining" -lt 20 ] 2>/dev/null; then
+    local_ctx_color="$C_YELLOW"
+fi
+line2_parts+=("${ctx_bar} ${local_ctx_color}${ctx_remaining}%${C_RESET}")
 
-# Output the status line
-echo -e "$status_line"
+# Session duration (always show; default to 0m if transcript not available yet)
+if [ -z "$session_dur" ]; then
+    session_dur="0m"
+fi
+line2_parts+=("${C_GRAY}${session_dur}${C_RESET}")
+
+# Current time
+time_display=$(date "+%H:%M:%S")
+line2_parts+=("${C_GRAY}${time_display}${C_RESET}")
+
+# Join line2 parts with " | "
+for i in "${!line2_parts[@]}"; do
+    if [ "$i" -gt 0 ]; then
+        line2+=" | "
+    fi
+    line2+="${line2_parts[$i]}"
+done
+
+# ════════════════════════════════════════════
+# Output
+# ════════════════════════════════════════════
+echo -e "${line1}\n${line2}"
