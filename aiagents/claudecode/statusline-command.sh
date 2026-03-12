@@ -409,7 +409,7 @@ line2_parts=()
 # 5-hour usage
 if [ -n "$five_hour" ] && [ "$five_hour" != "null" ] && [ "$five_hour" != "" ]; then
     five_int=$(printf "%.0f" "$five_hour" 2>/dev/null)
-    qcolor=$(get_usage_pct_color "$five_int")
+    qcolor="$C_PATH"
     five_display="${qcolor}${five_int}%${C_RESET}"
     if [ -n "$five_reset_display" ]; then
         five_display+=" ${C_GRAY}(${five_reset_display})${C_RESET}"
@@ -422,7 +422,7 @@ fi
 # 7-day usage
 if [ -n "$seven_day" ] && [ "$seven_day" != "null" ] && [ "$seven_day" != "" ]; then
     seven_int=$(printf "%.0f" "$seven_day" 2>/dev/null)
-    scolor=$(get_usage_pct_color "$seven_int")
+    scolor="$C_PATH"
     seven_display="${scolor}${seven_int}%${C_RESET}"
     if [ -n "$seven_reset_display" ]; then
         seven_display+=" ${C_GRAY}(${seven_reset_display})${C_RESET}"
