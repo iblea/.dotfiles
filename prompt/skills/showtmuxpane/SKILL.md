@@ -29,7 +29,7 @@ Please refer to the details below. (`#SKILL OPTS` section)
 
   - Therefore, if the `showtmuxpane` command is not available, use the following command instead. (Replace `<window number>` and `<tail line count>` with appropriate values.)
     - `tmux capture-pane -t <window number> -p -S <tail line count> -E $(($(tmux display -p -t <window number> '#{pane_height}') - 2))`
-  - It can be used as follows: `test -n "$TMUX" && showtmuxpane 2 -S -30`.
+  - It can be used as follows: `[ -n "$TMUX" ] && showtmuxpane 2 -S -30`.
 
 
 # SKILL OPTS
@@ -75,6 +75,7 @@ If this option is provided, Append `| tail -n <number>` after the capture-tmux c
   - `;tm 2 t`: `showtmuxpane 2 | tail -n 20`
     - Since there is no content after `t`, the default value of 20 is used for output.
   - `;tm 2 -S -5 t`: `showtmuxpane 2 -S -5 | tail -n 20`
+  - If check "TMUX" environment variable, use `[ -n "$TMUX" ] && showtmuxpane 2 -S -5 | tail -n 20` this command.
 
 #### head or h (optional number: default 20)
 
@@ -87,4 +88,5 @@ If this option is provided, Append `| head -n <number>` after the capture-tmux c
   - `;tm 2 h`: `showtmuxpane 2 | head -n 20`
     - Since there is no content after `h`, the default value of 20 is used for output.
   - `;tm 2 -S -50 h`: `showtmuxpane 2 -S -50 | head -n 20`
+  - If check "TMUX" environment variable, use `[ -n "$TMUX" ] && showtmuxpane 2 -S -5 | head -n 20` this command.
 
