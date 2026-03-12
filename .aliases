@@ -2316,7 +2316,7 @@ if [ -n "$(command -v claude)" ]; then
     # alias vim=/usr/bin/vim
     alias cldie=". $HOME/.dotfiles/.bin/cldi;"
     alias cl=cldi
-	alias cldp="ANTHROPIC_API_KEY='' claude -p --output-format text "
+    alias cldp="ANTHROPIC_API_KEY='' claude -p --output-format text "
     function clcc() {
         if [ $# -eq 0 ]; then
             local answer=""
@@ -2377,13 +2377,37 @@ function showtmuxpane() {
     fi
     local display_window="$1"
     shift
-	local windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
-	local is_exist=$(echo "$windowlist" | grep "^$display_window$")
-	if [ -z "$is_exist" ]; then
-		echo "window number is wrong"
-		return 1
-	fi
-    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
+    local windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
+    local is_exist=$(echo "$windowlist" | grep "^$display_window$")
+    if [ -z "$is_exist" ]; then
+        echo "window number is wrong"
+        return 1
+    fi
+    local TAIL_OPT=0
+    local HEAD_OPT=0
+    OTHER_OPTS=()
+    for (( i=1; i<=$#; i++ )); do
+        opt="${!i}"
+        if [[ "$opt" = "-t" ]] || [[ "$opt" = "-T" ]] || [[ "$opt" = "--tail" ]]; then
+            ((i++))
+            TAIL_OPT="${!i}"
+        elif [[ "$opt" = "-h" ]] || [[ "$opt" = "-H" ]] || [[ "$opt" = "--head" ]]; then
+            ((i++))
+            HEAD_OPT="${!i}"
+        else
+            OTHER_OPTS+=("$opt")
+        fi
+    done
+
+    if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
+        tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
+    elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
+        tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
+    else
+        tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
+    fi
+
+    # tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
     # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
 }
 
