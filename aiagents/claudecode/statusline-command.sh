@@ -183,7 +183,7 @@ if [ -n "$mem_info" ]; then
     mem_mb="${mem_info##*:}"
     if [ -n "$mem_mb" ] && [ "$mem_mb" != "0" ]; then
         mem_color=$(get_memory_color "$mem_mb")
-        status_line+="\033[${mem_color}m PID:${claude_pid} ${mem_mb}MB \033[0m"
+        status_line+="\033[${mem_color}m ${claude_pid} / ${mem_mb}MB \033[0m"
     fi
 fi
 
