@@ -24,9 +24,18 @@ C_CYAN="\033[36m"
 C_GRAY="\033[38;5;249m"
 C_PATH="\033[38;5;67m"
 
+# ── Git status symbols ──
+GIT_SYM_STASH="*"      # stash count
+GIT_SYM_STAGED="+"     # staged files
+GIT_SYM_MODIFIED="!"   # modified (unstaged) files
+GIT_SYM_UNTRACKED="?"  # untracked files
+GIT_SYM_CONFLICT="~"   # conflicted files
+
 # ── Usage API Cache ──
 USAGE_CACHE="$HOME/.claude/.statusline-usage-cache.json"
 USAGE_CACHE_TTL=180
+
+PATH_TRUNCATE_LEFT=40
 
 KERNEL_TYPE=$(uname -s)
 
@@ -324,22 +333,33 @@ get_memory_color() {
 # Collect data
 # ════════════════════════════════════════════
 
-# CWD display (abbreviate home, truncate left if > 50 chars)
+# CWD display (abbreviate home, truncate left if > $PATH_TRUNCATE_LEFT chars)
 if [[ "$cwd" == "$HOME"* ]]; then
     cwd_display="~${cwd#$HOME}"
 else
     cwd_display="$cwd"
 fi
-if [ "${#cwd_display}" -gt 50 ]; then
-    cwd_display="...${cwd_display: -47}"
+if [ "${#cwd_display}" -gt $PATH_TRUNCATE_LEFT ]; then
+	truncated_len=$((PATH_TRUNCATE_LEFT - 3))
+    cwd_display="...${cwd_display: - $truncated_len }"
 fi
 
-# Git branch
+# Git branch + status
 git_branch=""
+git_stash=0
+git_staged=0
+git_modified=0
+git_untracked=0
+git_conflict=0
 if git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
     git_branch=$(git -C "$cwd" symbolic-ref --short HEAD 2>/dev/null || \
                  git -C "$cwd" describe --tags --exact-match 2>/dev/null || \
                  git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
+    git_stash=$(git -C "$cwd" stash list 2>/dev/null | wc -l | tr -d ' ')
+    git_staged=$(git -C "$cwd" diff --cached --name-only 2>/dev/null | wc -l | tr -d ' ')
+    git_modified=$(git -C "$cwd" diff --name-only 2>/dev/null | wc -l | tr -d ' ')
+    git_untracked=$(git -C "$cwd" ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ')
+    git_conflict=$(git -C "$cwd" diff --name-only --diff-filter=U 2>/dev/null | wc -l | tr -d ' ')
 fi
 
 # Plan name
@@ -384,9 +404,20 @@ if [ -n "$plan_name" ]; then
 fi
 line1+="${C_CYAN}[${model_badge}]${C_RESET}"
 
-# Git branch
+# Git branch + status: (*1 +3 !2 ?1 ~1)
 if [ -n "$git_branch" ]; then
     line1+=" | ${C_MAGENTA}${git_branch}${C_RESET}"
+    # Build git status string
+    git_status_parts=""
+    [ "$git_stash" -gt 0 ] 2>/dev/null && git_status_parts+="${GIT_SYM_STASH}${git_stash} "
+    [ "$git_staged" -gt 0 ] 2>/dev/null && git_status_parts+="${GIT_SYM_STAGED}${git_staged} "
+    [ "$git_modified" -gt 0 ] 2>/dev/null && git_status_parts+="${GIT_SYM_MODIFIED}${git_modified} "
+    [ "$git_untracked" -gt 0 ] 2>/dev/null && git_status_parts+="${GIT_SYM_UNTRACKED}${git_untracked} "
+    [ "$git_conflict" -gt 0 ] 2>/dev/null && git_status_parts+="${GIT_SYM_CONFLICT}${git_conflict} "
+    if [ -n "$git_status_parts" ]; then
+        git_status_parts="${git_status_parts% }"  # remove trailing space
+        line1+=" ${C_YELLOW}(${git_status_parts})${C_RESET}"
+    fi
 else
     line1+=" | ${C_GRAY}X${C_RESET}"
 fi
@@ -397,7 +428,7 @@ line1+=" | ${C_PATH}${cwd_display}${C_RESET}"
 # PID | Memory
 if [ -n "$mem_mb" ] && [ "$mem_mb" != "0" ]; then
     mem_color=$(get_memory_color "$mem_mb")
-    line1+=" | ${mem_color}${claude_pid} | ${mem_mb}MB${C_RESET}"
+    line1+=" | ${mem_color}${mem_mb}MB${C_RESET} ${C_GRAY}(${claude_pid})${C_RESET}"
 fi
 
 # ════════════════════════════════════════════
