@@ -2352,9 +2352,31 @@ if [ -n "$(command -v claude)" ]; then
             echo "no staged."
             return 1
         fi
-		echo "recommand commit message with claude..."
-		echo ""
-        ANTHROPIC_API_KEY='' claude -p --output-format text ";cire $*"
+
+        local tmpfile=$(mktemp)
+        setopt local_options no_monitor no_notify 2>/dev/null
+
+        # script으로 pseudo-TTY 제공 → claude의 TTY 접근 문제 해결
+        CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
+            script -q /dev/null sh -c 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' > /dev/null 2>&1 &
+        local pid=$!
+
+        trap 'kill "$pid" 2>/dev/null; wait "$pid" 2>/dev/null; printf "\r\033[K"; rm -f "$tmpfile"; trap - INT; return 130' INT
+
+        # 스피너 (포그라운드 메인 루프, Ctrl+C 바로 먹힘)
+        local dots=("." ".." "...")
+        local i=1
+        while kill -0 "$pid" 2>/dev/null; do
+            printf "\rrecommand commit message with claude%-3s" "${dots[$i]}"
+            i=$((i % 3 + 1))
+            sleep 0.5
+        done
+
+        trap - INT
+        printf "\r\033[K"
+        wait "$pid"
+        cat "$tmpfile"
+        rm -f "$tmpfile"
     }
 fi
 
