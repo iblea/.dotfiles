@@ -20,6 +20,7 @@ if [ -z "$(command -v tmux)" ]; then
 fi
 
 NVIM_IDE=0
+NON_INTERACTIVE=0
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         claude --help
@@ -41,10 +42,16 @@ if [ $# -ge 1 ]; then
         if [[ "$opt" = "vi" ]] || [[ "$opt" = "-vi" ]] || [[ "$opt" = "nvi" ]] || [[ "$opt" = "-nvi" ]]; then
             NVIM_IDE=1
             break
+        elif [[ "${opt}" = "p" ]] || [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
+            NON_INTERACTIVE=1
         fi
     done
 fi
 
+if [ $NON_INTERACTIVE -eq 1 ]; then
+    cld $@
+    exit $?
+fi
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="claude_$(date +%s)_$$"
@@ -66,7 +73,7 @@ TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 if [ -n "$TMUX" ]; then
     export EDITOR="$EDITOR";
     cld $@
-    exit 0
+    exit $?
 elif [ "$NVIM_IDE" -eq 1 ]; then
     # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
