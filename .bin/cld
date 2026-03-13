@@ -60,7 +60,9 @@ for (( i=1; i<=$#; i++ )); do
         cd "$opt"
     elif [[ "${opt}" = "os" ]] || [[ "${opt}" = "-os" ]] || [[ "${opt}" = "--override-system-prompt" ]]; then
         OTHER_OPTS+=("--system-prompt" "''")
-    elif [[ "${opt}" = "p" ]] || [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
+    elif [[ "${opt}" = "p" ]]; then
+        NON_INTERACTIVE=11
+    elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
         OTHER_OPTS+=("-p")
         NON_INTERACTIVE=1
     elif [[ "${opt}" = "--output-format" ]]; then
@@ -111,6 +113,8 @@ if [ $NON_INTERACTIVE -eq 1 ]; then
     unset ANTHROPIC_API_KEY
     claude ${OTHER_OPTS[@]}
     exit $?
+elif [ $NON_INTERACTIVE -eq 11 ]; then
+	cldst "$*"
 fi
 
 if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then

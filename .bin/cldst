@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -z "$(git diff --cached --name-only 2>/dev/null)" ]; then
-    echo "no staged."
+if [ $# -eq 0 ]; then
+    echo "Wrong Argument"
     exit 1
 fi
 
@@ -28,10 +28,10 @@ if command -v jq &>/dev/null; then
     # claude background 실행 (PID 추적 가능)
     claude_pid=0
     if [ -z "$MODEL" ]; then
-        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages ";cire $*" > "$tmpfifo" 2>/dev/null &
+        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages "$*" > "$tmpfifo" 2>/dev/null &
         claude_pid=$!
     else
-        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages --model="$MODEL" ";cire $*" > "$tmpfifo" 2>/dev/null &
+        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages --model="$MODEL" "$*" > "$tmpfifo" 2>/dev/null &
         claude_pid=$!
     fi
 
@@ -39,7 +39,7 @@ if command -v jq &>/dev/null; then
     dots=("." ".." "...")
     (
         i=0
-        printf "recommand commit message with claude (streaming)\n"
+        printf "Response from AI (streaming)\n"
         echo ""
         while true; do
             printf "\rplease wait%-3s" "${dots[$((i % 3))]}"
@@ -97,19 +97,19 @@ else
     # OS에 따라 script 명령 분기 (macOS: BSD script, Linux: GNU script)
     if [ "$(uname)" = "Darwin" ]; then
         if [ -z "$MODEL" ]; then
-            CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
                 script -q /dev/null sh -c 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' > /dev/null 2>&1 &
         else
-            CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
                 script -q /dev/null sh -c 'ANTHROPIC_API_KEY="" claude -p --output-format text --model="$MODEL" "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' > /dev/null 2>&1 &
         fi
     else
         if [ -z "$MODEL" ]; then
-            CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
                 script -qc 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' /dev/null > /dev/null 2>&1 &
         else
-            CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
-                script -qc 'ANTHROPIC_API_KEY="" claude -p --output-format text --model="$MODEL" "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' /dev/null > /dev/null 2>&1 &
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
+                script -qc 'ANTHROPIC_API_KEY="" claude -p --output-format text  --model="$MODEL" "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' /dev/null > /dev/null 2>&1 &
         fi
     fi
     pid=$!
@@ -125,7 +125,7 @@ else
     # 스피너
     dots=("." ".." "...")
     i=0
-    printf "recommand commit message with claude\n"
+    printf "Response from AI (streaming)\n"
     echo ""
     while kill -0 "$pid" 2>/dev/null; do
         printf "\rplease wait%-3s" "${dots[$((i % 3))]}"

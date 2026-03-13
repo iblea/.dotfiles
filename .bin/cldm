@@ -42,7 +42,12 @@ if [ $# -ge 1 ]; then
         if [[ "$opt" = "vi" ]] || [[ "$opt" = "-vi" ]] || [[ "$opt" = "nvi" ]] || [[ "$opt" = "-nvi" ]]; then
             NVIM_IDE=1
             break
-        elif [[ "${opt}" = "p" ]] || [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
+        elif [[ "${opt}" = "p" ]]; then
+            NON_INTERACTIVE=11
+			# remove p
+            set -- "${@:1:i-1}" "${@:i+1}"
+            break
+        elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
             NON_INTERACTIVE=1
         fi
     done
@@ -51,6 +56,9 @@ fi
 if [ $NON_INTERACTIVE -eq 1 ]; then
     cld $@
     exit $?
+elif [ $NON_INTERACTIVE -eq 11 ]; then
+    cldst $@
+	exit $?
 fi
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
