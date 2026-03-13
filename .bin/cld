@@ -110,7 +110,7 @@ if [ $NON_INTERACTIVE -eq 1 ]; then
     fi
     unset ANTHROPIC_API_KEY
     claude ${OTHER_OPTS[@]}
-	exit $?
+    exit $?
 fi
 
 if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then

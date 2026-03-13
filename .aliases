@@ -1418,6 +1418,7 @@ fuunalias_alias 'gri' 'git reset'
 fuunalias_alias 'gro' 'git restore'
 fuunalias_alias 'gcf' 'git config'
 fuunalias_alias 'gcfl' 'git config --list'
+fuunalias_alias 'gitsavecredentials' "git config --local credential.helper 'store --file=.git/.my-credentials'"
 fuunalias_alias 'gs' 'git status --short'
 fuunalias_alias 'gst' 'git status'
 fuunalias_alias 'gsa' 'git status --short ./'
@@ -2345,6 +2346,15 @@ if [ -n "$(command -v claude)" ]; then
                 echo "claude plan deleted!"
             fi
         fi
+    }
+    function cire() {
+        if [ -z "$(git diff --cached --name-only 2>/dev/null)" ]; then
+            echo "no staged."
+            return 1
+        fi
+		echo "recommand commit message with claude..."
+		echo ""
+        ANTHROPIC_API_KEY='' claude -p --output-format text ";cire $*"
     }
 fi
 
