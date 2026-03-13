@@ -1,21 +1,32 @@
 #!/bin/bash
 
-if [ $# -eq 0 ]; then
+MODEL=''
+if [[ "${1:-}" = "o" ]] || [[ "${1:-}" = "O" ]] || [[ "${1:-}" = "a" ]] || [[ "${1:-}" = "A" ]]; then
+    MODEL="Opus"
+    shift
+elif [[ "${1:-}" = "s" ]] || [[ "${1:-}" = "S" ]]; then
+    MODEL="Sonnet"
+    shift
+elif [[ "${1:-}" = "h" ]] || [[ "${1:-}" = "H" ]]; then
+    MODEL="Haiku"
+    shift
+fi
+
+if [ $# -gt 0 ]; then
+    PROMPT="$*"
+elif [ ! -t 0 ]; then
+    PROMPT=$(cat)
+	# heredoc 지원
+	# cldst o <<'EOF'
+	# 특문 테스트 '"!@$#%^
+	# EOF
+else
     echo "Wrong Argument"
     exit 1
 fi
 
-MODEL=''
-if [[ "$1" = "o" ]] || [[ "$1" = "O" ]] || [[ "$1" = "a" ]] || [[ "$1" = "A" ]]; then
-    MODEL="Opus"
-    shift
-elif [[ "$1" = "s" ]] || [[ "$1" = "S" ]]; then
-    MODEL="Sonnet"
-    shift
-elif [[ "$1" = "h" ]] || [[ "$1" = "H" ]]; then
-    MODEL="Haiku"
-    shift
-fi
+echo "Prompt: $PROMPT"
+exit 0
 
 if command -v jq &>/dev/null; then
     # ===== cires (stream-json, 실시간 출력) =====
@@ -28,10 +39,10 @@ if command -v jq &>/dev/null; then
     # claude background 실행 (PID 추적 가능)
     claude_pid=0
     if [ -z "$MODEL" ]; then
-        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages "$*" > "$tmpfifo" 2>/dev/null &
+        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages "$PROMPT" > "$tmpfifo" 2>/dev/null &
         claude_pid=$!
     else
-        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages --model="$MODEL" "$*" > "$tmpfifo" 2>/dev/null &
+        ANTHROPIC_API_KEY="" claude -p --output-format stream-json --verbose --include-partial-messages --model="$MODEL" "$PROMPT" > "$tmpfifo" 2>/dev/null &
         claude_pid=$!
     fi
 
@@ -97,18 +108,18 @@ else
     # OS에 따라 script 명령 분기 (macOS: BSD script, Linux: GNU script)
     if [ "$(uname)" = "Darwin" ]; then
         if [ -z "$MODEL" ]; then
-            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$PROMPT" \
                 script -q /dev/null sh -c 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' > /dev/null 2>&1 &
         else
-            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$PROMPT" \
                 script -q /dev/null sh -c 'ANTHROPIC_API_KEY="" claude -p --output-format text --model="$MODEL" "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' > /dev/null 2>&1 &
         fi
     else
         if [ -z "$MODEL" ]; then
-            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$PROMPT" \
                 script -qc 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' /dev/null > /dev/null 2>&1 &
         else
-            CIRE_OUT="$tmpfile" CIRE_ARGS="$*" \
+            CIRE_OUT="$tmpfile" CIRE_ARGS="$PROMPT" \
                 script -qc 'ANTHROPIC_API_KEY="" claude -p --output-format text  --model="$MODEL" "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' /dev/null > /dev/null 2>&1 &
         fi
     fi
