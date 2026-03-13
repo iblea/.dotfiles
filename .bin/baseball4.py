@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import random
 import sys
 
@@ -7,14 +8,24 @@ def generate_number():
     digits = random.sample(range(10), 4)
     return ''.join(map(str, digits))
 
+
+SAVE_DIR = '/tmp/baseball4'
+os.makedirs(SAVE_DIR, exist_ok=True)
+SAVE_PATH = os.path.join(SAVE_DIR, f'{os.getpid()}.txt')
+
 def save_number(number):
     """숫자를 파일에 저장"""
-    with open('/tmp/baseball4.txt', 'w') as f:
+    with open(SAVE_PATH, 'w') as f:
         f.write(number)
+
+def cleanup_save_file():
+    """저장 파일 삭제"""
+    if os.path.exists(SAVE_PATH):
+        os.remove(SAVE_PATH)
 
 def load_number():
     """파일에서 숫자 로드"""
-    with open('/tmp/baseball4.txt', 'r') as f:
+    with open(SAVE_PATH, 'r') as f:
         return f.read().strip()
 
 def validate_input(user_input):
@@ -71,7 +82,8 @@ def main():
             if prev_lines > 0:
                 clear_previous_lines(prev_lines)
 
-            # 턴 번호 출력
+            # PID 및 턴 번호 출력
+            print(f"PID: {os.getpid()}")
             print(f"[{turn}]")
 
             # 이력 출력
@@ -83,7 +95,7 @@ def main():
 
             # 도움말
             if user_input == '--help':
-                clear_previous_lines(len(history) + 2)  # 턴 번호 + 이력 + 입력
+                clear_previous_lines(len(history) + 3)  # PID + 턴 번호 + 이력 + 입력
                 show_help()
                 input("\n계속하려면 Enter를 누르세요...")
                 prev_lines = 0
@@ -91,12 +103,14 @@ def main():
 
             # 게임 포기
             if user_input.lower() == 'gg':
-                clear_previous_lines(len(history) + 2)  # 턴 번호 + 이력 + 입력
+                clear_previous_lines(len(history) + 3)  # PID + 턴 번호 + 이력 + 입력
+                print(f"PID: {os.getpid()}")
                 print(f"[{turn}]")
                 for item in history:
                     print(item)
-                print(f"\n포기하셨습니다.")
+                print("\n포기하셨습니다.")
                 print(f"정답은 '{answer}' 였습니다.")
+                cleanup_save_file()
                 break
 
             # 중복 입력 체크 (입력 라인만 지우고 다시 입력받기)
@@ -109,8 +123,8 @@ def main():
                 clear_previous_lines(1)  # 방금 입력한 라인만 지우기
                 continue
 
-            # 현재까지 출력한 줄 수 계산 (턴 번호 + 이력 + 입력)
-            prev_lines = len(history) + 2
+            # 현재까지 출력한 줄 수 계산 (PID + 턴 번호 + 이력 + 입력)
+            prev_lines = len(history) + 3
 
             # 시도한 숫자 저장
             tried_numbers.add(user_input)
@@ -121,11 +135,13 @@ def main():
             # 정답 확인
             if strikes == 4:
                 clear_previous_lines(prev_lines)
+                print(f"PID: {os.getpid()}")
                 print(f"[{turn}]")
                 for item in history:
                     print(item)
                 print(f"{user_input}=4s")
                 print(f"\n🎉 정답입니다! {turn}회 만에 맞추셨습니다!")
+                cleanup_save_file()
                 break
 
             # 결과 문자열 생성
@@ -145,18 +161,21 @@ def main():
             # 마지막 턴 확인
             if turn == max_turns:
                 clear_previous_lines(prev_lines)
+                print(f"PID: {os.getpid()}")
                 print(f"[{turn}]")
                 for item in history:
                     print(item)
                 print(f"\nYou lose! {max_turns}회 안에 맞추지 못했습니다.")
                 print(f"정답은 '{answer}' 였습니다.")
+                cleanup_save_file()
                 break
 
             turn += 1
 
     except KeyboardInterrupt:
-        print(f"\n\n강제 종료되었습니다.")
+        print("\n\n강제 종료되었습니다.")
         print(f"정답은 '{answer}' 였습니다.")
+        cleanup_save_file()
         sys.exit(0)
 
 
