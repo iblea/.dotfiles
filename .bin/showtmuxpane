@@ -1,0 +1,78 @@
+#!/bin/bash
+
+if [ -z "$TMUX" ]; then
+	echo "You are not in tmux."
+	echo "This command can only be used in tmux."
+	exit 1
+fi
+
+if [ "$#" -le 0 ]; then
+    echo "Wrong Argument."
+    echo "Show Help: showtmuxpane -h"
+    exit 1
+elif [ "$#" -eq 1 ]; then
+    if [ "$@" = "-h" ] || [ "$@" = "--help" ]; then
+        echo "Argument"
+        echo "-h, --help: show help"
+        echo ""
+        echo "-t: <window number>"
+        echo "-S: <start line>"
+        echo ""
+        echo "The -E option is set as the default value, and this cannot be changed."
+        echo "    Default Value: \$((\$(tmux display -p -t <window_number> '#{pane_height}') - 1))"
+        echo "The p option is enabled, and this cannot be changed."
+        exit 0
+    fi
+fi
+
+display_window="$1"
+shift
+windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
+is_exist=$(echo "$windowlist" | grep "^$display_window$")
+if [ -z "$is_exist" ]; then
+    echo "window number is wrong"
+    exit 1
+fi
+
+
+TAIL_OPT=0
+HEAD_OPT=0
+OTHER_OPTS=()
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -t|-T|--tail) TAIL_OPT="$2"; shift ;;
+        -h|-H|--head) HEAD_OPT="$2"; shift ;;
+        *) OTHER_OPTS+=("$1") ;;
+    esac
+    shift
+done
+
+# for (( i=1; i<=$#; i++ )); do
+#     eval "opt=\${$i}"
+#     if [[ "$opt" = "-t" ]] || [[ "$opt" = "-T" ]] || [[ "$opt" = "--tail" ]]; then
+#         ((i++))
+#         TAIL_OPT="${!i}"
+#     elif [[ "$opt" = "-h" ]] || [[ "$opt" = "-H" ]] || [[ "$opt" = "--head" ]]; then
+#         ((i++))
+#         HEAD_OPT="${!i}"
+#     else
+#         OTHER_OPTS+=("$opt")
+#     fi
+# done
+# echo "TAIL_OPT: $TAIL_OPT"
+# echo "HEAD_OPT: $HEAD_OPT"
+# echo "OTHER_OPT: ${OTHER_OPTS[@]}"
+
+if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
+    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
+elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
+    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
+else
+    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
+fi
+
+# tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
+# tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
+
+
