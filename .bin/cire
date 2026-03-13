@@ -1,0 +1,44 @@
+#!/bin/bash
+
+if [ -z "$(git diff --cached --name-only 2>/dev/null)" ]; then
+    echo "no staged."
+    exit 1
+fi
+
+tmpfile=$(mktemp)
+
+# job control 메시지 숨기기
+set +m
+
+# OS에 따라 script 명령 분기 (macOS: BSD script, Linux: GNU script)
+if [ "$(uname)" = "Darwin" ]; then
+    CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
+        script -q /dev/null sh -c 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' > /dev/null 2>&1 &
+else
+    CIRE_OUT="$tmpfile" CIRE_ARGS=";cire $*" \
+        script -qc 'ANTHROPIC_API_KEY="" claude -p --output-format text "$CIRE_ARGS" > "$CIRE_OUT" 2>&1' /dev/null > /dev/null 2>&1 &
+fi
+pid=$!
+
+cleanup() {
+    kill "$pid" 2>/dev/null
+    wait "$pid" 2>/dev/null
+    printf "\r\033[K"
+    rm -f "$tmpfile"
+}
+trap 'cleanup; exit 130' INT
+
+# 스피너
+dots=("." ".." "...")
+i=0
+while kill -0 "$pid" 2>/dev/null; do
+    printf "\rrecommand commit message with claude%-3s" "${dots[$((i % 3))]}"
+    i=$((i + 1))
+    sleep 0.5
+done
+
+trap - INT
+printf "\r\033[K"
+wait "$pid"
+cat "$tmpfile"
+rm -f "$tmpfile"
