@@ -25,8 +25,8 @@ else
     exit 1
 fi
 
-echo "Prompt: $PROMPT"
-exit 0
+# echo "Prompt: $PROMPT"
+# exit 0
 
 if command -v jq &>/dev/null; then
     # ===== cires (stream-json, 실시간 출력) =====
