@@ -6,7 +6,7 @@ cd "$curpath"
 VENV_NAME="venv_market"
 
 if [ ! -d "$VENV_NAME" ]; then
-	python3 venv "$VENV_NAME"
+	python3 -m venv "$VENV_NAME"
 fi
 
 source ./$VENV_NAME/bin/activate

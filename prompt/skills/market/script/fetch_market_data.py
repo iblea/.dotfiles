@@ -48,12 +48,20 @@ INTERVALS = [
 
 
 def create_tv_client():
-    uid = os.environ.get("TRADINGVIEW_MARKET_ID")
-    pw = os.environ.get("TRADINGVIEW_MARKET_PW")
+    uid = None
+    pw = None
+    conf_path = Path.home() / ".config" / "market_skill" / "tradingview.conf"
+    if conf_path.exists():
+        for line in conf_path.read_text().strip().splitlines():
+            line = line.strip()
+            if line.startswith("TRADINGVIEW_MARKET_ID="):
+                uid = line.split("=", 1)[1]
+            elif line.startswith("TRADINGVIEW_MARKET_PW="):
+                pw = line.split("=", 1)[1]
     if uid and pw:
         print(f"[INFO] TradingView 로그인 모드 (ID: {uid})")
         return TvDatafeed(username=uid, password=pw)
-    print("[INFO] 환경변수 미설정 -> 비로그인 모드")
+    print(f"[INFO] conf 파일 미설정 또는 인증정보 없음 ({conf_path}) -> 비로그인 모드")
     return TvDatafeed()
 
 
