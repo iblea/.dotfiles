@@ -48,7 +48,7 @@
     "deny": [],
     "ask": []
   },
-  "model": "Opus",
+  "model": "Opus [1m]",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
