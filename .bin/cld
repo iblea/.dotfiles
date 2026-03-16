@@ -25,7 +25,7 @@ else
         exit 0
     fi
     case "$1" in
-        s|u|su|a|au|h|hu|o|ou|d|du)
+        s|su|sm|a|au|am|h|hu|hm|o|ou|om|d|du|dm)
             CLAUDE_OPT="$1"
             shift
             ;;
@@ -108,13 +108,13 @@ done
 
 if [ $NON_INTERACTIVE -eq 1 ]; then
     if [ $NON_INTERACTIVE_TYPE -eq 0 ]; then
-        OTHER_OPTS+=("--output-format" "text")
+            OTHER_OPTS+=("--output-format" "text")
     fi
     unset ANTHROPIC_API_KEY
     claude ${OTHER_OPTS[@]}
     exit $?
 elif [ $NON_INTERACTIVE -eq 11 ]; then
-	cldst "$*"
+	cldst $CLAUDE_OPT "$*"
 fi
 
 if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
@@ -168,46 +168,28 @@ fi
 export ENABLE_LSP_TOOL=true
 
 if [ "$CLAUDE_OPT" = "s" ]; then
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=Sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model=Sonnet ${OTHER_OPTS[@]}
-    fi
-elif [ "$CLAUDE_OPT" = "u" ] || [ "$CLAUDE_OPT" = "su" ]; then
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
-    fi
+    claude --model=Sonnet ${OTHER_OPTS[@]}
+    # if [ -f "$PROMPT_PATH" ] ;then
+    #     claude --model=Sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+    # else
+    #     claude --model=Sonnet ${OTHER_OPTS[@]}
+    # fi
+elif [ "$CLAUDE_OPT" = "sm" ] || [ "$CLAUDE_OPT" = "su" ]; then
+    claude --model='Sonnet[1m]' ${OTHER_OPTS[@]}
+    # if [ -f "$PROMPT_PATH" ] ;then
+    #     claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
+    # else
+    #     claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
+    # fi
 elif [ "$CLAUDE_OPT" = "a" ] || [ "$CLAUDE_OPT" = "o" ] || [ "$CLAUDE_OPT" = "d" ]; then
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=Opus --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model=Opus ${OTHER_OPTS[@]}
-    fi
-elif [ "$CLAUDE_OPT" = "au" ] || [ "$CLAUDE_OPT" = "ou" ] || [ "$CLAUDE_OPT" = "du" ]; then
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=Opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model=Opus --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
-    fi
+    claude --model=Opus ${OTHER_OPTS[@]}
+elif [ "$CLAUDE_OPT" = "au" ] || [ "$CLAUDE_OPT" = "ou" ] || [ "$CLAUDE_OPT" = "dm" ] || [ "$CLAUDE_OPT" = "am" ] || [ "$CLAUDE_OPT" = "om" ] || [ "$CLAUDE_OPT" = "dm" ]; then
+    claude --model='Opus[1m]' ${OTHER_OPTS[@]}
 elif [ "$CLAUDE_OPT" = "h" ]; then
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=Haiku --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model=Haiku ${OTHER_OPTS[@]}
-    fi
-elif [ "$CLAUDE_OPT" = "hu" ]; then
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model=Haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model=Haiku --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
-    fi
+    claude --model=Haiku ${OTHER_OPTS[@]}
+elif [ "$CLAUDE_OPT" = "hu" ] || [ "$CLAUDE_OPT" = "hm" ]; then
+    claude --model='Haiku[1m]' ${OTHER_OPTS[@]}
 else
-    if [ -f "$PROMPT_PATH" ] ;then
-        claude --model='' --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
-    else
-        claude --model='' ${OTHER_OPTS[@]}
-    fi
+    claude --model='' ${OTHER_OPTS[@]}
 fi
 
