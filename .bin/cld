@@ -190,6 +190,7 @@ elif [ "$CLAUDE_OPT" = "h" ]; then
 elif [ "$CLAUDE_OPT" = "hu" ] || [ "$CLAUDE_OPT" = "hm" ]; then
     claude --model='Haiku[1m]' ${OTHER_OPTS[@]}
 else
-    claude --model='' ${OTHER_OPTS[@]}
+    claude ${OTHER_OPTS[@]}
+    # claude --model='' ${OTHER_OPTS[@]}
 fi
 
