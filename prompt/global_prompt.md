@@ -136,6 +136,9 @@ The following is an explanation of the user-defined command.
 | Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
 | Other | `;code` | Open file in VS Code | - |
 | Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
+| Translate | `;kor [opts]` | Call skill `kor` (translate to Korean) | translator |
+| Translate | `;eng [opts]` | Call skill `eng` (translate to English) | translator |
+| Translate | `;trans [opts]` | Call skill `trans` (translate) | translator |
 | Council | `;ag` / `;agents` `[Agent Name]` | Ask to Other LLM (call agent-council skill.) | gemini_council_agent, codex_council_agent, agent-council |
 | AITODO | `;aitodo [-n/-next/-nt]` | Call skill `aitodo` | - |
 | AITODO | `;cai [nci/a/add]` | Call skill `convert-aitodo` | - |
@@ -204,6 +207,11 @@ The following is an explanation of the user-defined command.
       - Assuming that the server is an Ubuntu server with apt installed, the command to install gcc is `apt-get install -y gcc`.
         Also, since the user indicated that the ssh config file is located at sshconfig.conf in the current directory, you need to add the -F option like `exec ssh -F "$(pwd)/sshconfig.conf"`.
         Therefore, you should execute the following command: `exec ssh -F "$(pwd)/sshconfig.conf" test "apt-get install -y gcc"`
+
+### User-Defined Category: Translate
+- When receiving the command **;kor**, call `kor` skill and use it with options.
+- When receiving the command **;eng**, call `eng` skill and use it with options.
+- When receiving the command **;trans**, call `trans` skill and use it with options.
 
 ### User-Defined Category: Council
 - When receiving the command **;ag `Agent Name`** or **;agents `Agent Name`**, call `agent-council` skill and use it with options.
