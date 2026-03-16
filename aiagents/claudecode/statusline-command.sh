@@ -7,6 +7,7 @@ input=$(cat)
 # ── Extract information from stdin JSON ──
 model=$(echo "$input" | jq -r '.model.display_name // ""')
 [ -z "$model" ] && model="Claude"
+model="${model//(1M context)/[1m]}"
 cwd=$(echo "$input" | jq -r '.workspace.current_dir')
 transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
 ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // ""')
