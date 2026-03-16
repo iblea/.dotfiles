@@ -7,4 +7,4 @@ sudo apt-get install neovim
 
 # tree-sitter 바이너리 설치가 필수가 됨.
 which tree-sitter
-# npm install tree-sitter-cli
+# npm install -g tree-sitter-cli
