@@ -2358,6 +2358,11 @@ function dush() {
     du --max-depth=1 -h ./
 }
 
+function magicksixel() {
+	# magick $@ --resize 800x600 sixel:-
+	magick $@ sixel:-
+}
+
 # alias
 [ -f $HOME/.aliases_company ] && source ~/.aliases_company
 
