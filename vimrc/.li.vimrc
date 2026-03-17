@@ -19,6 +19,9 @@ ca w!! w !sudo tee "%" > /dev/null
 
 
 let g:open_path = getcwd()
+if fnamemodify(g:open_path, ':t') == '.git'
+	let g:open_path = fnamemodify(g:open_path, ':h')
+endif
 
 if isdirectory($HOME."/.vim/pack/autopair") || isdirectory($HOME."/.vim/plugged/autopair")
     " Autopair Disable
@@ -343,9 +346,18 @@ func! WinEnterFunction()
     silent! execute 'cd' expand('%:p:h')
 endfunc
 
+func! s:TermOpenHandler()
+	let l:prev_ft = getbufvar(bufnr('#'), '&filetype')
+	let l:cwd = getcwd()
+	if l:prev_ft == 'gitcommit' && fnamemodify(l:cwd, ':t') == '.git'
+		call feedkeys("cd ".shellescape(fnamemodify(l:cwd, ':h'))."\<CR>", 'n')
+	endif
+endfunc
+
 if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
     autocmd FileType gitcommit  setl ts=4
+    autocmd TerminalOpen * call s:TermOpenHandler()
 endif
 
 noremap <C-@> <ESC>

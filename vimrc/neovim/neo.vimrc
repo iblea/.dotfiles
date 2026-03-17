@@ -46,6 +46,9 @@ if isdirectory("/opt/homebrew/")
 endif
 
 let g:open_path = getcwd()
+if fnamemodify(g:open_path, ':t') == '.git'
+	let g:open_path = fnamemodify(g:open_path, ':h')
+endif
 if exists(":term")
 	"set termsize=20x0
 	"set termwinsize=20x0
@@ -169,8 +172,17 @@ endfunc
 
 if has("autocmd")
     au BufWinEnter,WinEnter * call WinEnterFunction()
-	autocmd TermOpen * startinsert
+	autocmd TermOpen * call s:TermOpenHandler()
 endif
+
+func! s:TermOpenHandler()
+	let l:prev_ft = getbufvar(bufnr('#'), '&filetype')
+	let l:cwd = getcwd()
+	if l:prev_ft == 'gitcommit' && fnamemodify(l:cwd, ':t') == '.git'
+		call feedkeys("cd ".shellescape(fnamemodify(l:cwd, ':h'))."\<CR>", 'n')
+	endif
+	startinsert
+endfunc
 
 iabbrev utk ultrathink
 " iabbrev utk<Tab> ultrathink
