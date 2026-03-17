@@ -238,3 +238,5 @@ inoremap <C-@> <ESC>
 
 noremap <C-Space> <ESC>
 inoremap <C-Space> <ESC>
+
+set mouse=

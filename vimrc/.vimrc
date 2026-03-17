@@ -69,3 +69,5 @@ if isdirectory("/opt/homebrew/")
 	set clipboard=unnamed
 endif
 
+set mouse=
+
