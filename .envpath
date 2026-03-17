@@ -64,7 +64,21 @@ if [ -d "$HOME/.local/.bin/" ]; then
 	fi
 fi
 
-
+# sbin paths (for ifconfig, iptables, etc.)
+sbin_paths=(
+	"/usr/local/sbin"
+	"/usr/sbin"
+	"/sbin"
+)
+for sbin_path in ${sbin_paths[@]}; do
+	if [ -d "$sbin_path" ]; then
+		if ! grep -q "$sbin_path" <<< "$PATH"; then
+			export PATH="$PATH:$sbin_path"
+		fi
+	fi
+done
+unset sbin_paths
+unset sbin_path
 
 # java path
 # if [ -n "$(command -v java)" ]; then
@@ -72,18 +86,24 @@ fi
 # fi
 # if [ $? -eq 0 ]; then
 if [ -n "$(command -v java)" ]; then
-	if [[ "$(uname -s)" = "Darwin" ]]; then
-		export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-		if [ -z "$JAVA_HOME" ]; then
-			export JAVA_HOME="$(/usr/libexec/java_home -v17)"
-			# export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
-		fi
-	else
-		# custom java home path
-		if [ -z "$JAVA_HOME" ]; then
-			export JAVA_HOME=""
-			# export JAVA_HOME="/usr/lib/jvm/java-xx-openjdk-axx64"
-		fi
+	if [ -f "$HOME/.dotfiles/env_custom/java" ]; then
+		source "$HOME/.dotfiles/env_custom/java"
+	fi
+	if [ -n "$JAVA_VERSION" ]; then
+	    if [[ "$(uname -s)" = "Darwin" ]]; then
+	    	export PATH="/opt/homebrew/opt/openjdk@${JAVA_VERSION}/bin:$PATH"
+	    	if [ -z "$JAVA_HOME" ]; then
+	    		export JAVA_HOME="$(/usr/libexec/java_home -v${JAVA_VERSION})"
+	    		# export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+	    		# export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+	    	fi
+	    else
+	    	# custom java home path
+	    	if [ -z "$JAVA_HOME" ]; then
+	    		export JAVA_HOME="/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64/"
+	    		# export JAVA_HOME="/usr/lib/jvm/java-xx-openjdk-axx64"
+	    	fi
+	    fi
 	fi
 fi
 
