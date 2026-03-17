@@ -23,6 +23,17 @@ if !empty(glob($HOME."/.dotfiles/vimrc/.vs.vimrc"))
 	source $HOME/.dotfiles/vimrc/.vs.vimrc
 endif
 
+" winfixwidth/winfixheight 해제 후 창 크기 균등화 (.vs.vimrc의 <Leader>v override)
+lua << EOF
+vim.keymap.set({"n", "v"}, "<Leader>v", function()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    pcall(vim.api.nvim_set_option_value, "winfixwidth", false, { win = win })
+    pcall(vim.api.nvim_set_option_value, "winfixheight", false, { win = win })
+  end
+  vim.cmd("wincmd =")
+end, { desc = "Equalize window sizes (clear winfixwidth/height)" })
+EOF
+
 if has("gui_running")
 	source $HOME/.dotfiles/vimrc/gui.vimrc
 	" lua require("gui_init")
