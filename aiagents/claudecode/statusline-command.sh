@@ -36,6 +36,7 @@ GIT_SYM_CONFLICT="~"   # conflicted files
 USAGE_CACHE="$HOME/.claude/.statusline-usage-cache.json"
 USAGE_CACHE_TTL=180
 
+VIRTUAL_CTX_K=200    # 1M 모델에서 가상 컨텍스트 제한 (K 토큰 단위)
 PATH_TRUNCATE_LEFT=40
 
 KERNEL_TYPE=$(uname -s)
@@ -472,14 +473,47 @@ fi
 if [ -z "$ctx_remaining" ] || [ "$ctx_remaining" = "null" ]; then
     ctx_remaining=100
 fi
-ctx_bar=$(colored_bar "$ctx_used")
-local_ctx_color="$C_GREEN"
-if [ "$ctx_remaining" -lt 10 ] 2>/dev/null; then
-    local_ctx_color="$C_RED"
-elif [ "$ctx_remaining" -lt 20 ] 2>/dev/null; then
-    local_ctx_color="$C_YELLOW"
+ctx_used_int=$(printf "%.0f" "$ctx_used" 2>/dev/null)
+ctx_remaining_int=$(printf "%.0f" "$ctx_remaining" 2>/dev/null)
+
+if [[ "$model" == *"[1m]"* ]] && [ "$VIRTUAL_CTX_K" -gt 0 ] 2>/dev/null; then
+    # 1M model: VIRTUAL_CTX_K 기준으로 progress bar 표시
+    virtual_used=$(( ctx_used_int * 1000 / VIRTUAL_CTX_K ))
+    virtual_remaining=$(( 100 - virtual_used ))
+    [ "$virtual_remaining" -lt 0 ] && virtual_remaining=0
+    bar_val=$virtual_used
+    [ "$bar_val" -gt 100 ] && bar_val=100
+    ctx_bar=$(colored_bar "$bar_val")
+    if [ "$virtual_used" -ge 100 ]; then
+        # VIRTUAL_CTX_K 초과: 회색 bar (1M 대비 실제 사용량)
+        local C_DARK_GRAY="\033[38;5;237m"
+        local filled=$(( (ctx_used_int * 10) / 100 ))
+        local empty=$(( 10 - filled ))
+        local bar="" ebar=""
+        for ((i=0; i<filled; i++)); do bar+="█"; done
+        for ((i=0; i<empty; i++)); do ebar+="░"; done
+        ctx_bar="${C_DARK_GRAY}${bar}${C_DIM}${ebar}${C_RESET}"
+        line2_parts+=("${ctx_bar} ${C_RED}0%${C_RESET} ${C_YELLOW}-(${ctx_remaining_int}%)${C_RESET}")
+    else
+        local_ctx_color="$C_GREEN"
+        if [ "$virtual_remaining" -lt 10 ] 2>/dev/null; then
+            local_ctx_color="$C_RED"
+        elif [ "$virtual_remaining" -lt 20 ] 2>/dev/null; then
+            local_ctx_color="$C_YELLOW"
+        fi
+        line2_parts+=("${ctx_bar} ${local_ctx_color}${virtual_remaining}%${C_RESET}")
+    fi
+else
+    # 일반 모델: 기존 로직
+    ctx_bar=$(colored_bar "$ctx_used_int")
+    local_ctx_color="$C_GREEN"
+    if [ "$ctx_remaining_int" -lt 10 ] 2>/dev/null; then
+        local_ctx_color="$C_RED"
+    elif [ "$ctx_remaining_int" -lt 20 ] 2>/dev/null; then
+        local_ctx_color="$C_YELLOW"
+    fi
+    line2_parts+=("${ctx_bar} ${local_ctx_color}${ctx_remaining_int}%${C_RESET}")
 fi
-line2_parts+=("${ctx_bar} ${local_ctx_color}${ctx_remaining}%${C_RESET}")
 
 # Session duration (always show; default to 0m if transcript not available yet)
 if [ -z "$session_dur" ]; then
