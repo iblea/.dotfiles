@@ -39,7 +39,32 @@ return {
           vim.notify("Image rendering disabled", vim.log.levels.INFO)
         else
           image.enable()
-          vim.cmd("edit")
+          if vim.api.nvim_buf_get_name(0) ~= "" then
+            vim.cmd("edit")
+          end
+          -- disable 상태에서 열린 버퍼는 state.images에 이미지가 등록되지 않음
+          -- (Image:render()의 state.enabled 가드 때문)
+          -- 이미지가 없으면 열린 윈도우의 버퍼를 스캔해서 직접 생성
+          vim.schedule(function()
+            if #image.get_images() > 0 then
+              return
+            end
+            for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+              local buf = vim.api.nvim_win_get_buf(win)
+              local lines = vim.api.nvim_buf_get_lines(buf, 1, -1, false)
+              for i, line in ipairs(lines) do
+                for link in line:gmatch("%((http[s]?://%S+)%)") do
+                  image.from_url(link, {
+                    buffer = buf,
+                    window = win,
+                    with_virtual_padding = true,
+                  }, function(img)
+                    if img then img:render({ y = i + 1 }) end
+                  end)
+                end
+              end
+            end
+          end)
           vim.notify("Image rendering enabled", vim.log.levels.INFO)
         end
       end,
