@@ -1,0 +1,78 @@
+#!/bin/bash
+# codevim-autosend: Claude Code pane 화면 안정화 감지 후 Escape+Enter 자동 전송
+#
+# 외부 에디터에서 exit code 10 리턴 시, tmux pane-exited hook에서 호출.
+# 고정 sleep 대신 화면 캡처 폴링으로 Claude Code 준비 상태를 동적 감지.
+#
+# Usage: codevim-autosend [target-pane] [term-sec]
+#   target-pane : tmux 타겟 pane (default: 1)
+#   term-sec    : 캡처 폴링 간격, 초 (default: 0.05)
+
+TARGET="${1:-1}"
+TERM_SEC="${2:-0.03}"
+
+# Phase 1: 초기 안정화 (에디터 내용 로드 완료 대기)
+PHASE1_STABLE=2       # N번 연속 동일 → 안정화 판정
+PHASE1_MAX=10         # 최대 반복 (TERM_SEC * MAX = 최대 대기시간)
+PHASE1_MIN_WAIT=0.05   # 최소 대기 시간 (초, 0이면 대기 X)
+
+# Phase 2: Escape 후 안정화 (Escape 처리 완료 대기)
+PHASE2_STABLE=2
+PHASE2_MAX=5
+PHASE2_MIN_WAIT=0.03
+PHASE2_RETRY_MAX=1    # Escape 재시도 횟수
+
+# 화면 캡처 폴링으로 안정화 대기
+# args: <threshold> <max_iter> <min_wait_sec>
+# return: 0=안정화됨, 1=타임아웃
+wait_stable() {
+    local threshold=$1
+    local max=$2
+    local min_wait=${3:-0}
+    local stable=0
+    local i=0
+
+    # 첫 캡처를 루프 밖에서 수행 → 첫 iteration부터 바로 비교 가능
+    local prev
+    prev=$(tmux capture-pane -t "$TARGET" -p | cksum)
+
+    # 최소 대기 시간 (0이면 즉시 시작)
+    [ "$min_wait" != "0" ] && sleep "$min_wait"
+
+    while [ "$i" -lt "$max" ]; do
+        curr=$(tmux capture-pane -t "$TARGET" -p | cksum)
+
+        if [ "$curr" = "$prev" ]; then
+            stable=$((stable + 1))
+            [ "$stable" -ge "$threshold" ] && return 0
+        else
+            stable=0
+        fi
+        prev="$curr"
+        i=$((i + 1))
+        sleep "$TERM_SEC"
+    done
+    return 1
+}
+
+# Phase 1: 초기 안정화 대기 (3번 연속 동일)
+wait_stable "$PHASE1_STABLE" "$PHASE1_MAX" "$PHASE1_MIN_WAIT"
+
+# Escape 전송
+tmux send-keys -t "$TARGET" Escape
+
+# Phase 2: Escape 후 안정화 (2번 연속 동일) + 재시도
+retry=0
+while [ "$retry" -le "$PHASE2_RETRY_MAX" ]; do
+    if wait_stable "$PHASE2_STABLE" "$PHASE2_MAX" "$PHASE2_MIN_WAIT"; then
+        break
+    fi
+    # 안정화 실패 → Escape 재전송 후 재시도
+    retry=$((retry + 1))
+    [ "$retry" -le "$PHASE2_RETRY_MAX" ] && tmux send-keys -t "$TARGET" Escape
+done
+
+# Enter 전송
+tmux send-keys -t "$TARGET" Enter
+
+exit 0
