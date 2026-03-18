@@ -1,5 +1,9 @@
 
 
+-- globaldir를 명시적으로 설정하여 LSP spawn 등으로 OS cwd가 오염되어도
+-- :pwd가 영향받지 않도록 방어 (neovim은 globaldir 미설정 시 OS getcwd()를 그대로 반환)
+vim.api.nvim_set_current_dir(vim.fn.getcwd())
+
 vim.g.fileline_space = vim.g.fileline_space or 0
 
 -- https://github.com/krapjost/nvim-lua-guide-kr
