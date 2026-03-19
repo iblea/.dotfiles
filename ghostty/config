@@ -124,10 +124,12 @@ font-codepoint-map = U+1100-U+11FF=Tmoney Roundwind
 # font-codepoint-map = U+1100-U+11FF=Ycomputer
 
 
-adjust-cell-width=-10%
+# adjust-cell-width=-10%
+adjust-cell-width=-5%
+# adjust-cell-width=0%
 adjust-cell-height=20%
 # 한글 테스트용 내리기
-adjust-font-baseline = 0
+# adjust-font-baseline = 0
 # adjust-font-baseline = -2
 font-thicken = false
 # font-thicken-strength = 100
