@@ -87,14 +87,14 @@ elif [ "$NVIM_IDE" -eq 1 ]; then
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
         new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" C-m \; \
+        send-keys -t "$SESSION_NAME:1" "(trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
 else
 
     # cld (window 1) + shell (window 2)
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" \; \
+        new-session -s "$SESSION_NAME" "trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@" \; \
         new-window -t "$SESSION_NAME" \; \
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \
