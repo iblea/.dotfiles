@@ -67,7 +67,7 @@
 # palette = 15=#cecec3
 
 # ghostty monokai theme color
-foreground = cecece
+foreground = b2b2b2
 background = 000000
 
 # Black
@@ -142,3 +142,39 @@ shell-integration-features = no-cursor
 copy-on-select = true
 
 auto-update = check
+
+# keybind (wezterm 동기화)
+# 붙여넣기 (cmd+d)
+keybind = super+d=paste_from_clipboard
+# 설정 리로드 (shift+cmd+r)
+keybind = super+shift+r=reload_config
+# 수평 분할 (cmd+p, cmd+e)
+keybind = super+p=new_split:right
+keybind = super+e=new_split:right
+# 수직 분할 (cmd+u, cmd+r)
+keybind = super+u=new_split:down
+keybind = super+r=new_split:down
+# 이전/다음 패인 (cmd+h, cmd+l)
+keybind = super+h=goto_split:previous
+keybind = super+l=goto_split:next
+# 이전/다음 탭 (ctrl+cmd+j/k)
+keybind = super+ctrl+j=previous_tab
+keybind = super+ctrl+k=next_tab
+# 탭 이동 (shift+cmd+j/k)
+keybind = super+shift+j=move_tab:-1
+keybind = super+shift+k=move_tab:1
+# 스크롤 - 1 page (ctrl+cmd+i/o)
+keybind = super+ctrl+i=scroll_page_up
+keybind = super+ctrl+o=scroll_page_down
+# 스크롤 - 반 page (cmd+i/o)
+keybind = super+i=scroll_page_fractional:-0.5
+keybind = super+o=scroll_page_fractional:0.5
+# 스크롤 - 1줄 (shift+cmd+i/o)
+keybind = super+shift+i=scroll_page_lines:-1
+keybind = super+shift+o=scroll_page_lines:1
+# 스크롤 - shift+pageup/pagedown
+keybind = shift+page_up=scroll_page_up
+keybind = shift+page_down=scroll_page_down
+# 스크롤 - shift+up/down
+keybind = shift+arrow_up=scroll_page_lines:-1
+keybind = shift+arrow_down=scroll_page_lines:1
