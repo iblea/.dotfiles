@@ -25,7 +25,8 @@ elif [ "$#" -eq 1 ]; then
     fi
 fi
 
-display_window="$1"
+# display_window="$1"
+display_window=$(echo "$1" | awk -F '.' '{print $1}')
 shift
 windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
 is_exist=$(echo "$windowlist" | grep "^$display_window$")
