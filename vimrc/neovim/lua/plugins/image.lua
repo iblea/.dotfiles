@@ -1,6 +1,7 @@
 return {
   "3rd/image.nvim",
   build = false,
+  cond = vim.fn.executable("magick") == 1,
   event = "VimEnter",
   opts = {
     backend = "sixel",
