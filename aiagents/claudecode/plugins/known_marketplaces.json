@@ -5,7 +5,7 @@
       "repo": "anthropics/skills"
     },
     "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/anthropic-agent-skills",
-    "lastUpdated": "2026-01-27T06:02:24.285Z",
+    "lastUpdated": "2026-03-19T08:57:59.373Z",
     "autoUpdate": true
   },
   "claude-plugins-official": {
@@ -14,7 +14,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-01-27T01:24:23.580Z"
+    "lastUpdated": "2026-03-20T01:59:31.543Z"
   },
   "team-attention-plugins": {
     "source": {
