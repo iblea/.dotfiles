@@ -141,7 +141,7 @@ cursor-style-blink = false
 shell-integration-features = no-cursor
 
 # util
-copy-on-select = true
+copy-on-select = clipboard
 
 auto-update = check
 
