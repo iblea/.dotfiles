@@ -3,6 +3,11 @@
 # Claude Code Stop hook - 완료 알림
 # stdin으로 JSON 데이터가 들어옴
 
+if [ "$(uname -s)" != "Darwin" ]; then
+    # echo "This script only support Darwin."
+    exit 0
+fi
+
 read -r input
 
 # 프로젝트 디렉토리명 추출 (CLAUDE_PROJECT_DIR 환경변수 우선 사용)
@@ -42,3 +47,4 @@ afplay /System/Library/Sounds/Ping.aiff &
 # 시스템 알림
 osascript -e "display notification \"Done!
 $project\" with title \"Claude Code\""
+
