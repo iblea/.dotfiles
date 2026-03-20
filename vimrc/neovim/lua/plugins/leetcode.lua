@@ -11,7 +11,6 @@ return {
     lang = "cpp",
     image_support = true,
   },
-  build = "sed -i'' -e 's/vim.api.nvim_set_current_dir(config.storage.home:absolute())/vim.api.nvim_set_current_dir(vim.fn.getcwd())/' lua/leetcode.lua",
   config = function(_, opts)
     local lc_dir = vim.fn.stdpath("data") .. "/leetcode"
     local _orig_cwd = vim.fn.getcwd()
