@@ -7,7 +7,7 @@
 # apt-get remove neovim
 
 
-apt-get update && apt-get install -y ninja-build gettext make cmake curl build-essential
+apt-get update && apt-get install -y ninja-build gettext make cmake curl build-essential jq
 
 
 git clone https://github.com/neovim/neovim.git
