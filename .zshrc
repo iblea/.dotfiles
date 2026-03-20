@@ -245,6 +245,8 @@ unset ZOXIDE_PATH
 # https://github.com/sharkdp/fd/releases
 # wget --no-check-certificate -O fd_pkg.deb <url>
 # sudo dpkg -i fd_pkg.deb && rm -f fd_pkg.deb
+# curl -sL $(curl -s https://api.github.com/repos/sharkdp/fd/releases/latest | grep -o 'https://.*fd-musl_.*_arm64\.deb') -o fd-musl_arm64.deb
+# curl -sL $(curl -s https://api.github.com/repos/sharkdp/fd/releases/latest | grep -o 'https://.*fd-musl_.*_amd64\.deb') -o fd-musl_amd64.deb
 #
 # ### install fzf
 # git clone --depth 1 https://github.com/junegunn/fzf.git ~/.zsh/.fzf
