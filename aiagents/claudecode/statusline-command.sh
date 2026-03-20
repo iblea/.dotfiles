@@ -13,6 +13,12 @@ transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
 ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // ""')
 ctx_remaining=$(echo "$input" | jq -r '.context_window.remaining_percentage // ""')
 
+# ── Extract rate limits from stdin JSON (added in Claude Code 2.1.80) ──
+stdin_five_hour_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // ""')
+stdin_five_hour_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // ""')
+stdin_seven_day_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // ""')
+stdin_seven_day_reset=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // ""')
+
 # ── ANSI Colors ──
 C_RESET="\033[0m"
 C_DIM="\033[2m"
@@ -229,7 +235,7 @@ parse_iso_to_epoch() {
     [ -n "$epoch" ] && echo "$epoch"
 }
 
-# ── Format reset time as relative duration ──
+# ── Format reset time as relative duration (ISO8601 string input) ──
 format_reset_time() {
     local reset_str="$1"
     [ "$reset_str" = "null" ] || [ -z "$reset_str" ] && return
@@ -237,6 +243,28 @@ format_reset_time() {
     now=$(date +%s)
     reset_epoch=$(parse_iso_to_epoch "$reset_str")
     [ -z "$reset_epoch" ] && return
+    diff_s=$((reset_epoch - now))
+    [ "$diff_s" -le 0 ] && return
+    local diff_m=$(( (diff_s + 59) / 60 ))
+    if [ "$diff_m" -lt 60 ]; then
+        echo "${diff_m}m"
+    else
+        local h=$((diff_m / 60))
+        local m=$((diff_m % 60))
+        if [ "$m" -gt 0 ]; then
+            echo "${h}h ${m}m"
+        else
+            echo "${h}h"
+        fi
+    fi
+}
+
+# ── Format reset time from epoch timestamp (stdin rate_limits) ──
+format_reset_epoch() {
+    local reset_epoch="$1"
+    [ -z "$reset_epoch" ] || [ "$reset_epoch" = "null" ] || [ "$reset_epoch" = "" ] && return
+    local now diff_s
+    now=$(date +%s)
     diff_s=$((reset_epoch - now))
     [ "$diff_s" -le 0 ] && return
     local diff_m=$(( (diff_s + 59) / 60 ))
@@ -376,19 +404,28 @@ if [ -n "$mem_info" ]; then
     mem_mb="${mem_info##*:}"
 fi
 
-# Usage API data
-usage_json=$(get_usage_data)
+# Usage data: prefer stdin rate_limits (2.1.80+), fallback to API cache
 five_hour=""
 five_reset_display=""
 seven_day=""
 seven_reset_display=""
-if [ -n "$usage_json" ]; then
-    five_hour=$(echo "$usage_json" | jq -r '.five_hour // ""' 2>/dev/null)
-    five_reset_raw=$(echo "$usage_json" | jq -r '.five_reset // "null"' 2>/dev/null)
-    five_reset_display=$(format_reset_time "$five_reset_raw")
-    seven_day=$(echo "$usage_json" | jq -r '.seven_day // ""' 2>/dev/null)
-    seven_reset_raw=$(echo "$usage_json" | jq -r '.seven_reset // "null"' 2>/dev/null)
-    seven_reset_display=$(format_reset_time "$seven_reset_raw")
+if [ -n "$stdin_five_hour_pct" ] && [ "$stdin_five_hour_pct" != "null" ]; then
+    # Use stdin rate_limits (no API call needed)
+    five_hour="$stdin_five_hour_pct"
+    five_reset_display=$(format_reset_epoch "$stdin_five_hour_reset")
+    seven_day="$stdin_seven_day_pct"
+    seven_reset_display=$(format_reset_epoch "$stdin_seven_day_reset")
+else
+    # Fallback: API cache (for older Claude Code versions)
+    usage_json=$(get_usage_data)
+    if [ -n "$usage_json" ]; then
+        five_hour=$(echo "$usage_json" | jq -r '.five_hour // ""' 2>/dev/null)
+        five_reset_raw=$(echo "$usage_json" | jq -r '.five_reset // "null"' 2>/dev/null)
+        five_reset_display=$(format_reset_time "$five_reset_raw")
+        seven_day=$(echo "$usage_json" | jq -r '.seven_day // ""' 2>/dev/null)
+        seven_reset_raw=$(echo "$usage_json" | jq -r '.seven_reset // "null"' 2>/dev/null)
+        seven_reset_display=$(format_reset_time "$seven_reset_raw")
+    fi
 fi
 
 # Session duration
