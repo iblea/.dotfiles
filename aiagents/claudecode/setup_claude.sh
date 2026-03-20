@@ -35,6 +35,11 @@ echo "commands deprecated. (Move to skills)"
 echo "setup settings.json"
 cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
 
+echo "setup hooks"
+if [ ! -d "$CLAUDE_DIR/hooks/" ]; then
+    ln -s "$curpath/hooks" "$$CLAUDE_DIR/"
+fi
+
 echo "install mcp servers"
 
 if [ ! -d "$curpath/sequential-thinking-improved/node_modules" ]; then
