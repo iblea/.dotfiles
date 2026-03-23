@@ -17,7 +17,7 @@ return {
 
     require("leetcode").setup(opts)
 
-    -- leetcode 파일 진입 시 cwd가 바뀌어 있으면 강제 복원
+    -- leetcode 진입 시 nvim_set_current_dir로 바뀐 global cwd 복원
     vim.api.nvim_create_autocmd("BufEnter", {
       callback = function()
         if vim.fn.getcwd():find(lc_dir, 1, true) then

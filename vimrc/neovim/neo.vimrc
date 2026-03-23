@@ -166,6 +166,9 @@ func! WinEnterFunction()
     if (l:dir =~# '^/private/var/folders' || l:dir =~# '^/tmp') && l:filename =~# '^claude-prompt-.*\.md$'
         return
     endif
+    if l:dir =~# '/\.local/share/nvim/leetcode'
+        return
+    endif
     " silent! execute 'cd' l:dir
     silent! execute 'cd' expand('%:p:h')
 endfunc
