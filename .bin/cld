@@ -60,6 +60,8 @@ for (( i=1; i<=$#; i++ )); do
             exit 1
         fi
         cd "$opt"
+    elif [[ "${opt}" = "-sb" ]]; then
+        export IS_SANDBOX=1
     elif [[ "${opt}" = "os" ]] || [[ "${opt}" = "-os" ]] || [[ "${opt}" = "--override-system-prompt" ]]; then
         OTHER_OPTS+=("--system-prompt" "''")
     elif [[ "${opt}" = "p" ]]; then
@@ -122,6 +124,8 @@ fi
 if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
     OTHER_OPTS+=("--ide")
 fi
+
+OTHER_OPTS+=("--allow-dangerously-skip-permissions")
 
 
 # PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
