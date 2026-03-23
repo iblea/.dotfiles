@@ -118,7 +118,7 @@ if [ $NON_INTERACTIVE -eq 1 ]; then
     claude ${OTHER_OPTS[@]}
     exit $?
 elif [ $NON_INTERACTIVE -eq 11 ]; then
-	cldst $CLAUDE_OPT "$*"
+    cldst $CLAUDE_OPT "$*"
 fi
 
 if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
@@ -126,6 +126,7 @@ if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
 fi
 
 OTHER_OPTS+=("--allow-dangerously-skip-permissions")
+DANGEROUS_SKIP=1
 
 
 # PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
