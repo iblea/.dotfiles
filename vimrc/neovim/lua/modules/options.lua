@@ -75,4 +75,9 @@ vim.opt.magic = true
 
 vim.opt.autochdir = false     -- :cd 명령어와 다를 것이 없다.
 
+-- 외부에서 파일 변경 시 자동으로 다시 읽기
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  command = "if mode() != 'c' | checktime | endif",
+})
 
