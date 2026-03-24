@@ -9,7 +9,10 @@
 # fi
 
 
-export LC_TERM_PROGRAM="$TERM_PROGRAM"
+# tmux 내부 셸에서 재로드 시 덮어쓰기 방지 (tmux가 TERM_PROGRAM을 tmux로 오버라이딩함)
+if [ -z "$TMUX" ]; then
+  export LC_TERM_PROGRAM="$TERM_PROGRAM"
+fi
 is_zsh=$( echo "$SHELL" | grep "zsh$" )
 
 

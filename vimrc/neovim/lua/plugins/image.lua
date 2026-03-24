@@ -4,10 +4,16 @@ return {
   cond = vim.fn.executable("magick") == 1,
   event = "VimEnter",
   opts = {
-    backend = (vim.env.TERM_PROGRAM == "ghostty"
-      or vim.env.LC_TERM_PROGRAM == "ghostty"
-      or (vim.env.TERM or ""):find("ghostty"))
-      and "kitty" or "sixel",
+    backend = (function()
+      local is_ghostty = vim.env.TERM_PROGRAM == "ghostty"
+        or vim.env.LC_TERM_PROGRAM == "ghostty"
+      if not is_ghostty and vim.env.TMUX then
+        local result = vim.fn.system("tmux show-environment -g LC_TERM_PROGRAM 2>/dev/null")
+        is_ghostty = result:find("ghostty") ~= nil
+      end
+      return is_ghostty and "kitty" or "sixel"
+    end)(),
+    kitty_method = vim.env.TMUX and "unicode-placeholders" or "normal",
     processor = "magick_cli",
     integrations = {
       markdown = {
