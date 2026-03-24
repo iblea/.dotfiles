@@ -4,7 +4,10 @@ return {
   cond = vim.fn.executable("magick") == 1,
   event = "VimEnter",
   opts = {
-    backend = "sixel",
+    backend = (vim.env.TERM_PROGRAM == "ghostty"
+      or vim.env.LC_TERM_PROGRAM == "ghostty"
+      or (vim.env.TERM or ""):find("ghostty"))
+      and "kitty" or "sixel",
     processor = "magick_cli",
     integrations = {
       markdown = {

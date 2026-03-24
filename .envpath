@@ -9,6 +9,7 @@
 # fi
 
 
+export LC_TERM_PROGRAM="$TERM_PROGRAM"
 is_zsh=$( echo "$SHELL" | grep "zsh$" )
 
 
