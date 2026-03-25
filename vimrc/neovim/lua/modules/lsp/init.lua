@@ -107,3 +107,33 @@ for _, server_name in ipairs(servers) do
   require(server).setup(on_attach, capabilities)
   ::continue::
 end
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local opts = { buffer = args.buf }
+
+    local function lsp_jump(fn)
+      return function()
+        local pos = vim.api.nvim_win_get_cursor(0)
+        local from = { vim.fn.bufnr("%"), pos[1], pos[2] + 1, 0 }
+        local items = { { tagname = vim.fn.expand("<cword>"), from = from } }
+        vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
+        fn()
+      end
+    end
+
+    vim.keymap.set("n", "<leader>ud", lsp_jump(vim.lsp.buf.definition), opts)
+    vim.keymap.set("n", "<leader>uD", lsp_jump(vim.lsp.buf.declaration), opts)
+    vim.keymap.set("n", "<leader>ur", lsp_jump(vim.lsp.buf.references), opts)
+    vim.keymap.set("n", "<leader>uT", lsp_jump(vim.lsp.buf.type_definition), opts)
+    vim.keymap.set("n", "<leader>ui", lsp_jump(vim.lsp.buf.implementation), opts)
+    vim.keymap.set("n", "<leader>un", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>ua", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "<leader>uh", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>uk", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>us", vim.lsp.buf.signature_help, opts)
+
+    -- 이전 위치로 돌아가기 (tagstack pop)
+    vim.keymap.set("n", "<leader>ut", "<C-t>", opts)
+  end,
+})
