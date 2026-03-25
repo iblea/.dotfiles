@@ -1,0 +1,200 @@
+
+// Maximus / Resume
+// https://gist.github.com/lighthouse-dev/61744c7a8e09e66196e38a8935f2398f
+
+// Please visit the URL below for more information:
+//   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css
+
+
+// @font-face {
+//   font-family: "your-font-family";
+//   src: url("your-font-file-url");
+// }
+
+// @font-face {
+//   font-family: 'TmoneyRoundWind';
+//   src: url('https://dev.iasdf.com/public/font/Tmoney/TmoneyRoundWindRegular.ttf') format("truetype"),
+//         url('https://dev.iasdf.com/public/font/Tmoney/TmoneyRoundWindExtraBold.ttf') format("truetype");
+// }
+//
+// @font-face {
+//   font-family: '티머니 둥근바람';
+//   src: url('https://dev.iasdf.com/public/font/Tmoney/TmoneyRoundWindRegular.ttf') format("truetype"),
+//         url('https://dev.iasdf.com/public/font/Tmoney/TmoneyRoundWindExtraBold.ttf') format("truetype");
+// }
+//
+//
+// @font-face {
+//     font-family: 'FantasqueSansM Nerd Font Mono';
+//     src: url('https://dev.iasdf.com/public/font/Fantasque/Fantasque_Sans_Mono_Regular_Nerd_Font_CM.ttf') format("truetype");
+// }
+//
+// @font-face {
+//     font-family: 'FantasqueSansM Nerd Font Mono';
+//     src: url('https://dev.iasdf.com/public/font/Fantasque/Fantasque_Sans_Mono_Regular_Nerd_Font_CMWC.ttf') format("truetype");
+// }
+
+// @font-face {
+//     // font-family: 'Consolas_Eng';
+//     font-family: 'Consolas';
+//     font-style: normal;
+//     font-weight: 400;
+//     src: local('Consolas');
+//     unicode-range:U+0000-07FF;
+//     // unicode-range:U+0000-07FF, U+0061-007A, U+0030-0039;
+// }
+// @font-face {
+//     // font-family: 'Consolas_Eng';
+//     font-family: 'Consolas';
+//     font-style: normal;
+//     font-weight: 700;
+//     src: local('Consolas Bold');
+//     unicode-range:U+0000-07FF;
+//     // unicode-range:U+0000-07FF, U+0061-007A, U+0030-0039;
+// }
+
+// @font-face {
+//     font-family: 'MalgunGothic_Kor';
+//     font-style: normal;
+//     font-weight: 400;
+//     src: local('Malgun Gothic');
+//     unicode-range: U+0800-FFFF;
+//     // unicode-range: U+AC00-D7A3
+//     // unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF;
+// }
+// @font-face {
+//     font-family: 'MalgunGothic_Kor';
+//     font-style: normal;
+//     font-weight: 700;
+//     src: local('Malgun Gothic Bold');
+//     unicode-range: U+0800-FFFF;
+//     // unicode-range: U+AC00-D7A3
+//     // unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF;
+// }
+
+.prewrap {
+  white-space: pre-wrap;
+  margin-bottom: 0;
+}
+
+
+.markdown-preview.markdown-preview {
+
+  // modify your style here
+  // eg: background-color: blue;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    // My Custom Font
+    // font-family: "Cascadia Code NFMMOT", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+    font-family: "Tmoney RoundWind", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+
+    // font-family: "FantasqueSansM Nerd Font Mono", "TmoneyRoundWind", "티머니 둥근바람", "Monaco", "맑은 고딕", serif;
+    // font-family: "Consolas", "맑은 고딕", "Malgun Gothic", "Monaco", "Apple SD Gothic Neo", serif;
+    // font-family: "Monaco", "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "Consolas", serif;
+    // font-family: "Apple SD Gothic Neo", "Monaco", "맑은 고딕", "Malgun Gothic", "Consolas", serif;
+
+    margin: 1em 0 1em 0;
+    font-weight: bold;
+    color: #000;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.8rem;
+  }
+  h3 {
+    font-size: 1.6rem;
+  }
+  h4 {
+    font-size: 1.4rem;
+  }
+  h5 {
+    font-size: 1.2rem;
+  }
+  h6 {
+    font-size: 1.1rem;
+  }
+
+
+
+  pre, code {
+
+    // My Custom Font
+    font-family: "Cascadia Code NFOT", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+
+    // Microsoft Windows
+    // font-family: "Consolas", "맑은 고딕", "Malgun Gothic", "Monaco", "Apple SD Gothic Neo", serif;
+    // font-family: "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+
+    // Apple MacOS
+    // font-family: "Monaco", "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "Consolas", serif;
+    // font-family: "Apple SD Gothic Neo", "Monaco", "맑은 고딕", "Malgun Gothic", "Consolas", serif;
+
+    // font-size: 1.4em;
+    font-size: 0.9em !important;
+    tab-size: 4;
+  }
+
+  // preview theme -> one-light.css
+  hr {
+    background-color: #111; height: 2px;
+    border-top: 1px solid;
+
+    // height: 0px;
+    // background-color: #fff;
+    // border-top: 3px solid #000000;
+    // border-top: 3px dashed #000000;
+  }
+  blockquote {
+    // border: 5px solid #bbbbbb;
+    // margin: 2.5em 0;
+    // padding: 1em 1.1em 1em 1.3em;
+    position: unset;
+    // font-style: italic;
+    background-color: #f0f0f0;
+    color: #252525;
+  }
+
+  pre { background-color: #eaeaea; }
+  td, th { border: 1px solid #000000; }
+  // background-color: #ddd;
+  background-color: #fff;
+
+
+  // My Custom Font
+  // font-family: "Cascadia Code NFMMOT", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+  font-family: "Tmoney RoundWind", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+
+  // Microsoft Windows
+  // font-family: "Consolas", "맑은 고딕", "Malgun Gothic", "Monaco", "Apple SD Gothic Neo", serif;
+  // font-family: "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+
+  // Apple MacOS
+  // font-family: "Monaco", "Apple SD Gothic Neo", "Consolas", "맑은 고딕", "Malgun Gothic", serif;
+  // font-family: "Apple SD Gothic Neo", "Monaco", "Consolas", "맑은 고딕", "Malgun Gothic", serif;
+
+
+  // My Custom Font
+  // strong { font-family: "Cascadia Code NFMMOT", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif; }
+  strong { font-family: "Tmoney RoundWind", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif; }
+
+  // Microsoft Windows
+  // strong { font-family: "Consolas", "맑은 고딕", "Malgun Gothic", "Monaco", "Apple SD Gothic Neo", serif; }
+  // strong { font-family: "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif; }
+
+  // Apple MacOS
+  // strong { font-family: "Monaco", "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "Consolas", serif; }
+  // strong { font-family: "Apple SD Gothic Neo", "Monaco", "맑은 고딕", "Malgun Gothic", "Consolas", serif; }
+
+  // b { font-family: "맑은 고딕", "Consolas", "Monaco", "Apple SD Gothic Neo", serif; }
+
+  font-size: 1.0em;
+  color: #252525;
+  tab-size: 4;
+}

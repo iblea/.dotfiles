@@ -1,0 +1,66 @@
+.prewrap {
+  white-space: pre-wrap;
+  margin-bottom: 0;
+}
+.markdown-preview.markdown-preview {
+  background-color: #fff;
+  font-family: "Tmoney RoundWind", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+  font-size: 1em;
+  color: #252525;
+  tab-size: 4;
+}
+.markdown-preview.markdown-preview h1,
+.markdown-preview.markdown-preview h2,
+.markdown-preview.markdown-preview h3,
+.markdown-preview.markdown-preview h4,
+.markdown-preview.markdown-preview h5,
+.markdown-preview.markdown-preview h6 {
+  font-family: "Tmoney RoundWind", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+  margin: 1em 0 1em 0;
+  font-weight: bold;
+  color: #000;
+}
+.markdown-preview.markdown-preview h1 {
+  font-size: 2rem;
+}
+.markdown-preview.markdown-preview h2 {
+  font-size: 1.8rem;
+}
+.markdown-preview.markdown-preview h3 {
+  font-size: 1.6rem;
+}
+.markdown-preview.markdown-preview h4 {
+  font-size: 1.4rem;
+}
+.markdown-preview.markdown-preview h5 {
+  font-size: 1.2rem;
+}
+.markdown-preview.markdown-preview h6 {
+  font-size: 1.1rem;
+}
+.markdown-preview.markdown-preview pre,
+.markdown-preview.markdown-preview code {
+  font-family: "Cascadia Code NFOT", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+  font-size: 0.9em !important;
+  tab-size: 4;
+}
+.markdown-preview.markdown-preview hr {
+  background-color: #111;
+  height: 2px;
+  border-top: 1px solid;
+}
+.markdown-preview.markdown-preview blockquote {
+  position: unset;
+  background-color: #f0f0f0;
+  color: #252525;
+}
+.markdown-preview.markdown-preview pre {
+  background-color: #eaeaea;
+}
+.markdown-preview.markdown-preview td,
+.markdown-preview.markdown-preview th {
+  border: 1px solid #000000;
+}
+.markdown-preview.markdown-preview strong {
+  font-family: "Tmoney RoundWind", "맑은 고딕", "Malgun Gothic", "Consolas", "Monaco", "Apple SD Gothic Neo", serif;
+}
