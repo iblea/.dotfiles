@@ -91,6 +91,11 @@ export ZSH_THEME="powerlevel10k/powerlevel10k"
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
+# Claude Code 서브쉘에서 tmux pane option 설정
+if [[ -n "$CLAUDECODE" ]] && [[ -n "$TMUX" ]]; then
+  tmux set-option -p @is_claude_code 1 2>/dev/null
+fi
+
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
 
