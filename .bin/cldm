@@ -78,6 +78,14 @@ TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 
 # export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
+# SSH 환경에서 로컬 tmux 윈도우 이동 트리거
+# OSC escape sequence로 pane title을 변경하여 로컬 tmux hook을 트리거
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
+    printf '\033]2;__CLDM_SWAP_WIN1__\033\\'
+    sleep 0.3
+    printf '\033]2;\033\\'
+fi
+
 if [ -n "$TMUX" ]; then
     # 현재 윈도우가 1번이 아니면 1번으로 삽입 (기존 윈도우는 한 칸씩 뒤로)
     _cur_win=$(tmux display-message -p '#{window_index}')
