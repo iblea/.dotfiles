@@ -85,7 +85,8 @@ set lazyredraw
 set ruler
 set showmatch
 set showmode
-set notitle
+set title
+set titlestring=vim\ -\ %f
 " set csprg=/usr/bin/cscope
 " set csto=0
 " only vim

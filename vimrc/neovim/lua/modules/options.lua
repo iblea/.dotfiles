@@ -48,7 +48,8 @@ vim.opt.lazyredraw = true
 vim.opt.ruler = true
 vim.opt.showmatch = true
 vim.opt.showmode = true
-vim.opt.title = false
+vim.opt.title = true
+vim.opt.titlestring = "nvim - %f"
 
 -- set cst
 -- set nocsverb
