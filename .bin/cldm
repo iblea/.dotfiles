@@ -79,6 +79,23 @@ TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 # export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
 if [ -n "$TMUX" ]; then
+    # 현재 윈도우가 1번이 아니면 1번으로 삽입 (기존 윈도우는 한 칸씩 뒤로)
+    _cur_win=$(tmux display-message -p '#{window_index}')
+    _win1_panes=$(tmux display-message -t :1 -p '#{window_panes}' 2>/dev/null)
+    if [ "${_win1_panes:-0}" -gt 1 ] 2>/dev/null; then
+        _win1_is_claude=$(tmux show-option -pqv -t :1.1 @is_claude_code 2>/dev/null)
+    else
+        _win1_is_claude=$(tmux show-option -pqv -t :1 @is_claude_code 2>/dev/null)
+    fi
+    if [ "$_cur_win" != "1" ] && [ "$_win1_is_claude" != "1" ]; then
+        _i=$_cur_win
+        while [ "$_i" -gt 1 ]; do
+            _prev=$((_i - 1))
+            tmux swap-window -s ":${_i}" -t ":${_prev}" 2>/dev/null
+            _i=$_prev
+        done
+        tmux select-window -t :1 2>/dev/null
+    fi
     export EDITOR="$EDITOR";
     tmux set-option -p @is_claude_code 1 2>/dev/null
     cld $@
