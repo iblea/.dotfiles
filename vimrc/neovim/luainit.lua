@@ -88,8 +88,8 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
   vim.opt.diffopt:append("followwrap")
 end
 
--- TMUX 활성화 + 현재 pane이 0번이 아닐 때만 키매핑 활성화
-if vim.env.TMUX and vim.env.TMUX_PANE ~= "%0" then
+-- TMUX 활성화 시 키매핑 활성화 (window/pane 체크는 실행 시점에 동적으로 수행)
+if vim.env.TMUX then
   -- claude code 윈도우의 pwd 기준 상대경로 계산
   local function get_claude_relative_path()
     local file_path = vim.fn.expand("%:p")
@@ -128,6 +128,8 @@ if vim.env.TMUX and vim.env.TMUX_PANE ~= "%0" then
 
   -- normal mode: 파일 전체를 claude code에 전송
   vim.keymap.set("n", "<leader>b", function()
+    local cur_win = vim.fn.system("tmux display-message -p '#{window_index}'"):gsub("%s+$", "")
+    if cur_win == "1" then return end
     local ref = "@" .. get_claude_relative_path()
     vim.fn.system({"tmux", "send-keys", "-t", ":1", "-l", ref .. " "})
     vim.fn.system({"tmux", "select-window", "-t", ":1"})
@@ -135,6 +137,8 @@ if vim.env.TMUX and vim.env.TMUX_PANE ~= "%0" then
 
   -- visual mode: 선택한 라인 범위를 claude code에 전송
   vim.keymap.set("v", "<leader>b", function()
+    local cur_win = vim.fn.system("tmux display-message -p '#{window_index}'"):gsub("%s+$", "")
+    if cur_win == "1" then return end
     local start_line = vim.fn.line("v")
     local end_line = vim.fn.line(".")
     if start_line > end_line then
