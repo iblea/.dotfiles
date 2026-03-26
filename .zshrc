@@ -1,8 +1,14 @@
-
 # environment path (envpath)
 if [ -f $HOME/.envpath ]; then
     # . ~/.envpath
     source ~/.envpath
+fi
+
+# auto start tmux
+if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
+    export LC_TMUX=1
+    _sname="st_$(basename "$SHELL")_$(date +%s)_$$"
+    exec tmux -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
 fi
 
 # into /etc/zsh/zshrc (vscode terminal)
