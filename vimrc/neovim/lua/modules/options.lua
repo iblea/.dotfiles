@@ -6,6 +6,24 @@ local et_stat = false
 vim.opt.background = "dark"
 vim.opt.autoindent = true -- auto indent when starting a new line
 vim.opt.breakindent = true -- wrapped line is visually indented
+-- SSH + TMUX 환경에서 OSC 52로 클립보드 전달 (neovim 0.10+)
+-- if vim.env.LC_TMUX and (vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT) then
+if vim.env.LC_TMUX then
+  local ok, osc52 = pcall(require, 'vim.ui.clipboard.osc52')
+  if ok then
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = osc52.copy('+'),
+        ['*'] = osc52.copy('*'),
+      },
+      paste = {
+        ['+'] = osc52.paste('+'),
+        ['*'] = osc52.paste('*'),
+      },
+    }
+  end
+end
 vim.opt.clipboard = "unnamed,unnamedplus"
 
 vim.opt.laststatus=2
