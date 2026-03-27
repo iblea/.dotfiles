@@ -3,7 +3,7 @@
 # Claude Code Stop hook - 완료 알림
 # stdin으로 JSON 데이터가 들어옴
 
-if [ "$(uname -s)" != "Darwin" ]; then
+if [[ "$(uname -s)" != "Darwin" ]]; then
     # echo "This script only support Darwin."
     exit 0
 fi
