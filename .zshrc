@@ -6,7 +6,9 @@ fi
 
 # auto start tmux
 if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
+	env > /tmp/envprint.log
     # vscode shell integration cwd signal
+    _tmux_extra_args=""
     if [ "$TERM_PROGRAM" = "vscode" ]; then
         printf '\e]633;A\a'
         printf '\e]633;P;Cwd=%s\a' "$PWD"
@@ -14,7 +16,11 @@ if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
     fi
     export LC_TMUX=1
     _sname="st_$(basename "$SHELL")_$(date +%s)_$$"
-    exec tmux -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
+    if [ "$TERM_PROGRAM" = "vscode" ]; then
+        exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -e TERM_VSCODE=1 -s "$_sname"
+    else
+        exec tmux -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
+    fi
 fi
 
 # into /etc/zsh/zshrc (vscode terminal)

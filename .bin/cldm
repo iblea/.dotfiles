@@ -111,7 +111,7 @@ if [ -n "$TMUX" ]; then
         tmux select-window -t :1 2>/dev/null
     fi
     # vscode terminal shell integration cwd update (tmux passthrough)
-    if [ "$TERM_PROGRAM" = "vscode" ]; then
+    if [ "$TERM_VSCODE" = "1" ]; then
         printf '\ePtmux;\e\e]633;P;Cwd=%s\a\e\\' "$PWD"
     fi
     export EDITOR="$EDITOR";
