@@ -44,7 +44,7 @@ if [ $# -ge 1 ]; then
             break
         elif [[ "${opt}" = "p" ]]; then
             NON_INTERACTIVE=11
-			# remove p
+            # remove p
             set -- "${@:1:i-1}" "${@:i+1}"
             break
         elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
@@ -58,7 +58,7 @@ if [ $NON_INTERACTIVE -eq 1 ]; then
     exit $?
 elif [ $NON_INTERACTIVE -eq 11 ]; then
     cldst $@
-	exit $?
+    exit $?
 fi
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
@@ -80,10 +80,16 @@ TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 
 # SSH 환경에서 로컬 tmux 윈도우 이동 트리거
 # OSC escape sequence로 pane title을 변경하여 로컬 tmux hook을 트리거
+# SSH 환경 (로컬 tmux 밖): tmux 생성 없이 cld 직접 실행
 if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
     printf '\033]2;__CLDM_SWAP_WIN1__\033\\'
     sleep 0.3
     printf '\033]2;@ Claude Code\033\\'
+    export EDITOR="$EDITOR"
+    cld "$@"
+    _ret=$?
+    printf '\033]2;__CLDM_CLEANUP__\033\\'
+    exit $_ret
 fi
 
 if [ -n "$TMUX" ]; then
@@ -127,10 +133,6 @@ else
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \
         select-window -t "$SESSION_NAME:1"
-
-    # claude-code 만
-    # exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-    #     new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME"
 fi
 
 

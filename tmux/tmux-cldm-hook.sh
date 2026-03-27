@@ -6,7 +6,13 @@
 PANE_TITLE="$1"
 PANE_ID="$2"
 
-# 트리거 패턴이 아니면 즉시 종료
+# cleanup 트리거: Claude Code 종료 후 @is_claude_code 해제
+if [ "$PANE_TITLE" = "__CLDM_CLEANUP__" ]; then
+    tmux set-option -pu -t "$PANE_ID" @is_claude_code 2>/dev/null
+    exit 0
+fi
+
+# swap 트리거 패턴이 아니면 즉시 종료
 [ "$PANE_TITLE" = "__CLDM_SWAP_WIN1__" ] || exit 0
 
 # 해당 pane이 속한 윈도우 인덱스
