@@ -83,7 +83,7 @@ TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
     printf '\033]2;__CLDM_SWAP_WIN1__\033\\'
     sleep 0.3
-    printf '\033]2;\033\\'
+    printf '\033]2;@ Claude Code\033\\'
 fi
 
 if [ -n "$TMUX" ]; then
