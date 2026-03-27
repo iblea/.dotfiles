@@ -6,10 +6,11 @@ fi
 
 # auto start tmux
 if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
-	env > /tmp/envprint.log
+    env > /tmp/envprint.log
     # vscode shell integration cwd signal
     _tmux_extra_args=""
     if [ "$TERM_PROGRAM" = "vscode" ]; then
+        export TERM_VSCODE=1
         printf '\e]633;A\a'
         printf '\e]633;P;Cwd=%s\a' "$PWD"
         printf '\e]633;B\a'
@@ -17,9 +18,9 @@ if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
     export LC_TMUX=1
     _sname="st_$(basename "$SHELL")_$(date +%s)_$$"
     if [ "$TERM_PROGRAM" = "vscode" ]; then
-        exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -e TERM_VSCODE=1 -s "$_sname"
+        exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
     else
-        exec tmux -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
+        exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
     fi
 fi
 
@@ -197,7 +198,7 @@ fi
 
 GITSTATUS_CACHE_DIR="$HOME/.zsh/.gitstatus"
 if [ ! -d "$GITSTATUS_CACHE_DIR" ]; then
-	mkdir -p "$GITSTATUS_CACHE_DIR"
+    mkdir -p "$GITSTATUS_CACHE_DIR"
 fi
 
 # ruby
