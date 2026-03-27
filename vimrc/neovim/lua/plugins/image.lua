@@ -1,6 +1,38 @@
 return {
   "3rd/image.nvim",
   build = false,
+  init = function()
+    -- tmux + sixel: tmux가 alternate screen에서 sixel을 유지하지 못하는 문제 우회
+    -- 플러그인 파일을 수정하지 않고, 메모리에서 sixel 백엔드를 패치하여
+    -- tmux passthrough(\ePtmux;...\e\\)로 외부 터미널에 직접 sixel 전달
+    if not vim.env.TMUX then return end
+
+    package.preload["image/backends/sixel"] = function()
+      local path = vim.fn.stdpath("data") .. "/lazy/image.nvim/lua/image/backends/sixel.lua"
+      local f = io.open(path, "r")
+      if not f then return end
+      local content = f:read("*a")
+      f:close()
+
+      local old = "  -- sixel data\n  sequence = sequence .. wrapped_data"
+      local s, e = content:find(old, 1, true)
+      if s then
+        local new = table.concat({
+          "  -- sixel data (tmux passthrough)",
+          '  if utils.tmux.is_tmux and utils.tmux.has_passthrough then',
+          '    sequence = sequence .. "\\27Ptmux;" .. wrapped_data:gsub("\\27", "\\27\\27") .. "\\27\\\\"',
+          "  else",
+          "    sequence = sequence .. wrapped_data",
+          "  end",
+        }, "\n")
+        content = content:sub(1, s - 1) .. new .. content:sub(e + 1)
+      end
+
+      local chunk, err = load(content, "@" .. path)
+      if not chunk then error(err) end
+      return chunk()
+    end
+  end,
   cond = vim.fn.executable("magick") == 1,
   event = "VimEnter",
   opts = {

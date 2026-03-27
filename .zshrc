@@ -6,6 +6,12 @@ fi
 
 # auto start tmux
 if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
+    # vscode shell integration cwd signal
+    if [ "$TERM_PROGRAM" = "vscode" ]; then
+        printf '\e]633;A\a'
+        printf '\e]633;P;Cwd=%s\a' "$PWD"
+        printf '\e]633;B\a'
+    fi
     export LC_TMUX=1
     _sname="st_$(basename "$SHELL")_$(date +%s)_$$"
     exec tmux -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
