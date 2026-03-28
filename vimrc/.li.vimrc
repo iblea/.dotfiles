@@ -103,6 +103,9 @@ set splitright
 set incsearch
 set magic
 
+set exrc
+set nosecure
+
 set nofixeol
 set nofixendofline
 set noeol
