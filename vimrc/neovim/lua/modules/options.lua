@@ -10,19 +10,30 @@ vim.opt.breakindent = true -- wrapped line is visually indented
 -- if vim.env.LC_TMUX and (vim.env.SSH_CONNECTION or vim.env.SSH_CLIENT) then
 if vim.env.LC_TMUX then
   local ok, osc52 = pcall(require, 'vim.ui.clipboard.osc52')
-  if ok then
-    vim.g.clipboard = {
-      name = 'OSC 52',
-      copy = {
-        ['+'] = osc52.copy('+'),
-        ['*'] = osc52.copy('*'),
-      },
-      paste = {
-        ['+'] = osc52.paste('+'),
-        ['*'] = osc52.paste('*'),
-      },
-    }
-  end
+  vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+      -- Ghostty + tmux에서 clipboard provider copy context 내의
+      -- nvim_chan_send가 동작하지 않는 문제로 TextYankPost에서 처리
+      ['+'] = function(lines) end,
+      ['*'] = function(lines) end,
+    },
+    paste = ok and {
+      ['+'] = osc52.paste('+'),
+      ['*'] = osc52.paste('*'),
+    } or {
+      ['+'] = function() return vim.fn.getreg('+', 1, true), vim.fn.getregtype('+') end,
+      ['*'] = function() return vim.fn.getreg('*', 1, true), vim.fn.getregtype('*') end,
+    },
+  }
+  vim.api.nvim_create_autocmd('TextYankPost', {
+    callback = function()
+      if vim.v.event.operator == 'y' then
+        local text = table.concat(vim.v.event.regcontents, '\n')
+        vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(text)))
+      end
+    end,
+  })
 end
 vim.opt.clipboard = "unnamed,unnamedplus"
 

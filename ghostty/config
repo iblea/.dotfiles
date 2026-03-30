@@ -180,3 +180,13 @@ keybind = shift+page_down=scroll_page_down
 # 스크롤 - shift+up/down
 keybind = shift+arrow_up=scroll_page_lines:-1
 keybind = shift+arrow_down=scroll_page_lines:1
+
+
+# OSC 8 hyperlink
+# link-previews = true
+link-previews = osc8
+
+# OSC 52
+clipboard-read = allow
+clipboard-write = allow
+
