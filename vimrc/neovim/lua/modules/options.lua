@@ -28,10 +28,12 @@ if vim.env.LC_TMUX then
   }
   vim.api.nvim_create_autocmd('TextYankPost', {
     callback = function()
-      if vim.v.event.operator == 'y' then
-        local text = table.concat(vim.v.event.regcontents, '\n')
-        vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(text)))
+      local text = table.concat(vim.v.event.regcontents, '\n')
+      -- linewise(V) yank 시 끝에 개행 추가 (vim 동작과 일치)
+      if vim.v.event.regtype == 'V' then
+        text = text .. '\n'
       end
+      vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(text)))
     end,
   })
 end
