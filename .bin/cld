@@ -158,7 +158,7 @@ if [ -z "$EDITOR" ]; then
     fi
 fi
 
-if [ -n "$TMUX" ]; then
+if [ -n "$TMUX" ] || [ -n "$LC_TMUX" ]; then
     if [[ "$EDITOR" = "nvim" ]]; then
         export EDITOR="codenvim"
     elif [[ "$EDITOR" = "vim" ]]; then
