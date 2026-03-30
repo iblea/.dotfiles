@@ -5,10 +5,10 @@
       {
         "scope": "project",
         "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/context7/8908a582f80d",
-        "version": "8908a582f80d",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/context7/unknown",
+        "version": "unknown",
         "installedAt": "2025-12-20T05:15:15.065Z",
-        "lastUpdated": "2026-03-20T00:06:10.051Z"
+        "lastUpdated": "2026-03-25T06:59:31.213Z"
       }
     ],
     "pyright-lsp@claude-plugins-official": [
@@ -37,36 +37,44 @@
         "version": "1.0.0",
         "installedAt": "2025-12-20T05:15:51.317Z",
         "lastUpdated": "2026-03-11T07:31:23.801Z"
+      },
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/clangd-lsp/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-03-23T04:23:33.711Z",
+        "lastUpdated": "2026-03-23T04:23:33.711Z",
+        "gitCommitSha": "61c0597779bd2d670dcd4fbbf37c66aa19eb2ce6"
       }
     ],
     "code-review@claude-plugins-official": [
       {
         "scope": "project",
         "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/code-review/8908a582f80d",
-        "version": "8908a582f80d",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
+        "version": "unknown",
         "installedAt": "2025-12-20T05:21:17.663Z",
-        "lastUpdated": "2026-03-20T00:06:10.051Z"
+        "lastUpdated": "2026-03-25T06:59:31.214Z"
       }
     ],
     "playwright@claude-plugins-official": [
       {
         "scope": "project",
         "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/playwright/8908a582f80d",
-        "version": "8908a582f80d",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/playwright/unknown",
+        "version": "unknown",
         "installedAt": "2025-12-20T05:21:23.695Z",
-        "lastUpdated": "2026-03-20T00:06:10.050Z"
+        "lastUpdated": "2026-03-25T06:59:31.213Z"
       }
     ],
     "document-skills@anthropic-agent-skills": [
       {
         "scope": "project",
         "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/document-skills/b0cbd3df1533",
-        "version": "b0cbd3df1533",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/document-skills/98669c11ca63",
+        "version": "98669c11ca63",
         "installedAt": "2026-01-16T08:13:02.042Z",
-        "lastUpdated": "2026-03-11T07:31:23.801Z",
+        "lastUpdated": "2026-03-25T23:51:24.124Z",
         "gitCommitSha": "69c0b1a0674149f27b61b2635f935524b6add202"
       }
     ],
@@ -85,10 +93,10 @@
       {
         "scope": "project",
         "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/ralph-loop/8908a582f80d",
-        "version": "8908a582f80d",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/ralph-loop/1.0.0",
+        "version": "1.0.0",
         "installedAt": "2026-01-23T02:33:31.531Z",
-        "lastUpdated": "2026-03-20T00:06:10.051Z",
+        "lastUpdated": "2026-03-29T10:19:05.441Z",
         "gitCommitSha": "e30768372b4150ca1bc0839d93283e8edc30d60d"
       }
     ],
@@ -96,11 +104,21 @@
       {
         "scope": "project",
         "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/example-skills/b0cbd3df1533",
-        "version": "b0cbd3df1533",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/example-skills/98669c11ca63",
+        "version": "98669c11ca63",
         "installedAt": "2026-03-11T07:31:23.801Z",
-        "lastUpdated": "2026-03-11T07:31:23.801Z",
+        "lastUpdated": "2026-03-25T23:51:24.124Z",
         "gitCommitSha": "b0cbd3df1533b396d281a6886d5132f623393a9c"
+      }
+    ],
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6",
+        "version": "5.0.6",
+        "installedAt": "2026-03-30T23:56:19.001Z",
+        "lastUpdated": "2026-03-30T23:56:19.001Z",
+        "gitCommitSha": "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06"
       }
     ]
   }
