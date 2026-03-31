@@ -237,10 +237,21 @@ if $TMUX_CLAUDECODE_IDE_NVIM == "1"
   cnoreabbrev <expr> wqa! getcmdtype() == ":" && getcmdline() ==# "wqa!" ? "call <SID>ClaudeSmartQuit(1,1,1)" : "wqa!"
 endif
 
-" AIAGENT_TMP_EDITOR=1 환경: :q 시 자동 저장 후 exit code 10으로 종료
-if $AIAGENT_TMP_EDITOR == "1"
+" AIAGENT_TMP_EDITOR=1: 자동 저장 후 exit code 10으로 종료
+" AIAGENT_TMP_EDITOR=2: 전체 내용 클립보드 복사 후 exit code 10으로 강제종료
+if $AIAGENT_TMP_EDITOR == "1" || $AIAGENT_TMP_EDITOR == "2"
   function! s:AiAgentQuit()
     if line('$') == 1 && getline(1) == ''
+      cquit 11
+    endif
+    if $AIAGENT_TMP_EDITOR == "2"
+      if !empty($LC_TMUX)
+        lua vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(table.concat(vim.fn.getline(1, vim.fn.line('$')), '\n'))))
+      elseif has('mac')
+        call system('pbcopy', join(getline(1, '$'), "\n"))
+      else
+        let @+ = join(getline(1, '$'), "\n")
+      endif
       cquit 11
     endif
     w
