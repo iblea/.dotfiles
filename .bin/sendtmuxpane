@@ -1,0 +1,49 @@
+#!/bin/bash
+
+if [ -z "$TMUX" ]; then
+    echo "You are not in tmux."
+    echo "This command can only be used in tmux."
+    exit 1
+fi
+
+if [ "$#" -le 0 ]; then
+    echo "Wrong Argument."
+    echo "Show Help: sendtmuxpane -h"
+    exit 1
+elif [ "$#" -eq 1 ]; then
+    if [ "$@" = "-h" ] || [ "$@" = "--help" ]; then
+        echo "Argument"
+        echo "-h, --help: show help"
+        echo ""
+        echo "First Argument: <window number>.<pane number>"
+        echo "  ex: sendtmuxpane 2 -> window 2, pane 1"
+        echo "  ex: sendtmuxpane 2.2 -> window 2, pane 2"
+        echo ""
+        echo "Other Arguments: tmux send-keys options"
+        exit 0
+    fi
+fi
+
+# display_window="$1"
+display_window=$(echo "$1" | awk -F '.' '{print $1}')
+shift
+windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
+is_exist=$(echo "$windowlist" | grep "^$display_window$")
+if [ -z "$is_exist" ]; then
+    echo "window number is wrong"
+    exit 1
+fi
+
+if [ "$(tmux display -t ${display_window} -p '#{pane_in_mode}')" = "1" ]; then
+    echo "INFO: Copy mode in ${display_window} window. Cancel copy mode first."
+    tmux send-keys -t ${display_window} -X cancel
+fi
+
+tmux send-keys -t "$display_window" $@
+ret_code="$?"
+if [ $ret_code -eq 0 ]; then
+    echo "command send successfully [${ret_code}]"
+else
+    echo "WARNING: return code is not zero. check tmux window.. [${ret_code}]"
+fi
+

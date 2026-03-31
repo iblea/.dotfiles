@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ -z "$TMUX" ]; then
-	echo "You are not in tmux."
-	echo "This command can only be used in tmux."
-	exit 1
+    echo "You are not in tmux."
+    echo "This command can only be used in tmux."
+    exit 1
 fi
 
 if [ "$#" -le 0 ]; then
@@ -12,6 +12,21 @@ if [ "$#" -le 0 ]; then
     exit 1
 elif [ "$#" -eq 1 ]; then
     if [ "$@" = "-h" ] || [ "$@" = "--help" ]; then
+        echo "Argument"
+        echo "-h, --help: show help"
+        echo ""
+        echo "First Argument: <window number>.<pane number>"
+        echo "  ex: showtmuxpane 2 -> window 2, pane 1"
+        echo "  ex: showtmuxpane 2.2 -> window 2, pane 2"
+        echo ""
+        echo "Other Arguments: tmux capture-pane options"
+        echo "-S: <start line>"
+        echo ""
+        echo "The -E option is set as the default value, and this cannot be changed."
+        echo "    Default Value: \$((\$(tmux display -p -t <window_number> '#{pane_height}') - 1))"
+        echo "The p option is enabled, and this cannot be changed."
+        exit 0
+
         echo "Argument"
         echo "-h, --help: show help"
         echo ""

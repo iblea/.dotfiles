@@ -49,20 +49,35 @@ Additionally, based on the contents of the pane, instructions such as "Analyze t
 #### sendkeys or sk
 
 If this option is not provided, only the `capture-pane` command should be executed by default. (Commands such as `send-keys` must never be executed.)
-If this option is provided, a specific tmux window can be manipulated through commands such as `send-keys`.
+If this option is provided, a specific tmux window can be manipulated through the `sendtmuxpane` command.
+
+##### `sendtmuxpane` command
+  - `sendtmuxpane` is available in `$PATH` by default (`~/.dotfiles/.bin/sendtmuxpane`). If not available, use `./script/sendtmuxpane` instead.
+  - Usage: `sendtmuxpane <window number>[.<pane number>] [tmux send-keys options...]`
+    - The first argument specifies the target window (e.g., `2` for window 2, or `2.2` for window 2 pane 2).
+    - The remaining arguments are passed directly as `tmux send-keys` options.
+  - `sendtmuxpane` automatically detects and cancels copy-mode on the target pane before sending keys. No manual copy-mode check is required when using `sendtmuxpane`.
+
+##### copy-mode handling
+  - When using `tmux send-keys` directly (without `sendtmuxpane`), the target window/pane may be in copy-mode, which prevents `send-keys` from working. You MUST manually check and cancel copy-mode first:
+    - Check: `tmux display -t <window> -p '#{pane_in_mode}'` (returns `1` if in copy-mode)
+    - Cancel: `tmux send-keys -t <window> -X cancel`
+  - This manual check is ONLY required when using `tmux send-keys` directly. When using `sendtmuxpane`, copy-mode is automatically detected and cancelled by the script.
+
+##### sk option behavior
   - When the input is `;tm 2 sk`, the content of window 2 should be referenced, and all subsequent command-related interactions must be conducted in window 2.
   - Since tmux operates as an interactive session, interactive CLI tools such as ssh, mysql, and psql can be used.
-  - After executing `send-keys`, run the `capture-pane` related command to check the results. At this time, DO NOT USE in sleep commands.
+  - After executing `sendtmuxpane`, run the `capture-pane` related command to check the results. At this time, DO NOT USE sleep commands.
     - example
-      - good: `tmux send-keys -t 2 '<command>' Enter && showtmuxpane 2 -S -10`
-      - bad: `tmux send-keys -t 2 '<command>' Enter && sleep 2 && showtmuxpane 2 -S -10`
+      - good: `sendtmuxpane 2 '<command>' Enter && showtmuxpane 2 -S -10`
+      - bad: `sendtmuxpane 2 '<command>' Enter && sleep 2 && showtmuxpane 2 -S -10`
         - Sleep command is not necessary.
 
 - Example
   - `;tm 2 sk apt is not working. Analyze the content and suggest an alternative installation method.`
   - When the above command is entered, the content of window 2 is analyzed using `showtmuxpane` or `capture-pane`.
   - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in window 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
-  - Then, depending on the user's response, the commands are executed in window 2 through `send-keys` or similar methods.
+  - Then, depending on the user's response, the commands are executed in window 2 through `sendtmuxpane`.
 
 #### tail or t (optional number: default 20)
 
