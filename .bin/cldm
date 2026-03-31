@@ -92,7 +92,8 @@ if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
     exit $_ret
 fi
 
-if [ -n "$TMUX" ]; then
+if [ -n "$TMUX" ] && tmux info &>/dev/null; then
+# if [ -n "$TMUX" ]; then
     # 현재 윈도우가 1번이 아니면 1번으로 삽입 (기존 윈도우는 한 칸씩 뒤로)
     _cur_win=$(tmux display-message -p '#{window_index}')
     _win1_panes=$(tmux display-message -t :1 -p '#{window_panes}' 2>/dev/null)

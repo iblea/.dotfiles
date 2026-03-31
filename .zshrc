@@ -1,12 +1,19 @@
+
 # environment path (envpath)
 if [ -f $HOME/.envpath ]; then
     # . ~/.envpath
     source ~/.envpath
 fi
 
+# vscode terminal: 부모 tmux 세션에서 상속받은 환경변수 초기화
+if [[ "$TERM_PROGRAM" != "tmux" ]]; then
+    unset TMUX
+    unset LC_TMUX
+fi
+
 # auto start tmux
 if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
-    env > /tmp/envprint.log
+    # env > /tmp/envprint.log
     # vscode shell integration cwd signal
     _tmux_extra_args=""
     if [ "$TERM_PROGRAM" = "vscode" ]; then
@@ -17,11 +24,7 @@ if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
     fi
     export LC_TMUX=1
     _sname="st_$(basename "$SHELL")_$(date +%s)_$$"
-    if [ "$TERM_PROGRAM" = "vscode" ]; then
-        exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
-    else
-        exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
-    fi
+    exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
 fi
 
 # into /etc/zsh/zshrc (vscode terminal)
