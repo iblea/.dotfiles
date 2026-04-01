@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# StreamLocalBindUnlink yes
+
+# SSH_TMUX_SOCK_NAME=""
+SSH_TMUX_SOCK_NAME="local-tmux-$(date +%s)-${RANDOM}"
+export LC_TMUX_SOCKET="/tmp/${SSH_TMUX_SOCK_NAME}.sock"
+
+ssh -R "${LC_TMUX_SOCKET}":"${TMUX%%,*}" "$@"
+

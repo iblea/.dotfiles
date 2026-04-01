@@ -24,8 +24,25 @@ fi
 # done
 # exit 0
 
+
+TMUX_COMMAND=( tmux )
+TMUX_COMMAND_STR="tmux"
 if [ -z "$TMUX" ]; then
-	exec $VIM_PROGRAM "$@"
+	# if [ -n "$SSH_CONNECTION" ] || [ -n "$SSH_CLIENT" ]; then
+	# 	if [ -z "$LC_TMUX" ]; then
+	# 		exec $VIM_PROGRAM "$@"
+	# 		exit 0
+	# 	elif [ -z "$LC_TMUX_SOCKET" ]; then
+	# 		exec $VIM_PROGRAM "$@"
+	# 		exit 0
+	# 	fi
+
+    #     TMUX_COMMAND=( tmux -S "${LC_TMUX_SOCKET}" )
+    #     TMUX_COMMAND_STR="tmux -S '${LC_TMUX_SOCKET}'"
+	# else
+	    exec $VIM_PROGRAM "$@"
+	    exit 0
+	# fi
 fi
 
 NO_WAIT=0
@@ -60,18 +77,18 @@ fi
 
 # echo "$@" > $HOME/test-cldarg.txt
 signal="$VIM_PROGRAM-done-$$"
-CURRENT_LINES=$(tmux display-message -p '#{pane_height}')
+CURRENT_LINES=$(${TMUX_COMMAND[@]} display-message -p '#{pane_height}')
 
 # vertical
 # tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
 
 
 if [ $NO_WAIT -ne 1 ]; then
-	tmux copy-mode
+	${TMUX_COMMAND[@]} copy-mode
 fi
 
 tmp_editor_var=0
-if [[ "$CLAUDECODE" = "1" ]] || [[ "$(tmux show-option -pqv @is_claude_code 2>/dev/null)" = "1" ]]; then
+if [[ "$CLAUDECODE" = "1" ]] || [[ "$(${TMUX_COMMAND[@]} show-option -pqv @is_claude_code 2>/dev/null)" = "1" ]]; then
 	tmp_editor_var=1
 else
 	tmp_editor_var=2
@@ -81,39 +98,39 @@ fi
 # echo "vim enter" >> /tmp/test.txt
 # horizontal
 # $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
-TMUX_CMD="tmux set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd $PWD' $@"
-TMUX_CMD_WAIT="tmux set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@; VIMRC=\$?; tmux set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && tmux set-hook -w pane-exited 'run-shell \"$HOME/.dotfiles/.bin/codevim-autosend 1 && tmux set-hook -uw pane-exited\"'"
+TMUX_CMD="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd $PWD' $@"
+TMUX_CMD_WAIT="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd $PWD' -c '\$' +startinsert! $@; VIMRC=\$?; ${TMUX_COMMAND_STR} set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && ${TMUX_COMMAND_STR} set-hook -w pane-exited 'run-shell \"$HOME/.dotfiles/.bin/codevim-autosend 1 && ${TMUX_COMMAND_STR} set-hook -uw pane-exited\"'"
 if [ $CURRENT_LINES -ge 26 ]; then
 	if [ $NO_WAIT -eq 1 ]; then
-		tmux split-window -v -l 13 "$TMUX_CMD"
+		${TMUX_COMMAND[@]} split-window -v -l 13 "$TMUX_CMD"
 	else
-		tmux split-window -v -l 13 "$TMUX_CMD_WAIT; tmux wait-for -S $signal"
+		${TMUX_COMMAND[@]} split-window -v -l 13 "$TMUX_CMD_WAIT; ${TMUX_COMMAND_STR} wait-for -S $signal"
 	fi
 elif [ $CURRENT_LINES -ge 15 ]; then
 	if [ $NO_WAIT -eq 1 ]; then
-		tmux split-window -v -l 7 "$TMUX_CMD"
+		${TMUX_COMMAND[@]} split-window -v -l 7 "$TMUX_CMD"
 	else
-		tmux split-window -v -l 7 "$TMUX_CMD_WAIT; tmux wait-for -S $signal"
+		${TMUX_COMMAND[@]} split-window -v -l 7 "$TMUX_CMD_WAIT; ${TMUX_COMMAND_STR} wait-for -S $signal"
 	fi
 else
 	if [ $NO_WAIT -eq 1 ]; then
-		tmux split-window -v "$TMUX_CMD"
+		${TMUX_COMMAND[@]} split-window -v "$TMUX_CMD"
 	else
-		tmux split-window -v "$TMUX_CMD_WAIT; tmux wait-for -S $signal"
+		${TMUX_COMMAND[@]} split-window -v "$TMUX_CMD_WAIT; ${TMUX_COMMAND_STR} wait-for -S $signal"
 	fi
 fi
 
 if [ $NO_WAIT -ne 1 ]; then
-	tmux last-pane
-	tmux send-keys -X scroll-up
-	tmux send-keys -X scroll-up
-	tmux send-keys -X scroll-up
-	tmux send-keys -X scroll-up
-	tmux last-pane
-	tmux wait-for $signal
-	tmux send-keys -X cancel
-	VIM_EXIT=$(tmux show-environment CODEVIM_EXIT_$$ 2>/dev/null | cut -d= -f2)
-	tmux set-environment -u CODEVIM_EXIT_$$ 2>/dev/null
+	${TMUX_COMMAND[@]} last-pane
+	${TMUX_COMMAND[@]} send-keys -X scroll-up
+	${TMUX_COMMAND[@]} send-keys -X scroll-up
+	${TMUX_COMMAND[@]} send-keys -X scroll-up
+	${TMUX_COMMAND[@]} send-keys -X scroll-up
+	${TMUX_COMMAND[@]} last-pane
+	${TMUX_COMMAND[@]} wait-for $signal
+	${TMUX_COMMAND[@]} send-keys -X cancel
+	VIM_EXIT=$(${TMUX_COMMAND[@]} show-environment CODEVIM_EXIT_$$ 2>/dev/null | cut -d= -f2)
+	${TMUX_COMMAND[@]} set-environment -u CODEVIM_EXIT_$$ 2>/dev/null
 fi
 
 unset AIAGENT_TMP_EDITOR
