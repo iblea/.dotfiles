@@ -8,7 +8,10 @@ fi
 # vscode terminal: 부모 tmux 세션에서 상속받은 환경변수 초기화
 if [[ "$TERM_PROGRAM" != "tmux" ]]; then
     unset TMUX
-    unset LC_TMUX
+    # ssh 상태가 아닌 경우 정리
+    if [ -z "$SSH_CONNECTION" ] && [ -z "$SSH_CLIENT" ]; then
+        unset LC_TMUX
+    fi
 fi
 
 # auto start tmux
