@@ -246,7 +246,9 @@ if $AIAGENT_TMP_EDITOR == "1" || $AIAGENT_TMP_EDITOR == "2"
     endif
     if $AIAGENT_TMP_EDITOR == "2"
       if !empty($LC_TMUX)
-        lua vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(table.concat(vim.fn.getline(1, vim.fn.line('$')), '\n'))))
+        " OSC52로 시스템 클립보드에 복사
+        " lua vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(table.concat(vim.fn.getline(1, vim.fn.line('$')), '\n'))))
+        call system('tmux set-buffer -- ' . shellescape(join(getline(1, '$'), "\n")))
       elseif has('mac')
         call system('pbcopy', join(getline(1, '$'), "\n"))
       else

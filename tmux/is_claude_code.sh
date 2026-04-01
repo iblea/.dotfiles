@@ -7,7 +7,7 @@
 
 # 2. pane_title로 SSH 너머 Claude Code 감지
 tmux display-message -p '#{pane_title}' \
-    | grep -iqE '(^|[/ ])claude( |$)' && exit 0
+    | grep -iqE '(^|[/ ])claude code( |$)' && exit 0
 
 # 3. pane_current_command로 감지 (로컬)
 tmux display-message -p '#{pane_current_command}' \
