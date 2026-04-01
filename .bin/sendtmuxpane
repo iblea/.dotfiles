@@ -39,7 +39,7 @@ if [ "$(tmux display -t ${display_window} -p '#{pane_in_mode}')" = "1" ]; then
     tmux send-keys -t ${display_window} -X cancel
 fi
 
-tmux send-keys -t "$display_window" $@
+tmux send-keys -t "$display_window" "$@"
 ret_code="$?"
 if [ $ret_code -eq 0 ]; then
     echo "command send successfully [${ret_code}]"
