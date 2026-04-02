@@ -14,6 +14,7 @@ if [ -z "$TMUX" ]; then
         fi
 
         TMUX_COMMAND=( tmux -S "${LC_TMUX_SOCKET}" )
+        echo "INFO: You are operating LOCAL TMUX in SSH."
     else
         echo "You are not in tmux."
         echo "This command can only be used in tmux."

@@ -71,8 +71,8 @@ alias grepq="grep --color=auto -rnIHF"
 
 # ssh
 if [ -f $HOME/.ssh/config ]; then
-    alias ssh='ssh -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
-    alias scp='scp -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
+    # alias ssh='ssh -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
+    # alias scp='scp -F $HOME/.ssh/config -i $HOME/.ssh/id_rsa -o UserKnownHostsFile=$HOME/.ssh/known_hosts'
     function sshinitd() {
         ssh-keygen -f $HOME/.ssh/known_hosts -R "$*"
         domain_ip=$(nslookup "$*" | grep "Address: " | awk '{print $NF}')
@@ -85,6 +85,19 @@ if [ -f $HOME/.ssh/config ]; then
 else
     touch $HOME/.ssh/config
 fi
+
+function ssh() {
+    local ssh_cmd=(ssh)
+    if command -v zssh &>/dev/null; then
+        ssh_cmd=(zssh -z ^Y)
+    fi
+    if [ -n "$TMUX" ]; then
+        local _sock="/tmp/local-tmux-$(date +%s)-${RANDOM}.sock"
+        LC_TMUX_SOCKET="$_sock" command ${ssh_cmd[@]} -R "${_sock}:${TMUX%%,*}" "$@"
+    else
+        command ${ssh_cmd[@]} "$@"
+    fi
+}
 
 # some more ls aliases
 
@@ -609,10 +622,6 @@ alias agrepno="$HOME/.dotfiles/grepscript/agrepno"
 alias agrepn="$HOME/.dotfiles/grepscript/agrepn"
 alias agrepm="$HOME/.dotfiles/grepscript/agrepm"
 
-
-if [ -n "$($(bash -c 'which which') zssh)" ]; then
-    alias ssh="zssh -z ^Y"
-fi
 
 # 반복문에서 echo 및 sed 시 성능이 너무 떨어짐
 # agrepn 단독 사용 시 0.04sec 걸리는 명령어가 grepnz 사용 시 3.5sec 까지 늘어남.
@@ -2359,14 +2368,18 @@ function dush() {
 }
 
 function magicksixel() {
-	# magick $@ --resize 800x600 sixel:-
-	magick $@ sixel:-
+    # magick $@ --resize 800x600 sixel:-
+    magick $@ sixel:-
 }
 
 # alias
 [ -f $HOME/.aliases_company ] && source ~/.aliases_company
 
 alias rm='rm -Ivr'
+
+if [ -n "$(command -v rsync)" ]; then
+    alias rsp='rsync -rlptvz'
+fi
 
 return 0
 

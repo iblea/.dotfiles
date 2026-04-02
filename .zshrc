@@ -13,6 +13,14 @@ if [[ "$TERM_PROGRAM" != "tmux" ]]; then
         # vscode remote ssh 상태일 가능성을 배제할 수 없음.
         if [[ "$TERM_PROGRAM" = "vscode" ]]; then
             unset LC_TMUX
+        else
+            # /tmp/tmux socket 정리
+            for _sock in /tmp/local-tmux-*-*.sock; do
+                [ -e "$_sock" ] || continue
+                [ -n "$LC_TMUX_SOCKET" ] && [ "$_sock" = "$LC_TMUX_SOCKET" ] && continue
+                rm -f "$_sock"
+            done
+            unset _sock
         fi
     else
         # ssh 상태가 아닌 경우 정리

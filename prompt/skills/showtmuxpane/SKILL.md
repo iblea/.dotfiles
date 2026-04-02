@@ -22,6 +22,8 @@ Please refer to the details below. (`#SKILL OPTS` section)
 - Identify the TMUX environment, and if the agent is operating within a TMUX environment, perform the following tasks.
   - If the environment is not TMUX, output the message "This is not a TMUX environment." and terminate the conversation.
     - It can be used as follows: `echo $TMUX` or `env | grep "TMUX"`
+  - However, in an SSH session with `$LC_TMUX` and `$LC_TMUX_SOCKET` environment variables set, the agent is controlling the **local (remote host's) tmux** via socket. In this case, `$TMUX` may be empty, but `showtmuxpane` and `sendtmuxpane` scripts internally handle this by using `tmux -S "$LC_TMUX_SOCKET"` instead of plain `tmux`.
+    - This means: SSH environment + `LC_TMUX_SOCKET` present = operating on local tmux from a remote connection. Keep this in mind when interpreting tmux context.
 - The description of the commands is as follows.
   - Verify whether the `showtmuxpane` function is defined using `command -v showtmuxpane` or similar methods. If it is defined, utilize the `showtmuxpane` function to reference the output of a specific window.
   - Use the following format: `showtmuxpane <window name> -S <tail line count>`.
