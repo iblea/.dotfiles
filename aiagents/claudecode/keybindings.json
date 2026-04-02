@@ -18,14 +18,15 @@
         "meta+p": "chat:modelPicker",
         "meta+t": "chat:thinkingToggle",
         "enter": "chat:submit",
-        "ctrl+y": "chat:submit",
+        "ctrl+t": "chat:submit",
         "up": "history:previous",
         "down": "history:next",
         "ctrl+_": "chat:undo",
         "ctrl+shift+-": "chat:undo",
         "ctrl+g": "chat:externalEditor",
         "ctrl+s": "chat:stash",
-        "ctrl+v": "chat:imagePaste"
+        "ctrl+v": "chat:imagePaste",
+        "ctrl+y": "chat:cancel"
       }
     },
     {
@@ -40,7 +41,7 @@
     {
       "context": "Settings",
       "bindings": {
-        "escape": "confirm:no",
+        "ctrl+y": "confirm:no",
         "up": "select:previous",
         "down": "select:next",
         "k": "select:previous",
