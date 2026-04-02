@@ -1,0 +1,217 @@
+#!/bin/bash
+
+if [ "$(uname)" != "Darwin" ]; then
+    echo "macOS only"
+    exit 1
+fi
+
+G2FA_FILE="$HOME/Library/Containers/dev.yuhapps.g2fa/Data/Library/Application Support/G2FA/accounts.g2fa"
+
+if [ ! -f "$G2FA_FILE" ]; then
+    echo "G2FA 데이터 파일을 찾을 수 없음: $G2FA_FILE"
+    exit 1
+fi
+
+if ! command -v oathtool &>/dev/null; then
+    echo "oathtool이 설치되어 있지 않음. brew install oath-toolkit"
+    exit 1
+fi
+
+if ! command -v jq &>/dev/null; then
+    echo "jq가 설치되어 있지 않음. brew install jq"
+    exit 1
+fi
+
+decode_accounts() {
+    base64 -d < "$G2FA_FILE"
+}
+
+show_list() {
+    local remain
+    remain=$(remaining_seconds 30)
+    echo "=== G2FA Accounts === (${remain}s remaining)"
+    decode_accounts | jq -r 'to_entries[] | "\(.key)) \(.value.issuer) - \(.value.name)"'
+}
+
+generate_otp() {
+    local secret="$1"
+    local algo="$2"
+    local digits="$3"
+    local type="$4"
+    local counter="$5"
+
+    local algo_flag=""
+    case "$algo" in
+        sha256) algo_flag="--totp=sha256" ;;
+        sha512) algo_flag="--totp=sha512" ;;
+        *)      algo_flag="--totp" ;;
+    esac
+
+    if [ "$type" = "hotp" ]; then
+        oathtool --hotp -b --digits="$digits" -c "$counter" "$secret"
+    else
+        oathtool $algo_flag -b --digits="$digits" "$secret"
+    fi
+}
+
+remaining_seconds() {
+    local step="${1:-30}"
+    local now
+    now=$(date +%s)
+    echo $(( step - now % step ))
+}
+
+# help
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "Usage: g2facli [options] [search]"
+    echo ""
+    echo "  g2facli              계정 목록"
+    echo "  g2facli <검색어>     검색어로 OTP 생성"
+    echo "  g2facli -c <검색어>  OTP 생성 + 클립보드 복사"
+    echo "  g2facli -n <번호>    번호로 OTP 생성"
+    echo "  g2facli -l           계정 목록"
+    exit 0
+fi
+
+COPY=0
+INDEX=-1
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -c)
+            COPY=1
+            shift
+            ;;
+        -n)
+            INDEX="$2"
+            shift 2
+            ;;
+        -l|list|ls)
+            show_list
+            exit 0
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+SEARCH="$*"
+
+# 인자 없으면 fzf 또는 목록 표시
+if [ -z "$SEARCH" ] && [ "$INDEX" -eq -1 ]; then
+    if command -v fzf &>/dev/null; then
+        SEL=$(decode_accounts | jq -r 'to_entries[] | "\(.key)) \(.value.issuer) - \(.value.name)"' \
+            | fzf --prompt="G2FA> " --height=40% --reverse)
+        if [ -z "$SEL" ]; then
+            exit 0
+        fi
+        INDEX=$(echo "$SEL" | cut -d')' -f1)
+        ACCOUNT=$(decode_accounts | jq ".[$INDEX]")
+        issuer=$(echo "$ACCOUNT" | jq -r '.issuer')
+        name=$(echo "$ACCOUNT" | jq -r '.name')
+        secret=$(echo "$ACCOUNT" | jq -r '.secret')
+        algo=$(echo "$ACCOUNT" | jq -r '.algorithm')
+        digits=$(echo "$ACCOUNT" | jq -r '.digits')
+        type=$(echo "$ACCOUNT" | jq -r '.type')
+        counter=$(echo "$ACCOUNT" | jq -r '.counter')
+        code=$(generate_otp "$secret" "$algo" "$digits" "$type" "$counter")
+        remain=$(remaining_seconds 30)
+        echo "$issuer ($name): $code  (${remain}s remaining)"
+        if command -v pbcopy &>/dev/null; then
+            echo -n "$code" | pbcopy
+            echo "(copied)"
+        fi
+        exit 0
+    else
+        show_list
+        exit 0
+    fi
+fi
+
+# 번호로 선택
+if [ "$INDEX" -ge 0 ]; then
+    ACCOUNT=$(decode_accounts | jq ".[$INDEX]")
+    if [ "$ACCOUNT" = "null" ] || [ -z "$ACCOUNT" ]; then
+        echo "잘못된 번호: $INDEX"
+        exit 1
+    fi
+
+    issuer=$(echo "$ACCOUNT" | jq -r '.issuer')
+    name=$(echo "$ACCOUNT" | jq -r '.name')
+    secret=$(echo "$ACCOUNT" | jq -r '.secret')
+    algo=$(echo "$ACCOUNT" | jq -r '.algorithm')
+    digits=$(echo "$ACCOUNT" | jq -r '.digits')
+    type=$(echo "$ACCOUNT" | jq -r '.type')
+    counter=$(echo "$ACCOUNT" | jq -r '.counter')
+
+    code=$(generate_otp "$secret" "$algo" "$digits" "$type" "$counter")
+    remain=$(remaining_seconds 30)
+    echo "$issuer ($name): $code  (${remain}s remaining)"
+    if [ "$COPY" -eq 1 ] && command -v pbcopy &>/dev/null; then
+        echo -n "$code" | pbcopy
+        echo "(copied)"
+    fi
+    exit 0
+fi
+
+# 검색
+MATCHES=$(decode_accounts | jq -c "[to_entries[] | select(
+    (.value.issuer | ascii_downcase | contains(\"$(echo "$SEARCH" | tr '[:upper:]' '[:lower:]')\")) or
+    (.value.name | ascii_downcase | contains(\"$(echo "$SEARCH" | tr '[:upper:]' '[:lower:]')\")) or
+    (.value.label | ascii_downcase | contains(\"$(echo "$SEARCH" | tr '[:upper:]' '[:lower:]')\"))
+)]")
+
+COUNT=$(echo "$MATCHES" | jq 'length')
+
+if [ "$COUNT" -eq 0 ]; then
+    echo "\"$SEARCH\" 에 해당하는 계정 없음"
+    exit 1
+fi
+
+if [ "$COUNT" -eq 1 ]; then
+    ACCOUNT=$(echo "$MATCHES" | jq '.[0].value')
+    issuer=$(echo "$ACCOUNT" | jq -r '.issuer')
+    name=$(echo "$ACCOUNT" | jq -r '.name')
+    secret=$(echo "$ACCOUNT" | jq -r '.secret')
+    algo=$(echo "$ACCOUNT" | jq -r '.algorithm')
+    digits=$(echo "$ACCOUNT" | jq -r '.digits')
+    type=$(echo "$ACCOUNT" | jq -r '.type')
+    counter=$(echo "$ACCOUNT" | jq -r '.counter')
+
+    code=$(generate_otp "$secret" "$algo" "$digits" "$type" "$counter")
+    remain=$(remaining_seconds 30)
+    echo "$issuer ($name): $code  (${remain}s remaining)"
+    if [ "$COPY" -eq 1 ] && command -v pbcopy &>/dev/null; then
+        echo -n "$code" | pbcopy
+        echo "(copied)"
+    fi
+    exit 0
+fi
+
+# 여러 개 매칭
+echo "여러 계정이 검색됨:"
+echo "$MATCHES" | jq -r '.[] | "\(.key)) \(.value.issuer) - \(.value.name)"'
+echo ""
+read -rp "번호 선택: " SEL
+
+ACCOUNT=$(echo "$MATCHES" | jq ".[] | select(.key == $SEL) | .value")
+if [ -z "$ACCOUNT" ] || [ "$ACCOUNT" = "null" ]; then
+    echo "잘못된 선택"
+    exit 1
+fi
+
+issuer=$(echo "$ACCOUNT" | jq -r '.issuer')
+name=$(echo "$ACCOUNT" | jq -r '.name')
+secret=$(echo "$ACCOUNT" | jq -r '.secret')
+algo=$(echo "$ACCOUNT" | jq -r '.algorithm')
+digits=$(echo "$ACCOUNT" | jq -r '.digits')
+type=$(echo "$ACCOUNT" | jq -r '.type')
+counter=$(echo "$ACCOUNT" | jq -r '.counter')
+
+code=$(generate_otp "$secret" "$algo" "$digits" "$type" "$counter")
+echo "$issuer ($name): $code"
+if [ "$COPY" -eq 1 ] && command -v pbcopy &>/dev/null; then
+    echo -n "$code" | pbcopy
+    echo "(copied)"
+fi
