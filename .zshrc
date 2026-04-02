@@ -14,10 +14,11 @@ if [[ "$TERM_PROGRAM" != "tmux" ]]; then
         if [[ "$TERM_PROGRAM" = "vscode" ]]; then
             unset LC_TMUX
         else
-            # /tmp/tmux socket 정리
+            # /tmp/tmux socket 정리 (활성 세션이 없는 소켓만 제거)
             for _sock in /tmp/local-tmux-*-*.sock; do
                 [ -e "$_sock" ] || continue
                 [ -n "$LC_TMUX_SOCKET" ] && [ "$_sock" = "$LC_TMUX_SOCKET" ] && continue
+                tmux -S "$_sock" list-sessions &>/dev/null && continue
                 rm -f "$_sock"
             done
             unset _sock
