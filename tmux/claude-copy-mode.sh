@@ -1,7 +1,6 @@
 #!/bin/bash
 # claude-copy-mode.sh: Claude Code pane에서 copy-mode 진입/취소
 # check_claude_state 폴링으로 실제 상태 변화를 감지
-# copy-mode 종료는 pane-mode-changed hook으로 자동 감지
 #
 # Claude Code 화면 상태별 분기:
 #   기본 상태            → C-o → [ → copy-mode
@@ -11,7 +10,6 @@
 # Usage:
 #   claude-copy-mode.sh enter <pane-id>
 #   claude-copy-mode.sh toggle <pane-id>
-#   claude-copy-mode.sh exit-hook <orig-pane-id> [hook-pane-id] [hook-pane-mode]
 
 MODE="${1:-enter}"
 
@@ -78,15 +76,10 @@ case "$MODE" in
             tmux copy-mode -t "$TARGET"
         fi
 
-        # pane-mode-changed hook 설정 (copy-mode 종료 시 자동 처리)
-        tmux set-hook -w pane-mode-changed \
-            "run-shell -b \"$HOME/.dotfiles/tmux/claude-copy-mode.sh exit-hook $TARGET #{pane_id} #{pane_mode}\""
         ;;
     toggle)
-        # copy-mode 내에서 C-o 토글 (hook 간섭 방지)
+        # copy-mode 내에서 C-o 토글
         TARGET="${2:-%}"
-        # hook 임시 해제 (cancel 시 exit-hook 발동 방지)
-        tmux set-hook -uw pane-mode-changed 2>/dev/null
         # cancel 후 현재 상태 확인
         tmux send-keys -t "$TARGET" -X cancel
         check_claude_state "$TARGET"
@@ -106,29 +99,6 @@ case "$MODE" in
 
         # copy-mode 재진입
         tmux copy-mode -t "$TARGET"
-        # hook 재설정
-        tmux set-hook -w pane-mode-changed \
-            "run-shell -b \"$HOME/.dotfiles/tmux/claude-copy-mode.sh exit-hook $TARGET #{pane_id} #{pane_mode}\""
-        ;;
-    exit-hook)
-        ORIG_TARGET="${2:-%}"
-        HOOK_PANE="${3:-}"
-        HOOK_MODE="${4:-}"
-
-        # 원래 Claude Code pane이 아니면 무시
-        [ -n "$HOOK_PANE" ] && [ "$HOOK_PANE" != "$ORIG_TARGET" ] && exit 0
-        # 아직 copy-mode이면 무시 (진입 시에도 hook 발동됨)
-        [ -n "$HOOK_MODE" ] && exit 0
-
-        # hook 해제
-        tmux set-hook -uw pane-mode-changed
-
-        # cancel 후 화면 상태 확인 → transcript 모드이면 C-o로 빠져나가기
-        MERGED=$(tmux capture-pane -t "$ORIG_TARGET" -p | tail -3 | tr '\n' ' ')
-        if echo "$MERGED" | grep -qF "Showing detailed transcript" && \
-           echo "$MERGED" | grep -qF "ctrl+o to toggle"; then
-            tmux send-keys -t "$ORIG_TARGET" C-o
-        fi
         ;;
 esac
 
