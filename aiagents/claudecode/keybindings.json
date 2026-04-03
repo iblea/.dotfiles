@@ -60,6 +60,7 @@
         "y": "confirm:yes",
         "n": "confirm:no",
         "enter": "confirm:yes",
+        "ctrl+y": "confirm:no",
         "escape": "confirm:no",
         "up": "confirm:previous",
         "down": "confirm:next",
