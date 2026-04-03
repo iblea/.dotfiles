@@ -1,6 +1,7 @@
 {
   "env": {
     "MAX_THINKING_TOKENS": "63999",
+    "CLAUDE_CODE_NO_FLICKER": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_EFFORT_LEVEL": "max"
   },
@@ -110,7 +111,7 @@
     "sequential-thinking-improved": {
       "command": "node",
       "args": [
-	    "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js",
+        "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js",
         "$HOME/.dotfiles/aiagents/claudecode/sequential-thinking-improved/dist/index.js"
       ]
     },
