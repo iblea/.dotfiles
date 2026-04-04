@@ -66,6 +66,32 @@ If this option is provided, a specific tmux window can be manipulated through th
     - Cancel: `tmux send-keys -t <window> -X cancel`
   - This manual check is ONLY required when using `tmux send-keys` directly. When using `sendtmuxpane`, copy-mode is automatically detected and cancelled by the script.
 
+##### WARNING: tmux special characters (escape required)
+  - When using `sendtmuxpane`, the following characters are interpreted specially by the tmux command parser and **must be escaped**:
+    - `;` (semicolon): tmux command separator. Escape with `'\;'`
+    - `#` (hash): tmux comment marker (text after `#` is ignored). Escape with `'\#'`
+    - `\` (backslash at end of line): line continuation. Escape with `'\\'`
+  - **Example (semicolon escape):**
+    - `sendtmuxpane 2 "SELECT 1" '\;' C-m`
+    - Incorrect: `sendtmuxpane 2 "SELECT 1;" C-m` (`;` is consumed by tmux parser)
+  - The `-l` (literal) flag of `tmux send-keys` does NOT prevent this issue because tmux parses `;` before interpreting options.
+
+##### NOTE: backslash and `-l` flag
+  - To send literal backslash sequences (e.g. `\t`, `\n`), use the `-l` flag.
+    - Without `-l`: `\t` may be interpreted as a Tab key by the target shell.
+    - With `-l`: `\t` is sent as literal characters (backslash + t), not as a Tab key.
+  - Example: `sendtmuxpane 2 -l 'echo \ttest' && sendtmuxpane 2 C-m`
+  - When using `-l`, special keys like `C-m` (Enter) cannot be included in the same call. Send them separately.
+
+##### NOTE: quoting (`'`, `"`) with sendtmuxpane
+  - When the text to send contains quotes (`'` or `"`), shell escaping must be applied carefully.
+  - The arguments pass through **two layers of interpretation**: the local shell (bash/zsh) first, then `tmux send-keys`.
+  - Use backslash-escaped quotes (`\"`, `\'`) or mix single/double quoting as needed.
+  - Examples:
+    - `sendtmuxpane 2 -l "echo '\\ttest'" && sendtmuxpane 2 C-m`
+    - `sendtmuxpane 2 -l 'echo "hello world"' && sendtmuxpane 2 C-m`
+    - `sendtmuxpane 2 -l "SELECT * FROM users WHERE name='test'" && sendtmuxpane 2 C-m`
+
 ##### sk option behavior
   - When the input is `;tm 2 sk`, the content of window 2 should be referenced, and all subsequent command-related interactions must be conducted in window 2.
   - Since tmux operates as an interactive session, interactive CLI tools such as ssh, mysql, and psql can be used.

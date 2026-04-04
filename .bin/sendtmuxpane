@@ -37,6 +37,20 @@ elif [ "$#" -eq 1 ]; then
         echo "  ex: sendtmuxpane 2.2 -> window 2, pane 2"
         echo ""
         echo "Other Arguments: tmux send-keys options"
+        echo ""
+        echo "WARNING: tmux command parser treats the following characters specially."
+        echo "  ';' (semicolon) - command separator. Escape: \\;"
+        echo "  '#' (hash)      - comment (text after # is ignored). Escape: \\#"
+        echo "  '\\' (backslash at EOL) - line continuation. Escape: \\\\"
+        echo ""
+        echo "NOTE: To send literal backslash (e.g. \\t, \\n), use -l flag."
+        echo "  Without -l: \\t may be interpreted as Tab key by the shell."
+        echo "  With    -l: \\t is sent as literal characters (backslash + t)."
+        echo ""
+        echo "Example:"
+        echo "  sendtmuxpane 2 \"SELECT 1\" '\\;' C-m"
+        echo "  sendtmuxpane 2 \"echo hello\" '\\#' \"world\" C-m"
+        echo "  sendtmuxpane 2 -l 'echo \\ttest' && sendtmuxpane 2 C-m"
         exit 0
     fi
 fi
