@@ -66,6 +66,18 @@ wait_stable() {
 # Phase 1: 초기 안정화 대기 (3번 연속 동일)
 wait_stable "$PHASE1_STABLE" "$PHASE1_MAX" "$PHASE1_MIN_WAIT"
 
+# "Save and close editor to continue..." 문구 사라짐 대기
+EDITOR_MSG_MAX=50
+editor_msg_i=0
+while [ "$editor_msg_i" -lt "$EDITOR_MSG_MAX" ]; do
+    editor_check=$(${TMUX_COMMAND[@]} capture-pane -t "$TARGET" -p | sed '/^[[:space:]]*$/d' | tail -5)
+    if ! echo "$editor_check" | grep -q "Save and close editor to continue"; then
+        break
+    fi
+    editor_msg_i=$((editor_msg_i + 1))
+    sleep "$TERM_SEC"
+done
+
 # Escape 전송
 ${TMUX_COMMAND[@]} send-keys -t "$TARGET" Escape
 
@@ -73,6 +85,11 @@ ${TMUX_COMMAND[@]} send-keys -t "$TARGET" Escape
 retry=0
 while [ "$retry" -le "$PHASE2_RETRY_MAX" ]; do
     if wait_stable "$PHASE2_STABLE" "$PHASE2_MAX" "$PHASE2_MIN_WAIT"; then
+        break
+    fi
+    # Claude Code "Esc again to clear" 감지 → ESC 재전송 금지
+    esc_clear_check=$(${TMUX_COMMAND[@]} capture-pane -t "$TARGET" -p | sed '/^[[:space:]]*$/d' | tail -5)
+    if echo "$esc_clear_check" | grep -q "Esc again to clear"; then
         break
     fi
     # 안정화 실패 → Escape 재전송 후 재시도
