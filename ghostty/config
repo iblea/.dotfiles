@@ -190,3 +190,6 @@ link-previews = osc8
 clipboard-read = allow
 clipboard-write = allow
 
+# meta key
+macos-option-as-alt = true
+
