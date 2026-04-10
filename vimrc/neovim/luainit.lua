@@ -92,11 +92,24 @@ if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
 end
 
 -- TMUX 활성화 시 키매핑 활성화 (window/pane 체크는 실행 시점에 동적으로 수행)
-if vim.env.TMUX then
+if vim.env.TMUX or vim.env.LC_TMUX then
+  local tmux_sock = (not vim.env.TMUX and vim.env.LC_TMUX) and vim.env.LC_TMUX_SOCKET or nil
+  local function tmux(args)
+    local cmd = {"tmux"}
+    if tmux_sock then
+      table.insert(cmd, "-S")
+      table.insert(cmd, tmux_sock)
+    end
+    for _, a in ipairs(args) do
+      table.insert(cmd, a)
+    end
+    return vim.fn.system(cmd)
+  end
+
   -- claude code 윈도우의 pwd 기준 상대경로 계산
   local function get_claude_relative_path()
     local file_path = vim.fn.expand("%:p")
-    local claude_pwd = vim.fn.system("tmux display-message -p -t :1 '#{pane_current_path}'")
+    local claude_pwd = tmux({"display-message", "-p", "-t", ":1", "#{pane_current_path}"})
     claude_pwd = claude_pwd:gsub("%s+$", "")
 
     local function split_path(path)
@@ -131,16 +144,16 @@ if vim.env.TMUX then
 
   -- normal mode: 파일 전체를 claude code에 전송
   vim.keymap.set("n", "<leader>b", function()
-    local cur_win = vim.fn.system("tmux display-message -p '#{window_index}'"):gsub("%s+$", "")
+    local cur_win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
     if cur_win == "1" then return end
     local ref = "@" .. get_claude_relative_path()
-    vim.fn.system({"tmux", "send-keys", "-t", ":1", "-l", ref .. " "})
-    vim.fn.system({"tmux", "select-window", "-t", ":1"})
+    tmux({"send-keys", "-t", ":1", "-l", ref .. " "})
+    tmux({"select-window", "-t", ":1"})
   end, { desc = "Send file reference to Claude Code" })
 
   -- visual mode: 선택한 라인 범위를 claude code에 전송
   vim.keymap.set("v", "<leader>b", function()
-    local cur_win = vim.fn.system("tmux display-message -p '#{window_index}'"):gsub("%s+$", "")
+    local cur_win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
     if cur_win == "1" then return end
     local start_line = vim.fn.line("v")
     local end_line = vim.fn.line(".")
@@ -157,8 +170,8 @@ if vim.env.TMUX then
       ref = string.format("@%s%s#L%d-#L%d", relative_path, sep, start_line, end_line)
     end
 
-    vim.fn.system({"tmux", "send-keys", "-t", ":1", "-l", ref .. " "})
-    vim.fn.system({"tmux", "select-window", "-t", ":1"})
+    tmux({"send-keys", "-t", ":1", "-l", ref .. " "})
+    tmux({"select-window", "-t", ":1"})
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end, { desc = "Send file reference to Claude Code" })
 
