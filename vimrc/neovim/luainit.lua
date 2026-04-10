@@ -106,9 +106,15 @@ if vim.env.TMUX or vim.env.LC_TMUX then
     return vim.fn.system(cmd)
   end
 
-  -- claude code 윈도우의 pwd 기준 상대경로 계산
-  local function get_claude_relative_path()
+  -- claude code 윈도우의 pwd 기준 경로 계산
+  local function get_claude_file_path()
     local file_path = vim.fn.expand("%:p")
+
+    -- LC_TMUX_SOCKET 경유(SSH) 시 pane_current_path가 로컬 경로라 상대경로 계산 불가
+    if tmux_sock then
+      return file_path
+    end
+
     local claude_pwd = tmux({"display-message", "-p", "-t", ":1", "#{pane_current_path}"})
     claude_pwd = claude_pwd:gsub("%s+$", "")
 
@@ -146,7 +152,7 @@ if vim.env.TMUX or vim.env.LC_TMUX then
   vim.keymap.set("n", "<leader>b", function()
     local cur_win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
     if cur_win == "1" then return end
-    local ref = "@" .. get_claude_relative_path()
+    local ref = "@" .. get_claude_file_path()
     tmux({"send-keys", "-t", ":1", "-l", ref .. " "})
     tmux({"select-window", "-t", ":1"})
   end, { desc = "Send file reference to Claude Code" })
@@ -161,7 +167,7 @@ if vim.env.TMUX or vim.env.LC_TMUX then
       start_line, end_line = end_line, start_line
     end
 
-    local relative_path = get_claude_relative_path()
+    local relative_path = get_claude_file_path()
     local sep = (vim.g.fileline_space == 1) and " " or ""
     local ref
     if start_line == end_line then
