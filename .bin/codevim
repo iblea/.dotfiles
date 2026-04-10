@@ -41,7 +41,7 @@ if [ -z "$TMUX" ]; then
     #     TMUX_COMMAND_STR="tmux -S '${LC_TMUX_SOCKET}'"
     # else
         # exec $VIM_PROGRAM "$@"
-        exec $VIM_PROGRAM --cmd 'cd $PWD'
+        exec $VIM_PROGRAM --cmd 'cd $PWD' "$@"
         exit 0
     # fi
 fi
