@@ -23,7 +23,7 @@
         "down": "history:next",
         "ctrl+_": "chat:undo",
         "ctrl+shift+-": "chat:undo",
-        "ctrl+g": "chat:externalEditor",
+        "ctrl+k": "chat:externalEditor",
         "ctrl+s": "chat:stash",
         "ctrl+v": "chat:imagePaste",
         "ctrl+y": "chat:cancel"
