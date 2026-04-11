@@ -82,10 +82,12 @@ delete_file() {
     [[ "$rel_path" == "$abs_path" ]] && return 0
 
     local remote_file="${REMOTE_PATH}/${rel_path}"
-    if ssh "${SSH_OPTS[@]}" "${USERNAME}@${HOST}" "rm -f '${remote_file}'"; then
+    local ssh_output
+    if ssh_output=$(ssh "${SSH_OPTS[@]}" "${USERNAME}@${HOST}" "rm -f '${remote_file}'" 2>&1); then
         echo "[$(date '+%H:%M:%S')] deleted: ${rel_path}"
     else
         echo "[$(date '+%H:%M:%S')] FAILED to delete: ${rel_path}"
+        echo "  error: ${ssh_output}"
     fi
 }
 
@@ -103,11 +105,16 @@ sync_file() {
         return 0
     fi
 
-    if rsync -avz -R -e "${SSH_CMD}" "${EXCLUDE_ARGS[@]+"${EXCLUDE_ARGS[@]}"}" \
-        "${PROJECT_DIR}/./${rel_path}" "${REMOTE_DEST}/"; then
+    local rsync_output
+    rsync_output=$(cd "${PROJECT_DIR}" && rsync -avz -R -e "${SSH_CMD}" \
+        "${EXCLUDE_ARGS[@]+"${EXCLUDE_ARGS[@]}"}" \
+        "./${rel_path}" "${REMOTE_DEST}/" 2>&1)
+    local rc=$?
+    if [ $rc -eq 0 ]; then
         echo "[$(date '+%H:%M:%S')] synced: ${rel_path}"
     else
-        echo "[$(date '+%H:%M:%S')] FAILED: ${rel_path}"
+        echo "[$(date '+%H:%M:%S')] FAILED(rc=${rc}): ${rel_path}"
+        echo "  output: ${rsync_output}"
     fi
 }
 
