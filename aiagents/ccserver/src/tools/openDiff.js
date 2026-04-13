@@ -63,7 +63,12 @@ export async function handler(params) {
   const leftPath = oldExists ? old_file_path : '/dev/null';
 
   const nvimCmd =
-    `nvim -d ${shellQuote(leftPath)} ${shellQuote(tmpNew)}; ` +
+    `nvim -d ${shellQuote(leftPath)} ${shellQuote(tmpNew)} ` +
+    `-c ${shellQuote('wincmd K')} -c ${shellQuote('wincmd =')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> q  getcmdtype()==":" && getcmdline()=="q"  ? "cq" : "q"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> q! getcmdtype()==":" && getcmdline()=="q!" ? "cq" : "q!"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> qa getcmdtype()==":" && getcmdline()=="qa" ? "cq" : "qa"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> qa! getcmdtype()==":" && getcmdline()=="qa!" ? "cq" : "qa!"')}; ` +
     `echo $? > ${shellQuote(exitFile)}; ` +
     `tmux wait-for -S ${shellQuote(channel)}`;
 
