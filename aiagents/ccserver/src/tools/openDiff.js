@@ -60,7 +60,15 @@ export async function handler(params) {
   logger.debug('openDiff', 'wrote tmp', tmpNew, 'tab:', tab_name);
 
   const oldExists = fs.existsSync(old_file_path);
-  const leftPath = oldExists ? old_file_path : '/dev/null';
+  let tmpOld = null;
+  let leftPath;
+  if (oldExists) {
+    leftPath = old_file_path;
+  } else {
+    tmpOld = path.join(tmpDir, `ccserver-old-${id}${ext}`);
+    fs.writeFileSync(tmpOld, '', 'utf8');
+    leftPath = tmpOld;
+  }
 
   const nvimCmd =
     `nvim -d ${shellQuote(leftPath)} ${shellQuote(tmpNew)} ` +
@@ -77,7 +85,8 @@ export async function handler(params) {
   logger.debug('openDiff', 'spawning tmux new-window', windowName);
   const newWin = spawnSync('tmux', ['new-window', '-a', '-n', windowName, nvimCmd], { stdio: 'inherit' });
   if (newWin.status !== 0) {
-    fs.unlinkSync(tmpNew);
+    try { fs.unlinkSync(tmpNew); } catch {}
+    if (tmpOld) { try { fs.unlinkSync(tmpOld); } catch {} }
     const err = new Error('Failed to create tmux window');
     err.code = -32000;
     throw err;
@@ -101,6 +110,7 @@ export async function handler(params) {
 
   try { fs.unlinkSync(tmpNew); } catch {}
   try { fs.unlinkSync(exitFile); } catch {}
+  if (tmpOld) { try { fs.unlinkSync(tmpOld); } catch {} }
 
   if (exitCode === 0) {
     logger.info('openDiff', 'FILE_SAVED', tab_name);
