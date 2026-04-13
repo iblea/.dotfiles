@@ -21,6 +21,8 @@ fi
 
 NVIM_IDE=0
 NON_INTERACTIVE=0
+WEBSOCKET_SRV=0
+
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         claude --help
@@ -49,9 +51,78 @@ if [ $# -ge 1 ]; then
             break
         elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
             NON_INTERACTIVE=1
+        elif [[ "${opt}" = "ws" ]] || [[ "${opt}" = "-ws" ]]; then
+            WEBSOCKET_SRV=1
         fi
     done
 fi
+
+if [ $WEBSOCKET_SRV -ge 1 ]; then
+    # ccsv.sh 와 동일하게 ccserver(WebSocket MCP 서버)를 백그라운드로 띄우고
+    # cldm 종료 시 함께 정리되도록 trap 설정
+    CCSERVER_BIN="${CCSERVER_BIN:-$HOME/.dotfiles/aiagents/ccserver/src/index.js}"
+    CCSERVER_READY_FILE="$(mktemp -t ccserver-ready.XXXXXX)"
+    CCSERVER_LOG="${CCSERVER_LOG:-/tmp/ccserver-$$.log}"
+    CCSERVER_PID=""
+
+    _ccsv_cleanup() {
+        if [ -n "$CCSERVER_PID" ] && kill -0 "$CCSERVER_PID" 2>/dev/null; then
+            kill "$CCSERVER_PID" 2>/dev/null || true
+            wait "$CCSERVER_PID" 2>/dev/null || true
+        fi
+        rm -f "$CCSERVER_READY_FILE"
+    }
+    trap _ccsv_cleanup EXIT INT TERM
+
+    if [ ! -f "$CCSERVER_BIN" ]; then
+        echo "[cldm] ccserver가 없어: $CCSERVER_BIN" >&2
+        echo "[cldm] CCSERVER_BIN 환경변수로 경로를 지정하거나 먼저 빌드해야 해." >&2
+        exit 1
+    fi
+
+    node "$CCSERVER_BIN" --ready-file "$CCSERVER_READY_FILE" > "$CCSERVER_LOG" 2>&1 &
+    CCSERVER_PID=$!
+
+    for _ in {1..50}; do
+        if [ -s "$CCSERVER_READY_FILE" ]; then
+            break
+        fi
+        if ! kill -0 "$CCSERVER_PID" 2>/dev/null; then
+            echo "[cldm] ccserver 시작 실패. 로그:" >&2
+            cat "$CCSERVER_LOG" >&2
+            exit 1
+        fi
+        sleep 0.1
+    done
+
+    CCWSPORT="$(cat "$CCSERVER_READY_FILE" 2>/dev/null || true)"
+    if [ -z "$CCWSPORT" ]; then
+        echo "[cldm] ccserver가 5초 안에 준비되지 않았어." >&2
+        cat "$CCSERVER_LOG" >&2
+        exit 1
+    fi
+
+    export CLAUDE_CODE_SSE_PORT="$CCWSPORT"
+    export ENABLE_IDE_INTEGRATION="true"
+    export CCWSPORT
+
+    echo "[cldm] ccserver ready on port $CCWSPORT (pid=$CCSERVER_PID, log=$CCSERVER_LOG)" >&2
+    echo "[cldm] CLAUDE_CODE_SSE_PORT=$CLAUDE_CODE_SSE_PORT" >&2
+
+    # tmux new-session 은 update-environment 목록 외 환경변수를 세션 안으로 전달 안 함
+    # 세션 내부 shell command 에 export 를 직접 삽입해서 cld 가 볼 수 있게 만든다
+    _WS_EXPORTS="export CLAUDE_CODE_SSE_PORT=$CCWSPORT; export ENABLE_IDE_INTEGRATION=true; export CCWSPORT=$CCWSPORT;"
+fi
+
+# WEBSOCKET_SRV 모드에서는 exec 대신 일반 실행으로 돌려야
+# cldm 프로세스가 살아남아 trap이 실행되고 ccserver 가 정리됨
+_run_or_exec() {
+    if [ $WEBSOCKET_SRV -ge 1 ]; then
+        "$@"
+    else
+        exec "$@"
+    fi
+}
 
 if [ $NON_INTERACTIVE -eq 1 ]; then
     cld $@
@@ -123,21 +194,23 @@ if [ -n "$TMUX" ] && tmux info &>/dev/null; then
     exit $_ret
 elif [ "$NVIM_IDE" -eq 1 ]; then
     # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
-    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+    _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
         new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "(trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_claude_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_claude_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
+    exit $?
 else
 
     # cld (window 1) + shell (window 2)
-    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_claude_code 1; sleep 0.1 && clear && cld $@" \; \
+    _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_claude_code 1; sleep 0.1 && clear && cld $@" \; \
         new-window -t "$SESSION_NAME" \; \
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \
         select-window -t "$SESSION_NAME:1"
+    exit $?
 fi
 
 

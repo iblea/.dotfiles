@@ -1,0 +1,20 @@
+{
+  "name": "ccserver",
+  "version": "0.1.0",
+  "description": "Claude Code sidecar WebSocket server for external nvim diff workflow (tmux-based)",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "ccserver": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "license": "MIT"
+}

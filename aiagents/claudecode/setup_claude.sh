@@ -11,9 +11,13 @@ fi
 CLAUDE_DIR="$HOME/.claude"
 
 
+exepath="$(pwd)"
+
 # curpath=$(dirname "$(realpath $0)")
 curpath=$(readlink -e $(dirname "$0"))
 # cd "$curpath"
+
+
 
 if [ ! -d "$CLAUDE_DIR" ]; then
     mkdir -p "$CLAUDE_DIR"
@@ -43,8 +47,16 @@ fi
 echo "install mcp servers"
 
 if [ ! -d "$curpath/sequential-thinking-improved/node_modules" ]; then
-    "$curpath/sequential-thinking-improved/install.sh"
+    if [ "$(command -v node)" ]; then
+        "$curpath/sequential-thinking-improved/install.sh"
+    fi
 fi
+
+cd "$curpath/../ccserver/"
+if [ "$(command -v node)" ]; then
+    npm install
+fi
+cd "$exepath"
 
 if [ -n "$(command -v sudo)" ]; then
     sudo npm install -g @modelcontextprotocol/server-sequential-thinking
