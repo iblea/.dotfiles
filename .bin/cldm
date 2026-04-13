@@ -53,6 +53,7 @@ if [ $# -ge 1 ]; then
             NON_INTERACTIVE=1
         elif [[ "${opt}" = "ws" ]] || [[ "${opt}" = "-ws" ]]; then
             WEBSOCKET_SRV=1
+            set -- "${@:1:i-1}" "${@:i+1}"
         fi
     done
 fi
