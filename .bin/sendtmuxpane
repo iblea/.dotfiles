@@ -55,7 +55,7 @@ elif [ "$#" -eq 1 ]; then
     fi
 fi
 
-# display_window="$1"
+target="$1"
 display_window=$(echo "$1" | awk -F '.' '{print $1}')
 shift
 windowlist="$(${TMUX_COMMAND[@]} list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
@@ -65,12 +65,12 @@ if [ -z "$is_exist" ]; then
     exit 1
 fi
 
-if [ "$(${TMUX_COMMAND[@]} display -t ${display_window} -p '#{pane_in_mode}')" = "1" ]; then
-    echo "INFO: Copy mode in ${display_window} window. Cancel copy mode first."
-    ${TMUX_COMMAND[@]} send-keys -t ${display_window} -X cancel
+if [ "$(${TMUX_COMMAND[@]} display -t ${target} -p '#{pane_in_mode}')" = "1" ]; then
+    echo "INFO: Copy mode in ${target}. Cancel copy mode first."
+    ${TMUX_COMMAND[@]} send-keys -t ${target} -X cancel
 fi
 
-${TMUX_COMMAND[@]} send-keys -t "$display_window" "$@"
+${TMUX_COMMAND[@]} send-keys -t "$target" "$@"
 ret_code="$?"
 if [ $ret_code -eq 0 ]; then
     echo "command send successfully [${ret_code}]"

@@ -1,10 +1,27 @@
 #!/bin/bash
 
+TMUX_COMMAND=( tmux )
+
 if [ -z "$TMUX" ]; then
-    echo "You are not in tmux."
-    echo "This command can only be used in tmux."
-    exit 1
+    if [ -n "$SSH_CONNECTION" ] || [ -n "$SSH_CLIENT" ]; then
+        if [ -z "$LC_TMUX" ]; then
+            echo "You are not in tmux. (ssh)"
+            echo "This command can only be used in tmux (ssh)."
+            exit 1
+        elif [ -z "$LC_TMUX_SOCKET" ]; then
+            echo "SSH - TMUX must need LC_TMUX_SOCKET env variable."
+            exit 1
+        fi
+
+        TMUX_COMMAND=( tmux -S "${LC_TMUX_SOCKET}" )
+        echo "INFO: You are operating LOCAL TMUX in SSH."
+    else
+        echo "You are not in tmux."
+        echo "This command can only be used in tmux."
+        exit 1
+    fi
 fi
+
 
 if [ "$#" -le 0 ]; then
     echo "Wrong Argument."
@@ -43,7 +60,7 @@ fi
 # display_window="$1"
 display_window=$(echo "$1" | awk -F '.' '{print $1}')
 shift
-windowlist="$(tmux list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
+windowlist="$(${TMUX_COMMAND[@]} list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
 is_exist=$(echo "$windowlist" | grep "^$display_window$")
 if [ -z "$is_exist" ]; then
     echo "window number is wrong"
@@ -81,11 +98,11 @@ done
 # echo "OTHER_OPT: ${OTHER_OPTS[@]}"
 
 if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
-    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $display_window -p -E $(($(${TMUX_COMMAND[@]} display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
 elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
-    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $display_window -p -E $(($(${TMUX_COMMAND[@]} display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
 else
-    tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
+    ${TMUX_COMMAND[@]} capture-pane -t $display_window -p -E $(($(${TMUX_COMMAND[@]} display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
 fi
 
 # tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
