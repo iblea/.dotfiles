@@ -552,6 +552,13 @@ else
     line2_parts+=("${ctx_bar} ${local_ctx_color}${ctx_remaining_int}%${C_RESET}")
 fi
 
+# IDE integration status (cldm -ws 로 ccserver 붙었을 때 CLAUDE_CODE_SSE_PORT + ENABLE_IDE_INTEGRATION 가 export 됨)
+if [ -n "$CLAUDE_CODE_SSE_PORT" ] && [ -n "$ENABLE_IDE_INTEGRATION" ]; then
+    line2_parts+=("${C_GREEN}IDE(${CLAUDE_CODE_SSE_PORT})${C_RESET}")
+else
+    line2_parts+=("${C_GRAY}NO IDE${C_RESET}")
+fi
+
 # Session duration (always show; default to 0m if transcript not available yet)
 if [ -z "$session_dur" ]; then
     session_dur="0m"
