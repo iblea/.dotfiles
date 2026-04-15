@@ -27,6 +27,22 @@ function tmuxAvailable() {
   return res.status === 0;
 }
 
+function getClaudePaneInfo() {
+  const pane = process.env.TMUX_PANE;
+  if (!pane) return null;
+  const res = spawnSync(
+    'tmux',
+    ['display-message', '-p', '-t', pane, '-F', '#{window_id} #{window_panes}'],
+    { encoding: 'utf8' }
+  );
+  if (res.status !== 0) return null;
+  const parts = res.stdout.trim().split(/\s+/);
+  if (parts.length !== 2) return null;
+  const paneCount = parseInt(parts[1], 10);
+  if (Number.isNaN(paneCount)) return null;
+  return { paneId: pane, windowId: parts[0], paneCount };
+}
+
 function shellQuote(s) {
   return `'${String(s).replace(/'/g, `'\\''`)}'`;
 }
@@ -82,8 +98,19 @@ export async function handler(params) {
 
   const windowName = `diff:${path.basename(old_file_path).slice(0, 30)}`;
 
-  logger.debug('openDiff', 'spawning tmux new-window', windowName);
-  const newWin = spawnSync('tmux', ['new-window', '-a', '-n', windowName, nvimCmd], { stdio: 'inherit' });
+  const info = getClaudePaneInfo();
+  let tmuxArgs;
+  if (info && info.paneCount === 1) {
+    tmuxArgs = ['split-window', '-h', '-t', info.paneId, '-l', '50%', nvimCmd];
+    logger.debug('openDiff', 'split claude pane', info.paneId);
+  } else if (info) {
+    tmuxArgs = ['new-window', '-a', '-t', info.windowId, '-n', windowName, nvimCmd];
+    logger.debug('openDiff', 'new-window after claude window', info.windowId, windowName);
+  } else {
+    tmuxArgs = ['new-window', '-a', '-n', windowName, nvimCmd];
+    logger.debug('openDiff', 'fallback new-window', windowName);
+  }
+  const newWin = spawnSync('tmux', tmuxArgs, { stdio: 'inherit' });
   if (newWin.status !== 0) {
     try { fs.unlinkSync(tmpNew); } catch {}
     if (tmpOld) { try { fs.unlinkSync(tmpOld); } catch {} }
