@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# pvim - tmux 현재 window를 좌/우 분할한 뒤 neovim으로 파일 열기
+# 사용법: pvim [--safe] <file> [file...]
+#
+# 동작:
+#   tmux 안이고 현재 window가 단일 pane이면 가로(-h) 분할 후 새 pane에서 nvim 실행.
+#   nvim 종료 시 shell-command가 끝나면서 pane도 함께 종료됨.
+#
+# 옵션:
+#   --safe   tmux가 아니거나 단일 pane이 아니면 에러로 종료.
+#            옵션이 없으면 fallback으로 nvim을 직접 실행함.
+
+set -euo pipefail
+
+safe_mode=0
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --safe)
+            safe_mode=1
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "[pvim] unknown option: $1" >&2
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [[ $# -lt 1 ]]; then
+    echo "사용법: pvim [--safe] <file> [file...]" >&2
+    exit 1
+fi
+
+if command -v nvim >/dev/null 2>&1; then
+    editor="nvim"
+elif command -v vim >/dev/null 2>&1; then
+    editor="vim"
+else
+    echo "[pvim] nvim/vim 둘 다 없어." >&2
+    exit 1
+fi
+
+if [[ -z "${TMUX:-}" ]]; then
+    if (( safe_mode )); then
+        echo "[tvim] only use in tmux. (--safe)" >&2
+        exit 1
+    fi
+    exec "$editor" "$@"
+fi
+
+pane_count=$(tmux display-message -p '#{window_panes}' 2>/dev/null || true)
+if [[ "$pane_count" != "1" ]]; then
+    if (( safe_mode )); then
+        echo "[tvim] pane of current window is not single pane. (--safe)" >&2
+        exit 1
+    fi
+    exec "$editor" "$@"
+fi
+
+cmd="$editor"
+for arg in "$@"; do
+    cmd+=" $(printf '%q' "$arg")"
+done
+
+exec tmux split-window -h -l 50% "$cmd"

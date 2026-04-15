@@ -134,6 +134,7 @@ The following is an explanation of the user-defined command.
 | Other | `;t` / `;tm` / `;tmux` | Call skill `showtmuxpane` | - |
 | Other | `;path` | Tell path of created file | - |
 | Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
+| Other | `;tim` | Open file in tim | - |
 | Other | `;code` | Open file in VS Code | - |
 | Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
 | Translate | `;kor [opts]` | Call skill `kor` (translate to Korean) | translator |
@@ -185,6 +186,13 @@ The following is an explanation of the user-defined command.
   - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
   - If `sv` is entered as `<path>` (`;cim sv`), open the `/tmp/translate_byai.md` file with codenvim. (`codenvim --nowait /tmp/translate_byai.md`)
     - When you need to position the cursor at a specific line in a FilePath, use `codenvim --nowait +<line> <path>`. (example: `codenvim --nowait +100 testlog.log`)
+
+- When receiving the command **;tim**, open the file you created or the path you just mentioned using `tim`. Do not wait after opening with `tim`.
+  - Example command: `tim <path>`
+  - If a file name or file path is entered after the command, open that file with the `tim` command. Refer to the example command.
+  - If `sv` is entered as `<path>` (`;tim sv`), open the `/tmp/translate_byai.md` file with codenvim. (`tim /tmp/translate_byai.md`)
+    - When you need to position the cursor at a specific line in a FilePath, use `tim +<line> <path>`. (example: `tim +100 testlog.log`)
+
 
 - When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
   - Example command: use the command `code --goto <path>` or `code --goto <path>`

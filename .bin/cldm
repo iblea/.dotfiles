@@ -21,7 +21,7 @@ fi
 
 NVIM_IDE=0
 NON_INTERACTIVE=0
-WEBSOCKET_SRV=0
+WEBSOCKET_SRV=1
 
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
@@ -52,7 +52,7 @@ if [ $# -ge 1 ]; then
         elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
             NON_INTERACTIVE=1
         elif [[ "${opt}" = "ws" ]] || [[ "${opt}" = "-ws" ]]; then
-            WEBSOCKET_SRV=1
+            WEBSOCKET_SRV=0
             set -- "${@:1:i-1}" "${@:i+1}"
         fi
     done
