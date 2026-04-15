@@ -29,6 +29,7 @@
       "Bash(gitshow:*)",
       "Bash(code:*)",
       "Bash(codenvim:*)",
+      "Bash(tim:*)",
       "Bash(tmux capture-pane:*)",
       "Bash(showtmuxpane:*)",
       "Bash(nohup codenvim:*)",
@@ -47,7 +48,8 @@
       "Write(//tmp/translate_byai.md)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "defaultMode": "default"
   },
   "model": "Opus [1m]",
   "enableAllProjectMcpServers": true,
@@ -61,6 +63,17 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notify-done.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/dangerous_command_check.sh"
           }
         ]
       }
@@ -79,11 +92,14 @@
     "document-skills@anthropic-agent-skills": true,
     "example-skills@anthropic-agent-skills": true,
     "clarify@team-attention-plugins": true,
-    "ralph-loop@claude-plugins-official": true
+    "ralph-loop@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
   },
   "language": "한국어",
   "alwaysThinkingEnabled": true,
   "effortLevel": "max",
+  "tui": "fullscreen",
+  "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
   "teammateMode": "in-process",
   "autoCompactEnabled": false,
