@@ -4,6 +4,11 @@
 CLAUDE_OPT=""
 
 DEFAULT_EDITOR="vi"
+DEFAULT_EFFORT=""
+
+if [ -n "$(command -v jq)" ]; then
+    DEFAULT_EFFORT=$(jq .env.CLAUDE_CODE_EFFORT_LEVELS "$HOME/.claude/settings.json")
+fi
 
 if [ $# -eq 0 ]; then
     CLAUDE_OPT=""
@@ -86,6 +91,9 @@ for (( i=1; i<=$#; i++ )); do
             OTHER_OPTS+=("text")
             NON_INTERACTIVE_TYPE=1
         fi
+    elif [[ "${opt}" = "--effort" ]]; then
+        ((i++))
+		DEFAULT_EFFORT="${!i}"
     elif [[ "${opt}" = "vs" ]] || [[ "${opt}" = "-vs" ]] || [[ "${opt}" = "vsc" ]] || [[ "${opt}" = "-vsc" ]]; then
         if [ -n "$GIT_ASKPASS" ]; then
             export EDITOR="code"
@@ -128,6 +136,17 @@ fi
 OTHER_OPTS+=("--allow-dangerously-skip-permissions")
 DANGEROUS_SKIP=1
 
+
+if [ -n "${DEFAULT_EFFORT}" ]; then
+    if [ -n "${DEFAULT_EFFORT}" ]; then
+        case "${DEFAULT_EFFORT}" in
+            low|medium|high|xhigh|max)
+                OTHER_OPTS+=("--effort" "$DEFAULT_EFFORT")
+                ;;
+        esac
+    fi
+
+fi
 
 # PROMPT_PATH="$HOME/.dotfiles/prompt/global_prompt.md"
 # ~/.claude/CLAUDE.md -> @global_prompt.md
