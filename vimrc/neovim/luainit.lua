@@ -61,7 +61,7 @@ require("lazy").setup("plugins", {
 
 
 require("modules.utils")
--- require("modules.keymappings")
+require("modules.keymappings")
 require("modules.options")
 -- require("modules.autocmd")
 require("themes")

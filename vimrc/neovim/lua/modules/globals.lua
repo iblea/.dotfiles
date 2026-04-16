@@ -6,7 +6,8 @@ api.nvim_set_var("lsp_servers", {
   -- "cssls",
   -- "clangd",
   -- "lua_ls",
-  -- "pylsp"
+  -- "pylsp",
+  "pyright"
 })
 
 api.nvim_set_var("lsp_linters", {
