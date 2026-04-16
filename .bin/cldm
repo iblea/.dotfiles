@@ -23,6 +23,10 @@ NVIM_IDE=0
 NON_INTERACTIVE=0
 WEBSOCKET_SRV=1
 
+if [ -n "$VSCODE_INJECTION" ]; then
+    WEBSOCKET_SRV=0
+fi
+
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         claude --help
