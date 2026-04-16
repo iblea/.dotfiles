@@ -86,9 +86,13 @@ export async function handler(params) {
     leftPath = tmpOld;
   }
 
+  const layoutCmds = oldExists
+    ? `-c ${shellQuote('wincmd K')} -c ${shellQuote('wincmd =')} -c ${shellQuote('wincmd w')} `
+    : `-c ${shellQuote('wincmd K')} -c ${shellQuote('wincmd w')} -c ${shellQuote('wincmd _')} `;
+
   const nvimCmd =
     `nvim -d ${shellQuote(leftPath)} ${shellQuote(tmpNew)} ` +
-    `-c ${shellQuote('wincmd K')} -c ${shellQuote('wincmd =')} ` +
+    layoutCmds +
     `-c ${shellQuote('cnoreabbrev <expr> q  getcmdtype()==":" && getcmdline()=="q"  ? "cq" : "q"')} ` +
     `-c ${shellQuote('cnoreabbrev <expr> q! getcmdtype()==":" && getcmdline()=="q!" ? "cq" : "q!"')} ` +
     `-c ${shellQuote('cnoreabbrev <expr> qa getcmdtype()==":" && getcmdline()=="qa" ? "cq" : "qa"')} ` +
