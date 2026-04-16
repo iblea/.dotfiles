@@ -96,7 +96,11 @@ export async function handler(params) {
     `-c ${shellQuote('cnoreabbrev <expr> q  getcmdtype()==":" && getcmdline()=="q"  ? "cq" : "q"')} ` +
     `-c ${shellQuote('cnoreabbrev <expr> q! getcmdtype()==":" && getcmdline()=="q!" ? "cq" : "q!"')} ` +
     `-c ${shellQuote('cnoreabbrev <expr> qa getcmdtype()==":" && getcmdline()=="qa" ? "cq" : "qa"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> qa! getcmdtype()==":" && getcmdline()=="qa!" ? "cq" : "qa!"')}; ` +
+    `-c ${shellQuote('cnoreabbrev <expr> qa! getcmdtype()==":" && getcmdline()=="qa!" ? "cq" : "qa!"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> wq  getcmdtype()==":" && getcmdline()=="wq"  ? "wqa"  : "wq"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> wq! getcmdtype()==":" && getcmdline()=="wq!" ? "wqa!" : "wq!"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> fq  getcmdtype()==":" && getcmdline()=="fq"  ? "wqa" : "fq"')} ` +
+    `-c ${shellQuote('cnoreabbrev <expr> dq  getcmdtype()==":" && getcmdline()=="dq"  ? "cq"  : "dq"')}; ` +
     `echo $? > ${shellQuote(exitFile)}; ` +
     `tmux wait-for -S ${shellQuote(channel)}`;
 
