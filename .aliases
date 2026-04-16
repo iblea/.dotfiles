@@ -48,11 +48,35 @@ function fg() {
 
 if [ -n "$(command -v nvim)" ]; then
     alias nvi='nvim'
-    alias vi='nvim'
     alias vim='nvim'
     alias ovim="$(/bin/bash -c 'which vim')"
 fi
 alias vit="vi -c ':term'"
+
+function vi() {
+	local VI_EDITOR="vi"
+	if [ -n "$(command -v nvim)" ]; then
+	    VI_EDITOR="nvim"
+	elif [ -n "$(command -v vim)" ]; then
+	    VI_EDITOR="vim"
+	fi
+
+	if [ $# -eq 1 ]; then
+		if [ ! -f "$1" ]; then
+            FILE="${1%:*}"
+            LINE="${1##*:}"
+			if [ ! -f "$FILE" ]; then
+				"$VI_EDITOR" "$@"
+			else
+				"$VI_EDITOR" "+$LINE" "$FILE"
+			fi
+		else
+		    "$VI_EDITOR" "$@"
+		fi
+	else
+		"$VI_EDITOR" "$@"
+	fi
+}
 
 
 
