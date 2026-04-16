@@ -88,9 +88,7 @@ local on_attach = function(client, bufnr)
   end
 
   if client.server_capabilities.inlayHintProvider then
-    -- vim.lsp.inlay_hint.enable(0, true)
-    -- vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-    vim.lsp.inlay_hint.enable(bufnr, false)
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
 
   require("illuminate").on_attach(client)
@@ -114,10 +112,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
     local function lsp_jump(fn)
       return function()
-        local pos = vim.api.nvim_win_get_cursor(0)
-        local from = { vim.fn.bufnr("%"), pos[1], pos[2] + 1, 0 }
-        local items = { { tagname = vim.fn.expand("<cword>"), from = from } }
-        vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
+        -- local pos = vim.api.nvim_win_get_cursor(0)
+        -- local from = { vim.fn.bufnr("%"), pos[1], pos[2] + 1, 0 }
+        -- local items = { { tagname = vim.fn.expand("<cword>"), from = from } }
+        -- vim.fn.settagstack(vim.fn.win_getid(), { items = items }, "t")
         fn()
       end
     end
