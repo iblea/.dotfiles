@@ -93,14 +93,18 @@ export async function handler(params) {
   const nvimCmd =
     `nvim -d ${shellQuote(leftPath)} ${shellQuote(tmpNew)} ` +
     layoutCmds +
-    `-c ${shellQuote('cnoreabbrev <expr> q  getcmdtype()==":" && getcmdline()=="q"  ? "cq" : "q"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> q! getcmdtype()==":" && getcmdline()=="q!" ? "cq" : "q!"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> qa getcmdtype()==":" && getcmdline()=="qa" ? "cq" : "qa"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> qa! getcmdtype()==":" && getcmdline()=="qa!" ? "cq" : "qa!"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> wq  getcmdtype()==":" && getcmdline()=="wq"  ? "wqa"  : "wq"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> wq! getcmdtype()==":" && getcmdline()=="wq!" ? "wqa!" : "wq!"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> fq  getcmdtype()==":" && getcmdline()=="fq"  ? "wqa" : "fq"')} ` +
-    `-c ${shellQuote('cnoreabbrev <expr> dq  getcmdtype()==":" && getcmdline()=="dq"  ? "cq"  : "dq"')}; ` +
+    `-c ${shellQuote(
+      [
+        `execute 'cnoreabbrev <expr> q  getcmdtype()==":" && getcmdline()=="q"  ? "cq" : "q"'`,
+        `execute 'cnoreabbrev <expr> q! getcmdtype()==":" && getcmdline()=="q!" ? "cq" : "q!"'`,
+        `execute 'cnoreabbrev <expr> qa getcmdtype()==":" && getcmdline()=="qa" ? "cq" : "qa"'`,
+        `execute 'cnoreabbrev <expr> qa! getcmdtype()==":" && getcmdline()=="qa!" ? "cq" : "qa!"'`,
+        `execute 'cnoreabbrev <expr> wq  getcmdtype()==":" && getcmdline()=="wq"  ? "wqa"  : "wq"'`,
+        `execute 'cnoreabbrev <expr> wq! getcmdtype()==":" && getcmdline()=="wq!" ? "wqa!" : "wq!"'`,
+        `execute 'cnoreabbrev <expr> fq  getcmdtype()==":" && getcmdline()=="fq"  ? "wqa" : "fq"'`,
+        `execute 'cnoreabbrev <expr> dq  getcmdtype()==":" && getcmdline()=="dq"  ? "cq"  : "dq"'`,
+      ].join(' | ')
+    )}; ` +
     `echo $? > ${shellQuote(exitFile)}; ` +
     `tmux wait-for -S ${shellQuote(channel)}`;
 
