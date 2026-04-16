@@ -98,7 +98,7 @@ wssrv = startServer({
 
     // Connect to Discord
     presence.connect().catch((err) => {
-      logger.warn('index', 'failed to connect Discord RPC:', err.message);
+      logger.info('index', 'Discord RPC not available, skipping');
     });
   },
 });

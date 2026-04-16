@@ -559,6 +559,17 @@ else
     line2_parts+=("${C_GRAY}NO IDE${C_RESET}")
 fi
 
+# Discord presence status
+if [ -f "/tmp/discord-ccserver.lock" ] && [ -n "$CCWSPORT" ]; then
+    lock_pid=$(cat /tmp/discord-ccserver.lock 2>/dev/null | tr -d '[:space:]')
+    if [ -n "$lock_pid" ]; then
+        ccserver_pid=$(lsof -t -i tcp:"$CCWSPORT" -s tcp:LISTEN 2>/dev/null | head -1)
+        if [ -n "$ccserver_pid" ] && [ "$ccserver_pid" = "$lock_pid" ]; then
+            line2_parts+=("${C_MAGENTA}DSC(${lock_pid})${C_RESET}")
+        fi
+    fi
+fi
+
 # Session duration (always show; default to 0m if transcript not available yet)
 if [ -z "$session_dur" ]; then
     session_dur="0m"

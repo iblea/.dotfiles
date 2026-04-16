@@ -1,10 +1,9 @@
 import fs from 'node:fs';
-import path from 'node:path';
-import os from 'node:os';
 import DiscordRPC from 'discord-rpc';
+import { logger } from './logger.js';
 
 const CLIENT_ID = '1494241543387877446';
-const DISCORD_LOCK_PATH = path.join(os.tmpdir(), 'discord-ccserver.lock');
+const DISCORD_LOCK_PATH = '/tmp/discord-ccserver.lock';
 
 function isProcessAlive(pid) {
   try {
@@ -20,12 +19,12 @@ function acquireDiscordLock() {
     const content = fs.readFileSync(DISCORD_LOCK_PATH, 'utf8').trim();
     const pid = parseInt(content, 10);
     if (!isNaN(pid) && isProcessAlive(pid)) {
-      console.log(`[Discord Presence] Lock held by PID ${pid}, skipping connection`);
+      logger.info('presence', `lock held by PID ${pid}, skipping connection`);
       return false;
     }
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      console.warn('[Discord Presence] Failed to read lock file:', err.message);
+      logger.warn('presence', 'failed to read lock file:', err.message);
     }
   }
 
@@ -56,18 +55,18 @@ class DiscordPresence {
 
   setupEventHandlers() {
     this.client.on('ready', () => {
-      console.log('[Discord Presence] Connected to Discord');
+      logger.info('presence', 'connected to Discord');
       this.isConnected = true;
       this.updateActivity();
     });
 
     this.client.on('error', (error) => {
-      console.error('[Discord Presence] Error:', error);
+      logger.error('presence', 'error:', error);
       this.isConnected = false;
     });
 
     this.client.on('disconnected', () => {
-      console.log('[Discord Presence] Disconnected from Discord');
+      logger.warn('presence', 'disconnected from Discord');
       this.isConnected = false;
       releaseDiscordLock();
     });
@@ -83,7 +82,7 @@ class DiscordPresence {
     }
 
     this.isConnecting = true;
-    console.log('[Discord Presence] Connecting to Discord...');
+    logger.info('presence', 'connecting to Discord...');
 
     return this.client
       .login({ clientId: CLIENT_ID })
@@ -91,7 +90,7 @@ class DiscordPresence {
         this.isConnecting = false;
       })
       .catch((error) => {
-        console.error('[Discord Presence] Failed to connect:', error);
+        logger.info('presence', 'Discord not available');
         this.isConnecting = false;
         this.isConnected = false;
         releaseDiscordLock();
@@ -105,7 +104,7 @@ class DiscordPresence {
       .catch(() => {})
       .then(() => this.client.destroy())
       .then(() => {
-        console.log('[Discord Presence] Disconnected');
+        logger.info('presence', 'disconnected');
         releaseDiscordLock();
       })
       .catch(() => {
@@ -138,10 +137,10 @@ class DiscordPresence {
     this.client
       .setActivity(activity)
       .then(() => {
-        console.log('[Discord Presence] Activity updated:', activity);
+        logger.debug('presence', 'activity updated');
       })
       .catch((error) => {
-        console.error('[Discord Presence] Failed to update activity:', error);
+        logger.error('presence', 'failed to update activity:', error);
       });
   }
 
@@ -160,7 +159,7 @@ class DiscordPresence {
     }
 
     this.client.clearActivity().catch((error) => {
-      console.error('[Discord Presence] Failed to clear activity:', error);
+      logger.error('presence', 'failed to clear activity:', error);
     });
   }
 }

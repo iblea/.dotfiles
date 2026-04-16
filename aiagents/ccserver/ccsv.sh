@@ -22,7 +22,11 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CCSERVER_BIN="${CCSERVER_BIN:-$SCRIPT_DIR/src/index.js}"
 READY_FILE="$(mktemp -t ccserver-ready.XXXXXX)"
-LOG_FILE="${CCSERVER_LOG:-/tmp/ccserver-$$.log}"
+if [[ "${CCSERVER_DEBUG:-0}" == "1" ]]; then
+  LOG_FILE="${CCSERVER_LOG:-/tmp/ccserver-$$.log}"
+else
+  LOG_FILE="/dev/null"
+fi
 CCSERVER_PID=""
 
 # ---- 정리 루틴 ----
@@ -44,6 +48,9 @@ fi
 
 # ---- 1. ccserver를 백그라운드로 실행 ----
 # ccserver는 listen 시작되면 --ready-file 경로에 포트 번호 한 줄 기록해야 함
+if [[ "${CCSERVER_DEBUG:-0}" == "1" ]]; then
+  export CCSERVER_LOG_LEVEL="${CCSERVER_LOG_LEVEL:-debug}"
+fi
 node "$CCSERVER_BIN" --ready-file "$READY_FILE" > "$LOG_FILE" 2>&1 &
 CCSERVER_PID=$!
 
@@ -72,7 +79,11 @@ export CLAUDE_CODE_SSE_PORT="$CCWSPORT"
 export ENABLE_IDE_INTEGRATION="true"
 export CCWSPORT  # 디버깅/기타 도구용
 
-echo "[ccsv] ccserver ready on port $CCWSPORT (pid=$CCSERVER_PID, log=$LOG_FILE)" >&2
+if [[ "${CCSERVER_DEBUG:-0}" == "1" ]]; then
+  echo "[ccsv] ccserver ready on port $CCWSPORT (pid=$CCSERVER_PID, log=$LOG_FILE)" >&2
+else
+  echo "[ccsv] ccserver ready on port $CCWSPORT (pid=$CCSERVER_PID)" >&2
+fi
 echo "[ccsv] CLAUDE_CODE_SSE_PORT=$CLAUDE_CODE_SSE_PORT" >&2
 
 # ---- 4. claude 실행 (종료 시 trap이 ccserver 정리) ----

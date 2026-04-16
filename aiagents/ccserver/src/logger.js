@@ -1,5 +1,5 @@
 const LEVELS = { debug: 10, info: 20, warn: 30, error: 40 };
-const currentLevel = LEVELS[process.env.CCSERVER_LOG_LEVEL || 'info'] ?? LEVELS.info;
+const currentLevel = LEVELS[process.env.CCSERVER_LOG_LEVEL || 'warn'] ?? LEVELS.warn;
 
 function stamp() {
   return new Date().toISOString();
