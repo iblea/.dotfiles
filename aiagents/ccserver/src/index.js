@@ -4,6 +4,7 @@ import process from 'node:process';
 import { startServer } from './server.js';
 import { create as createLockfile, remove as removeLockfile, generateAuthToken } from './lockfile.js';
 import { logger } from './logger.js';
+import { getPresence } from './presence.js';
 
 function parseArgs(argv) {
   const args = { readyFile: null };
@@ -28,8 +29,9 @@ const args = parseArgs(process.argv);
 const authToken = generateAuthToken();
 let lockPort = null;
 let wssrv = null;
+const presence = getPresence();
 
-function cleanup(reason) {
+function cleanupSync(reason) {
   logger.info('index', 'cleanup:', reason);
   if (lockPort !== null) {
     removeLockfile(lockPort);
@@ -41,14 +43,25 @@ function cleanup(reason) {
   }
 }
 
+async function cleanup(reason) {
+  cleanupSync(reason);
+  try {
+    await presence.disconnect();
+  } catch (err) {
+    logger.error('index', 'failed to disconnect Discord:', err.message);
+  }
+}
+
 ['SIGINT', 'SIGTERM', 'SIGHUP'].forEach((sig) => {
-  process.on(sig, () => {
-    cleanup(sig);
+  process.on(sig, async () => {
+    const timer = setTimeout(() => process.exit(0), 3000);
+    await cleanup(sig);
+    clearTimeout(timer);
     process.exit(0);
   });
 });
 
-process.on('exit', () => cleanup('exit'));
+process.on('exit', () => cleanupSync('exit'));
 process.on('uncaughtException', (err) => {
   logger.error('index', 'uncaughtException:', err.stack || err.message);
   cleanup('uncaughtException');
@@ -82,5 +95,10 @@ wssrv = startServer({
     }
 
     logger.info('index', `ccserver ready (port=${port}, pid=${process.pid})`);
+
+    // Connect to Discord
+    presence.connect().catch((err) => {
+      logger.warn('index', 'failed to connect Discord RPC:', err.message);
+    });
   },
 });
