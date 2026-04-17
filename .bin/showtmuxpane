@@ -58,7 +58,8 @@ elif [ "$#" -eq 1 ]; then
 fi
 
 # display_window="$1"
-display_window=$(echo "$1" | awk -F '.' '{print $1}')
+target="$1"
+display_window=$(echo "$target" | awk -F '.' '{print $1}')
 shift
 windowlist="$(${TMUX_COMMAND[@]} list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
 is_exist=$(echo "$windowlist" | grep "^$display_window$")
@@ -98,14 +99,14 @@ done
 # echo "OTHER_OPT: ${OTHER_OPTS[@]}"
 
 if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
-    ${TMUX_COMMAND[@]} capture-pane -t $display_window -p -E $(($(${TMUX_COMMAND[@]} display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
 elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
-    ${TMUX_COMMAND[@]} capture-pane -t $display_window -p -E $(($(${TMUX_COMMAND[@]} display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
 else
-    ${TMUX_COMMAND[@]} capture-pane -t $display_window -p -E $(($(${TMUX_COMMAND[@]} display -p -t $display_window '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
 fi
 
-# tmux capture-pane -t $display_window -p -E $(($(tmux display -p -t $display_window '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
+# tmux capture-pane -t $target -p -E $(($(tmux display -p -t $target '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
 # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
 
 
