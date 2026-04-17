@@ -181,10 +181,16 @@ if vim.env.TMUX or vim.env.LC_TMUX then
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end, { desc = "Send file reference to Claude Code" })
 
+  -- setreg는 TextYankPost를 트리거하지 않아서 tmux OSC 52 autocmd가 동작하지 않음
+  local function copy_osc52(text)
+    vim.fn.setreg("+", text)
+    vim.api.nvim_chan_send(2, string.format('\027]52;c;%s\027\\', vim.base64.encode(text)))
+  end
+
   -- normal mode: 파일 절대경로를 클립보드에 복사
   vim.keymap.set("n", "<leader>pa", function()
     local path = vim.fn.expand("%:p")
-    vim.fn.setreg("+", path)
+    copy_osc52(path)
     print("absolute path (normal) copy!")
   end, { desc = "Copy absolute path to clipboard" })
 
@@ -204,7 +210,7 @@ if vim.env.TMUX or vim.env.LC_TMUX then
       ref = string.format("%s:%d-%d", file_path, start_line, end_line)
     end
 
-    vim.fn.setreg("+", ref)
+    copy_osc52(ref)
     print("absolute path + line (visual) copy!")
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end, { desc = "Copy absolute path with lines to clipboard" })
