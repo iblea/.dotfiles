@@ -1,0 +1,25 @@
+sync:
+  defaults:
+    # two-way-safe: (기본) 양쪽 변경 모두 반영, 충돌 시 둘 다 보존
+    # two-way-resolved: 양쪽 반영, 충돌 시 alpha 우선
+    # one-way-safe: 단방향이지만 beta에만 있는 파일은 삭제 안 함
+    # one-way-replica: 단방향, beta는 alpha의 정확한 미러 (beta만 있는 파일 삭제)
+    # mode: one-way-replica
+    ignore:
+      vcs: true
+      paths:
+        - .git
+        - node_modules
+        - __pycache__
+        - .DS_Store
+        - *.pyc
+        - *.pyo
+        - *.log
+        - *.swp
+        - *.swo
+        - *.swn
+
+  # main:
+  #   alpha: "."
+  #   beta: "host:/pat/to/project"
+
