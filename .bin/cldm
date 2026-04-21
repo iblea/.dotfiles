@@ -23,6 +23,8 @@ NVIM_IDE=0
 NON_INTERACTIVE=0
 WEBSOCKET_SRV=1
 
+export SSLKEYLOGFILE=""
+
 if [ -n "$VSCODE_INJECTION" ]; then
     WEBSOCKET_SRV=0
 fi
@@ -193,6 +195,7 @@ if [ -n "$TMUX" ] && tmux info &>/dev/null; then
     fi
     export EDITOR="$EDITOR";
     tmux set-option -p @is_claude_code 1 2>/dev/null
+
     cld $@
     _ret=$?
     tmux set-option -pu @is_claude_code 2>/dev/null

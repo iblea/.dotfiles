@@ -24,6 +24,15 @@ Please refer to the details below. (`#SKILL OPTS` section)
     - It can be used as follows: `echo $TMUX` or `env | grep "TMUX"`
   - However, in an SSH session with `$LC_TMUX` and `$LC_TMUX_SOCKET` environment variables set, the agent is controlling the **local (remote host's) tmux** via socket. In this case, `$TMUX` may be empty, but `showtmuxpane` and `sendtmuxpane` scripts internally handle this by using `tmux -S "$LC_TMUX_SOCKET"` instead of plain `tmux`.
     - This means: SSH environment + `LC_TMUX_SOCKET` present = operating on local tmux from a remote connection. Keep this in mind when interpreting tmux context.
+
+- **Trust the target pane's CWD (`tmuxaddir`)**: Before invoking `showtmuxpane` or `sendtmuxpane`, run `tmuxaddir <window>[.<pane>]` ONCE for the target. This adds the target pane's current working directory to Claude Code's trusted directory list, reducing repeated permission prompts when interacting with files under that directory in subsequent turns.
+  - `tmuxaddir` is available in `$PATH` by default (`~/.dotfiles/.bin/tmuxaddir`). If not available, use `./script/tmuxaddir` instead.
+  - Internally, `tmuxaddir` resolves the target pane's `pane_current_path` and sends `/add-dir <path>` + Enter to the CURRENT pane (where Claude Code is running) via `tmux send-keys`.
+  - **Timing caveat**: The injected `/add-dir` directive is only consumed by Claude Code AFTER the current turn finishes. Therefore, on the FIRST invocation for a given target directory, follow-up file operations (Read/Edit on paths outside the current project directory) within the SAME turn may still trigger permission prompts. From the NEXT turn onward, the directory is auto-allowed.
+  - **Failure handling**: If `tmuxaddir` fails (non-zero exit, missing pane, etc.), log a brief warning and CONTINUE with the main `showtmuxpane`/`sendtmuxpane` operation. Do NOT abort the user's primary request because of a trust-setup failure.
+  - **Skip condition**: If the `nt` (or `notrust`) option is provided, this step MUST be skipped entirely. See the `nt or notrust` section under `# SKILL OPTS`.
+  - Run `tmuxaddir` ONCE per command invocation, not per `showtmuxpane`/`sendtmuxpane` call within the same turn.
+
 - The description of the commands is as follows.
   - Verify whether the `showtmuxpane` function is defined using `command -v showtmuxpane` or similar methods. If it is defined, utilize the `showtmuxpane` function to reference the output of a specific window.
   - Use the following format: `showtmuxpane <window name> -S <tail line count>`.
@@ -106,6 +115,22 @@ If this option is provided, a specific tmux window can be manipulated through th
   - When the above command is entered, the content of window 2 is analyzed using `showtmuxpane` or `capture-pane`.
   - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in window 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
   - Then, depending on the user's response, the commands are executed in window 2 through `sendtmuxpane`.
+
+#### nt or notrust
+
+If this option is provided, the preceding `tmuxaddir <window>[.<pane>]` step (described in `# SKILL behavior`) MUST be skipped.
+
+By default (without this option), `tmuxaddir` is invoked ONCE before any `showtmuxpane`/`sendtmuxpane` execution to add the target pane's CWD to Claude Code's trusted directory list. Note that `tmuxaddir` injects `/add-dir <path>` + Enter into the CURRENT pane via `tmux send-keys`.
+
+Use `nt` when:
+- You only want to capture the pane content and have NO intention of touching files outside the current project directory.
+- The target pane's CWD is already trusted (avoids a redundant `/add-dir` keystroke being injected into the current pane).
+- You explicitly want to avoid sending ANY keystrokes to the current pane (e.g., to keep the prompt buffer clean).
+
+- example
+  - `;tm 2 nt`: Skip `tmuxaddir`, only run `showtmuxpane 2`.
+  - `;tm 2 sk nt <command>`: Skip `tmuxaddir`, then send `<command>` to window 2 via `sendtmuxpane`.
+  - `;tm 2 nt t 10`: Skip `tmuxaddir`, then `showtmuxpane 2 | tail -n 10`.
 
 #### tail or t (optional number: default 20)
 
