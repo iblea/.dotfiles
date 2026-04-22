@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ -z "$(command -v mutagen)" ]; then
+	echo "mutagen not installed"
+	exit 1
+fi
+
+
+function getlist() {
+	# mutagen project list 2>/dev/null
+	# if [ $? -ne 0 ]; then
+	# 	mutagen sync list
+	# fi
+
+	# stderr_var=$(mutagen project list 2>&1 1>&3 3>&- ) 3>&1
+	exec 3>&1
+	stderr_var=$(mutagen project list 2>&1 1>&3)
+	exec 3>&-
+
+	if [ -n "$stderr_var" ]; then
+		echo "mutagen project list error"
+		echo "==============================="
+		echo " $stderr_var"
+		echo "==============================="
+		mutagen sync list
+		echo "mutagen project list error"
+	else
+		echo "mutagen project list result ok"
+	fi
+}
+
+if [ $# -eq 0 ]; then
+	getlist
+	exit 0
+fi
+
+if [[ "$1" = "list" ]] || [[ "$1" = "status" ]] || [[ "$1" = "st" ]]; then
+	getlist
+elif [[ "$1" = "start" ]]; then
+	mutagen project start
+elif [[ "$1" = "stop" ]] || [[ "$1" = "terminate" ]]; then
+	mutagen project terminate
+elif [[ "$1" = "restart" ]]; then
+	echo "restart project. stop running project..."
+	mutagen project terminate
+	echo "project stopped... restart now..."
+	sleep 1
+	mutagen project start
+	echo "restart done!"
+elif [[ "$1" = "plist" ]] || [[ "$1" = "proj" ]]; then
+	mutagen project list --long
+elif [[ "$1" = "conflict" ]] || [[ "$1" = "cc" ]]; then
+	mutagen sync list --long | awk '/^Conflicts:/,0'
+elif [[ "$1" = "daemon" ]]; then
+	shift
+	mutagen daemon "$@"
+else
+	mutagen "$@"
+fi
+

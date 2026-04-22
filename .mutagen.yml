@@ -18,6 +18,8 @@ sync:
         - "*.swp"
         - "*.swo"
         - "*.swn"
+        - /mutagen.yml
+        - /mutagen.yml.lock
 
   # main:
   #   alpha: "."
