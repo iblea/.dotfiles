@@ -34,21 +34,40 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-if [[ "$1" = "list" ]] || [[ "$1" = "status" ]] || [[ "$1" = "st" ]]; then
+if [[ "$1" = "ls" ]] || [[ "$1" = "list" ]] || [[ "$1" = "status" ]] || [[ "$1" = "st" ]]; then
 	getlist
 elif [[ "$1" = "start" ]]; then
-	mutagen project start
+	if [ "$#" -eq 1 ]; then
+	    mutagen project start
+	else
+	    shift
+	    mutagen sync start "$@"
+	fi
 elif [[ "$1" = "stop" ]] || [[ "$1" = "terminate" ]]; then
-	mutagen project terminate
+	if [ "$#" -eq 1 ]; then
+	    mutagen project terminate
+	else
+	    shift
+	    mutagen sync terminate "$@"
+	fi
 elif [[ "$1" = "restart" ]]; then
 	echo "restart project. stop running project..."
-	mutagen project terminate
-	echo "project stopped... restart now..."
-	sleep 1
-	mutagen project start
+	if [ "$#" -eq 1 ]; then
+	    mutagen project terminate
+	    sleep 1
+	    echo "project stopped... restart now..."
+	    mutagen project start
+	else
+	    shift
+	    mutagen sync terminate "$@"
+	    sleep 1
+	    echo "project stopped... restart now..."
+	    mutagen sync start "$@"
+	fi
 	echo "restart done!"
 elif [[ "$1" = "plist" ]] || [[ "$1" = "proj" ]]; then
-	mutagen project list --long
+	shift
+	mutagen project list --long "$@"
 elif [[ "$1" = "conflict" ]] || [[ "$1" = "cc" ]]; then
 	mutagen sync list --long | awk '/^Conflicts:/,0'
 elif [[ "$1" = "daemon" ]]; then
