@@ -4,7 +4,7 @@ sync:
     # two-way-resolved: 양쪽 반영, 충돌 시 alpha 우선
     # one-way-safe: 단방향이지만 beta에만 있는 파일은 삭제 안 함
     # one-way-replica: 단방향, beta는 alpha의 정확한 미러 (beta만 있는 파일 삭제)
-    # mode: one-way-replica
+    # mode: one-way-safe
     ignore:
       vcs: true
       paths:
@@ -12,12 +12,12 @@ sync:
         - node_modules
         - __pycache__
         - .DS_Store
-        - *.pyc
-        - *.pyo
-        - *.log
-        - *.swp
-        - *.swo
-        - *.swn
+        - "*.pyc"
+        - "*.pyo"
+        - "*.log"
+        - "*.swp"
+        - "*.swo"
+        - "*.swn"
 
   # main:
   #   alpha: "."
