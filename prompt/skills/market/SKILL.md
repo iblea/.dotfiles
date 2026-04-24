@@ -87,9 +87,11 @@ If using the `date` command is difficult, determine the current time through a w
      - **Option B**: 외부 데이터 확보도 현실적으로 어렵다면 **"이 심볼은 현재 indicator 스크립트로 분석할 수 없음"** 을 명시하고 가능한 대체 심볼(유사 ETF, 대표 지수, 연관주 등)을 제안한 뒤 대화를 종료한다. 억지로 부정확한 분석을 만들어내지 말 것.
 4. **보조지표 스크립트 실행 (기술적 분석)**
    - 아래 3개 타임프레임을 **기본 세트**로 실행한다.
+     - 5분봉: `python pyscript/calc_indicators.py <symbol> <exchange> 5 1500` - 약 1주 단기 분석
      - 15분봉: `python pyscript/calc_indicators.py <symbol> <exchange> 15 1500` — 약 2주 단기 분석
      - 1시간봉: `python pyscript/calc_indicators.py <symbol> <exchange> 1h 1000` — 약 3개월 중기 분석 (스크립트 인자는 `60` 또는 `1h` 중 엔드포인트가 받는 값 사용)
      - 일봉: `python pyscript/calc_indicators.py <symbol> <exchange> 1d 700` — 중장기 추세 분석
+     - 기타 1,3분봉 등 사용자가 더 짧은 타임프레임 분석을 요구하거나 정밀한 타점 분석을 위해 이것이 필요한 경우, 1000~3000봉 범위에서 추가 실행.
    - venv 활성화가 필요하면 `source pyscript/venv_market/bin/activate && python pyscript/calc_indicators.py ... && deactivate` 형태로 호출.
    - csv 파일 모드인 경우 타임프레임별로 별도 csv 를 준비해 `python pyscript/calc_indicators.py <csv_path>` 로 실행.
    - 각 타임프레임 결과에서 다음 항목을 반드시 추출·요약한다.
