@@ -126,6 +126,8 @@ If using the `date` command is difficult, determine the current time through a w
 
 # External Data
 
+## OHLCV (시가 open/고가 high/저가 low/종가 close/거래량 volume) 데이터 수집
+
 @endpoint.md 를 참고해 `stock.iasdf.com` API의 상세 정보를 확인할 수 있다.
 
 ### 개략적인 지수 정보 등, 실시간 파싱중인 symbols의 최신 데이터 확인
@@ -144,6 +146,10 @@ If using the `date` command is difficult, determine the current time through a w
   - `/tradingview/exlist` 엔드포인트에서 해당 symbol/exchange의 마지막 수집 시간을 확인할 수 있다. (이 시간이 오래되었다면, 재파싱을 요청해야 한다.)
 2. `/tradingview/exlist` 엔드포인트에 데이터가 없다면, `/tradingview/exsymbol` 에 POST 요청하여 symbol을 insert한다.
 3. 엔드포인트 개발중으로 인해 현재 개별주 파싱은 획득해올 수 없음.
+
+## 보조지표 스크립트
+
+@script.md 파일 참고.
 
 
 #### 주요 심볼 매핑 예시
