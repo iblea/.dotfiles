@@ -68,6 +68,7 @@ If using the `date` command is difficult, determine the current time through a w
   - 포맷 예: `<long|short> <entry> <stop> <target>` (예: `long 26800 26500 27200`)
   - 인자가 없으면 "신규 진입 관점"으로 타점 추천
   - 인자가 있으면 "기존 포지션 평가" 모드로 동작
+  - stop, target 을 ? 또는 생략할 경우, 지정하지 않은 것이다.
 
 #### 동작 순서
 
