@@ -60,7 +60,7 @@ if [ -z "$path" ]; then
     echo "ERROR: Failed to get current path of target '$target'."
     exit 1
 fi
-path="${path}/"
+# path="${path}/"
 
 current_pane="${TMUX_PANE}"
 if [ -z "$current_pane" ]; then
