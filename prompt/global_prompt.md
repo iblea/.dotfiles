@@ -137,6 +137,8 @@ The following is an explanation of the user-defined command.
 | Other | `;tim` | Open file in tim | - |
 | Other | `;code` | Open file in VS Code | - |
 | Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
+| Other | `;market [opts]` | Call skill `market` | - |
+| Other | `;trading [opts]` | Call skill `trading` | - |
 | Translate | `;kor [opts]` | Call skill `kor` (translate to Korean) | translator |
 | Translate | `;eng [opts]` | Call skill `eng` (translate to English) | translator |
 | Translate | `;trans [opts]` | Call skill `trans` (translate) | translator |
@@ -215,6 +217,9 @@ The following is an explanation of the user-defined command.
       - Assuming that the server is an Ubuntu server with apt installed, the command to install gcc is `apt-get install -y gcc`.
         Also, since the user indicated that the ssh config file is located at sshconfig.conf in the current directory, you need to add the -F option like `exec ssh -F "$(pwd)/sshconfig.conf"`.
         Therefore, you should execute the following command: `exec ssh -F "$(pwd)/sshconfig.conf" test "apt-get install -y gcc"`
+
+- When receiving the command **;market**, Call `market` skill and use it with options.
+- When receiving the command **;trading**, Call `trading` skill and use it with options.
 
 ### User-Defined Category: Translate
 - When receiving the command **;kor**, call `kor` skill and use it with options.
