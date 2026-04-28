@@ -222,18 +222,19 @@ If using the `date` command is difficult, determine the current time through a w
         - gid (number): 매매일지 그룹 id를 입력한다.
         - aireview (string): 매매일지 리뷰를 입력한다. 개행은 `\n` 으로 나눈다.
     - 매매일지의 aireview 필드에는 작성한 보고서를 100자~1500자 사이로 요약해 작성한다.
-      ```bash
-      # 예시
-      curl -X POST 'https://www.iasdf.com/ainews/diary/<alias>/update_aireview.php' \
-        -H 'Content-Type: application/json' \
-        -d @- <<'EOF'
-      {
-        "date": "2006-01-02",
-        "gid": 1,
-        "aireview": "계좌 대비 랏 비율을 너무 높여서 들어갔어.\nSL에서 손절했다면, 이번 거래로 전체 계좌 대비
-      -10%의 손실을 입었을 거야."
-      }
-      ```
+
+```bash
+# 예시
+curl -X POST 'https://www.iasdf.com/ainews/diary/<alias>/update_aireview.php' \
+  -H 'Content-Type: application/json' \
+  -d @- <<'EOF'
+{
+  "date": "2006-01-02",
+  "gid": 1,
+  "aireview": "계좌 대비 랏 비율을 너무 높여서 들어갔어.\nSL에서 손절했다면, 이번 거래로 전체 계좌 대비
+-10%의 손실을 입었을 거야."
+}
+```
 
 
 
