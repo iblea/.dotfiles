@@ -4,7 +4,7 @@ if [[ -z "$ZSH_TICK_MONITORING_URL" ]]; then
     exit 1
 fi
 
-TICKER='NQ1!'
+TICKER='US100'
 NOT_SAVE=0
 VERBOSE=0
 ERROR_COUNT=0

@@ -1,0 +1,40 @@
+#!/bin/bash
+# p10k future_zsh segment helper
+# Reads  ~/.cache/.stock_realtime_daemon/result.txt  and emits
+#   "<minutes>(<close>)"
+# where <minutes> = result.txt 의 3번째 줄 update_time 에서 파싱한 분(MM).
+# 외부 명령 의존도 0 (read + parameter expansion 만) — macOS / Linux 공통.
+
+set -u
+
+RESULT_FILE="$HOME/.cache/.stock_realtime_daemon/result.txt"
+
+# 파일 없거나 비었으면 조용히 종료 -> p10k segment 표시 안 됨
+[[ -r "$RESULT_FILE" && -s "$RESULT_FILE" ]] || exit 0
+
+# --- 이전 구현 (mtime 기반 경과시간) — fallback 보존 ---
+# mtime=$(stat -f %m "$RESULT_FILE" 2>/dev/null) \
+#     || mtime=$(stat -c %Y "$RESULT_FILE" 2>/dev/null) \
+#     || exit 0
+# now=$(date +%s)
+# diff_min=$(( (now - mtime) / 60 ))
+# (( diff_min < 0 )) && diff_min=0
+
+# result.txt 형식 (3줄):
+#   1) <SYMBOL:EXCHANGE>
+#   2) <close>
+#   3) <update_time ISO 8601>   예) 2026-04-28T09:03:00+09:00
+{ read -r _symbol; read -r close; read -r update_time; } < "$RESULT_FILE"
+
+[[ -n "${close:-}" && -n "${update_time:-}" ]] || exit 0
+
+# update_time → "T" 뒤 부분에서 분(MM) 추출
+#   "2026-04-28T09:03:00+09:00"
+#   ─after_t─→ "09:03:00+09:00"
+#   ─mm─────→ "03"  (offset 3, length 2)
+after_t=${update_time#*T}
+mm=${after_t:3:2}
+
+[[ -n "$mm" ]] || exit 0
+
+printf '%s(%s)' "$mm" "$close"

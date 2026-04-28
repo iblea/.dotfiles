@@ -1804,7 +1804,7 @@
 # This function is called every time the prompt is rendered
 function prompt_future_zsh() {
   # Get Nasdaq / S&P500 Futures data
-  local output="$($HOME/.dotfiles/.bin/future_zsh)"
+  local output="$($HOME/.dotfiles/.bin/future_zsh_daemon)"
   if [[ -n "$output" ]]; then
     p10k segment -f 105 -t "($output)"
   fi
