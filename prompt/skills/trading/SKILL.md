@@ -161,9 +161,9 @@ If using the `date` command is difficult, determine the current time through a w
   - `pos/position` 옵션의 동작 순서 6번과 동일하다.
 
 
-### diary 옵션 (매매일지 분석 모드)
+### dry / diary 옵션 (매매일지 분석 모드)
 
-`/market diary <alias> <date> <gid>` 형태로 입력되면 해당 일자 및 gid (group id) 의 매매일지를 복기한다.
+`/market dry <alias> <date> <gid>` 형태로 입력되면 해당 일자 및 gid (group id) 의 매매일지를 복기한다.
 사용자에게, 진입 근거 등을 물어보고, 진입/청산 타점 (뇌동매매 했는지, 진입/청산이 너무 빨랐는지, 손절 컷이 너무 낮았는지, hard stop 값을 옮겼는지 등등), R:R, 승률, 손익비 등을 분석한다.
 해당 매매 일지를 조회하여 진입근거, 청산 타점, 손절가/익절가 설정, 손익비, R:R, 승률, 포지션 보유 시간 등을 분석하여 종합적으로 리뷰한다.
   - 개선점이 있을 경우, 개선해야 할 점이 무엇인지도 작성한다.
@@ -191,6 +191,7 @@ If using the `date` command is difficult, determine the current time through a w
     - date argument를 입력하지 않으면 오늘 날짜의 매매일지 정보를 출력한다.
   - `https://www.iasdf.com/diary/<alias>/diaryjson?date=<date>`
     - date argument를 입력하면 해당 날짜에 매매한 모든 매매일지 정보를 출력한다.
+    - date 인자로는 `today`, `yesterday`, `yyyy-mm-dd` 형식으로 입력할 수 있다.
   - `https://www.iasdf.com/diary/<alias>/diaryjson?date=<date>&gid=<gid>`
     - gid를 입력하면 해당 일자의 gid 매매일지 정보만을 출력한다.
     - gid를 0으로 입력하면 gid argument를 입력하지 않은것과 동일한 결과를 출력한다.

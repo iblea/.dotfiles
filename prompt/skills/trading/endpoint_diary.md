@@ -27,21 +27,22 @@ KST 07시 이전이면 전일자 거래일로 간주.
 
 | 파라미터 | 타입 | 필수 | 설명 |
 |---|---|---|---|
-| `date` | `YYYY-MM-DD` | X | 조회할 거래일. 생략 시 오늘 (KST 거래일) |
-| `gid` | non-negative integer | X | 매매 단위 ID. 생략 시 그 날 모든 매매 |
+| `date` | `YYYY-MM-DD` \| `today` \| `yesterday` | X | 조회할 거래일. 생략 시 오늘 (KST 거래일). `today`/`yesterday` 는 KST 거래일 기준 alias |
+| `gid` | non-negative integer | X | 매매 단위 ID. 생략 시 또는 `0` 이면 그 날 모든 매매 |
 
 | 케이스 | URL 예시 | 결과 |
 |---|---|---|
 | 1. 오늘 전체 | `/diaryjson.php` | 오늘 (KST 거래일) 모든 매매 + summary |
 | 2. 특정 날짜 전체 | `/diaryjson.php?date=2026-04-27` | 그 날 모든 매매 + summary |
 | 3. 특정 매매 | `/diaryjson.php?date=2026-04-27&gid=1` | 단일 review |
-| 4. 일별 종합 | `/diaryjson.php?date=2026-04-27&gid=0` | summary (gid=0) |
+| 4. `gid=0` (전체 alias) | `/diaryjson.php?date=2026-04-27&gid=0` | 케이스 2 와 동일 (그 날 모든 매매 + summary) |
+| 5. today / yesterday | `/diaryjson.php?date=today` , `?date=yesterday` | KST 거래일 기준 today / 전일 |
 
 ### gid 의미
 
 | gid | 의미 |
 |---|---|
-| `0` | 일별 종합 회고 (`summary` 필드로 별도 표시, `gids` 에서는 제외) |
+| `0` | 일별 종합 회고 (`summary` 필드로 별도 표시, `gids` 에서는 제외). **조회 요청에서 `gid=0` 은 미지정과 동일하게 그 날 전체를 반환** |
 | `1` ~ `9999` | 개별 매매 review |
 | `10000+` | 오버나잇 자동 이전된 매매 (다른 진입일에서 청산일로 이전) — `gids` 에 포함 |
 
@@ -160,7 +161,12 @@ KST 07시 이전이면 전일자 거래일로 간주.
 | `time` | string | `"YYYY-MM-DD HH:MM"` (KST) |
 | `profit_loss` | string | **`CLOSE` deal 에만**. cTrader profit (0 이면 fallback 계산) |
 
-### 응답 — 케이스 4 (단일 gid=0) — summary object
+### 응답 — 케이스 4 (`gid=0`)
+
+`gid=0` 은 **미지정과 동일하게 처리** 되어 케이스 1, 2 와 같은 날짜 단위 응답 (`{ date, trade_count, ..., summary, gidlist, gids }`) 이 반환된다.
+일별 종합 데이터(thesis/ai_opinion/outcome_override)는 `summary` 필드로 함께 묶여 나온다 (없으면 `summary: null`).
+
+`summary` object 구조 (날짜 단위 응답의 한 필드로 등장):
 
 ```json
 {
@@ -169,8 +175,6 @@ KST 07시 이전이면 전일자 거래일로 간주.
     "wl_record": "win"
 }
 ```
-
-데이터 없으면 `null` 반환.
 
 | 필드 | 타입 | 설명 |
 |---|---|---|
@@ -199,8 +203,12 @@ curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=2026-04-27'
 # 단일 매매
 curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=2026-04-27&gid=1'
 
-# 일별 종합
+# gid=0 (미지정과 동일 — 그 날 전체)
 curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=2026-04-27&gid=0'
+
+# today / yesterday alias (KST 거래일 기준)
+curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=today'
+curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=yesterday'
 ```
 
 ---
@@ -225,7 +233,7 @@ curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=2026-04-27&gid=
 
 | 필드 | 타입 | 필수 | 설명 |
 |---|---|---|---|
-| `date` | string `YYYY-MM-DD` | O | 거래일 |
+| `date` | string `YYYY-MM-DD` \| `"today"` \| `"yesterday"` | O | 거래일. `"today"`/`"yesterday"` 는 KST 거래일 기준 alias |
 | `gid` | non-negative integer | O | `0` = 일별 종합, `≥1` = 개별 매매 |
 | `aireview` | string | O | AI 의견 본문 (개행은 JSON `\n`) |
 
@@ -259,7 +267,7 @@ curl 'http://example/ccpage/diary/acaliastest/diaryjson.php?date=2026-04-27&gid=
 | HTTP | Body | 케이스 |
 |---|---|---|
 | `400` | `{"error":"invalid JSON body"}` | body 가 JSON 객체가 아님 |
-| `400` | `{"error":"invalid date (expected \"YYYY-MM-DD\")"}` | date 형식 위배 |
+| `400` | `{"error":"invalid date (expected \"YYYY-MM-DD\" \| \"today\" \| \"yesterday\")"}` | date 형식 위배 |
 | `400` | `{"error":"invalid date (calendar)"}` | 달력에 없는 날짜 (예: 2026-02-30) |
 | `400` | `{"error":"invalid gid (non-negative integer required)"}` | gid 음수/문자 |
 | `400` | `{"error":"invalid aireview (string required)"}` | aireview 누락/non-string |
@@ -278,6 +286,14 @@ curl -X POST -H 'Content-Type: application/json' \
 # 단일 매매 AI 의견 갱신 (gid=1)
 curl -X POST -H 'Content-Type: application/json' \
      -d '{"date":"2026-04-28","gid":1,"aireview":"진입가 양호\n손절 라인은 보수적으로..."}' \
+     'http://example/ccpage/diary/acaliastest/update_aireview.php'
+
+# date alias 사용 (KST 거래일 기준 today / yesterday)
+curl -X POST -H 'Content-Type: application/json' \
+     -d '{"date":"today","gid":0,"aireview":"오늘 종합..."}' \
+     'http://example/ccpage/diary/acaliastest/update_aireview.php'
+curl -X POST -H 'Content-Type: application/json' \
+     -d '{"date":"yesterday","gid":1,"aireview":"어제 매매 회고..."}' \
      'http://example/ccpage/diary/acaliastest/update_aireview.php'
 ```
 
