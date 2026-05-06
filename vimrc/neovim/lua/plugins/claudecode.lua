@@ -23,8 +23,8 @@ return {
     vim.api.nvim_create_autocmd("OptionSet", {
       pattern = "diff",
       callback = function()
-        -- TMUX_CLAUDECODE_IDE_NVIM=1 일 때만 동작
-        if vim.env.TMUX_CLAUDECODE_IDE_NVIM ~= "1" then
+        -- TMUX_AIAGENT_IDE_NVIM=1 일 때만 동작
+        if vim.env.TMUX_AIAGENT_IDE_NVIM ~= "1" then
           return
         end
 

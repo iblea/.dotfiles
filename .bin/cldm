@@ -21,9 +21,10 @@ fi
 
 NVIM_IDE=0
 NON_INTERACTIVE=0
-WEBSOCKET_SRV=1
+WEBSOCKET_SRV=0
 
 export SSLKEYLOGFILE=""
+export AIAGENTCODE="Claude Code"
 
 if [ -n "$VSCODE_INJECTION" ]; then
     WEBSOCKET_SRV=0
@@ -58,7 +59,7 @@ if [ $# -ge 1 ]; then
         elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
             NON_INTERACTIVE=1
         elif [[ "${opt}" = "ws" ]] || [[ "${opt}" = "-ws" ]]; then
-            WEBSOCKET_SRV=0
+            WEBSOCKET_SRV=1
             set -- "${@:1:i-1}" "${@:i+1}"
         fi
     done
@@ -160,13 +161,13 @@ TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 # OSC escape sequence로 pane title을 변경하여 로컬 tmux hook을 트리거
 # SSH 환경 (로컬 tmux 밖): tmux 생성 없이 cld 직접 실행
 if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
-    printf '\033]2;__CLDM_SWAP_WIN1__\033\\'
+    printf '\033]2;__AIDM_SWAP_WIN1__\033\\'
     sleep 0.3
-    printf '\033]2;@ Claude Code\033\\'
+    printf '\033]2;@ %s\033\\' "$AIAGENTCODE"
     export EDITOR="$EDITOR"
     cld "$@"
     _ret=$?
-    printf '\033]2;__CLDM_CLEANUP__\033\\'
+    printf '\033]2;__AIDM_CLEANUP__\033\\'
     exit $_ret
 fi
 
@@ -176,11 +177,11 @@ if [ -n "$TMUX" ] && tmux info &>/dev/null; then
     _cur_win=$(tmux display-message -p '#{window_index}')
     _win1_panes=$(tmux display-message -t :1 -p '#{window_panes}' 2>/dev/null)
     if [ "${_win1_panes:-0}" -gt 1 ] 2>/dev/null; then
-        _win1_is_claude=$(tmux show-option -pqv -t :1.1 @is_claude_code 2>/dev/null)
+        _win1_is_aiagent=$(tmux show-option -pqv -t :1.1 @is_aiagent_code 2>/dev/null)
     else
-        _win1_is_claude=$(tmux show-option -pqv -t :1 @is_claude_code 2>/dev/null)
+        _win1_is_aiagent=$(tmux show-option -pqv -t :1 @is_aiagent_code 2>/dev/null)
     fi
-    if [ "$_cur_win" != "1" ] && [ "$_win1_is_claude" != "1" ]; then
+    if [ "$_cur_win" != "1" ] && [ "$_win1_is_aiagent" != "1" ]; then
         _i=$_cur_win
         while [ "$_i" -gt 1 ]; do
             _prev=$((_i - 1))
@@ -194,18 +195,18 @@ if [ -n "$TMUX" ] && tmux info &>/dev/null; then
         printf '\ePtmux;\e\e]633;P;Cwd=%s\a\e\\' "$PWD"
     fi
     export EDITOR="$EDITOR";
-    tmux set-option -p @is_claude_code 1 2>/dev/null
+    tmux set-option -p @is_aiagent_code 1 2>/dev/null
 
     cld $@
     _ret=$?
-    tmux set-option -pu @is_claude_code 2>/dev/null
+    tmux set-option -pu @is_aiagent_code 2>/dev/null
     exit $_ret
 elif [ "$NVIM_IDE" -eq 1 ]; then
     # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
-        new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_claude_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
+        new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
     exit $?
@@ -213,7 +214,7 @@ else
 
     # cld (window 1) + shell (window 2)
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_claude_code 1; sleep 0.1 && clear && cld $@" \; \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@" \; \
         new-window -t "$SESSION_NAME" \; \
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \

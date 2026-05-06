@@ -38,8 +38,8 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-if [[ -n "$CLAUDECODE" ]] && [[ -n "$TMUX" ]]; then
-  tmux set-option -p @is_claude_code 1 2>/dev/null
+if [[ -n "$AIAGENTCODE" ]] && [[ -n "$TMUX" ]]; then
+  tmux set-option -p @is_aiagent_code 1 2>/dev/null
 fi
 
 

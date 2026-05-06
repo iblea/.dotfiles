@@ -95,6 +95,8 @@ fi
 
 export ENABLE_LSP_TOOL=true
 
+OTHER_OPTS+=("--search")
+
 # codex $@
 codex ${OTHER_OPTS[@]}
 

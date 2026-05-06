@@ -43,27 +43,95 @@ fi
 
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
-SESSION_NAME="claude_$(date +%s)_$$"
+SESSION_NAME="codex_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
 
-export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
+# export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
-if [ -n "$TMUX" ]; then
+# SSH 환경에서 로컬 tmux 윈도우 이동 트리거
+# OSC escape sequence로 pane title을 변경하여 로컬 tmux hook을 트리거
+# SSH 환경 (로컬 tmux 밖): tmux 생성 없이 cod 직접 실행
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
+    printf '\033]2;__AIDM_SWAP_WIN1__\033\\'
+    sleep 0.3
+    printf '\033]2;@ %s\033\\' "$AIAGENTCODE"
+    export EDITOR="$EDITOR"
+    cod "$@"
+    _ret=$?
+    printf '\033]2;__AIDM_CLEANUP__\033\\'
+    exit $_ret
+fi
+
+
+if [ -n "$TMUX" ] && tmux info &>/dev/null; then
+# if [ -n "$TMUX" ]; then
+    # 현재 윈도우가 1번이 아니면 1번으로 삽입 (기존 윈도우는 한 칸씩 뒤로)
+    _cur_win=$(tmux display-message -p '#{window_index}')
+    _win1_panes=$(tmux display-message -t :1 -p '#{window_panes}' 2>/dev/null)
+    if [ "${_win1_panes:-0}" -gt 1 ] 2>/dev/null; then
+        _win1_is_aiagent=$(tmux show-option -pqv -t :1.1 @is_aiagent_code 2>/dev/null)
+    else
+        _win1_is_aiagent=$(tmux show-option -pqv -t :1 @is_aiagent_code 2>/dev/null)
+    fi
+    if [ "$_cur_win" != "1" ] && [ "$_win1_is_aiagent" != "1" ]; then
+        _i=$_cur_win
+        while [ "$_i" -gt 1 ]; do
+            _prev=$((_i - 1))
+            tmux swap-window -s ":${_i}" -t ":${_prev}" 2>/dev/null
+            _i=$_prev
+        done
+        tmux select-window -t :1 2>/dev/null
+    fi
+    # vscode terminal shell integration cwd update (tmux passthrough)
+    if [ "$TERM_VSCODE" = "1" ]; then
+        printf '\ePtmux;\e\e]633;P;Cwd=%s\a\e\\' "$PWD"
+    fi
     export EDITOR="$EDITOR";
+    tmux set-option -p @is_aiagent_code 1 2>/dev/null
+
     cod $@
-    exit 0
+    _ret=$?
+    tmux set-option -pu @is_aiagent_code 2>/dev/null
+    exit $_ret
 elif [ "$NVIM_IDE" -eq 1 ]; then
-    # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: codex 나중)
-    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+    # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cod 나중)
+    _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
-        new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cod $@; tmux kill-session -t $SESSION_NAME" C-m \; \
+        new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cod $@)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
+    exit $?
 else
-    exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cod $@; tmux kill-session -t $SESSION_NAME"
+
+    # cod (window 1) + shell (window 2)
+    _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cod $@" \; \
+        new-window -t "$SESSION_NAME" \; \
+        clear-history -t "$SESSION_NAME:2" \; \
+        send-keys -t "$SESSION_NAME:2" "" C-m \; \
+        select-window -t "$SESSION_NAME:1"
+    exit $?
 fi
+
+
+
+# if [ -n "$TMUX" ]; then
+#     export EDITOR="$EDITOR";
+#     cod $@
+#     exit 0
+# elif [ "$NVIM_IDE" -eq 1 ]; then
+#     # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: codex 나중)
+#     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+#         new-session -s "$SESSION_NAME" -d \; \
+#         new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
+#         send-keys -t "$SESSION_NAME:1" "export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cod $@; tmux kill-session -t $SESSION_NAME" C-m \; \
+#         select-window -t "$SESSION_NAME:1" \; \
+#         attach-session -t "$SESSION_NAME"
+# else
+#     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+#         new-session -s "$SESSION_NAME" "export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cod $@; tmux kill-session -t $SESSION_NAME"
+# fi
 
 
 

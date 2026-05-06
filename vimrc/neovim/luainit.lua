@@ -72,7 +72,7 @@ vim.cmd('colorscheme monokai-pro-classic')
 -- require("cmp-tw2css").setup()
 -- require("classy").setup()
 
-if vim.env.TMUX_CLAUDECODE_IDE_NVIM == "1" then
+if vim.env.TMUX_AIAGENT_IDE_NVIM == "1" then
   -- split 방향 토글 (horizontal <-> vertical) + 크기 균등화
   vim.keymap.set("n", "<leader>nn", function()
     local layout = vim.fn.winlayout()

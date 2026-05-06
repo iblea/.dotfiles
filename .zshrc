@@ -133,8 +133,8 @@ export ZSH_THEME="powerlevel10k/powerlevel10k"
 DISABLE_AUTO_TITLE="true"
 
 # Claude Code 서브쉘에서 tmux pane option 설정
-if [[ -n "$CLAUDECODE" ]] && [[ -n "$TMUX" ]]; then
-  tmux set-option -p @is_claude_code 1 2>/dev/null
+if [[ -n "$AIAGENTCODE" ]] && [[ -n "$TMUX" ]]; then
+  tmux set-option -p @is_aiagent_code 1 2>/dev/null
 fi
 
 # Uncomment the following line to enable command auto-correction.
@@ -441,3 +441,12 @@ zshaddhistory() {
     return 0
 }
 
+
+# --WCGW_ENVIRONMENT_START--
+if [ -n "$IN_WCGW_ENVIRONMENT" ]; then
+ PROMPT_COMMAND='printf "◉ $(pwd)──➤ \r\e[2K"'
+ prmptcmdwcgw() { eval "$PROMPT_COMMAND" }
+ add-zsh-hook -d precmd prmptcmdwcgw
+ precmd_functions+=prmptcmdwcgw
+fi
+# --WCGW_ENVIRONMENT_END--

@@ -90,7 +90,7 @@ if [ $NO_WAIT -ne 1 ]; then
 fi
 
 tmp_editor_var=0
-if [[ "$CLAUDECODE" = "1" ]] || [[ "$(${TMUX_COMMAND[@]} show-option -pqv @is_claude_code 2>/dev/null)" = "1" ]]; then
+if [[ "$AIAGENT_CODE" != "" ]] || [[ "$(${TMUX_COMMAND[@]} show-option -pqv @is_aiagent_code 2>/dev/null)" = "1" ]]; then
     tmp_editor_var=1
 else
     tmp_editor_var=2

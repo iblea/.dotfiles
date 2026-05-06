@@ -95,7 +95,7 @@ done
 
 
 
-# if [ "$TMUX_CLAUDECODE_IDE_NVIM" = "1" ]; then
+# if [ "$TMUX_AIAGENT_IDE_NVIM" = "1" ]; then
 #     OTHER_OPTS+=("--ide")
 # fi
 

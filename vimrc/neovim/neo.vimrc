@@ -192,9 +192,9 @@ iabbrev utk ultrathink
 
 nnoremap <silent> <Leader>q <ESC>:RenderMarkdown toggle<CR>
 
-" TMUX_CLAUDECODE_IDE_NVIM=1 환경: 종료 명령 시 버퍼만 정리하고 nvim 유지
+" TMUX_AIAGENT_IDE_NVIM=1 환경: 종료 명령 시 버퍼만 정리하고 nvim 유지
 " save: w 계열 - 저장 후 정리, force: ! 계열 - 미저장 무시, all: a 계열 - 모든 창/버퍼 정리
-if $TMUX_CLAUDECODE_IDE_NVIM == "1"
+if $TMUX_AIAGENT_IDE_NVIM == "1"
   function! s:ClaudeSmartQuit(save, force, all)
     if a:save
       if a:all

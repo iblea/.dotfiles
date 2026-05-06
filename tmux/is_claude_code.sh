@@ -2,8 +2,8 @@
 # Claude Code 실행 감지 스크립트
 # tmux if-shell에서 사용
 
-# 1. @is_claude_code pane 옵션 체크 (cldm hook에서 설정됨)
-[ "$(tmux show-option -pqv @is_claude_code 2>/dev/null)" = "1" ] && exit 0
+# 1. @is_aiagent_code pane 옵션 체크 (cldm hook에서 설정됨)
+[ "$(tmux show-option -pqv @is_aiagent_code 2>/dev/null)" = "1" ] && exit 0
 
 # 2. pane_title로 SSH 너머 Claude Code 감지
 tmux display-message -p '#{pane_title}' \

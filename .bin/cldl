@@ -71,8 +71,8 @@ elif [ "$NVIM_IDE" -eq 1 ]; then
     # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
     exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
-        new-window -t "$SESSION_NAME" "export TMUX_CLAUDECODE_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "export TMUX_CLAUDECODE_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" C-m \; \
+        new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
+        send-keys -t "$SESSION_NAME:1" "export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; sleep 0.1 && clear && cld $@; tmux kill-session -t $SESSION_NAME" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
 else
