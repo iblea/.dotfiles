@@ -106,8 +106,46 @@ if vim.env.TMUX or vim.env.LC_TMUX then
     return vim.fn.system(cmd)
   end
 
-  -- claude code 윈도우의 pwd 기준 경로 계산
-  local function get_claude_file_path()
+  -- 페인이 AI agent 페인인지 체크 (.zshrc/.bashrc 에서 set-option -p @is_aiagent_code 로 마킹)
+  -- macOS는 ps eww 로 다른 프로세스의 환경변수를 못 가져오기 때문에 tmux pane option 으로 판별
+  local function has_aiagent_env(target_pane)
+    local val = tmux({"show-options", "-pqv", "-t", target_pane, "@is_aiagent_code"}):gsub("%s+$", "")
+    return val ~= ""
+  end
+
+  -- 전송 대상 페인 결정
+  -- 반환: { target = "...", focus = "window"|"pane" } 또는 nil (전송 안함)
+  local function resolve_target()
+    local cur_win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
+    local cur_pane = tmux({"display-message", "-p", "#{pane_index}"}):gsub("%s+$", "")
+
+    -- 현재가 window 1, pane 1 (claude code 자신) 이면 전송 안함
+    if cur_win == "1" and cur_pane == "1" then
+      return nil
+    end
+
+    -- 현재 페인이 1번이 아닌 경우(페인이 여러 개), 1번 페인의 AIAGENTCODE 체크
+    if cur_pane ~= "1" then
+      local first_pane = cur_win .. ".1"
+      if has_aiagent_env(first_pane) then
+        return { target = first_pane, focus = "pane" }
+      end
+    end
+
+    -- 기본: 1번 윈도우 1번 페인
+    return { target = ":1", focus = "window" }
+  end
+
+  local function focus_target(info)
+    if info.focus == "pane" then
+      tmux({"select-pane", "-t", info.target})
+    else
+      tmux({"select-window", "-t", info.target})
+    end
+  end
+
+  -- claude code 페인의 pwd 기준 경로 계산
+  local function get_claude_file_path(target_pane)
     local file_path = vim.fn.expand("%:p")
 
     -- LC_TMUX_SOCKET 경유(SSH) 시 pane_current_path가 로컬 경로라 상대경로 계산 불가
@@ -115,7 +153,7 @@ if vim.env.TMUX or vim.env.LC_TMUX then
       return file_path
     end
 
-    local claude_pwd = tmux({"display-message", "-p", "-t", ":1", "#{pane_current_path}"})
+    local claude_pwd = tmux({"display-message", "-p", "-t", target_pane, "#{pane_current_path}"})
     claude_pwd = claude_pwd:gsub("%s+$", "")
 
     local function split_path(path)
@@ -150,24 +188,24 @@ if vim.env.TMUX or vim.env.LC_TMUX then
 
   -- normal mode: 파일 전체를 claude code에 전송
   vim.keymap.set("n", "<leader>b", function()
-    local cur_win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
-    if cur_win == "1" then return end
-    local ref = "@" .. get_claude_file_path()
-    tmux({"send-keys", "-t", ":1", "-l", ref .. " "})
-    tmux({"select-window", "-t", ":1"})
+    local info = resolve_target()
+    if not info then return end
+    local ref = "@" .. get_claude_file_path(info.target)
+    tmux({"send-keys", "-t", info.target, "-l", ref .. " "})
+    focus_target(info)
   end, { desc = "Send file reference to Claude Code" })
 
   -- visual mode: 선택한 라인 범위를 claude code에 전송
   vim.keymap.set("v", "<leader>b", function()
-    local cur_win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
-    if cur_win == "1" then return end
+    local info = resolve_target()
+    if not info then return end
     local start_line = vim.fn.line("v")
     local end_line = vim.fn.line(".")
     if start_line > end_line then
       start_line, end_line = end_line, start_line
     end
 
-    local relative_path = get_claude_file_path()
+    local relative_path = get_claude_file_path(info.target)
     local sep = (vim.g.fileline_space == 1) and " " or ""
     local ref
     if start_line == end_line then
@@ -176,8 +214,8 @@ if vim.env.TMUX or vim.env.LC_TMUX then
       ref = string.format("@%s%s#L%d-#L%d", relative_path, sep, start_line, end_line)
     end
 
-    tmux({"send-keys", "-t", ":1", "-l", ref .. " "})
-    tmux({"select-window", "-t", ":1"})
+    tmux({"send-keys", "-t", info.target, "-l", ref .. " "})
+    focus_target(info)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end, { desc = "Send file reference to Claude Code" })
 
