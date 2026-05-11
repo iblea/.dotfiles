@@ -49,8 +49,20 @@ This is an optional string that can follow this command.
 If no options are provided, the contents of pane 2 will be displayed.
 
 ### First Option
-The first option specifies the number of the tmux window to display.
-Therefore, the first option consists of a numeric value.
+The first option specifies the target tmux window (and optionally the pane) to display.
+
+Accepted formats:
+- `<window>` — target window N, pane 1 (e.g. `2` → window 2, pane 1).
+- `<window>.<pane>` — target window N, pane M (e.g. `2.2` → window 2, pane 2).
+- `.<pane>` — current window, pane M (e.g. `.2` → current window, pane 2; `.3` → current window, pane 3).
+  - The current window number is auto-resolved internally via `tmux display-message -p '#I'`, so the user does not need to specify it explicitly.
+  - This applies to all three scripts: `showtmuxpane`, `sendtmuxpane`, and `tmuxaddir`.
+
+- example
+  - `;tm 2`     → `showtmuxpane 2`     (window 2, pane 1)
+  - `;tm 2.2`   → `showtmuxpane 2.2`   (window 2, pane 2)
+  - `;tm .2`    → `showtmuxpane .2`    (current window, pane 2)
+  - `;tm .3 t 10` → `showtmuxpane .3 | tail -n 10` (current window, pane 3, last 10 lines)
 
 ### Other Option
 
@@ -65,7 +77,7 @@ If this option is provided, a specific tmux window can be manipulated through th
 ##### `sendtmuxpane` command
   - `sendtmuxpane` is available in `$PATH` by default (`~/.dotfiles/.bin/sendtmuxpane`). If not available, use `./script/sendtmuxpane` instead.
   - Usage: `sendtmuxpane <window number>[.<pane number>] [tmux send-keys options...]`
-    - The first argument specifies the target window (e.g., `2` for window 2, or `2.2` for window 2 pane 2).
+    - The first argument specifies the target window (e.g., `2` for window 2, `2.2` for window 2 pane 2, or `.2` for current window pane 2).
     - The remaining arguments are passed directly as `tmux send-keys` options.
   - `sendtmuxpane` automatically detects and cancels copy-mode on the target pane before sending keys. No manual copy-mode check is required when using `sendtmuxpane`.
 

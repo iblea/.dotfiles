@@ -35,6 +35,7 @@ elif [ "$#" -eq 1 ]; then
         echo "First Argument: <window number>.<pane number>"
         echo "  ex: sendtmuxpane 2 -> window 2, pane 1"
         echo "  ex: sendtmuxpane 2.2 -> window 2, pane 2"
+        echo "  ex: sendtmuxpane .2 -> current window, pane 2"
         echo ""
         echo "Other Arguments: tmux send-keys options"
         echo ""
@@ -58,6 +59,13 @@ fi
 target="$1"
 display_window=$(echo "$1" | awk -F '.' '{print $1}')
 shift
+
+# .<pane> 형태로 들어오면 현재 윈도우 번호로 채움
+if [ -z "$display_window" ]; then
+    display_window=$(${TMUX_COMMAND[@]} display-message -p '#I')
+    target="${display_window}${target}"
+fi
+
 windowlist="$(${TMUX_COMMAND[@]} list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
 is_exist=$(echo "$windowlist" | grep "^$display_window$")
 if [ -z "$is_exist" ]; then
