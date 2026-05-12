@@ -160,7 +160,7 @@ nnoremap T gE
 vnoremap t ge
 vnoremap T gE
 nnoremap f <C-w><C-w>
-nnoremap F <C-w><C-w>
+nnoremap F <C-w>W
 " nnoremap <c-f> <C-w><C-w>
 
 " nnoremap <Leader>g <C-w>-

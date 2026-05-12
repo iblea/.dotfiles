@@ -63,7 +63,7 @@ require("lazy").setup("plugins", {
 require("modules.utils")
 require("modules.keymappings")
 require("modules.options")
--- require("modules.autocmd")
+require("modules.autocmd")
 require("themes")
 
 vim.cmd('colorscheme monokai-pro-classic')

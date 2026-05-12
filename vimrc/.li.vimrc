@@ -30,6 +30,12 @@ endif
 
 if isdirectory($HOME."/.vim/pack/nerdtree") || isdirectory($HOME."/.vim/plugged/nerdtree")
     let NERDTreeShowHidden=1
+    " f/F 글로벌 매핑(페인 이동) 보존을 위해 NERDTree 내부 키를 F2/F3 으로 이전
+    let NERDTreeMapToggleFiles="<F2>"
+    let NERDTreeMapToggleHidden="<F3>"
+    " 안전망: 변수 변경이 안 먹혀도 buffer-local 로 f/F 강제 덮어쓰기
+    autocmd FileType nerdtree nnoremap <buffer> <nowait> <silent> f <C-w><C-w>
+    autocmd FileType nerdtree nnoremap <buffer> <nowait> <silent> F <C-w>W
 endif
 
 if isdirectory($HOME."/.vim/pack/airline") || isdirectory($HOME."/.vim/plugged/vim-airline")
