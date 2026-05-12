@@ -2187,6 +2187,77 @@ function greverts()
 
 # ==============================================================================
 
+
+# TMUX =========================================================================
+
+
+if [ -n "$TMUX" ]; then
+    function tmresize() {
+        # -U /u/d 위로
+        # -D /d/D 아래로
+        # -L /l/L 왼쪽
+        # -R /r/R 오른쪽
+        # -x /x/X 절대값 가로크기 조정 (vertical pane 한정)
+        # -y /y/Y 절대값 세로크기 조정 (horizontal pane 한정)
+        # -t target-pane
+        if [ $# -eq 1 ]; then
+            if [[ "$*" = "--help" ]] || [[ "$*" = "-h" ]] || [[ "$*" = "help" ]]; then
+                echo "-U /u/d 위로"
+                echo "-D /d/D 아래로"
+                echo "-L /l/L 왼쪽"
+                echo "-R /r/R 오른쪽"
+                echo "-x /x/X 절대값 가로크기 조정 (vertical pane 한정)"
+                echo "-y /y/Y 절대값 세로크기 조정 (horizontal pane 한정)"
+                echo "-t target-pane"
+                echo "tiled/tile : tiled 레이아웃으로 변경"
+                echo "    tmux select-layout tiled"
+            elif [[ "$*" = "--tiled" ]] || [[ "$*" = "tiled" ]] || [[ "$*" = "--tile" ]] || [[ "$*" = "tile" ]];  then
+                tmux select-layout tiled
+            else
+                tmux resize-pane $@
+            fi
+        elif [ $# -eq 2 ]; then
+            case "$1" in
+                u|U)
+                    shift
+                    tmux resize-pane -U $@
+                    ;;
+                d|D)
+                    shift
+                    tmux resize-pane -D $@
+                    ;;
+                l|L)
+                    shift
+                    tmux resize-pane -L $@
+                    ;;
+                r|R)
+                    shift
+                    tmux resize-pane -R $@
+                    ;;
+                x|X)
+                    shift
+                    tmux resize-pane -x $@
+                    ;;
+                y|Y)
+                    shift
+                    tmux resize-pane -y $@
+                    ;;
+                *)
+                    tmux resize-pane $@
+                    ;;
+            esac
+        else
+            tmux resize-pane $@
+        fi
+    }
+    function tmtiled() {
+        tmux select-layout tiled $@
+    }
+fi
+
+
+# ==============================================================================
+
 alias dateymd='date "+%Y-%m-%d %H:%M:%S %a (%Z %z)"'
 alias dateunix='date "+%s"'
 function unixtimeint() {
