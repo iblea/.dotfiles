@@ -3,6 +3,10 @@ set -euo pipefail
 
 curpath=$(readlink -e $(dirname "$0"))
 
+# execute with cron
+export PATH="$HOME/.dotfiles/.bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/sbin:/usr/sbin"
+
+
 # 전용 tmux 소켓 사용.
 # (사용자 전역 tmux 설정에 destroy-unattached on 이 걸려 있어
 #  기본 서버에서는 detached 세션이 즉시 파괴됨. 별도 소켓 + 빈 conf 로 격리)
@@ -25,6 +29,10 @@ if [ ! -f "$OUTPUT_FILE" ]; then
     rm -f "$OUTPUT_FILE"
 fi
 
+date "+%Y-%m-%d %H:%M:%S %a (%Z %z)" > "$LOGFILE"
+echo "$PATH" >> "$LOGFILE"
+echo "" >> "$LOGFILE"
+
 TM() { tmux -L "$SOCK" -f /dev/null "$@"; }
 
 # 종료 시 항상 tmux 서버 정리
@@ -33,9 +41,11 @@ cleanup() {
 }
 trap cleanup EXIT
 
+echo "session open" >> "$LOGFILE"
 # 1. 백그라운드에서 tmux 세션 생성
 TM new-session -d -s "$SESSION" -x 220 -y 50
 
+echo "move working dir to '${curpath}'" >> "$LOGFILE"
 # 2. 작업 경로 이동
 TM send-keys -t "$SESSION" "cd \"$curpath\"" Enter
 
@@ -44,14 +54,16 @@ TM send-keys -t "$SESSION" "cd \"$curpath\"" Enter
 CLAUDE_CODE_EFFORT_LEVEL="medium"
 CLAUDE_NO_CONTEXT_COMMAND='claude --system-prompt "" --setting-sources "" --disable-slash-commands --strict-mcp-config --model Opus --allowedTools "Glob" "Grep" "Read" "Edit" "Write" "WebSearch" "WebFetch"'
 
+echo "execute claude" >> "$LOGFILE"
 # 3. claude 실행 (환경변수 적용 후 시작 명령어 실행)
 #    ANTHROPIC_API_KEY 에 잘못된 값이 들어가 있어 제거 후 실행
 TM send-keys -t "$SESSION" "unset ANTHROPIC_API_KEY" Enter
 TM send-keys -t "$SESSION" "export CLAUDE_CODE_EFFORT_LEVEL=\"$CLAUDE_CODE_EFFORT_LEVEL\"" Enter
+TM send-keys -t "$SESSION" "export PATH=\"$PATH\"" Enter
 TM send-keys -t "$SESSION" "$CLAUDE_NO_CONTEXT_COMMAND" Enter
 
 # codex TUI 가 뜰 때까지 대기
-sleep 6
+sleep 15
 
 # 4. 프롬프트 입력 후 Enter
 TM send-keys -t "$SESSION" "$PROMPT"
@@ -61,8 +73,8 @@ TM send-keys -t "$SESSION" Enter
 # 5. 응답 대기: 화면 출력이 안정될 때까지 폴링
 #    (codex 응답 완료를 직접 감지할 수 없어, 일정 시간 화면 변화가
 #     없으면 답변이 끝난 것으로 간주)
-STABLE_NEEDED=4      # 연속 N회 변화 없으면 완료로 판단
-POLL_INTERVAL=3      # 폴링 간격(초)
+STABLE_NEEDED=6      # 연속 N회 변화 없으면 완료로 판단
+POLL_INTERVAL=5      # 폴링 간격(초)
 MAX_WAIT=180         # 최대 대기(초) - 무한 대기 방지
 
 prev=""
@@ -86,7 +98,6 @@ if [ ! -d "$curpath/output/" ]; then
 fi
 
 if [ -f "$LOGFILE" ]; then
-    date "+%Y-%m-%d %H:%M:%S %a (%Z %z)" > "$LOGFILE"
     echo "======================"
     echo "$PROMPT" >> "$LOGFILE"
     echo "======================"
