@@ -33,6 +33,16 @@ date "+%Y-%m-%d %H:%M:%S %a (%Z %z)" > "$LOGFILE"
 echo "$PATH" >> "$LOGFILE"
 echo "" >> "$LOGFILE"
 
+if [ -z "$(command -v claude)" ]; then
+    echo "claude is not installed" >> "$LOGFILE"
+    exit 1
+fi
+if [ -z "$(command -v tmux)" ]; then
+	echo "tmux is not installed" >> "$LOGFILE"
+	exit 1
+fi
+
+
 TM() { tmux -L "$SOCK" -f /dev/null "$@"; }
 
 # 종료 시 항상 tmux 서버 정리
