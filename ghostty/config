@@ -110,7 +110,7 @@ selection-foreground = #fdfff1
 # font
 font-family = "Cascadia Code NFOT"
 # font-family = "Cascadia Code NFMMO"
-font-size = 15
+font-size = 13
 # font-family = "CaskaydiaCove Nerd Font"
 # font-family = "Tmoney Roundwind"
 
