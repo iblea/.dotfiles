@@ -80,6 +80,7 @@ fi
 signal="$VIM_PROGRAM-done-$$"
 CURRENT_LINES=$(${TMUX_COMMAND[@]} display-message -p '#{pane_height}')
 PANE_PWD=$(${TMUX_COMMAND[@]} display-message -p '#{pane_current_path}')
+ORIG_PANE=$(${TMUX_COMMAND[@]} display-message -p '#{pane_index}')
 
 # vertical
 # tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
@@ -101,7 +102,8 @@ fi
 # horizontal
 # $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
 TMUX_CMD="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' $@"
-TMUX_CMD_WAIT="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' -c '\$' +startinsert! $@; VIMRC=\$?; ${TMUX_COMMAND_STR} set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && ${TMUX_COMMAND_STR} set-hook -w pane-exited 'run-shell \"$HOME/.dotfiles/.bin/codevim-autosend 1 && ${TMUX_COMMAND_STR} set-hook -uw pane-exited\"'"
+TMUX_CMD_WAIT="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' -c '\$' +startinsert! $@; VIMRC=\$?; ${TMUX_COMMAND_STR} set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && ${TMUX_COMMAND_STR} set-hook -w pane-exited 'run-shell \"$HOME/.dotfiles/.bin/codevim-autosend ${ORIG_PANE} && ${TMUX_COMMAND_STR} set-hook -uw pane-exited\"'"
+
 if [ $CURRENT_LINES -ge 26 ]; then
     if [ $NO_WAIT -eq 1 ]; then
         ${TMUX_COMMAND[@]} split-window -v -l 13 "$TMUX_CMD"
@@ -123,13 +125,14 @@ else
 fi
 
 if [ $NO_WAIT -ne 1 ]; then
-    ${TMUX_COMMAND[@]} last-pane
+    ${TMUX_COMMAND[@]} select-pane -t $ORIG_PANE
     ${TMUX_COMMAND[@]} send-keys -X scroll-up
     ${TMUX_COMMAND[@]} send-keys -X scroll-up
     ${TMUX_COMMAND[@]} send-keys -X scroll-up
     ${TMUX_COMMAND[@]} send-keys -X scroll-up
-    ${TMUX_COMMAND[@]} last-pane
+    ${TMUX_COMMAND[@]} select-pane -t $((ORIG_PANE + 1))
     ${TMUX_COMMAND[@]} wait-for $signal
+    ${TMUX_COMMAND[@]} select-pane -t $ORIG_PANE
     ${TMUX_COMMAND[@]} send-keys -X cancel
     VIM_EXIT=$(${TMUX_COMMAND[@]} show-environment CODEVIM_EXIT_$$ 2>/dev/null | cut -d= -f2)
     ${TMUX_COMMAND[@]} set-environment -u CODEVIM_EXIT_$$ 2>/dev/null
