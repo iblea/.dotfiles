@@ -41,7 +41,8 @@ if [ -z "$TMUX" ]; then
     #     TMUX_COMMAND_STR="tmux -S '${LC_TMUX_SOCKET}'"
     # else
         # exec $VIM_PROGRAM "$@"
-        exec $VIM_PROGRAM --cmd "cd '${PWD}'" "$@"
+        # 'cd ${PWD}' 로 공백이 포함된 경로도 처리 됨.
+        exec $VIM_PROGRAM --cmd 'cd ${PWD}' "$@"
         exit 0
     # fi
 fi
