@@ -110,7 +110,7 @@ selection-foreground = #fdfff1
 # font
 font-family = "Cascadia Code NFOT"
 # font-family = "Cascadia Code NFMMO"
-font-size = 13
+font-size = 12
 # font-family = "CaskaydiaCove Nerd Font"
 # font-family = "Tmoney Roundwind"
 
@@ -193,3 +193,4 @@ clipboard-write = allow
 # meta key
 macos-option-as-alt = true
 
+mouse-scroll-multiplier = 0.34
