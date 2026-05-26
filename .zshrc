@@ -1,49 +1,51 @@
 
 # environment path (envpath)
 if [ -f $HOME/.envpath ]; then
-    # . ~/.envpath
-    source ~/.envpath
+  # . ~/.envpath
+  source ~/.envpath
 fi
 
-# vscode terminal: 부모 tmux 세션에서 상속받은 환경변수 초기화
-if [[ "$TERM_PROGRAM" != "tmux" ]]; then
+if [ -n "$(command -v tmux)" ]; then
+  # vscode terminal: 부모 tmux 세션에서 상속받은 환경변수 초기화
+  if [[ "$TERM_PROGRAM" != "tmux" ]]; then
     unset TMUX
     # ssh_connection 또는 ssh_client 변수가 있을 경우 ssh 상태라고 간주함.
     if [ -n "$SSH_CONNECTION" ] || [ -n "$SSH_CLIENT" ]; then
-        # vscode remote ssh 상태일 가능성을 배제할 수 없음.
-        if [[ "$TERM_PROGRAM" = "vscode" ]]; then
-            unset LC_TMUX
-        else
-            # /tmp/tmux socket 정리 (활성 세션이 없는 소켓만 제거, 백그라운드)
-            {
-                for _sock in /tmp/local-tmux-*-*.sock; do
-                    [ -e "$_sock" ] || continue
-                    [ -n "$LC_TMUX_SOCKET" ] && [ "$_sock" = "$LC_TMUX_SOCKET" ] && continue
-                    timeout 1 tmux -S "$_sock" list-sessions &>/dev/null && continue
-                    rm -f "$_sock"
-                done
-            } &!
-        fi
-    else
-        # ssh 상태가 아닌 경우 정리
+      # vscode remote ssh 상태일 가능성을 배제할 수 없음.
+      if [[ "$TERM_PROGRAM" = "vscode" ]]; then
         unset LC_TMUX
+      else
+        # /tmp/tmux socket 정리 (활성 세션이 없는 소켓만 제거, 백그라운드)
+        {
+          for _sock in /tmp/local-tmux-*-*.sock; do
+            [ -e "$_sock" ] || continue
+            [ -n "$LC_TMUX_SOCKET" ] && [ "$_sock" = "$LC_TMUX_SOCKET" ] && continue
+            timeout 1 tmux -S "$_sock" list-sessions &>/dev/null && continue
+            rm -f "$_sock"
+          done
+        } &!
+      fi
+    else
+      # ssh 상태가 아닌 경우 정리
+      unset LC_TMUX
     fi
-fi
-
-# auto start tmux
-if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
+  fi
+  
+  # auto start tmux
+  if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
     # env > /tmp/envprint.log
     # vscode shell integration cwd signal
     _tmux_extra_args=""
     if [ "$TERM_PROGRAM" = "vscode" ]; then
-        export TERM_VSCODE=1
-        printf '\e]633;A\a'
-        printf '\e]633;P;Cwd=%s\a' "$PWD"
-        printf '\e]633;B\a'
+      export TERM_VSCODE=1
+      printf '\e]633;A\a'
+      printf '\e]633;P;Cwd=%s\a' "$PWD"
+      printf '\e]633;B\a'
     fi
     export LC_TMUX=1
     _sname="st_$(basename "$SHELL")_$(date +%s)_$$"
     exec tmux -L "sock_${_sname}" -f "$HOME/.dotfiles/tmux/tmux.aiagent.conf" new-session -s "$_sname"
+  fi
 fi
 
 # into /etc/zsh/zshrc (vscode terminal)
@@ -80,17 +82,17 @@ export TERM=xterm-256color
 
 # zsh-syntax-highlighting plugin
 if [ ! -d $ZSH/custom/plugins/zsh-syntax-highlighting/ ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH/custom/plugins/zsh-syntax-highlighting
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH/custom/plugins/zsh-syntax-highlighting
 fi
 
 # zsh-autosuggestions plugin
 if [ ! -d $ZSH/custom/plugins/zsh-autosuggestions/ ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions/
+  git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions/
 fi
 
 if [ ! -d $ZSH/custom/plugins/git-open/ ]; then
-    # git clone https://github.com/paulirish/git-open.git $ZSH/custom/plugins/git-open/
-    git clone https://github.com/iblea/git-open.git $ZSH/custom/plugins/git-open/
+  # git clone https://github.com/paulirish/git-open.git $ZSH/custom/plugins/git-open/
+  git clone https://github.com/iblea/git-open.git $ZSH/custom/plugins/git-open/
 fi
 
 
@@ -132,9 +134,11 @@ export ZSH_THEME="powerlevel10k/powerlevel10k"
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
-# Claude Code 서브쉘에서 tmux pane option 설정
-if [[ -n "$AIAGENTCODE" ]] && [[ -n "$TMUX" ]]; then
-  tmux set-option -p @is_aiagent_code 1 2>/dev/null
+if [ -n "$(command -v tmux)" ]; then
+  # Claude Code 서브쉘에서 tmux pane option 설정
+  if [[ -n "$AIAGENTCODE" ]] && [[ -n "$TMUX" ]]; then
+    tmux set-option -p @is_aiagent_code 1 2>/dev/null
+  fi
 fi
 
 # Uncomment the following line to enable command auto-correction.
@@ -170,10 +174,10 @@ fi
 
 
 plugins=(
-    "git"
-    "git-open"
-    "zsh-syntax-highlighting"
-    "zsh-autosuggestions"
+  "git"
+  "git-open"
+  "zsh-syntax-highlighting"
+  "zsh-autosuggestions"
 )
 
 
@@ -184,7 +188,7 @@ plugins=(
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 if [ -z "$( locale -a 2>/dev/null | grep "${LC_ALL}" )" ]; then
-    export LC_ALL=""
+  export LC_ALL=""
 fi
 
 # Preferred editor for local and remote sessions
@@ -212,15 +216,15 @@ export HISTFILE="$HOME/.zsh/.zsh_history"
 export LESS=-FRX
 
 if [ -d /mnt/c/Users/ghkd0 ]; then
-    export WINHOME=/mnt/c/Users/ghkd0
-    export SSLKEYLOGFILE=$WINHOME/sslkeylog.log
+  export WINHOME=/mnt/c/Users/ghkd0
+  export SSLKEYLOGFILE=$WINHOME/sslkeylog.log
 else
-    export SSLKEYLOGFILE=$HOME/sslkeylog.log
+  export SSLKEYLOGFILE=$HOME/sslkeylog.log
 fi
 
 GITSTATUS_CACHE_DIR="$HOME/.zsh/.gitstatus"
 if [ ! -d "$GITSTATUS_CACHE_DIR" ]; then
-    mkdir -p "$GITSTATUS_CACHE_DIR"
+  mkdir -p "$GITSTATUS_CACHE_DIR"
 fi
 
 # ruby
@@ -255,7 +259,7 @@ DISABLE_MAGIC_FUNCTIONS=true
 
 # oh-my-zsh
 if ! (declare -f -F "is_plugin" > /dev/null); then
-    source $ZSH/oh-my-zsh.sh
+  source $ZSH/oh-my-zsh.sh
 fi
 
 # remove oh-my-zsh options variables
@@ -263,27 +267,27 @@ unset DISABLE_MAGIC_FUNCTIONS
 
 # p10k
 if [[ ! -v POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS ]]; then
-    [[ -f ~/.zsh/.p10k.zsh ]] && source ~/.zsh/.p10k.zsh
-    # [[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
+  [[ -f ~/.zsh/.p10k.zsh ]] && source ~/.zsh/.p10k.zsh
+  # [[ ! -f ~/.zsh/.p10k.zsh ]] || source ~/.zsh/.p10k.zsh
 fi
 
 
 if [ -d $HOME/.dotfiles/env_custom/ ]; then
-    local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
-    for file in $files; do
-        . $file
-    done
+  local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
+  for file in $files; do
+    . $file
+  done
 fi
 
 ZOXIDE_PATH=$(command -v zoxide)
 if [ -n "$ZOXIDE_PATH" ]; then
-    export _ZO_DATA_DIR="$HOME/.local/share/zoxide"
-    export _ZO_ECHO=1
-    export _ZO_MAXAGE=10000
-    if [ ! -d "$_ZO_DATA_DIR" ]; then
-        mkdir -p "$_ZO_DATA_DIR"
-    fi
-    eval "$($ZOXIDE_PATH init zsh --cmd cd --hook prompt)"
+  export _ZO_DATA_DIR="$HOME/.local/share/zoxide"
+  export _ZO_ECHO=1
+  export _ZO_MAXAGE=10000
+  if [ ! -d "$_ZO_DATA_DIR" ]; then
+    mkdir -p "$_ZO_DATA_DIR"
+  fi
+  eval "$($ZOXIDE_PATH init zsh --cmd cd --hook prompt)"
 fi
 unset ZOXIDE_PATH
 
@@ -299,49 +303,49 @@ unset ZOXIDE_PATH
 # ~/.zsh/.fzf/install
 # ---------
 if [ "$(command -v fzf)" = "" ]; then
-    if [ -d $HOME/.zsh/.fzf/ ]; then
-        # if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then fi
-        if ! grep -q "$HOME/.zsh/.fzf/bin" <<< "$PATH"; then
-            export PATH="$HOME/.zsh/.fzf/bin:$PATH"
-        fi
+  if [ -d $HOME/.zsh/.fzf/ ]; then
+    # if [[ ! "$PATH" == *${HOME}/.zsh/.fzf/bin* ]]; then fi
+    if ! grep -q "$HOME/.zsh/.fzf/bin" <<< "$PATH"; then
+      export PATH="$HOME/.zsh/.fzf/bin:$PATH"
     fi
+  fi
 fi
 if [ -n "$(command -v fzf)" ]; then
-    # export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
-    export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#F92672,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
-    # Auto-completion
-    # ---------------
-    if [ -d $HOME/.zsh/.fzf/ ]; then
-        [[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
-        # Key bindings
-        source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
-    elif [ -d /opt/homebrew/ ]; then
-        WHICH_CMD=$(/bin/bash -c "which which")
-        fzf_bin_path=$($WHICH_CMD "fzf")
-        fzf_sympath=$(greadlink -f $fzf_bin_path)
-        fzf_realpath=$(dirname $(dirname $fzf_sympath))
+  # export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#7E8E91,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
+  export FZF_DEFAULT_OPTS='--color=bg+:#293739,bg:#1B1D1E,border:#808080,spinner:#E6DB74,hl:#F92672,fg:#F8F8F2,header:#7E8E91,info:#A6E22E,pointer:#A6E22E,marker:#F92672,fg+:#F8F8F2,prompt:#F92672,hl+:#F92672'
+  # Auto-completion
+  # ---------------
+  if [ -d $HOME/.zsh/.fzf/ ]; then
+    [[ $- == *i* ]] && source "$HOME/.zsh/.fzf/shell/completion.zsh" 2> /dev/null
+    # Key bindings
+    source "$HOME/.zsh/.fzf/shell/key-bindings.zsh"
+  elif [ -d /opt/homebrew/ ]; then
+    WHICH_CMD=$(/bin/bash -c "which which")
+    fzf_bin_path=$($WHICH_CMD "fzf")
+    fzf_sympath=$(greadlink -f $fzf_bin_path)
+    fzf_realpath=$(dirname $(dirname $fzf_sympath))
 
-        [[ $- == *i* ]] && source "$fzf_realpath/shell/completion.zsh" 2> /dev/null
-        # Key bindings
-        source "$fzf_realpath/shell/key-bindings.zsh"
-    fi
+    [[ $- == *i* ]] && source "$fzf_realpath/shell/completion.zsh" 2> /dev/null
+    # Key bindings
+    source "$fzf_realpath/shell/key-bindings.zsh"
+  fi
 
-    # fzf file search command
-    # -----------------------
-    if [ "$(command -v fd)" != "" ]; then
-        # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore'
-        # ignore binary file
-        export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore -X grep -lI .'
-        # .git 디렉토리를 제외하고 검색
-        # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --exclude .git'
-        # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --color=always --exclude .git'
-    else
-        # export FZF_DEFAULT_COMMAND=''
-        # export FZF_DEFAULT_COMMAND='find . -type f'
-        # ignore binary file
-        export FZF_DEFAULT_COMMAND='find . -type f -exec grep -lI . {} \;'
-    fi
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  # fzf file search command
+  # -----------------------
+  if [ "$(command -v fd)" != "" ]; then
+    # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore'
+    # ignore binary file
+    export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore -X grep -lI .'
+    # .git 디렉토리를 제외하고 검색
+    # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --exclude .git'
+    # export FZF_DEFAULT_COMMAND='fd --type file --follow --hidden --no-ignore --color=always --exclude .git'
+  else
+    # export FZF_DEFAULT_COMMAND=''
+    # export FZF_DEFAULT_COMMAND='find . -type f'
+    # ignore binary file
+    export FZF_DEFAULT_COMMAND='find . -type f -exec grep -lI . {} \;'
+  fi
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
 
@@ -349,48 +353,48 @@ fi
 
 # alias file
 if ! (declare -f -F "fualias" > /dev/null); then
-    if [ -f ~/.aliases ]; then
-        . ~/.aliases
-    fi
+  if [ -f ~/.aliases ]; then
+    . ~/.aliases
+  fi
 fi
 
 # wgetrc - --no-check-certificate option default
 if [ ! -f $HOME/.wgetrc ]; then
-    echo "check_certificate = off" >> ~/.wgetrc
+  echo "check_certificate = off" >> ~/.wgetrc
 fi
 
 if [ -n "$(command -v nvim)" ]; then
-    local nvim_tmp=$(nvim -V1 -v | grep "\$VIM:" | awk -F '\\$VIM: ' '{ print $2 }')
-    if [ -z "$nvim_tmp" ]; then
-        nvim_tmp=$(echo "${nvim_tmp:1:$(expr ${#nvim_tmp} - 2)}")
-        if [ -n "$nvim_tmp" ]; then
-            export VIMPATH=$nvim_tmp
-        fi
-    fi
+  local nvim_tmp=$(nvim -V1 -v | grep "\$VIM:" | awk -F '\\$VIM: ' '{ print $2 }')
+  if [ -z "$nvim_tmp" ]; then
     nvim_tmp=$(echo "${nvim_tmp:1:$(expr ${#nvim_tmp} - 2)}")
     if [ -n "$nvim_tmp" ]; then
-        export VIMPATH=$nvim_tmp
+      export VIMPATH=$nvim_tmp
     fi
+  fi
+  nvim_tmp=$(echo "${nvim_tmp:1:$(expr ${#nvim_tmp} - 2)}")
+  if [ -n "$nvim_tmp" ]; then
+    export VIMPATH=$nvim_tmp
+  fi
 fi
 
 if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
-    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
+  source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
 else
-    $HOME/.dotfiles/script/iterm/install_shell_integrated.sh
-    if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
-        source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
-    fi
+  $HOME/.dotfiles/script/iterm/install_shell_integrated.sh
+  if [ -f "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh" ]; then
+    source "$HOME/.dotfiles/script/iterm/iterm2_shell_integration.zsh"
+  fi
 fi
 
 
 # bindkey
 if [ -f "$HOME/.dotfiles/bindkey/bindkey.sh" ]; then
-    source $HOME/.dotfiles/bindkey/bindkey.sh
+  source $HOME/.dotfiles/bindkey/bindkey.sh
 fi
 
 # ssh-agent
 if [ -f "$HOME/.dotfiles/script/ssh-agent-init.sh" ]; then
-    source $HOME/.dotfiles/script/ssh-agent-init.sh
+  source $HOME/.dotfiles/script/ssh-agent-init.sh
 fi
 
 
@@ -413,40 +417,31 @@ typeset -g GITSTATUS_NUM_THREADS=8
 # typeset -g HISTORY_IGNORE="(ls|ls *|ll|ll *|la|la *|l|l *|lea|lea *|fg|fg *)"
 
 HISTORY_IGNORES=(
-    '^l([[:space:]]*)?$'
-    '^ls([[:space:]]*)?$'
-    '^ll([[:space:]]*)?$'
-    '^lea([[:space:]]*)?$'
-    '^fg([[:space:]].*)?$'
+  '^l([[:space:]]*)?$'
+  '^ls([[:space:]]*)?$'
+  '^ll([[:space:]]*)?$'
+  '^lea([[:space:]]*)?$'
+  '^fg([[:space:]].*)?$'
 )
 
 zshaddhistory() {
-    emulate -L zsh
-    setopt extendedglob
+  emulate -L zsh
+  setopt extendedglob
 
-    # [[ $1 != (ls[[:space:]]#|fg[[:space:]]#)$'\n' ]]
-    local ls_pattern="ls[[:space:]]#"
-    local fg_pattern="fg[[:space:]]#"
-    local ignore_pattern="($ls_pattern|$fg_pattern)"
+  # [[ $1 != (ls[[:space:]]#|fg[[:space:]]#)$'\n' ]]
+  local ls_pattern="ls[[:space:]]#"
+  local fg_pattern="fg[[:space:]]#"
+  local ignore_pattern="($ls_pattern|$fg_pattern)"
 
-    # 명령어가 패턴과 일치하는지 확인
-    # [[ $1 != ${ignore_pattern}$'\n' ]]
+  # 명령어가 패턴과 일치하는지 확인
+  # [[ $1 != ${ignore_pattern}$'\n' ]]
 
-    cmd="$1"
-    for ignore in "${HISTORY_IGNORES[@]}" ; do
-        if [[ "${cmd%$'\n'}" =~ $ignore ]]; then
-            return 1
-        fi
-    done
-    return 0
+  cmd="$1"
+  for ignore in "${HISTORY_IGNORES[@]}" ; do
+    if [[ "${cmd%$'\n'}" =~ $ignore ]]; then
+      return 1
+    fi
+  done
+  return 0
 }
 
-
-# --WCGW_ENVIRONMENT_START--
-if [ -n "$IN_WCGW_ENVIRONMENT" ]; then
- PROMPT_COMMAND='printf "◉ $(pwd)──➤ \r\e[2K"'
- prmptcmdwcgw() { eval "$PROMPT_COMMAND" }
- add-zsh-hook -d precmd prmptcmdwcgw
- precmd_functions+=prmptcmdwcgw
-fi
-# --WCGW_ENVIRONMENT_END--
