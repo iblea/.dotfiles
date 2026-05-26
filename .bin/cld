@@ -6,13 +6,13 @@ CLAUDE_OPT=""
 DEFAULT_EDITOR="vi"
 DEFAULT_EFFORT=""
 
-if [ -n "$(command -v jq)" ]; then
-    if [ -f "$HOME/.claude/settings.json" ]; then
-        DEFAULT_EDITOR=$(jq .env.CLAUDE_CODE_DEFAULT_EDITOR "$HOME/.claude/settings.json")
-    else
-        DEFAULT_EFFORT="xhigh"
-    fi
-fi
+# if [ -n "$(command -v jq)" ]; then
+#     if [ -f "$HOME/.claude/settings.json" ]; then
+#         DEFAULT_EDITOR=$(jq .env.CLAUDE_CODE_DEFAULT_EDITOR "$HOME/.claude/settings.json")
+#     else
+#         DEFAULT_EFFORT="xhigh"
+#     fi
+# fi
 
 if [ $# -eq 0 ]; then
     CLAUDE_OPT=""
@@ -169,7 +169,7 @@ if [ -z "$EDITOR" ]; then
     if [[ "$DEFAULT_EDITOR" = "code" ]]; then
         export EDITOR="code"
     elif [[ "$DEFAULT_EDITOR" = "vi" ]]; then
-        if [ "$(command -v nvim)" ]; then
+        if [ -n "$(command -v nvim)" ]; then
             export EDITOR="nvim"
         else
             export EDITOR="vim"
@@ -177,7 +177,7 @@ if [ -z "$EDITOR" ]; then
     else
         if [ -n "$GIT_ASKPASS" ]; then
             export EDITOR="code"
-        elif [ "$(command -v nvim)" ]; then
+        elif [ -n "$(command -v nvim)" ]; then
             export EDITOR="nvim"
         else
             export EDITOR="vim"
@@ -185,18 +185,12 @@ if [ -z "$EDITOR" ]; then
     fi
 fi
 
-if [ -n "$TMUX" ] || [ -n "$LC_TMUX" ]; then
-    if [[ "$EDITOR" = "nvim" ]]; then
-        export EDITOR="codenvim"
-    elif [[ "$EDITOR" = "vim" ]]; then
-        export EDITOR="codevim"
-    fi
-else
-    if [[ "$EDITOR" = "nvim" ]]; then
-        export EDITOR="nvim --cmd 'cd $PWD'"
-    elif [[ "$EDITOR" = "vim" ]]; then
-        export EDITOR="vim --cmd 'cd $PWD'"
-    fi
+if [[ "$EDITOR" = "nvim" ]]; then
+    export EDITOR="codevim"
+    # export EDITOR="nvim --cmd 'cd $PWD'"
+elif [[ "$EDITOR" = "vim" ]]; then
+    export EDITOR="codevim"
+    # export EDITOR="vim --cmd 'cd $PWD'"
 fi
 
 export ENABLE_LSP_TOOL=true

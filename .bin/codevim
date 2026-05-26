@@ -3,17 +3,17 @@
 # echo "VIM_PROG: $VIM_PROGRAM"
 if [ -z "$VIM_PROGRAM" ]; then
     if [ -z "$(command -v nvim)" ]; then
-        VIM_PROGRAM="nvim"
-    else
         VIM_PROGRAM="vim"
+    else
+        VIM_PROGRAM="nvim"
     fi
 else
     validate_var=$(command -v "$VIM_PROGRAM")
     if [ -z "$validate_var" ]; then
         if [ -z "$(command -v nvim)" ]; then
-            VIM_PROGRAM="nvim"
-        else
             VIM_PROGRAM="vim"
+        else
+            VIM_PROGRAM="nvim"
         fi
     fi
 fi
@@ -41,7 +41,7 @@ if [ -z "$TMUX" ]; then
     #     TMUX_COMMAND_STR="tmux -S '${LC_TMUX_SOCKET}'"
     # else
         # exec $VIM_PROGRAM "$@"
-        exec $VIM_PROGRAM --cmd 'cd $PWD' "$@"
+        exec $VIM_PROGRAM --cmd "cd '${PWD}'" "$@"
         exit 0
     # fi
 fi
@@ -101,8 +101,28 @@ fi
 # echo "vim enter" >> /tmp/test.txt
 # horizontal
 # $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
+{
+    echo "=== codevim debug $(date '+%Y-%m-%d %H:%M:%S') ==="
+    echo "PANE_PWD=[${PANE_PWD}]"
+    echo "VIM_PROGRAM=[${VIM_PROGRAM}]"
+    echo "PWD=[${PWD}]"
+    echo "EDITOR=[${EDITOR}]"
+    echo "arg count=$#"
+    _i=0
+    for _a in "$@"; do
+        _i=$((_i+1))
+        echo "arg[$_i]=[$_a]"
+    done
+} >> /tmp/codevim-debug.log 2>&1
+
 TMUX_CMD="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' $@"
 TMUX_CMD_WAIT="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' -c '\$' +startinsert! $@; VIMRC=\$?; ${TMUX_COMMAND_STR} set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && ${TMUX_COMMAND_STR} set-hook -w pane-exited 'run-shell \"$HOME/.dotfiles/.bin/codevim-autosend ${ORIG_PANE} && ${TMUX_COMMAND_STR} set-hook -uw pane-exited\"'"
+
+{
+    echo "TMUX_CMD=[${TMUX_CMD}]"
+    echo "TMUX_CMD_WAIT=[${TMUX_CMD_WAIT}]"
+    echo ""
+} >> /tmp/codevim-debug.log 2>&1
 
 if [ $CURRENT_LINES -ge 26 ]; then
     if [ $NO_WAIT -eq 1 ]; then
