@@ -41,7 +41,7 @@ cp -r "$curpath/settings.json" "$HOME/.claude/settings.json"
 
 echo "setup hooks"
 if [ ! -d "$CLAUDE_DIR/hooks/" ]; then
-    ln -s "$curpath/hooks" "$$CLAUDE_DIR/"
+    ln -s "$curpath/hooks" "$CLAUDE_DIR/"
 fi
 
 echo "install mcp servers"
@@ -62,15 +62,15 @@ if [ -n "$(command -v sudo)" ]; then
     sudo npm install -g @modelcontextprotocol/server-sequential-thinking
     sudo npm install -g @upstash/context7-mcp
     # sudo npm install -g @playwright/mcp@latest
-    sudo cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+    # sudo cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 else
     npm install -g @modelcontextprotocol/server-sequential-thinking
     npm install -g @upstash/context7-mcp
     # npm install -g @playwright/mcp@latest
-    cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+    # cp -r "$curpath/sequential-thinking-improved.js" "$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 fi
 echo "sequential thinking mcp script modify. (check this path)"
-echo "\$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
+# echo "\$(npm root -g)/@modelcontextprotocol/server-sequential-thinking/dist/sequential-thinking-improved.js"
 echo "CHANGE ~/.claude.json , ~/.claude/settings.json YOUR_API_KEY"
 
 echo "setup prompt"
