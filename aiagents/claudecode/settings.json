@@ -1,8 +1,11 @@
 {
+  "skillListingBudgetFraction": 0.05,
   "env": {
     "MAX_THINKING_TOKENS": "63999",
     "CLAUDE_CODE_NO_FLICKER": "0",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_DISABLE_THINKING": "0",
+    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_EFFORT_LEVEL": "max"
   },
   "permissions": {
@@ -74,7 +77,7 @@
     ],
     "deny": [],
     "ask": [],
-    "defaultMode": "default"
+    "defaultMode": "auto"
   },
   "model": "Opus [1m]",
   "enableAllProjectMcpServers": true,
@@ -114,11 +117,26 @@
     "clangd-lsp@claude-plugins-official": false,
     "code-review@claude-plugins-official": true,
     "playwright@claude-plugins-official": false,
-    "document-skills@anthropic-agent-skills": true,
-    "example-skills@anthropic-agent-skills": true,
     "clarify@team-attention-plugins": true,
     "ralph-loop@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "document-skills@anthropic-agent-skills": true,
+    "claude-api@anthropic-agent-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    }
   },
   "language": "한국어",
   "alwaysThinkingEnabled": true,
@@ -126,10 +144,12 @@
   "tui": "fullscreen",
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
+  "verbose": true,
   "teammateMode": "in-process",
   "autoCompactEnabled": false,
+  "skipAutoPermissionPrompt": true,
+  "display": "summarized",
   "bypassPermissionsModeAccepted": true,
-  "verbose": true,
   "mcpServers": {
     "context7": {
       "type": "stdio",

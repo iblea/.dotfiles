@@ -15,8 +15,12 @@ if [ -z "$(command -v cld)" ]; then
 fi
 
 if [ -z "$(command -v tmux)" ]; then
-    echo "tmux command not found"
-    exit 0
+    cld "$@"
+    _ret=$?
+    exit $_ret
+
+    # echo "tmux command not found"
+    # exit 0
 fi
 
 NVIM_IDE=0

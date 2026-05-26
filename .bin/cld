@@ -7,7 +7,11 @@ DEFAULT_EDITOR="vi"
 DEFAULT_EFFORT=""
 
 if [ -n "$(command -v jq)" ]; then
-    DEFAULT_EFFORT=$(jq .env.CLAUDE_CODE_EFFORT_LEVEL "$HOME/.claude/settings.json")
+    if [ -f "$HOME/.claude/settings.json" ]; then
+        DEFAULT_EDITOR=$(jq .env.CLAUDE_CODE_DEFAULT_EDITOR "$HOME/.claude/settings.json")
+    else
+        DEFAULT_EFFORT="xhigh"
+    fi
 fi
 
 if [ $# -eq 0 ]; then
