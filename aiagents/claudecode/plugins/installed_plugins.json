@@ -67,17 +67,6 @@
         "lastUpdated": "2026-03-25T06:59:31.213Z"
       }
     ],
-    "document-skills@anthropic-agent-skills": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/document-skills/98669c11ca63",
-        "version": "98669c11ca63",
-        "installedAt": "2026-01-16T08:13:02.042Z",
-        "lastUpdated": "2026-03-25T23:51:24.124Z",
-        "gitCommitSha": "69c0b1a0674149f27b61b2635f935524b6add202"
-      }
-    ],
     "clarify@team-attention-plugins": [
       {
         "scope": "project",
@@ -100,25 +89,44 @@
         "gitCommitSha": "e30768372b4150ca1bc0839d93283e8edc30d60d"
       }
     ],
-    "example-skills@anthropic-agent-skills": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/example-skills/98669c11ca63",
-        "version": "98669c11ca63",
-        "installedAt": "2026-03-11T07:31:23.801Z",
-        "lastUpdated": "2026-03-25T23:51:24.124Z",
-        "gitCommitSha": "b0cbd3df1533b396d281a6886d5132f623393a9c"
-      }
-    ],
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.6",
-        "version": "5.0.6",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0",
+        "version": "5.1.0",
         "installedAt": "2026-03-30T23:56:19.001Z",
-        "lastUpdated": "2026-03-30T23:56:19.001Z",
+        "lastUpdated": "2026-05-05T05:19:20.707Z",
         "gitCommitSha": "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06"
+      }
+    ],
+    "codex@openai-codex": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/openai-codex/codex/1.0.4",
+        "version": "1.0.4",
+        "installedAt": "2026-05-06T05:30:33.278Z",
+        "lastUpdated": "2026-05-06T05:30:33.278Z",
+        "gitCommitSha": "807e03ac9d5aa23bc395fdec8c3767500a86b3cf"
+      }
+    ],
+    "document-skills@anthropic-agent-skills": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/document-skills/690f15cac7f7",
+        "version": "690f15cac7f7",
+        "installedAt": "2026-05-06T08:10:58.279Z",
+        "lastUpdated": "2026-05-20T00:13:31.724Z",
+        "gitCommitSha": "690f15cac7f7b4c055c5ab109c79ed9259934081"
+      }
+    ],
+    "claude-api@anthropic-agent-skills": [
+      {
+        "scope": "user",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/claude-api/690f15cac7f7",
+        "version": "690f15cac7f7",
+        "installedAt": "2026-05-06T08:11:15.932Z",
+        "lastUpdated": "2026-05-20T00:13:31.723Z",
+        "gitCommitSha": "690f15cac7f7b4c055c5ab109c79ed9259934081"
       }
     ]
   }
