@@ -19,7 +19,7 @@ from logging.handlers import RotatingFileHandler
 
 # === 설정 ===
 
-SYMBOL="US100"
+SYMBOL="USTEC"
 API_URL = "https://stock.iasdf.com/tradingview/recent_data?symbol={}".format(SYMBOL)
 INTERVAL_SEC = 60
 REQUEST_TIMEOUT = 10
