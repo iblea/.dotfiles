@@ -12,6 +12,8 @@ cwd=$(echo "$input" | jq -r '.workspace.current_dir')
 transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
 ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // ""')
 ctx_remaining=$(echo "$input" | jq -r '.context_window.remaining_percentage // ""')
+# Reasoning effort (/effort 값). effort 미지원 모델이면 .effort 자체가 없어 빈 값이 됨
+effort=$(echo "$input" | jq -r '.effort.level // ""')
 
 # ── Extract rate limits from stdin JSON (added in Claude Code 2.1.80) ──
 stdin_five_hour_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // ""')
@@ -359,6 +361,18 @@ get_memory_color() {
     fi
 }
 
+# ── Helper: effort level color (low/medium/high=회색, xhigh=노랑, max=빨강) ──
+# 주의: ultracode는 별도 값이 아니라 .effort.level 이 xhigh 로 들어오므로(stdin/env 모두)
+#       xhigh 와 색 구분 불가. 구분하려면 transcript 로그 파싱이 필요한데 성능/신뢰성 문제로 미채택
+get_effort_color() {
+    case "$1" in
+        low|medium|high) echo "$C_GRAY" ;;
+        xhigh)           echo "$C_YELLOW" ;;
+        max)             echo "$C_RED" ;;
+        *)               echo "$C_GRAY" ;;
+    esac
+}
+
 # ════════════════════════════════════════════
 # Collect data
 # ════════════════════════════════════════════
@@ -436,12 +450,14 @@ session_dur=$(get_session_duration)
 # ════════════════════════════════════════════
 line1=""
 
-# Model + Plan badge
-model_badge="$model"
-if [ -n "$plan_name" ]; then
-    model_badge="$model | $plan_name"
+# Model badge (플랜/대괄호 제거 — 모델명만 출력. plan_name 데이터는 수집부에 보존됨)
+line1+="${C_CYAN}${model}${C_RESET}"
+
+# Effort badge: | ⚡<level> (effort 미지원 모델이면 stdin에 .effort 없어 자동 생략)
+if [ -n "$effort" ] && [ "$effort" != "null" ]; then
+    effort_color=$(get_effort_color "$effort")
+    line1+=" | ${effort_color}⚡${effort}${C_RESET}"
 fi
-line1+="${C_CYAN}[${model_badge}]${C_RESET}"
 
 # Git branch + status: (*1 +3 !2 ?1 ~1)
 if [ -n "$git_branch" ]; then
