@@ -4,7 +4,7 @@
 CLAUDE_OPT=""
 
 DEFAULT_EDITOR="vi"
-DEFAULT_EFFORT=""
+DEFAULT_EFFORT="max"
 
 # if [ -n "$(command -v jq)" ]; then
 #     if [ -f "$HOME/.claude/settings.json" ]; then
