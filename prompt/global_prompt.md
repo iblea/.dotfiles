@@ -84,6 +84,16 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
       - `../../relative/path/to/filename:line-range` (`../../docs/test.md:10-15`)
     - Absolute path
       - `/absolute/path/to/filename:line` or `line-range` (`/home/test/docs/vimtest.txt:30`)
+
+- **Authorship Attribution Policy (No AI Trailers)**
+  - When creating Git commits, pushing changes, writing pull request descriptions, or authoring any external/outward-facing documents, do NOT add any AI-authorship trailers, attributions, or signatures. Specifically:
+    - Do NOT append a `Co-Authored-By:` trailer that references Claude, Claude Code, or any AI model to commit messages.
+    - Do NOT add `🤖 Generated with [Claude Code]` or any similar "Generated with ..." attribution line to commit messages, PR descriptions, or documents.
+    - Do NOT include any other AI-authorship notice, signature, or watermark (e.g., "Written by AI", "Created by Claude", robot-emoji tags) in any committed content or outward-facing document.
+
+Write commit messages, PR descriptions, and documents as if authored
+directly, without any AI co-authorship or generation notice.
+
 - Answer in Korean (한국어로 답변해.)
   - 한국어로 답할 때에는 격식을 차리지 않고, 매우 친한 사람과 대화하듯 친근한 말투와 함께 반말을 사용해 답변해 줘.
 - Respond using emojis appropriately.
