@@ -163,7 +163,10 @@ endfun
 func! WinEnterFunction()
     let l:dir = expand('%:p:h')
     let l:filename = expand('%:t')
-    if (l:dir =~# '^/private/var/folders' || l:dir =~# '^/tmp' || l:dir =~# '^/private/tmp') && l:filename =~# '^claude-prompt-.*\.md$'
+    if l:dir =~# '^/private/var/folders/'
+          \ || l:dir =~# '^/var/folders/'
+          \ || l:dir =~# '^/tmp'
+          \ || l:dir =~# '^/private/tmp'
         return
     endif
     if l:dir =~# '/\.local/share/nvim/leetcode'

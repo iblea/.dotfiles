@@ -349,7 +349,10 @@ iabbrev utk ultrathink
 func! WinEnterFunction()
     let l:dir = expand('%:p:h')
     let l:filename = expand('%:t')
-    if (l:dir =~# '^/private/var/folders' || l:dir =~# '^/tmp') && l:filename =~# '^claude-prompt-.*\.md$'
+    if l:dir =~# '^/private/var/folders/'
+          \ || l:dir =~# '^/var/folders/'
+          \ || l:dir =~# '^/tmp'
+          \ || l:dir =~# '^/private/tmp'
         return
     endif
     " silent! execute 'cd' l:dir
@@ -372,4 +375,3 @@ endif
 
 noremap <C-@> <ESC>
 inoremap <C-@> <ESC>
-

@@ -19,6 +19,16 @@ if [ -z "$(command -v tmux)" ]; then
 fi
 
 NVIM_IDE=0
+EDITOR="vi"
+
+if [ -n "$(command -v nvim)" ]; then
+    # EDITOR="nvim"
+    EDITOR="codevim"
+elif [ -n "$(command -v vim)" ]; then
+    # EDITOR="vim"
+    EDITOR="codevim"
+fi
+
 if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         codex --help
