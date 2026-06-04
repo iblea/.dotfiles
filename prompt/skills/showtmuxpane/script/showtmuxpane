@@ -60,14 +60,33 @@ fi
 
 # display_window="$1"
 target="$1"
-display_window=$(echo "$target" | awk -F '.' '{print $1}')
 shift
 
-# .<pane> 형태로 들어오면 현재 윈도우 번호로 채움
-if [ -z "$display_window" ]; then
-    display_window=$(${TMUX_COMMAND[@]} display-message -p '#I')
-    target="${display_window}${target}"
-fi
+# Pane Argument 파싱: <window>.<pane> / <window> / .<pane>
+case "$target" in
+    .*)
+        # ".pane" 형태: 명령이 실행되는 페인($TMUX_PANE)의 윈도우 번호를 앞에 채움
+        # 타겟 없는 '#I'는 "활성 윈도우"를 반환하므로, 명령 입력 후 다른 윈도우로
+        # 전환하면 엉뚱한 윈도우를 잡는다. $TMUX_PANE 기준으로 고정한다.
+        if [ -n "$TMUX_PANE" ]; then
+            display_window=$(${TMUX_COMMAND[@]} display-message -p -t "$TMUX_PANE" '#I')
+        else
+            display_window=$(${TMUX_COMMAND[@]} display-message -p '#I')
+        fi
+        target="${display_window}${target}"
+        ;;
+    *.*)
+        # "window.pane" 형태: 그대로 사용
+        display_window="${target%%.*}"
+        ;;
+    *)
+        # "window"만 (점 없음): window의 첫 페인을 명시 (2 -> 2.1)
+        # 점 없는 단일 숫자는 tmux가 "현재 윈도우의 pane N"으로 해석하므로 명시 필요
+        display_window="$target"
+        pane_base=$(${TMUX_COMMAND[@]} show-options -gv pane-base-index 2>/dev/null)
+        target="${target}.${pane_base:-0}"
+        ;;
+esac
 
 windowlist="$(${TMUX_COMMAND[@]} list-windows | grep -P '^[0-9]+:' | awk -F ':' '{print $1}')"
 is_exist=$(echo "$windowlist" | grep "^$display_window$")
@@ -109,12 +128,10 @@ done
 if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
     ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
 elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
-    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | head -n $HEAD_OPT
 else
     ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
 fi
 
 # tmux capture-pane -t $target -p -E $(($(tmux display -p -t $target '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
 # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
-
-

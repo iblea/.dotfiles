@@ -128,12 +128,10 @@ done
 if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
     ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
 elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
-    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $HEAD_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | head -n $HEAD_OPT
 else
     ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
 fi
 
 # tmux capture-pane -t $target -p -E $(($(tmux display -p -t $target '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'
 # tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))
-
-

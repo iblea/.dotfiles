@@ -19,19 +19,14 @@ Please refer to the details below. (`#SKILL OPTS` section)
 
 # SKILL behavior
 
-- Identify the TMUX environment, and if the agent is operating within a TMUX environment, perform the following tasks.
-  - If the environment is not TMUX, output the message "This is not a TMUX environment." and terminate the conversation.
-    - It can be used as follows: `echo $TMUX` or `env | grep "TMUX"`
-  - However, in an SSH session with `$LC_TMUX` and `$LC_TMUX_SOCKET` environment variables set, the agent is controlling the **local (remote host's) tmux** via socket. In this case, `$TMUX` may be empty, but `showtmuxpane` and `sendtmuxpane` scripts internally handle this by using `tmux -S "$LC_TMUX_SOCKET"` instead of plain `tmux`.
+- Identify the TMUX environment before running tmux commands.
+  - Treat the environment as TMUX when either of the following is true:
+    - `$TMUX` is set.
+    - The session is SSH and both `$LC_TMUX` and `$LC_TMUX_SOCKET` are set.
+  - If neither condition is true, output the message "This is not a TMUX environment." and terminate the conversation.
+    - It can be checked as follows: `echo $TMUX` or `env | grep "TMUX"`
+  - In an SSH session with `$LC_TMUX` and `$LC_TMUX_SOCKET` environment variables set, the agent is controlling the **local (remote host's) tmux** via socket. In this case, `$TMUX` may be empty, but `showtmuxpane` and `sendtmuxpane` scripts internally handle this by using `tmux -S "$LC_TMUX_SOCKET"` instead of plain `tmux`.
     - This means: SSH environment + `LC_TMUX_SOCKET` present = operating on local tmux from a remote connection. Keep this in mind when interpreting tmux context.
-
-- **Trust the target pane's CWD (`tmuxaddir`)**: Before invoking `showtmuxpane` or `sendtmuxpane`, run `tmuxaddir <window>[.<pane>]` ONCE for the target. This adds the target pane's current working directory to Claude Code's trusted directory list, reducing repeated permission prompts when interacting with files under that directory in subsequent turns.
-  - `tmuxaddir` is available in `$PATH` by default (`~/.dotfiles/.bin/tmuxaddir`). If not available, use `./script/tmuxaddir` instead.
-  - Internally, `tmuxaddir` resolves the target pane's `pane_current_path` and sends `/add-dir <path>` + Enter to the CURRENT pane (where Claude Code is running) via `tmux send-keys`.
-  - **Timing caveat**: The injected `/add-dir` directive is only consumed by Claude Code AFTER the current turn finishes. Therefore, on the FIRST invocation for a given target directory, follow-up file operations (Read/Edit on paths outside the current project directory) within the SAME turn may still trigger permission prompts. From the NEXT turn onward, the directory is auto-allowed.
-  - **Failure handling**: If `tmuxaddir` fails (non-zero exit, missing pane, etc.), log a brief warning and CONTINUE with the main `showtmuxpane`/`sendtmuxpane` operation. Do NOT abort the user's primary request because of a trust-setup failure.
-  - **Skip condition**: If the `nt` (or `notrust`) option is provided, this step MUST be skipped entirely. See the `nt or notrust` section under `# SKILL OPTS`.
-  - Run `tmuxaddir` ONCE per command invocation, not per `showtmuxpane`/`sendtmuxpane` call within the same turn.
 
 - The description of the commands is as follows.
   - Verify whether the `showtmuxpane` function is defined using `command -v showtmuxpane` or similar methods. If it is defined, utilize the `showtmuxpane` function to reference the output of a specific window.
@@ -46,7 +41,7 @@ Please refer to the details below. (`#SKILL OPTS` section)
 # SKILL OPTS
 This is an optional string that can follow this command.
 
-If no options are provided, the contents of pane 2 will be displayed.
+If no options are provided, the contents of window 2 will be displayed.
 
 ### First Option
 The first option specifies the target tmux window (and optionally the pane) to display.
@@ -56,7 +51,7 @@ Accepted formats:
 - `<window>.<pane>` — target window N, pane M (e.g. `2.2` → window 2, pane 2).
 - `.<pane>` — current window, pane M (e.g. `.2` → current window, pane 2; `.3` → current window, pane 3).
   - The current window number is auto-resolved internally via `tmux display-message -p '#I'`, so the user does not need to specify it explicitly.
-  - This applies to all three scripts: `showtmuxpane`, `sendtmuxpane`, and `tmuxaddir`.
+  - This applies to all two scripts: `showtmuxpane`, `sendtmuxpane`.
 
 - example
   - `;tm 2`     → `showtmuxpane 2`     (window 2, pane 1)
@@ -128,22 +123,6 @@ If this option is provided, a specific tmux window can be manipulated through th
   - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in window 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
   - Then, depending on the user's response, the commands are executed in window 2 through `sendtmuxpane`.
 
-#### nt or notrust
-
-If this option is provided, the preceding `tmuxaddir <window>[.<pane>]` step (described in `# SKILL behavior`) MUST be skipped.
-
-By default (without this option), `tmuxaddir` is invoked ONCE before any `showtmuxpane`/`sendtmuxpane` execution to add the target pane's CWD to Claude Code's trusted directory list. Note that `tmuxaddir` injects `/add-dir <path>` + Enter into the CURRENT pane via `tmux send-keys`.
-
-Use `nt` when:
-- You only want to capture the pane content and have NO intention of touching files outside the current project directory.
-- The target pane's CWD is already trusted (avoids a redundant `/add-dir` keystroke being injected into the current pane).
-- You explicitly want to avoid sending ANY keystrokes to the current pane (e.g., to keep the prompt buffer clean).
-
-- example
-  - `;tm 2 nt`: Skip `tmuxaddir`, only run `showtmuxpane 2`.
-  - `;tm 2 sk nt <command>`: Skip `tmuxaddir`, then send `<command>` to window 2 via `sendtmuxpane`.
-  - `;tm 2 nt t 10`: Skip `tmuxaddir`, then `showtmuxpane 2 | tail -n 10`.
-
 #### tail or t (optional number: default 20)
 
 If this option is provided, Append `| tail -n <number>` after the capture-tmux command to output only the last `n` lines.
@@ -155,23 +134,22 @@ If this option is provided, Append `| tail -n <number>` after the capture-tmux c
   - `;tm 2 t`: `showtmuxpane 2 | tail -n 20`
     - Since there is no content after `t`, the default value of 20 is used for output.
   - `;tm 2 -S -5 t`: `showtmuxpane 2 -S -5 | tail -n 20`
-  - Do not check the TMUX environment variable and query with showtmuxpane at the same time as this command. There is a high possibility that errors will occur.
+  - Do not guard `showtmuxpane` with only `[ -n "$TMUX" ]`; SSH + `LC_TMUX_SOCKET` sessions may have an empty `$TMUX`. Use `showtmuxpane` directly because the script handles the tmux context internally.
     - Incorrect Example: `[ -n "$TMUX" ] && showtmuxpane 2 -S -5 | tail -n 20`
-    - Correct Example: `[ -n "$TMUX" ] && showtmuxpane 2 -S -5 --tail 10` (`-t`, `-T`, `--tail` option use. A number must be entered after the option.)
+    - Correct Example: `showtmuxpane 2 -S -5 --tail 10` (`-t`, `-T`, `--tail` option use. A number must be entered after the option.)
 
 #### head or h (optional number: default 20)
 
-If this option is provided, Append `| head -n <number>` after the capture-tmux command to output only the first `n` lines.
+If this option is provided, append `| head -n <number>` after the capture-pane command to output only the first `n` lines.
 
-- If the content after t is not a number, it is treated as if no number option was provided, and the default value of 20 is used for output.
+- If the content after h is not a number, it is treated as if no number option was provided, and the default value of 20 is used for output.
 
 - example
   - `;tm 2 h 10`: `showtmuxpane 2 | head -n 10`
   - `;tm 2 h`: `showtmuxpane 2 | head -n 20`
     - Since there is no content after `h`, the default value of 20 is used for output.
   - `;tm 2 -S -50 h`: `showtmuxpane 2 -S -50 | head -n 20`
-  - Do not check the TMUX environment variable and query with showtmuxpane at the same time as this command. There is a high possibility that errors will occur.
+  - Do not guard `showtmuxpane` with only `[ -n "$TMUX" ]`; SSH + `LC_TMUX_SOCKET` sessions may have an empty `$TMUX`. Use `showtmuxpane` directly because the script handles the tmux context internally.
     - Incorrect Example: `[ -n "$TMUX" ] && showtmuxpane 2 -S -5 | head -n 20`
-    - Correct Example: `[ -n "$TMUX" ] && showtmuxpane 2 -S -5 --head 10` (`-h`, `-H`, `--head` option use. A number must be entered after the option.)
-
+    - Correct Example: `showtmuxpane 2 -S -5 --head 10` (`-h`, `-H`, `--head` option use. A number must be entered after the option.)
 
