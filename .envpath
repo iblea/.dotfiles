@@ -264,22 +264,21 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 	if [ -d "$HOME/.codex" ]; then
 		export CODEX_HOME="$HOME/.codex"
 	fi
-	if [ -d "/opt/homebrew/opt/llvm/" ]; then
-		if [ -d "/opt/homebrew/opt/llvm/lib" ]; then
-			if [ -z "${LDFLAGS}" ]; then
-				export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-			else
-				export LDFLAGS="${LDFLAGS} -L/opt/homebrew/opt/llvm/lib"
+
+	homebrew_env_lists=(
+		"/opt/homebrew/opt/llvm"
+		"/opt/homebrew/opt/node@22"
+	)
+	for env_path in ${homebrew_env_lists[@]}; do
+		if [ -d "$env_path" ]; then
+			if ! grep -q "$env_path/lib" <<< "$LDFLAGS"; then
+				export LDFLAGS="${LDFLAGS} -L${env_path}/lib"
+			fi
+			if ! grep -q "$env_path/include" <<< "$CPPFLAGS"; then
+				export CPPFLAGS="${CPPFLAGS} -I${env_path}/include"
 			fi
 		fi
-		if [ -d "/opt/homebrew/opt/llvm/include" ]; then
-			if [ -z "${CPPFLAGS}" ]; then
-				export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-			else
-				export CPPFLAGS="${CPPFLAGS} -I/opt/homebrew/opt/llvm/include"
-			fi
-		fi
-	fi
+	done
 fi
 
 unset is_zsh
