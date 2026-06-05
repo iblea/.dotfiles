@@ -1,0 +1,11 @@
+JAVA_VERSION=1.8
+
+export JDTLS_JAVA_HOME=/path/to/jdk-21
+export JDTLS_PROJECT_JAVA_HOME=/path/to/jdk-8
+export JDTLS_LOMBOK_JAR=/path/to/lombok.jar
+
+# example
+# export JDTLS_JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+# export JDTLS_PROJECT_JAVA_HOME="/Library/Java/JavaVirtualMachines/zulu-8.jdk/Contents/Home"
+# export JDTLS_LOMBOK_JAR="$HOME/.m2/repository/org/projectlombok/lombok/1.18.24/lombok-1.18.24.jar"
+

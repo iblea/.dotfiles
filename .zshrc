@@ -273,7 +273,7 @@ fi
 
 
 if [ -d $HOME/.dotfiles/env_custom/ ]; then
-  local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep') )
+  local files=( $(find $HOME/.dotfiles/env_custom/ -type f -not -name '.gitkeep' -not -name 'java.backup') )
   for file in $files; do
     . $file
   done
