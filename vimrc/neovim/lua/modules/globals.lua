@@ -9,6 +9,7 @@ api.nvim_set_var("lsp_servers", {
   -- "pylsp",
   "pyright",
   "gopls",
+  "jdtls",
 })
 
 api.nvim_set_var("lsp_linters", {
