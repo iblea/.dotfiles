@@ -1,0 +1,75 @@
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+personality = "pragmatic"
+web_search = "live"
+approvals_reviewer = "user"
+model_reasoning_summary = "detailed"
+show_raw_agent_reasoning = true
+hide_agent_reasoning = false
+
+[sandbox_workspace_write]
+network_access = true
+
+[mcp_servers.Context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp", "--api-key", "__API_KEY__"]
+disable = false
+
+# [mcp_servers.sequential-thinking]
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+# disabled = false
+
+[mcp_servers.sequential-thinking-markdown]
+command = "node"
+args = ["__HOME__/.dotfiles/aiagents/claudecode/sequential-thinking-improved/dist/index.js"]
+disabled = false
+
+
+# [mcp_servers.playwright]
+# command = "npx"
+# args = ["-y", "@playwright/mcp@latest"]
+# disabled = false
+
+# experimental_use_rmcp_client = true
+# [mcp_servers.github]
+# url = "https://api.githubcopilot.com/mcp"
+# bearer_token = "__API_KEY__"
+# # http_headers = { "Authorization" = "__API_KEY__" }
+# disabled = false
+
+[notice]
+hide_gpt5_1_migration_prompt = true
+"hide_gpt-5.1-codex-max_migration_prompt" = true
+
+[notice.model_migrations]
+"gpt-5.1-codex-mini" = "gpt-5.2-codex"
+"gpt-5.2-codex" = "gpt-5.3-codex"
+"gpt-5.3-codex" = "gpt-5.4"
+
+[features]
+multi_agent = true
+memories = true
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "git-branch", "branch-changes", "context-remaining", "five-hour-limit", "weekly-limit"]
+status_line_use_colors = true
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[tui.keymap.editor]
+kill_line_end = [ "ctrl-g" ]
+
+[tui.keymap.global]
+open_external_editor = [ "ctrl-k" ]
+
+[tui.keymap.list]
+move_up = ["up", "ctrl-p", "k"]
+
+
+[plugins."google-drive@openai-curated"]
+enabled = true
+
+[plugins."github@openai-curated"]
+enabled = true
