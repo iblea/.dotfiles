@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ -z "$(git diff --cached --name-only 2>/dev/null)" ]; then
+    echo "no staged."
+    exit 1
+fi
+
+if [ -z "$(command -v codex)" ]; then
+	echo "codex not found."
+	echo "npm install -g @openai/codex"
+	exit 1
+fi
+
+echo "codex code review"
+echo ";cire $*" | codex -C "$(pwd)" --search --dangerously-bypass-approvals-and-sandbox exec -
+
+echo ""
+echo "done."
