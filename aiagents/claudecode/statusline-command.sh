@@ -451,12 +451,12 @@ session_dur=$(get_session_duration)
 line1=""
 
 # Model badge (플랜/대괄호 제거 — 모델명만 출력. plan_name 데이터는 수집부에 보존됨)
-line1+="${C_CYAN}${model}${C_RESET}"
+line1+="🧠 ${C_CYAN}${model}${C_RESET}"
 
-# Effort badge: | ⚡<level> (effort 미지원 모델이면 stdin에 .effort 없어 자동 생략)
+# Effort badge: | 💪 <level> (effort 미지원 모델이면 stdin에 .effort 없어 자동 생략)
 if [ -n "$effort" ] && [ "$effort" != "null" ]; then
     effort_color=$(get_effort_color "$effort")
-    line1+=" | ${effort_color}⚡${effort}${C_RESET}"
+    line1+=" | ${effort_color}💪 ${effort}${C_RESET}"
 fi
 
 # Git branch + status: (*1 +3 !2 ?1 ~1)

@@ -4,15 +4,14 @@
 CLAUDE_OPT=""
 
 DEFAULT_EDITOR="vi"
-DEFAULT_EFFORT="max"
+DEFAULT_EFFORT="xhigh"
 
-# if [ -n "$(command -v jq)" ]; then
-#     if [ -f "$HOME/.claude/settings.json" ]; then
-#         DEFAULT_EDITOR=$(jq .env.CLAUDE_CODE_DEFAULT_EDITOR "$HOME/.claude/settings.json")
-#     else
-#         DEFAULT_EFFORT="xhigh"
-#     fi
-# fi
+if [ -n "$(command -v jq)" ]; then
+    if [ -f "$HOME/.claude/settings.json" ]; then
+        DEFAULT_EDITOR=$(jq -r .env.CLAUDE_CODE_DEFAULT_EDITOR "$HOME/.claude/settings.json")
+        DEFAULT_EFFORT=$(jq -r .env.CLAUDE_CODE_DEFAULT_EFFORT "$HOME/.claude/settings.json")
+    fi
+fi
 
 if [ $# -eq 0 ]; then
     CLAUDE_OPT=""

@@ -6,7 +6,9 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_DISABLE_THINKING": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
-    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+    "CLAUDE_CODE_DEFAULT_EDITOR": "vi",
+    "CLAUDE_CODE_DEFAULT_EFFORT": "xhigh",
+    "CLAUDE_CODE_EFFORT_LEVEL": ""
   },
   "permissions": {
     "allow": [
@@ -109,7 +111,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "$HOME/.claude/statusline-command.sh"
+    "command": "~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
@@ -145,8 +147,8 @@
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
   "verbose": true,
-  "teammateMode": "in-process",
   "autoCompactEnabled": false,
+  "teammateMode": "in-process",
   "skipAutoPermissionPrompt": true,
   "display": "summarized",
   "bypassPermissionsModeAccepted": true,
@@ -172,7 +174,7 @@
     "sequential-thinking-improved": {
       "command": "node",
       "args": [
-        "$HOME/.dotfiles/aiagents/claudecode/sequential-thinking-improved/dist/index.js"
+        "__@HOME@__/.dotfiles/aiagents/claudecode/sequential-thinking-improved/dist/index.js"
       ]
     },
     "playwright": {
