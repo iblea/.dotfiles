@@ -186,6 +186,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;i` / `;isk` / `;iskill [skill name] [skill opt]`/ `` | Use Skill | - |
 | Utility | `;te` / `;team` `[skill/agent name] [skill/agent opt]`/ `` | Create a team member. (use agent team.) | - |
 | Utility | `;ask` | Ask without modifying files | - |
+| Utility | `;rpt` / `;report [format]` | Call skill `report` (Write a report file with (option) format.) | - |
 | Utility | `;cire` | Recommend a commit message | - |
 | Utility | `;ci` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
@@ -226,6 +227,9 @@ The following is an explanation of the user-defined command.
     - (ex: `;te ct, code_reviewer`) -> Uses the ct skill and the code_reviewer sub-agent.
 
 - When receiving the command **;ask**, do not arbitrarily create/modify/delete files or code unless there are separate commands for code editing, etc.
+
+- When receiving the command **;rpt** or **;report**, call the `report` skill and use it with options.
+  - Skill summation: Write a report file with (option) format.
 
 - When receiving the command **;cire**, analyze the changes by referring to `git status`, `git diff`, `git diff --staged`, and the conversation history, and recommend a commit message.
   - By default, provide the commit message in Korean.
