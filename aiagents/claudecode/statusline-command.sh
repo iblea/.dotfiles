@@ -572,7 +572,26 @@ fi
 if [ -n "$CLAUDE_CODE_SSE_PORT" ] && [ -n "$ENABLE_IDE_INTEGRATION" ]; then
     line2_parts+=("${C_GREEN}IDE(${CLAUDE_CODE_SSE_PORT})${C_RESET}")
 else
-    line2_parts+=("${C_GRAY}NO IDE${C_RESET}")
+    # /ide 명령으로 연결된 경우: 환경변수가 없으므로 claude 프로세스의 실제 TCP 연결로 판단.
+    # claude 프로세스(claude_pid)가 ESTABLISHED 상태로 붙어 있는 원격 포트 중
+    # ~/.claude/ide/<port>.lock 파일이 존재하는 포트가 있으면 IDE 연결로 표시.
+    # (lock 파일 존재만으로는 확장이 떠 있다는 뜻일 뿐 연결 여부가 아니므로 실제 연결을 확인)
+    ide_port=""
+    if [ -n "$claude_pid" ]; then
+        ide_port=$(lsof -anP -iTCP -sTCP:ESTABLISHED -p "$claude_pid" -Fn 2>/dev/null \
+            | sed -n 's/^n.*->.*:\([0-9]*\)$/\1/p' | sort -u \
+            | while read -r port; do
+                if [ -f "$HOME/.claude/ide/${port}.lock" ]; then
+                    echo "$port"
+                    break
+                fi
+            done)
+    fi
+    if [ -n "$ide_port" ]; then
+        line2_parts+=("${C_GREEN}IDE(${ide_port})${C_RESET}")
+    else
+        line2_parts+=("${C_GRAY}NO IDE${C_RESET}")
+    fi
 fi
 
 # Discord presence status

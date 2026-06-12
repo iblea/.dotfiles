@@ -2,7 +2,7 @@
   "skillListingBudgetFraction": 0.05,
   "env": {
     "MAX_THINKING_TOKENS": "63999",
-    "CLAUDE_CODE_NO_FLICKER": "0",
+    "CLAUDE_CODE_NO_FLICKER_TEST": "0",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "CLAUDE_CODE_DISABLE_THINKING": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
@@ -82,6 +82,7 @@
     "defaultMode": "auto"
   },
   "model": "Opus [1m]",
+  "model": "claude-fable-5[1m]",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
@@ -143,9 +144,10 @@
   "language": "한국어",
   "alwaysThinkingEnabled": true,
   "effortLevel": "max",
-  "tui": "fullscreen",
+  "tui": "default",
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
+  "theme": "dark",
   "verbose": true,
   "autoCompactEnabled": false,
   "teammateMode": "in-process",
