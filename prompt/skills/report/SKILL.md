@@ -54,6 +54,8 @@ If the report format is HTML and a diagram is needed, use mermaid.js.
 For the mermaid.min.js file, use the JavaScript file at `https://www.iasdf.com/js/mermaid_11_15_0.min.js`.
  - The mermaid version of the link is 11.15.0.
 
+
+
 ### Second Option: Report Filename
 
 Specifies the filename of the report.
@@ -65,3 +67,13 @@ If no extension is entered for the report filename, the extension follows the re
 - `;report markdown report` -> Save as report.md
 - `;rpt html` -> Save as report.html
   - Since no name was entered, the report name is report, and since the report format is html, it must be saved as `report.html`.
+
+
+### Single Argument Special Case
+
+If only one argument is entered and it does not correspond to any supported report format, interpret it as the filename.
+In this case, the filename must always contain an extension, and the report format must be inferred from that extension.
+
+In the following cases, immediately stop writing the report through this SKILL, output `Wrong Argument`, and end the response:
+- Only one argument is entered and it has no extension (e.g., `testfile`)
+- Only one argument is entered and the report format cannot be inferred from its extension (e.g., `testfile.dat`)

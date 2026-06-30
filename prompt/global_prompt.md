@@ -188,6 +188,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;ask` | Ask without modifying files | - |
 | Utility | `;rpt` / `;report [format]` | Call skill `report` (Write a report file with (option) format.) | - |
 | Utility | `;cire` | Recommend a commit message | - |
+| Utility | `;stg` / `;stage` | Stage the changes you made to Git, and Recommend a commit message | - |
 | Utility | `;ci` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
@@ -234,6 +235,14 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;cire**, analyze the changes by referring to `git status`, `git diff`, `git diff --staged`, and the conversation history, and recommend a commit message.
   - By default, provide the commit message in Korean.
   - If an option for a specific language is additionally entered, respond in that language. (`;cire eng` - respond in English)
+
+- When receiving the command **;stg** or **;stage**, Stage in Git the changes you made under this prompt, and recommend a commit message for those changes. (Do not run the git commit command; only recommend a commit message.)
+  - If you are unable to stage the changes, report that staging failed and only recommend a commit message for the changes.
+  (e.g., for reasons such as the absence of a Git project.)
+  - By default, provide the commit message in Korean.
+  - If an option for a specific language is additionally entered, respond in that language. (`;cire eng` - respond in English)
+
+
 
 - When receiving the command **;ci**, it means the same as saying "continue" or "계속".
 
