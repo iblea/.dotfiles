@@ -578,6 +578,45 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         rm -f $HOME/.config/aider/history.input.md
     }
 
+    function nfconvertmac() {
+        if [ -z "$(command -v nfd2nfc)" ]; then
+            echo "install nfd2nfc first"
+            echo "brew install nfd2nfc"
+            return 1
+        fi
+
+        local CONVERT_MODE="name"
+        local convert_path=""
+        local convert_target="nfc"
+        if [ $# -eq 0 ]; then
+            echo "Wrong Argument"
+            echo ""
+            nfd2nfc convert --help
+        elif [ $# -eq 1 ]; then
+            convert_path="$1"
+        else
+            convert_target="$1"
+            if [ "$convert_target" != "nfc" ] && [ "$convert_target" != "nfd" ]; then
+                echo "Wrong Argument"
+                echo ""
+                nfd2nfc convert --help
+                return 1
+            fi
+            convert_target="$1" # [nfc, nfd]
+            shift
+            convert_path="$*"
+        fi
+        if [ -d "$*" ]; then
+            # CONVERT_MODE="children"
+            CONVERT_MODE="recursive"
+        fi
+        echo "convert mode: $CONVERT_MODE"
+        echo "convert target: $convert_target"
+        echo "convert path: $convert_path"
+        echo ""
+        nfd2nfc convert --mode "$CONVERT_MODE" --target "$convert_target" "$convert_path"
+    }
+
 else
     alias diffb='~/.bcomp.sh'
     # .bin/code
