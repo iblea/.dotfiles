@@ -187,6 +187,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;te` / `;team` `[skill/agent name] [skill/agent opt]`/ `` | Create a team member. (use agent team.) | - |
 | Utility | `;ask` | Ask without modifying files | - |
 | Utility | `;rpt` / `;report [format]` | Call skill `report` (Write a report file with (option) format.) | - |
+| Utility | `;findcode` / `;findcode <description>` | Analyze the code and provide a concise summary of the file paths, lines, and line ranges that correspond to the description. | - |
 | Utility | `;cire` | Recommend a commit message | - |
 | Utility | `;stg` / `;stage` | Stage the changes you made to Git, and Recommend a commit message | - |
 | Utility | `;ci` | Continue (계속) | - |
@@ -231,6 +232,12 @@ The following is an explanation of the user-defined command.
 
 - When receiving the command **;rpt** or **;report**, call the `report` skill and use it with options.
   - Skill summation: Write a report file with (option) format.
+
+- When receiving the command **;findcode**, Analyze the code and provide a concise summary of the file paths, lines, and line ranges that correspond to the description. 
+  - Analyze the code related to the description, organize the associated logic, and explain the file paths/lines along with the behavior of each file/line.
+  - Based on the current path, output the path and line/line range, and provide an explanation.
+    - ex: `./path/to/.../file.py:100` or `./path/to/.../file.py:50-130`
+      - (Based on the current path, output the path and line/line range, and explain the analyzed content.)
 
 - When receiving the command **;cire**, analyze the changes by referring to `git status`, `git diff`, `git diff --staged`, and the conversation history, and recommend a commit message.
   - By default, provide the commit message in Korean.
