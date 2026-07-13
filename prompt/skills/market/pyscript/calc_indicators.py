@@ -102,6 +102,10 @@ def fetch_from_web(symbol, exchange, interval, count):
         sys.exit(1)
     return parse_csv_text(text)
 
+def fetch_from_webpage(symbol, exchange, interval, count):
+    print("This api is not supported.")
+    sys.exit(1)
+
 
 def fmt_date(idx, interval):
     """interval에 따라 날짜 포맷 결정"""
@@ -715,12 +719,16 @@ def main():
     if argc == 2:
         csv_path = sys.argv[1]
         symbol, exchange, interval, df = fetch_from_file(csv_path)
-    elif argc in (4, 5):
+    elif argc in (4, 5, 6):
         symbol = sys.argv[1]
         exchange = sys.argv[2]
         interval = sys.argv[3]
         count = int(sys.argv[4]) if argc == 5 else 500
-        symbol, exchange, interval, df = fetch_from_web(symbol, exchange, interval, count)
+        is_webpage = int(sys.argv[5]) if argc == 6 else 0
+        if is_webpage == 1:
+            symbol, exchange, interval, df = fetch_from_webpage(symbol, exchange, interval, count)
+        else:
+            symbol, exchange, interval, df = fetch_from_web(symbol, exchange, interval, count)
     else:
         print("Usage:")
         print(f"  python {prog} <csv_path>")
