@@ -8,6 +8,7 @@ Usage:
 
 import io
 import os
+import re
 import sys
 import urllib.error
 import urllib.parse
@@ -24,6 +25,7 @@ from indicators import (
 )
 
 API_URL = "https://stock.iasdf.com/tradingview/detailcsv"
+WEBPAGE_URL = "https://aistock.iasdf.com/detail.php"
 
 INTERVAL_LABELS = {
     '1': '1분봉', '3': '3분봉', '5': '5분봉',
@@ -40,7 +42,8 @@ DAILY_INTERVALS = ('D', '1D', 'W', '1W', 'M', '1M')
 def parse_csv_text(text):
     """sample.csv 포맷 문자열을 파싱하여 (symbol, exchange, interval, df) 반환
 
-    1번째 라인: symbol,exchange,interval,count
+    1번째 라인: [servertime,]symbol,exchange,interval,count
+        (웹 API 응답은 맨 앞에 "2026-07-13 16:37:55 (KST +09:00)" 같은 servertime 필드가 붙어서 온다)
     2번째 라인: time,open,high,low,close,volume (헤더)
     3번째 라인~: OHLCV 데이터 (최신 순)
     """
@@ -50,6 +53,8 @@ def parse_csv_text(text):
         sys.exit(1)
 
     meta = [x.strip() for x in lines[0].split(',')]
+    if meta and re.match(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', meta[0]):
+        meta = meta[1:]
     if len(meta) < 3:
         print(f"[ERROR] CSV 메타 정보 형식 오류: {lines[0]!r}")
         sys.exit(1)
@@ -103,8 +108,44 @@ def fetch_from_web(symbol, exchange, interval, count):
     return parse_csv_text(text)
 
 def fetch_from_webpage(symbol, exchange, interval, count):
-    print("This api is not supported.")
-    sys.exit(1)
+    """웹페이지의 HTML 테이블을 파싱하여 (symbol, exchange, interval, df) 반환
+
+    fetch_from_web의 CSV API가 응답하지 않을 때를 대비한 대체 경로.
+    ex: https://aistock.iasdf.com/detail.php?symbol=USTEC&exchange=ICMARKETS&interval=3&count=3000
+    """
+    params = urllib.parse.urlencode({
+        'symbol': symbol,
+        'exchange': exchange,
+        'interval': interval,
+        'count': count,
+    })
+    url = f"{WEBPAGE_URL}?{params}"
+    try:
+        with urllib.request.urlopen(url, timeout=30) as resp:
+            html = resp.read().decode('utf-8')
+    except urllib.error.URLError as e:
+        print(f"[ERROR] 웹페이지 요청 실패: {url} -> {e}")
+        sys.exit(1)
+
+    rows = re.findall(r'<tr>(.*?)</tr>', html, re.DOTALL)
+    if len(rows) < 2:
+        print(f"[ERROR] 웹페이지에서 테이블을 찾을 수 없음: {url}")
+        sys.exit(1)
+
+    header = [c.strip() for c in re.findall(r'<th>(.*?)</th>', rows[0])]
+    data_rows = []
+    for row in rows[1:]:
+        cells = [c.strip() for c in re.findall(r'<td>(.*?)</td>', row)]
+        if cells:
+            data_rows.append(cells)
+
+    if not data_rows:
+        print(f"[ERROR] 웹페이지 OHLCV 데이터 없음: {symbol} / {exchange} / {interval}")
+        sys.exit(1)
+
+    csv_lines = [f"{symbol},{exchange},{interval}", ",".join(header)]
+    csv_lines.extend(",".join(row) for row in data_rows)
+    return parse_csv_text("\n".join(csv_lines))
 
 
 def fmt_date(idx, interval):

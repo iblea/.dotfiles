@@ -97,6 +97,9 @@ If using the `date` command is difficult, determine the current time through a w
      - 기타 1,3분봉 등 사용자가 더 짧은 타임프레임 분석을 요구하거나 정밀한 타점 분석을 위해 이것이 필요한 경우, 1000~3000봉 범위에서 추가 실행.
    - venv 활성화가 필요하면 `source pyscript/venv_market/bin/activate && python pyscript/calc_indicators.py ... && deactivate` 형태로 호출.
    - csv 파일 모드인 경우 타임프레임별로 별도 csv 를 준비해 `python pyscript/calc_indicators.py <csv_path>` 로 실행.
+   - `detailcsv` API(csv/json 리턴)가 응답하지 않거나 요청 자체가 실패하는 경우, 마지막 인자에 `1`을 추가해 `is_webpage=1` 모드로 재시도한다. `https://aistock.iasdf.com/detail.php` HTML 페이지를 파싱해 동일한 결과를 얻는 **임시 대체 경로**다.
+     - 예: `python pyscript/calc_indicators.py <symbol> <exchange> 5 1500 1`
+     - CSV API가 정상 동작하면 `is_webpage=1`을 쓸 필요 없다(기본값 `0`). 자세한 내용은 `script.md` 2-3절 참고.
    - 각 타임프레임 결과에서 다음 항목을 반드시 추출·요약한다.
      - MA 배열(정배열/역배열/수렴), MA Phase(1~4단계 및 전환 여부)
      - RSI(14/9) 과매수/과매도 및 다이버전스 징후
@@ -220,6 +223,7 @@ If using the `date` command is difficult, determine the current time through a w
 3. symbols에 대한 자세한 과거 정보를 확인하고 싶다면 `stock.iasdf.com/tradingview/detail` 엔드포인트를 통해 확인할 수 있다.
   3-1. `stock.iasdf.com/tradingview/detailcsv` 엔드포인트를 통해 csv 형태로 데이터를 확인할 수 있다.
   3-2. API 조회 또는 JSON 리턴 및 파싱이 불가능한 경우 <https://aistock.iasdf.com/detail> 페이지에서 HTML 형태로 확인할 수 있다.
+    - `calc_indicators.py`는 이 대체 경로를 `is_webpage=1` 인자로 지원한다(`https://aistock.iasdf.com/detail.php` HTML 테이블을 직접 파싱). detailcsv API 요청이 실패할 때 임시로 사용한다. 자세한 사용법은 `script.md` 2-3절 참고.
 
 
 

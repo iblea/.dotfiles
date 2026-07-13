@@ -21,6 +21,7 @@ Please refer to the details below.
 
 - 옵션이 없을 경우, `symbol` 또는 `symbol:exchange` 형태로 입력될 수 있다.
   - 이 경우, 해당 심볼의 현재 차트를 분석한다.
+  - 차트 분석 시 market 스킬을 호출해 분석하라.
 
 - Symbol/Exchange Parsing
   - `/trading NQH26` -> (H: March) So, analyze the Nasdaq Futures contract expiring in March 2026.
@@ -272,11 +273,13 @@ curl -X POST 'https://www.iasdf.com/ainews/diary/<alias>/update_aireview.php' \
 
 ## OHLCV (시가 open/고가 high/저가 low/종가 close/거래량 volume) 데이터 수집
 
-@endpoint_chart.md 를 참고해 `stock.iasdf.com` API의 상세 정보를 확인할 수 있다.
+market 스킬의 @endpoint_chart.md 를 참고해 `stock.iasdf.com` API의 상세 정보를 확인할 수 있다.
+자세한 내용은 market 스킬을 호출해 참고하라.
 
 ## 보조지표 스크립트
 
-@script.md 파일 참고.
+market 스킬의 @script.md 파일 참고.
+자세한 내용은 market 스킬을 호출해 참고하라.
 
 ## 계좌 정보 조회 스크립트
 

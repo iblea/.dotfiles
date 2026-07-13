@@ -1,11 +1,12 @@
 # calc_indicators.py — OHLCV 보조지표 분석 스크립트
 
 CSV 파일 또는 웹 API(`https://stock.iasdf.com/tradingview/detailcsv`)에서 OHLCV 데이터를 받아와 기술적 보조지표를 계산·출력한다.
+웹 API(csv/json)가 응답하지 않는 경우를 대비해, HTML 페이지(`https://aistock.iasdf.com/detail.php`)를 파싱해 동일한 결과를 얻는 임시 대체 경로(`is_webpage` 옵션)도 지원한다.
 
 - 위치: `pyscript/calc_indicators.py`
 - 지표 모듈: `pyscript/indicators.py`
 - 샘플 CSV: `pyscript/sample.csv`
-- 의존성: `numpy`, `pandas` (웹 요청은 표준 라이브러리 `urllib` 사용)
+- 의존성: `numpy`, `pandas` (웹 요청/HTML 파싱은 표준 라이브러리 `urllib`, `re` 사용)
 
 ---
 
@@ -39,7 +40,7 @@ deactivate
 
 ## 2. 사용 방법
 
-두 가지 입력 모드를 지원한다. 인자 개수로 모드가 자동 분기된다.
+세 가지 입력 모드를 지원한다. 인자 개수로 모드가 자동 분기된다.
 
 ### 2-1. CSV 파일 모드 (인자 1개)
 
@@ -58,16 +59,19 @@ python calc_indicators.py ./sample.csv
 python calc_indicators.py /tmp/us100_1m.csv
 ```
 
-### 2-2. 웹 API 모드 (인자 3~4개)
+### 2-2. 웹 API 모드 (인자 3~5개)
 
 ```bash
-python calc_indicators.py <symbol> <exchange> <interval> [count]
+python calc_indicators.py <symbol> <exchange> <interval> [count] [is_webpage]
 ```
 
 - `<symbol>`: 종목/심볼 코드 (예: `US100`, `NAS100`, `BTCUSD`)
 - `<exchange>`: 거래소 코드 (예: `FPMARKETS`, `BINANCE`)
 - `<interval>`: 타임프레임 (아래 표 참조)
 - `[count]`: 받아올 봉 개수. **생략 시 기본값 `500`봉**
+- `[is_webpage]`: `0` 또는 `1`. **생략 시 기본값 `0`** (2-2 CSV API 모드)
+  - `0` (기본값): `https://stock.iasdf.com/tradingview/detailcsv` CSV API 호출
+  - `1`: `https://aistock.iasdf.com/detail.php` HTML 페이지를 요청해 테이블을 파싱 (2-3 참고)
 
 내부적으로 다음 URL을 호출한다.
 
@@ -86,6 +90,34 @@ python calc_indicators.py US100 FPMARKETS 1 10
 
 # 일봉 최근 300봉
 python calc_indicators.py US100 FPMARKETS D 300
+```
+
+### 2-3. 웹페이지 HTML 파싱 모드 (`is_webpage=1`)
+
+```bash
+python calc_indicators.py <symbol> <exchange> <interval> <count> 1
+```
+
+CSV API(`detailcsv`)가 응답하지 않거나(네트워크 오류, 타임아웃 등) CSV/JSON을 아예 리턴받지 못하는 상황을 대비한 **임시 대체 경로**다. 인자 구성은 2-2 웹 API 모드와 동일하되 마지막에 `1`을 추가로 붙인다. `count`를 생략할 수 없으니, 기본값을 쓰고 싶으면 `500`을 명시한다.
+
+내부적으로 다음 URL에 요청을 보내 응답받은 HTML `<table>`을 파싱한다.
+
+```
+https://aistock.iasdf.com/detail.php?symbol=<symbol>&exchange=<exchange>&interval=<interval>&count=<count>
+```
+
+- HTML 응답의 `<table>` 안 `<tr>/<th>/<td>`를 정규식으로 추출해 CSV 모드와 동일한 내부 포맷(`symbol,exchange,interval` 메타 + 헤더 + OHLCV 데이터)으로 재구성한 뒤, CSV 파일/API 모드와 동일한 파싱·분석 경로(`parse_csv_text`)를 그대로 탄다.
+- 따라서 지표 계산 결과는 CSV API 모드와 동일하며, **데이터 소스만 HTML 페이지로 바뀐다.**
+- CSV API가 정상 동작할 때는 `is_webpage=0`(기본값)을 쓰는 것이 정석이며, `1`은 CSV API 장애 시에만 임시로 사용한다.
+
+예:
+
+```bash
+# 5분봉 500봉을 웹페이지 HTML에서 파싱해 분석
+python calc_indicators.py US100 FPMARKETS 5 500 1
+
+# 일봉 300봉, CSV API 실패 시 웹페이지로 대체
+python calc_indicators.py US100 FPMARKETS D 300 1
 ```
 
 ---
@@ -108,6 +140,8 @@ time,open,high,low,close,volume                    ← 2줄: 헤더 (고정)
 - `time` 포맷: `pandas.to_datetime`이 파싱 가능한 형식(예: `YYYY-MM-DD HH:MM:SS`)
 
 웹 API 응답도 동일한 포맷을 반환한다고 가정한다.
+
+`is_webpage=1` 모드(HTML 파싱)의 원본 응답 포맷은 다르지만(메타 정보가 `<p>` 태그에, 데이터가 `<table>`에 들어있는 HTML), 스크립트가 파싱 후 위와 동일한 내부 CSV 포맷으로 재구성하므로 이후 처리는 동일하다.
 
 ---
 
@@ -177,6 +211,9 @@ python pyscript/calc_indicators.py pyscript/sample.csv
 
 # 4) 일봉 300봉 받아서 파일로 저장
 python pyscript/calc_indicators.py US100 FPMARKETS D 300 > /tmp/us100_daily.txt
+
+# 5) CSV API 장애 시 웹페이지 HTML 파싱으로 대체 (is_webpage=1)
+python pyscript/calc_indicators.py US100 FPMARKETS 5 500 1
 ```
 
 ---
@@ -189,5 +226,8 @@ python pyscript/calc_indicators.py US100 FPMARKETS D 300 > /tmp/us100_daily.txt
 | `[ERROR] CSV 데이터 부족 (라인 N개)` | 메타+헤더+데이터 최소 3줄 미만 |
 | `[ERROR] CSV 메타 정보 형식 오류` | 1줄 메타 필드가 3개 미만 |
 | `[ERROR] OHLCV 데이터 없음` | 헤더 이후 데이터 0줄 |
-| `[ERROR] API 요청 실패: <url> -> <err>` | 네트워크/타임아웃/HTTP 에러 (30초 타임아웃) |
+| `[ERROR] API 요청 실패: <url> -> <err>` | 네트워크/타임아웃/HTTP 에러 (30초 타임아웃) — `is_webpage=1`로 재시도 고려 |
+| `[ERROR] 웹페이지 요청 실패: <url> -> <err>` | (`is_webpage=1`) HTML 페이지 네트워크/타임아웃/HTTP 에러 |
+| `[ERROR] 웹페이지에서 테이블을 찾을 수 없음: <url>` | (`is_webpage=1`) 응답 HTML에 `<tr>`이 2개 미만 (헤더+데이터 없음) |
+| `[ERROR] 웹페이지 OHLCV 데이터 없음` | (`is_webpage=1`) 헤더는 있으나 `<td>` 데이터 행이 0개 |
 | `[ERROR] 데이터가 2개 미만` | 전봉 대비 비교 불가 |
