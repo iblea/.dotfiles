@@ -20,7 +20,7 @@
 
   | 구분 | 이름 | 타입 | 설명 |
   |------|------|------|------|
-  | 선택 | `interval` | string | `"5"`, `"15"`, `"1h"`, `"1d"` 등. 미지정 시 모든 interval 조회 |
+  | 선택 | `interval` | string | `"3"`, `"5"`, `"15"`, `"1h"`, `"1d"` 등. 미지정 시 모든 interval 조회 |
   | 선택 | `symbol` | string | 특정 심볼 필터 (예: `NQ1!`) |
   | 선택 | `exchange` | string | 특정 거래소 필터 (예: `CME_MINI`) |
 
@@ -61,7 +61,7 @@
 
 - `servertime_kst` 는 KST 기준 현재 서버 시각. 항상 최상단 첫 번째 키.
 - `data` 의 key 는 `"symbol:exchange"` 포맷.
-- 각 key 아래로 `nickname` 과 여러 interval 키(`"5"`, `"15"`, `"1h"`, `"1d"` 등)가 함께 들어있다.
+- 각 key 아래로 `nickname` 과 여러 interval 키(`"3"`, `"5"`, `"15"`, `"1h"`, `"1d"` 등)가 함께 들어있다.
 - `last_time` = `start_time + interval - 1초`.
 - `fear_greed_index` 는 DB 에 데이터가 없으면 `null`.
 
@@ -112,6 +112,8 @@
 
   | interval | detail count |
   |----------|-------------:|
+  | `"1"`    | 3000 |
+  | `"3"`    | 3000 |
   | `"5"`    | 3000 |
   | `"15"`   | 1500 |
   | `"1h"`   | 1000 |
@@ -197,7 +199,7 @@ TradingView 공식 `symbol_search` API 프록시. 입력한 문자열로 심볼�
   |------|------|------|------|
   | 필수 | `symbol`   | string  | 심볼명 (예: `NQ1!`) |
   | 필수 | `exchange` | string  | 거래소 (예: `CME_MINI`) |
-  | 필수 | `interval` | string  | `"5"`, `"15"`, `"1h"`, `"1d"` 등 |
+  | 필수 | `interval` | string  | `"3"`, `"5"`, `"15"`, `"1h"`, `"1d"` 등 |
   | 필수 | `count`    | integer | 1 ~ 3000. 범위 벗어나면 자동 클램프 (min 1, max 3000) |
 
 ### 응답
@@ -490,3 +492,36 @@ Bad Request: JSON 파싱 실패
 // response (400, text/plain)
 Bad Request: type은 insert/delete/update 중 하나여야 합니다.
 ```
+
+
+
+# TradingView Alert Web Endpoints
+
+## GET /tradingview/symbols 와 동일한 URL
+
+<https://aistock.iasdf.com/symbols>
+
+/tradingview/symbols 와 동일한 결과를 리턴하는 페이지입니다.
+
+
+## GET /tradingview/recent_data 와 동일한 URL
+
+<https://aistock.iasdf.com/recent_data>
+
+SYMBOL에 해당 SYMBOL의 detail OHLCV (Open / High / Low / Close / Volume) 데이터를 볼 수 있는 하이퍼링크가 걸려 있습니다.
+
+/tradingview/recent_data 의 JSON 내용을 테이블 형태로 표현한 페이지입니다.
+
+## GET /tradingview/detail 과 동일한 URL
+
+<https://aistock.iasdf.com/detail>
+- ex: <https://aistock.iasdf.com/detail?symbol=BTCUSD&exchange=BINANCE&interval=15&count=3000>
+
+이 페이지에 접근하기 위해서는 symbol / exchange / interval / count 정보가 필요합니다.
+Argument에 해당하는 정보는 /tradingview/detail 또는 /tradingview/detailcsv 엔드포인트와 동일합니다.
+
+aistock.iasdf.com/recent_data 에서 하이퍼링크로 접근할 수 있습니다.
+
+제공되는 정보는 /tradingview/detail 또는 /tradingview/detailcsv 와 동일합니다.
+
+

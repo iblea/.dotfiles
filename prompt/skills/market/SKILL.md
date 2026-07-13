@@ -75,12 +75,14 @@ If using the `date` command is difficult, determine the current time through a w
 1. **심볼/거래소 해석 및 csv 수집 가능 여부 1차 확인**
    - `GET https://stock.iasdf.com/tradingview/symbols` 를 조회해 실시간 파싱중인 symbols 목록에서 `<symbol>:<exchange>` 매칭을 찾는다.
      - 거래소가 생략된 경우, 해당 symbol 로 시작하는 key 들을 모두 나열하고 가장 메이저한 거래소를 선택(또는 여러 후보가 있으면 사용자에게 질의).
+     - API 조회 또는 JSON 리턴 및 파싱이 불가능한 경우 <https://aistock.iasdf.com/symbols> 페이지에서 HTML 형태로 확인할 수 있다.
    - 매칭이 없으면 `GET https://stock.iasdf.com/tradingview/exlist?symbol=<symbol>&exchange=<exchange>` 로 외부 수집 데이터 존재 여부 확인.
      - `parsing: true` 면 수집중 → detailcsv 사용 가능
      - `parsing: false` 또는 `lastupdatetime` 이 센티넬 값(`0001-01-01 00:00:00`) 이거나 오래된 경우 → 재파싱이 필요한 상태
 2. **실시간 스냅샷 확인**
    - `GET https://stock.iasdf.com/tradingview/recent_data?symbol=<symbol>&exchange=<exchange>` 를 호출해 해당 심볼의 최신 OHLCV 1건과 `fear_greed_index` 를 확인한다.
    - 추가로 `GET https://stock.iasdf.com/tradingview/recent_data` (전체) 를 호출해 주요 지수(US100/US500/NQ1!/ES1!), 금속(GC1!/SI1!), 원유(CL1!), VIX 등 기타 시장 지표의 현재 수치를 함께 체크한다. 전체 시장 맥락을 1~2단락으로 요약.
+     - API 조회 또는 JSON 리턴 및 파싱이 불가능한 경우 <https://aistock.iasdf.com/recent_data> 페이지에서 HTML 형태로 확인할 수 있다.
 3. **csv 추출 불가 시 분기**
    - `symbols` 및 `exlist` 모두에서 데이터를 확인할 수 없거나, `parsing: false` 이며 최근 업데이트 시각이 오래된 경우:
      - **Option A**: 외부 차트 사이트(Yahoo Finance, Investing.com, TradingView 등)에서 해당 심볼의 OHLCV 데이터를 직접 검색해 `pyscript/sample.csv` 포맷(메타행 → 헤더행 → 최신→과거 순 데이터)으로 가공 후 `calc_indicators.py <csv_path>` 모드로 실행.
@@ -144,6 +146,7 @@ If using the `date` command is difficult, determine the current time through a w
     - 15분봉, 1시간봉, 일봉에서 보조지표를 통해 단기/장기 과매수/과매도, 다이버전스, 추세, 지지/저항선, 눌림목, 매물대 등을 분석하라.
   - **수집된 15분봉(약 2주), 1시간봉(약 3개월) CSV 데이터**를 바탕으로 단기 기술적 분석(차트분석)을 진행하라.
   - **수집된 일봉(약 3년) CSV 데이터**를 바탕으로 중장기 기술적 분석(차트분석)을 진행하라.
+  - API 조회 또는 JSON 리턴 및 파싱이 불가능한 경우 <https://aistock.iasdf.com/detail> 페이지에서 HTML 형태로 확인할 수 있다.
 - 기본적 분석(fundamental analysis) 진행
   - 전일 해당 종목과 관련된 뉴스 및 이벤트를 검색하고, 이것이 주가에 어떤 영향을 미쳤는지 파악하라.
     - `https://www.iasdf.com/cc/cnews` 에 접속하면 미국 최신 증시 뉴스를 확인할 수 있다.
@@ -208,7 +211,7 @@ If using the `date` command is difficult, determine the current time through a w
 
 ## OHLCV (시가 open/고가 high/저가 low/종가 close/거래량 volume) 데이터 수집
 
-@endpoint_chart.md 를 참고해 `stock.iasdf.com` API의 상세 정보를 확인할 수 있다.
+@endpoint_chart.md 를 참고해 `stock.iasdf.com` API의 상세 정보를 확인할 수 있다. (또는 aistock.iasdf.com 페이지를 확인할 수 있다.)
 
 ### 개략적인 지수 정보 등, 실시간 파싱중인 symbols의 최신 데이터 확인
 
@@ -216,6 +219,8 @@ If using the `date` command is difficult, determine the current time through a w
 2. `stock.iasdf.com/tradingview/symbols` 체크하여 실시간 파싱중인 symbols 체크
 3. symbols에 대한 자세한 과거 정보를 확인하고 싶다면 `stock.iasdf.com/tradingview/detail` 엔드포인트를 통해 확인할 수 있다.
   3-1. `stock.iasdf.com/tradingview/detailcsv` 엔드포인트를 통해 csv 형태로 데이터를 확인할 수 있다.
+  3-2. API 조회 또는 JSON 리턴 및 파싱이 불가능한 경우 <https://aistock.iasdf.com/detail> 페이지에서 HTML 형태로 확인할 수 있다.
+
 
 
 ### 개별주 등과 같이 실시간 파싱중이지 않은 symbols의 정보 확인
