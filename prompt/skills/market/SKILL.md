@@ -46,7 +46,7 @@ When input is received in the format `/market <ticker code(ticker)/stock name>`,
   - `/market KOSPI` -> Analyze the market situation for KOSPI index.
   - `/market Gold futures` -> Analyze the market situation for Gold futures index(COMEX).
   - `/market BTC` -> Analyze the market situation for Bitcoin.
-  - `/market ind US100:FPMARKETS` -> Run indicator-based technical analysis on US100 (FPMARKETS exchange).
+  - `/market ind USTEC:ICMARKETS` -> Run indicator-based technical analysis on US100 (FPMARKETS exchange).
   - `/market ind NQ1!` -> Run indicator-based technical analysis on NQ1! (exchange auto-resolved).
   - `/market ind NQ1! long 26800 26500 27200` -> Evaluate an existing long position (entry 26800, stop 26500, target 27200) on NQ1!.
 

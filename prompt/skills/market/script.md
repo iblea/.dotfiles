@@ -65,8 +65,8 @@ python calc_indicators.py /tmp/us100_1m.csv
 python calc_indicators.py <symbol> <exchange> <interval> [count] [is_webpage]
 ```
 
-- `<symbol>`: 종목/심볼 코드 (예: `US100`, `NAS100`, `BTCUSD`)
-- `<exchange>`: 거래소 코드 (예: `FPMARKETS`, `BINANCE`)
+- `<symbol>`: 종목/심볼 코드 (예: `USTEC`, `NAS100`, `BTCUSD`)
+- `<exchange>`: 거래소 코드 (예: `ICMARKETS`, `BINANCE`)
 - `<interval>`: 타임프레임 (아래 표 참조)
 - `[count]`: 받아올 봉 개수. **생략 시 기본값 `500`봉**
 - `[is_webpage]`: `0` 또는 `1`. **생략 시 기본값 `0`** (2-2 CSV API 모드)
@@ -83,13 +83,13 @@ https://stock.iasdf.com/tradingview/detailcsv?symbol=<symbol>&exchange=<exchange
 
 ```bash
 # 5분봉 최근 500봉 (count 미지정 시 기본값 500)
-python calc_indicators.py US100 FPMARKETS 5
+python calc_indicators.py USTEC ICMARKETS 5
 
 # 1분봉 최근 10봉
-python calc_indicators.py US100 FPMARKETS 1 10
+python calc_indicators.py USTEC ICMARKETS 1 10
 
 # 일봉 최근 300봉
-python calc_indicators.py US100 FPMARKETS D 300
+python calc_indicators.py USTEC ICMARKETS D 300
 ```
 
 ### 2-3. 웹페이지 HTML 파싱 모드 (`is_webpage=1`)
@@ -114,10 +114,10 @@ https://aistock.iasdf.com/detail.php?symbol=<symbol>&exchange=<exchange>&interva
 
 ```bash
 # 5분봉 500봉을 웹페이지 HTML에서 파싱해 분석
-python calc_indicators.py US100 FPMARKETS 5 500 1
+python calc_indicators.py USTEC ICMARKETS 5 500 1
 
 # 일봉 300봉, CSV API 실패 시 웹페이지로 대체
-python calc_indicators.py US100 FPMARKETS D 300 1
+python calc_indicators.py USTEC ICMARKETS D 300 1
 ```
 
 ---
@@ -125,7 +125,7 @@ python calc_indicators.py US100 FPMARKETS D 300 1
 ## 3. CSV 포맷 (`sample.csv`)
 
 ```
-US100,FPMARKETS,5,10                              ← 1줄: symbol,exchange,interval,count (메타)
+USTEC,ICMARKETS,5,10                              ← 1줄: symbol,exchange,interval,count (메타)
 time,open,high,low,close,volume                    ← 2줄: 헤더 (고정)
 2026-04-23 17:20:00,26861.15,26865.9,26848.15,26857.9,1226.0
 2026-04-23 17:15:00,26847.9,26860.15,26842.65,26859.9,1256.0
@@ -201,7 +201,7 @@ time,open,high,low,close,volume                    ← 2줄: 헤더 (고정)
 
 ```bash
 # 1) 웹에서 5분봉 받아서 분석 (count 미지정 → 기본 500봉)
-python pyscript/calc_indicators.py US100 FPMARKETS 5
+python pyscript/calc_indicators.py USTEC ICMARKETS 5
 
 # 2) 웹에서 4시간봉 최근 500봉
 python pyscript/calc_indicators.py BTCUSD BINANCE 240 500
@@ -210,10 +210,10 @@ python pyscript/calc_indicators.py BTCUSD BINANCE 240 500
 python pyscript/calc_indicators.py pyscript/sample.csv
 
 # 4) 일봉 300봉 받아서 파일로 저장
-python pyscript/calc_indicators.py US100 FPMARKETS D 300 > /tmp/us100_daily.txt
+python pyscript/calc_indicators.py USTEC ICMARKETS D 300 > /tmp/us100_daily.txt
 
 # 5) CSV API 장애 시 웹페이지 HTML 파싱으로 대체 (is_webpage=1)
-python pyscript/calc_indicators.py US100 FPMARKETS 5 500 1
+python pyscript/calc_indicators.py USTEC ICMARKETS 5 500 1
 ```
 
 ---
