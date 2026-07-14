@@ -77,12 +77,13 @@
       "Edit(//tmp/translate_byai.md)",
       "Write(//tmp/translate_byai.md)"
     ],
-    "deny": [],
+    "deny": [
+      "Read(~/.ssh/**)"
+    ],
     "ask": [],
     "defaultMode": "auto"
   },
   "model": "Opus [1m]",
-  "model": "claude-fable-5[1m]",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
@@ -110,6 +111,7 @@
       }
     ]
   },
+  "respondToBashCommands": false,
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline-command.sh"
