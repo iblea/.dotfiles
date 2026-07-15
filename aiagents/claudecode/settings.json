@@ -74,8 +74,7 @@
       "WebFetch",
       "AskUserQuestion",
       "mcp__sequential-thinking__sequentialthinking",
-      "Edit(//tmp/translate_byai.md)",
-      "Write(//tmp/translate_byai.md)"
+      "Edit(//tmp/translate_byai.md)"
     ],
     "deny": [
       "Read(~/.ssh/**)"
