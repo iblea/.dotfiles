@@ -59,6 +59,20 @@ Accepted formats:
   - `;tm .2`    → `showtmuxpane .2`    (current window, pane 2)
   - `;tm .3 t 10` → `showtmuxpane .3 | tail -n 10` (current window, pane 3, last 10 lines)
 
+#### Pane environment description (optional, parentheses)
+The target may be followed by a description wrapped in parentheses: `<target> (<description>)`.
+
+- The parenthesized text is a user-provided hint describing the environment running in the target window/pane (e.g. remote ssh host, docker container, DB shell, local shell).
+- It is **NOT** part of the tmux target. **NEVER** pass it as an argument to `showtmuxpane` / `sendtmuxpane`.
+- Use it as context when interpreting the pane output or composing commands to send (especially with the `sk` option). For example, `(ssh win)` means the pane's shell is running on the remote host `win`, so any suggested or sent commands must be valid for that remote environment, not the local one.
+- Options following the closing parenthesis (`sk`, `t`, `h`, ...) are parsed the same as usual.
+
+- example
+  - `;tm .4 (ssh win)` → `showtmuxpane .4` — pane 4 of the current window is a remote session connected via `ssh win`.
+  - `;tm 3 (local zsh)` → `showtmuxpane 3` — window 3, pane 1 is a local zsh shell.
+  - `;tm 2.3 (docker dreamdb)` → `showtmuxpane 2.3` — window 2, pane 3 is a shell inside the `dreamdb` docker container.
+  - `;tm .4 (ssh win) sk install gcc` → analyze pane 4 of the current window, then send commands appropriate for the remote `win` host via `sendtmuxpane .4`.
+
 ### Other Option
 
 Options for tmux capture-pane may be passed through directly.
