@@ -50,7 +50,9 @@ Accepted formats:
 - `<window>` — target window N, pane 1 (e.g. `2` → window 2, pane 1).
 - `<window>.<pane>` — target window N, pane M (e.g. `2.2` → window 2, pane 2).
 - `.<pane>` — current window, pane M (e.g. `.2` → current window, pane 2; `.3` → current window, pane 3).
-  - The current window number is auto-resolved internally via `tmux display-message -p '#I'`, so the user does not need to specify it explicitly.
+  - **"current window" means the window containing the pane where the AI agent itself is running** (the scripts resolve it internally from `$TMUX_PANE`). It does **NOT** mean the tmux client's currently active/visible window. Even if the user switches to another window after giving the command, the target window NEVER changes.
+  - **Pass the `.pane` form to the scripts AS-IS** (`showtmuxpane .2`, `sendtmuxpane .2`). **NEVER resolve `.N` into an explicit `<window>.<pane>` yourself** (e.g. by querying the active window via `tmux display-message -p '#I'` and rewriting `.2` as `4.2`). The active-window value follows the user around; resolving it yourself silently retargets a completely different window. The scripts already resolve the window correctly — do not "help" them.
+  - **Window numbers are NOT stable.** When a window is killed or moved, remaining windows may be renumbered (e.g. `renumber-windows on`: windows 1,2,3,4 → kill window 1 → old 2,3,4 become 1,2,3). A once-resolved target like `3.2` would then silently point at what used to be `4.2`. This is exactly why the user writes `.N`: it is re-resolved from the AI agent's own pane (`$TMUX_PANE`) on EVERY invocation, so it keeps tracking the correct window even after renumbering. Pass `.N` as-is every single time — NEVER resolve it once and reuse the resolved `<window>.<pane>` later in the session.
   - This applies to all two scripts: `showtmuxpane`, `sendtmuxpane`.
 
 - example
@@ -58,6 +60,18 @@ Accepted formats:
   - `;tm 2.2`   → `showtmuxpane 2.2`   (window 2, pane 2)
   - `;tm .2`    → `showtmuxpane .2`    (current window, pane 2)
   - `;tm .3 t 10` → `showtmuxpane .3 | tail -n 10` (current window, pane 3, last 10 lines)
+
+#### 🚨 CRITICAL SECURITY WARNING: DO NOT WATCH ANY OTHER WINDOW / PANE 🚨
+
+**WARNING: DO NOT WATCH, CAPTURE, OR MANIPULATE ANY window/pane OTHER THAN THE EXACT TARGET THE USER SPECIFIED.**
+
+- The ONLY pane you may read (`showtmuxpane` / `capture-pane`) or send keys to (`sendtmuxpane` / `send-keys`) is the exact target the user specified in the command. No exceptions.
+- Other panes may be displaying highly sensitive data: API keys, credentials, customer/personal data, live production DB sessions. **The moment you capture a non-specified pane, it is a critical security violation** — sensitive data leaks into the AI context, and sending keys there can destroy or exfiltrate data.
+- **NEVER** capture or enumerate other windows/panes to "figure out context", "double-check the target", or for any other reason.
+- **NEVER** reinterpret `.N` against the window the user is currently viewing. `.N` is fixed to the AI agent's own window (see `.<pane>` format above). Rewriting `.2` into `<active window>.2` targets a pane the user never authorized.
+- If the specified target seems wrong or does not exist, **STOP and ask the user**. NEVER guess or fall back to another window/pane.
+
+**Real incident (why this rule exists):** The user ran `;t sk .2` from the AI agent's window (window 3), then switched to window 4 to work on a DB session. The AI noticed the user's active window was 4, reinterpreted `.2` as `4.2`, and ran `showtmuxpane 4.2` — capturing a pane full of API keys and customer data that the user never told it to touch. The correct behavior was to run `showtmuxpane .2` as-is, which targets window 3 pane 2 regardless of where the user currently is.
 
 #### Pane environment description (optional, parentheses)
 The target may be followed by a description wrapped in parentheses: `<target> (<description>)`.
@@ -88,7 +102,33 @@ If this option is provided, a specific tmux window can be manipulated through th
   - Usage: `sendtmuxpane <window number>[.<pane number>] [tmux send-keys options...]`
     - The first argument specifies the target window (e.g., `2` for window 2, `2.2` for window 2 pane 2, or `.2` for current window pane 2).
     - The remaining arguments are passed directly as `tmux send-keys` options.
+  - Run mode: `sendtmuxpane -w [--timeout <sec>] <target> '<command>'` (see the `-w (--write) run mode` section below)
   - `sendtmuxpane` automatically detects and cancels copy-mode on the target pane before sending keys. No manual copy-mode check is required when using `sendtmuxpane`.
+
+##### `-w` (`--write`) run mode
+  - Usage: `sendtmuxpane -w [--timeout <sec>] <target> '<command>'`
+    - `-w` (or `--write`) MUST be the first argument. `--timeout <sec>` works ONLY right after `-w` (default 30 seconds, wall-clock upper bound).
+    - `<command>` is a single string argument.
+  - Behavior: runs `<command>` in the target pane, waits for completion, then writes **only the command's output** to stdout AND `/tmp/sendtmuxpane.txt`.
+    - `/tmp/sendtmuxpane.txt` is **overwritten on every run** (previous content is discarded).
+    - The pane screen keeps displaying the output as usual (output is copied via `pipe-pane`, not intercepted).
+    - The ONLY keys sent to the pane are `<command>` + Enter. No markers/wrappers are injected.
+    - Output is streamed to a file, so large outputs (thousands of lines) are saved without the screen-history truncation of `capture-pane`. **Use this mode to collect large command outputs** (install logs, build logs, log queries) instead of `showtmuxpane`.
+  - Works on remote panes too (ssh / docker): completion is detected by observation only, in 4 stages:
+    1. pane foreground process returns to a shell (local pane, fast)
+    2. the prompt captured right before execution reappears (remote pane, fast)
+    3. output idle for 3 seconds (remote fallback)
+    4. `--timeout` safety net (partial output + exit 1)
+  - stderr reports `INFO: done by '<stage>'`:
+    - `shell` / `prompt`: reliable completion.
+    - `idle`: completion inferred from 3s of output silence. If output looks incomplete (e.g. a command that stays silent longer than 3s), re-check the pane with `showtmuxpane`.
+    - `max`: NOT complete. The command may still be running in the pane (this is normal for servers / `tail -f`; the collected partial output is still written).
+  - Do NOT use `-w` for interactive programs (vim, less, password prompts) or commands that never finish on their own; for those, use plain `sendtmuxpane` + `showtmuxpane`. For servers, `-w --timeout <sec>` is a valid way to collect startup logs.
+  - NOTE: avoid a trailing `;` at the very end of `<command>` (tmux parser may consume it). A `;` in the middle of the command string is safe: `sendtmuxpane -w .2 'echo a; echo b'`.
+  - example
+    - `sendtmuxpane -w .2 'ls -al'`
+    - `sendtmuxpane -w --timeout 120 .2 'apt-get install -y gcc'`
+    - `sendtmuxpane -w --timeout 15 .2 './mvnw spring-boot:run'` (collect ~15s of server startup logs; server keeps running)
 
 ##### copy-mode handling
   - When using `tmux send-keys` directly (without `sendtmuxpane`), the target window/pane may be in copy-mode, which prevents `send-keys` from working. You MUST manually check and cancel copy-mode first:

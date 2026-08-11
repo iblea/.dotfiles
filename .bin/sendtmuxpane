@@ -23,6 +23,30 @@ if [ -z "$TMUX" ]; then
 fi
 
 
+# -w/--write 모드 파싱 (반드시 첫 번째 인자 위치에서만 동작)
+WRITE_MODE=""
+MAX_TIMEOUT=30
+if [ "$1" = "-w" ] || [ "$1" = "--write" ]; then
+    WRITE_MODE=1
+    if [ "$2" = "--timeout" ]; then
+        MAX_TIMEOUT="$3"
+        shift 3
+    else
+        shift 1
+    fi
+    if ! [[ "$MAX_TIMEOUT" =~ ^[0-9]+$ ]]; then
+        echo "Invalid --timeout value: $MAX_TIMEOUT"
+        exit 1
+    fi
+    if [ "$#" -lt 2 ]; then
+        echo "Usage: sendtmuxpane -w [--timeout <sec>] <target> <command>"
+        echo "  Run <command> in the target pane, wait for completion, and write"
+        echo "  the command output to stdout and /tmp/sendtmuxpane.txt"
+        echo "  --timeout: max wall-clock timeout in seconds (default 30)."
+        exit 1
+    fi
+fi
+
 if [ "$#" -le 0 ]; then
     echo "Wrong Argument."
     echo "Show Help: sendtmuxpane -h"
@@ -31,6 +55,12 @@ elif [ "$#" -eq 1 ]; then
     if [ "$@" = "-h" ] || [ "$@" = "--help" ]; then
         echo "Argument"
         echo "-h, --help: show help"
+        echo "-w, --write [--timeout <sec>]: run mode. execute <command> in the"
+        echo "    target pane, wait for completion (observe only), then write the"
+        echo "    output to stdout and /tmp/sendtmuxpane.txt (default timeout 30s)"
+        echo "    must be the first argument."
+        echo "    ex: sendtmuxpane -w .2 'ls -al'"
+        echo "        sendtmuxpane -w --timeout 60 2 'apt-get install -y gcc'"
         echo ""
         echo "First Argument: <window number>.<pane number>"
         echo "  ex: sendtmuxpane 2 -> window 2, pane 1"
@@ -97,11 +127,148 @@ if [ "$(${TMUX_COMMAND[@]} display -t ${target} -p '#{pane_in_mode}')" = "1" ]; 
     ${TMUX_COMMAND[@]} send-keys -t ${target} -X cancel
 fi
 
-${TMUX_COMMAND[@]} send-keys -t "$target" "$@"
-ret_code="$?"
-if [ $ret_code -eq 0 ]; then
-    echo "command send successfully [${ret_code}]"
-else
-    echo "WARNING: return code is not zero. check tmux window.. [${ret_code}]"
+if [ -z "$WRITE_MODE" ]; then
+    ${TMUX_COMMAND[@]} send-keys -t "$target" "$@"
+    ret_code="$?"
+    if [ $ret_code -eq 0 ]; then
+        echo "command send successfully [${ret_code}]"
+    else
+        echo "WARNING: return code is not zero. check tmux window.. [${ret_code}]"
+    fi
+    exit $ret_code
 fi
+
+# ===== write(-w) 모드: 명령 실행 + 완료 관찰 + 출력 회수 =====
+# 페인에 입력되는 것은 <command> + Enter 가 전부다. (마커/래퍼 등 추가 입력 없음)
+# 출력 수집은 pipe-pane 스트리밍(화면 히스토리 한계 없음), 완료 감지는 4단 관찰:
+#   1단: pane_current_command 가 셸로 복귀      (로컬 페인, ~0.6초)
+#   2단: 실행 직전 캡처한 프롬프트 재등장        (원격 페인 정적 프롬프트, ~0.6초)
+#   3단: 출력 idle IDLE_TICKS 틱 연속           (원격 페인 폴백. 로컬 페인은 1단이
+#        정확하므로 미사용 - 무출력 장시간 명령의 조기 회수 방지)
+#   4단: MAX_TIMEOUT 안전핀 (벽시계 기반이라 어떤 상황에도 무한 대기 없음)
+
+OUTFILE="/tmp/sendtmuxpane.txt"
+RAWFILE="/tmp/.sendtmuxpane_raw_$$"
+TICK=0.3        # 폴링 주기 (초)
+IDLE_TICKS=10   # 이 틱 수만큼 연속 출력이 없으면 완료 판정 (10틱 = 3초)
+SHELLS='^(zsh|bash|fish|sh|dash|ash|ksh|tcsh|csh)$'
+cmd="$1"
+
+# ANSI escape(CSI/OSC 등) 제거 + CR 정리 (\r 덮어쓰기는 줄바꿈으로 풀어냄)
+strip_ansi() {
+    perl -pe 's/\x1b\[[0-9;?]*[ -\/]*[@-~]//g; s/\x1b\][^\x07\x1b]*(\x07|\x1b\\)?//g; s/\x1b[()][0-9A-B]//g; s/\x1b[=>]//g; s/\r+$//; s/\r/\n/g'
+}
+
+# 프롬프트 비교용 정규화: 연속 공백 2칸 이후(우측 상태 표시)와 말미 공백 제거
+trim_prompt() {
+    sed -e 's/[[:space:]][[:space:]].*//' -e 's/[[:space:]]*$//'
+}
+
+file_size() {
+    stat -f%z "$1" 2>/dev/null || stat -c%s "$1" 2>/dev/null || echo 0
+}
+
+cleanup() {
+    ${TMUX_COMMAND[@]} pipe-pane -t "$target" 2>/dev/null
+    rm -f "$RAWFILE"
+}
+trap cleanup EXIT
+
+# 실행 직전 상태 관찰 (페인에는 아무것도 입력하지 않음)
+# - 프롬프트: 화면 마지막 비공백 줄 (2단 감지용)
+# - 시작 프로세스가 셸이면 로컬 페인 -> 1단이 정확하므로 3단(idle) 비활성
+PROMPT=$(${TMUX_COMMAND[@]} capture-pane -t "$target" -p | grep -v '^[[:space:]]*$' | tail -n 1 | trim_prompt)
+start_cmd=$(${TMUX_COMMAND[@]} display -p -t "$target" '#{pane_current_command}')
+local_shell=""
+[[ "$start_cmd" =~ $SHELLS ]] && local_shell=1
+
+: > "$RAWFILE"
+${TMUX_COMMAND[@]} pipe-pane -t "$target" "cat >> $RAWFILE" || exit 1
+
+${TMUX_COMMAND[@]} send-keys -t "$target" -l "$cmd" || exit 1
+${TMUX_COMMAND[@]} send-keys -t "$target" Enter || exit 1
+
+SECONDS=0
+stage=""
+tick=0
+idle=0
+last_size=-1
+while :; do
+    sleep "$TICK"
+    tick=$((tick+1))
+    size=$(file_size "$RAWFILE")
+    if [ "$size" = "$last_size" ]; then
+        idle=$((idle+1))
+    else
+        idle=0
+        last_size=$size
+    fi
+
+    # 4단: 안전핀 (벽시계 기반)
+    if [ "$SECONDS" -ge "$MAX_TIMEOUT" ]; then stage="max"; break; fi
+
+    [ "$tick" -le 1 ] && continue      # 명령 시작 전 오판 방지 유예
+    [ "$size" -eq 0 ] && continue      # 아직 아무것도 들어오지 않음
+
+    # 1단: 포그라운드가 셸로 복귀 (원격 페인은 ssh/docker 고정이라 발동하지 않음)
+    cur=$(${TMUX_COMMAND[@]} display -p -t "$target" '#{pane_current_command}')
+    if [[ "$cur" =~ $SHELLS ]] && [ "$idle" -ge 1 ]; then stage="shell"; break; fi
+
+    # 2단: 실행 직전 캡처한 프롬프트가 단독 라인으로 재등장
+    if [ -n "$PROMPT" ]; then
+        lastline=$(tail -c 4096 "$RAWFILE" | strip_ansi | grep -v '^[[:space:]]*$' | tail -n 1 | trim_prompt)
+        if [ "$lastline" = "$PROMPT" ]; then stage="prompt"; break; fi
+    fi
+
+    # 3단: 출력 idle (원격 페인 폴백)
+    if [ -z "$local_shell" ] && [ "$idle" -ge "$IDLE_TICKS" ]; then stage="idle"; break; fi
+done
+
+${TMUX_COMMAND[@]} pipe-pane -t "$target"    # 수집 중지
+
+if [ "$stage" = "max" ]; then
+    echo "WARNING: max timeout (${MAX_TIMEOUT}s) reached. partial output below." >&2
+fi
+
+# 추출 1: "마지막" 명령 입력 echo 줄 이후부터를 본문으로 인정.
+#         (직전 명령의 프롬프트 재그리기가 입력 echo보다 늦게 도착할 수 있으므로,
+#          CMD 포함 줄을 만날 때마다 그때까지 모은 것을 전부 버린다)
+# 추출 2: 말미 30줄 내에서 새 프롬프트 등장 지점부터 끝까지 제거 후,
+#         그 앞의 빈 줄/'%' 단독 줄(zsh partial-line 마크) 제거
+#         (30줄 제한: 본문 중간에 프롬프트와 같은 줄이 있어도 본문을 오려내지 않도록)
+strip_ansi < "$RAWFILE" | CMD="$cmd" awk '
+    {
+        if (index($0, ENVIRON["CMD"]) > 0) { n = 0; seen = 1; next }
+        if (!seen) next
+        if (n == 0 && $0 ~ /^[[:space:]]*$/) next
+        lines[++n] = $0
+    }
+    END { for (i = 1; i <= n; i++) print lines[i] }
+' | PROMPT="$PROMPT" awk '
+    function trimmed(s) { sub(/[[:space:]][[:space:]].*/, "", s); sub(/[[:space:]]+$/, "", s); return s }
+    { lines[NR] = $0 }
+    END {
+        n = NR
+        p = ENVIRON["PROMPT"]
+        limit = n - 30; if (limit < 0) limit = 0
+        cut = 0
+        # 1) zsh partial-line 마크("%" 단독 줄): 이후는 전부 프롬프트 재그리기
+        for (i = n; i > limit; i--) {
+            if (trimmed(lines[i]) == "%") { cut = i; break }
+        }
+        # 2) 없으면 프롬프트 재등장 줄(정확 일치 또는 "프롬프트 + 공백" 시작)부터 컷
+        if (!cut && p != "") {
+            for (i = n; i > limit; i--) {
+                if (trimmed(lines[i]) == p || index(lines[i], p " ") == 1) { cut = i; break }
+            }
+        }
+        if (cut) n = cut - 1
+        while (n > 0 && trimmed(lines[n]) == "") n--
+        for (i = 1; i <= n; i++) print lines[i]
+    }
+' | tee "$OUTFILE"
+
+echo "INFO: done by '${stage}' in ${SECONDS}s" >&2
+[ "$stage" = "max" ] && exit 1
+exit 0
 

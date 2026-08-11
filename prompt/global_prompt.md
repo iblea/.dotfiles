@@ -169,6 +169,18 @@ When performing code navigation tasks, **LSP tools MUST be used first** over Sea
 - Searching for text patterns, comments, or strings (not code symbols)
 - The search target is not a code symbol (e.g., log messages, config values)
 
+##### Tmux Pane Security Rule (CRITICAL)
+This rule applies whenever touching tmux windows/panes in ANY way (`showtmuxpane`, `sendtmuxpane`, `tmux capture-pane`, `tmux send-keys`, or any other tmux command), in ANY directory/project.
+
+- 🚨 **WARNING: DO NOT WATCH, CAPTURE, OR MANIPULATE ANY window/pane other than the EXACT target the user explicitly specified. No exceptions.**
+  - Other panes may display highly sensitive data (API keys, credentials, customer/personal data, live production DB sessions). **The moment you capture a non-specified pane, it is a critical security violation** — sensitive data leaks into the AI context, and sending keys there can destroy or leak data.
+  - NEVER capture or enumerate other windows/panes to "figure out context", "double-check the target", or for any other reason.
+- A `.N` target (e.g. `.2`) means "pane N of the window where the AI agent itself is running" — **NOT the user's currently active/visible window**. Pass `.N` to `showtmuxpane`/`sendtmuxpane` AS-IS on EVERY invocation (the scripts resolve it from `$TMUX_PANE`).
+  - **NEVER resolve `.N` into an explicit `<window>.<pane>` yourself** (e.g. via `tmux display-message -p '#I'`). The active window follows the user around, and window numbers are renumbered when windows are killed/moved — either way a self-resolved number silently retargets a pane the user never authorized.
+- If the specified target seems wrong or does not exist, **STOP and ask the user**. NEVER guess or fall back to another window/pane.
+- Real incident: the user ran `;t sk .2` (AI agent in window 3), then switched to window 4 to work on a DB session. The AI reinterpreted `.2` as `4.2` and captured a pane full of API keys and customer data. The correct behavior was to run `showtmuxpane .2` as-is.
+- Detailed rules: `~/.dotfiles/prompt/skills/showtmuxpane/SKILL.md` (`### First Option` section)
+
 
 -----------
 
