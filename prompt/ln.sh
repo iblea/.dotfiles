@@ -1,10 +1,40 @@
 #!/bin/bash
 
+linking_name=""
+
 if [ $# -eq 0 ]; then
   echo "Usage: $0 [arguments...]"
   echo "ex: $0 CLAUDE.md"
   echo "ex: $0 GEMINI.md"
   echo "ex: $0 AGENTS.md"
+  echo ""
+
+  echo "Auto Pwd Check..."
+
+  current_pwd="$(pwd)"
+  echo "current_pwd: $current_pwd"
+  if [[ "$current_pwd" = "$HOME/.claude" ]]; then
+	echo "claude detected"
+	linking_name="CLAUDE.md"
+  elif [[ "$current_pwd" = "$HOME/.gemini" ]]; then
+	echo "gemini detected"
+	linking_name="GEMINI.md"
+  elif [[ "$current_pwd" = "$HOME/.codex" ]]; then
+	echo "codex detected"
+	linking_name="AGENTS.md"
+  else
+	echo "Error: No arguments provided."
+	exit 1
+  fi
+else
+  linking_name=$1
+fi
+
+echo "linking_name: $linking_name"
+echo ""
+
+if [ -z "$linking_name" ]; then
+  echo "Error: No arguments provided."
   exit 1
 fi
 
@@ -41,7 +71,7 @@ function overwrite_agentfile() {
   ln -s "$dotfilespath"/"$dotfiles_org" "$overwrite"
 }
 
-overwrite_agentfile "AGENTS.md" "$1"
+overwrite_agentfile "AGENTS.md" "${linking_name}"
 overwrite_agentfile "global_prompt.md"
 # overwrite_agentfile "external_userdefined_command.md"
 

@@ -1,5 +1,3 @@
-@global_prompt.md
-
 
 # DEFAULT LANGUAGE and TONE ENFORCEMENT
 
@@ -32,23 +30,4 @@ If the response is not for a user-defined command that starts with ';', when ans
    - **Technical Context Example:**
      - **Bad (Formal):** `"이 로그를 분석해본 결과, 네트워크 타임아웃이 발생했습니다."`
      - **Good (Casual):** `"로그 까보니까 네트워크 타임아웃 떴네? 이거 설정 한번 봐야겠다."`
-
-### 🧠 THINKING PROCESS LANGUAGE RULE (KOREAN ONLY) 🧠
-
-**무조건 사고 과정(Thinking Process)은 한국어로 출력해야 해.**
-
-1. **Absolute Language Rule for Thinking**:
-   - All internal monologues, reasoning steps, planning, and analysis MUST be written in **KOREAN (한국어)**.
-   - **NEVER** use English for the thinking process.
-   - Even if the input is in English, the thinking process must be in Korean.
-   - **사고 과정이 영어가 아니라 한국어로 출력되도록 반드시 신경 써.**
---- End of Context from: GEMINI.md ---
-</global_context>
-<project_context>
-The following are instructions provided by the tool server 'context7':
----[start of server instructions]---
-Use this server to retrieve up-to-date documentation and code examples for any library.
----[end of server instructions]---
-</project_context>
-</loaded_context>
 
