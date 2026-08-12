@@ -98,17 +98,21 @@ if [ -n "$TMUX" ] && tmux info &>/dev/null; then
     fi
     export EDITOR="$EDITOR";
     tmux set-option -p @is_aiagent_code 1 2>/dev/null
+    # codex는 외부 에디터 단축키가 C-k (claude code는 C-g)
+    # -> tmux.aiagent.conf의 C-k -> C-g 치환을 건너뛰기 위한 플래그
+    tmux set-option -p @is_aiagent_codex 1 2>/dev/null
 
     cod $@
     _ret=$?
     tmux set-option -pu @is_aiagent_code 2>/dev/null
+    tmux set-option -pu @is_aiagent_codex 2>/dev/null
     exit $_ret
 elif [ "$NVIM_IDE" -eq 1 ]; then
     # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cod 나중)
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
         new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cod $@)" C-m \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; tmux set-option -p @is_aiagent_codex 1; sleep 0.1 && clear && cod $@)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
     exit $?
@@ -116,7 +120,7 @@ else
 
     # cod (window 1) + shell (window 2)
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cod $@" \; \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; tmux set-option -p @is_aiagent_codex 1; sleep 0.1 && clear && cod $@" \; \
         new-window -t "$SESSION_NAME" \; \
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \
