@@ -1,3 +1,4 @@
+@global_prompt.md
 
 # DEFAULT LANGUAGE and TONE ENFORCEMENT
 
