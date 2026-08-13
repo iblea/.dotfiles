@@ -29,12 +29,90 @@ function getlist() {
 	fi
 }
 
+function create_mutagen_yaml() {
+	if [ -f "mutagen.yml" ]; then
+		echo "mutagen.yml already exists"
+		exit 1
+	fi
+
+    # heredoc
+cat << 'EOF' > mutagen.yml
+sync:
+  defaults:
+    # one-way-safe: alpha -> beta 단방향, beta에서 생성/수정된 파일은 삭제/덮어쓰기 안 함 (conflict로 표시)
+    mode: one-way-safe
+    ignore:
+      vcs: true
+      paths:
+        # Git
+        - /.git
+
+        # Python
+        - __pycache__
+        - "*.pyc"
+        - "*.pyo"
+        - .venv
+        - .env
+        - .pytest_cache
+        - .mypy_cache
+        - .ruff_cache
+        - .tox
+
+        # Node.js
+        - node_modules
+        - /dist/
+        - /build/
+
+        # Build artifacts
+        - dist
+        - build
+
+        # IDE / Editor
+        - /.vscode
+        - /.idea
+        - "*.swp"
+        - "*.swo"
+        - "*~"
+
+        # macOS
+        - .DS_Store
+
+        # Logs & temp
+        - "*.log"
+        - .cache
+
+  main:
+    alpha: "."
+    beta: "sample:/path/to/sample/directory"
+    # beta: "windows:C:/path/to/windows/projectdir"
+EOF
+	echo "create done!"
+}
+
 if [ $# -eq 0 ]; then
 	getlist
 	exit 0
 fi
 
-if [[ "$1" = "ls" ]] || [[ "$1" = "list" ]] || [[ "$1" = "status" ]] || [[ "$1" = "st" ]]; then
+if [[ "$1" = "help" ]] || [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+	echo "mtag [command] [args]"
+	echo ""
+	echo "command list"
+	echo "  ls|list|st|status"
+	echo "  start [arg]"
+	echo "  stop|terminate [arg]"
+	echo "  restart [arg]"
+	echo "  plist|proj [arg]"
+	echo "    mutagen project list --long "$@""
+	echo "  conflict|cc"
+	echo "    mutagen sync list --long | awk '/^Conflicts:/,0'"
+	echo "  daemon [arg]"
+	echo "  create"
+	echo "    create mutagen.yml in current path"
+	echo "====================================="
+	mutagen --help
+	exit 0
+elif [[ "$1" = "ls" ]] || [[ "$1" = "list" ]] || [[ "$1" = "status" ]] || [[ "$1" = "st" ]]; then
 	getlist
 elif [[ "$1" = "start" ]]; then
 	if [ "$#" -eq 1 ]; then
@@ -73,6 +151,8 @@ elif [[ "$1" = "conflict" ]] || [[ "$1" = "cc" ]]; then
 elif [[ "$1" = "daemon" ]]; then
 	shift
 	mutagen daemon "$@"
+elif [[ "$1" = "create" ]]; then
+	create_mutagen_yaml
 else
 	mutagen "$@"
 fi
