@@ -1,0 +1,228 @@
+#!/usr/bin/env bash
+# copyans.sh - 현재 Claude Code 세션의 질문/답변 한 쌍만 골라 vim 빈 버퍼로 띄운다.
+#
+# 사용법:
+#   copyans.sh        마지막 질문+답변
+#   copyans.sh <n>    마지막에서 n번째 위 (Q1/Q2/Q3 에서 "1" -> Q2-A2)
+#   copyans.sh -<n>   최초 n번째         (Q1..Q5 에서 "-2" -> Q2-A2)
+#
+# 동작 조건:
+#   - AIAGENTCODE="Claude Code" 여야 한다. 아니면 동작하지 않는다.
+#   - 대화 원본은 $HOME/.claude/projects/<encoded-cwd>/<session-id>.jsonl 을 읽는다.
+#   - tmux(로컬)이면 하위 pane을 분할해 vim을 띄운다.
+#     tmux가 아니거나 tmux+ssh(원격)이면 codevim 과 동일하게 vim을 직접 실행한다.
+#
+# 임시 파일을 vim에 stdin으로 먹여서 이름 없는 버퍼(빈 버퍼)로 보여준다.
+# tmux split-window 로는 부모의 파이프가 넘어가지 않으므로, 리다이렉션 자체를
+# 새 pane 안에서 수행한다.
+
+set -euo pipefail
+
+PROG="$(basename "$0")"
+PROJECTS_DIR="$HOME/.claude/projects"
+
+usage() {
+    cat >&2 <<EOF
+사용법: $PROG [<n> | -<n>]
+  (없음)  마지막 질문+답변
+  <n>     마지막 질문+답변에서 n번째 위
+  -<n>    최초 n번째 질문+답변
+EOF
+    exit 1
+}
+
+# --- 동작 조건: Claude Code 세션인지 ---
+if [[ "${AIAGENTCODE:-}" != "Claude Code" ]]; then
+    echo "[$PROG] Claude Code 세션이 아니야. (AIAGENTCODE=[${AIAGENTCODE:-}])" >&2
+    exit 1
+fi
+
+# --- 인자 파싱 ---
+mode="last"
+n=0
+if [[ $# -gt 1 ]]; then
+    usage
+elif [[ $# -eq 1 ]]; then
+    case "$1" in
+        -h|--help) usage ;;
+        -*)
+            [[ "$1" =~ ^-[0-9]+$ ]] || usage
+            mode="first"
+            n="${1#-}"
+            ;;
+        *)
+            [[ "$1" =~ ^[0-9]+$ ]] || usage
+            mode="back"
+            n="$1"
+            ;;
+    esac
+fi
+n=$((10#$n))
+
+# --- 에디터 결정 (codevim 과 동일한 우선순위) ---
+if [[ -z "${VIM_PROGRAM:-}" ]] || ! command -v "$VIM_PROGRAM" >/dev/null 2>&1; then
+    if command -v nvim >/dev/null 2>&1; then
+        VIM_PROGRAM="nvim"
+    elif command -v vim >/dev/null 2>&1; then
+        VIM_PROGRAM="vim"
+    else
+        echo "[$PROG] nvim/vim 둘 다 없어." >&2
+        exit 1
+    fi
+fi
+
+# --- 트랜스크립트 찾기 ---
+# Claude Code는 cwd의 '/', '.', '_' 를 '-' 로 바꾼 이름으로 프로젝트 디렉터리를 만든다.
+encode_path() {
+    printf '%s' "$1" | sed 's/[/._]/-/g'
+}
+
+find_transcript() {
+    local sid="${CLAUDE_CODE_SESSION_ID:-}"
+    local dir="$PROJECTS_DIR/$(encode_path "$PWD")"
+
+    # 1) 세션 ID를 아는 경우: 인코딩된 경로에서 바로 찾는다.
+    if [[ -n "$sid" && -f "$dir/$sid.jsonl" ]]; then
+        printf '%s\n' "$dir/$sid.jsonl"
+        return 0
+    fi
+
+    # 2) cwd가 프로젝트 루트가 아닐 수 있으니 세션 ID로 검색한다.
+    if [[ -n "$sid" ]]; then
+        local hit
+        hit=$(find "$PROJECTS_DIR" -maxdepth 2 -name "$sid.jsonl" -print -quit 2>/dev/null || true)
+        if [[ -n "$hit" ]]; then
+            printf '%s\n' "$hit"
+            return 0
+        fi
+    fi
+
+    # 3) 세션 ID를 못 얻은 경우: 이 프로젝트에서 가장 최근에 갱신된 트랜스크립트.
+    if [[ -d "$dir" ]]; then
+        local latest
+        latest=$(ls -t "$dir"/*.jsonl 2>/dev/null | head -1 || true)
+        if [[ -n "$latest" ]]; then
+            printf '%s\n' "$latest"
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+transcript=$(find_transcript) || {
+    echo "[$PROG] 트랜스크립트를 못 찾았어. (cwd=$PWD, session=${CLAUDE_CODE_SESSION_ID:-none})" >&2
+    exit 1
+}
+
+# --- 턴 추출 jq ---
+# 사람이 직접 입력한 프롬프트만 질문으로 인정한다.
+#   origin.kind == "human" + promptSource 가 있는 user 이벤트가 그것.
+#   tool_result / isMeta / hook / 서브에이전트(isSidechain) 는 전부 제외된다.
+# 질문 하나가 나오면 새 턴을 열고, 다음 질문 전까지의 assistant text 를 그 턴에 쌓는다.
+JQ_TURNS='
+def qtext:
+  .message.content
+  | if type == "string" then .
+    else [ .[] | select(.type == "text") | .text ] | join("\n")
+    end;
+
+def atext:
+  [ .message.content[]? | select(.type == "text") | .text ] | join("\n");
+
+def turns:
+  [ .[]
+    | select(.isSidechain != true)
+    | select(
+        (.type == "user"
+          and (.origin.kind? == "human")
+          and (.promptSource? | type == "string"))
+        or (.type == "assistant" and (.message.content? | type == "array"))
+      )
+  ]
+  | reduce .[] as $e ([];
+      if $e.type == "user" then
+        . + [ { ts: $e.timestamp, q: ($e | qtext), a: [] } ]
+      elif length > 0 then
+        .[0:-1] + [ .[-1] | .a += [ ($e | atext) ] ]
+      else
+        .
+      end
+    );
+'
+
+total=$(jq -s "$JQ_TURNS turns | length" "$transcript")
+if [[ "$total" -eq 0 ]]; then
+    echo "[$PROG] 이 세션에서 질문을 못 찾았어. ($transcript)" >&2
+    exit 1
+fi
+
+# --- 인덱스 계산 (0-based) ---
+case "$mode" in
+    last)  idx=$(( total - 1 )) ;;
+    back)  idx=$(( total - 1 - n )) ;;
+    first) idx=$(( n - 1 )) ;;
+esac
+
+if (( idx < 0 || idx >= total )); then
+    echo "[$PROG] 범위를 벗어났어. 이 세션의 질문은 총 ${total}개야." >&2
+    echo "[$PROG]   마지막 기준: 0 ~ $(( total - 1 )) / 최초 기준: -1 ~ -${total}" >&2
+    exit 1
+fi
+
+# --- 렌더링 ---
+# stdin으로 먹이므로 확장자는 의미가 없다. filetype 은 vim 쪽에서 직접 지정한다.
+tmpfile=$(mktemp "${TMPDIR:-/tmp}/copyans-XXXXXX")
+# 에디터로 넘기기 전에 실패하면 임시 파일을 지운다. 넘긴 뒤에는 각 경로에서 직접 지운다.
+trap 'rm -f "$tmpfile"' EXIT
+
+jq -sr --argjson i "$idx" --arg tr "$transcript" "$JQ_TURNS"'
+def tsfmt:
+  if . == null then "-"
+  else (sub("\\.[0-9]+Z$"; "Z") | fromdateiso8601 | strflocaltime("%Y-%m-%d %H:%M:%S"))
+  end;
+
+turns
+| . as $t
+| ($t | length) as $len
+| $t[$i] as $x
+| "# Q\($i + 1) / \($len)   (마지막 기준 \($len - 1 - $i) / 최초 기준 -\($i + 1))",
+  "",
+  "- time       : \($x.ts | tsfmt)",
+  "- transcript : \($tr)",
+  "",
+  "---",
+  "",
+  "## Question",
+  "",
+  $x.q,
+  "",
+  "## Answer",
+  "",
+  ( $x.a
+    | map(select(length > 0))
+    | if length == 0 then "(답변 텍스트 없음)" else join("\n\n") end )
+' "$transcript" > "$tmpfile"
+
+# --- 에디터 띄우기 ---
+is_remote() {
+    [[ -n "${SSH_CONNECTION:-}${SSH_CLIENT:-}" ]]
+}
+
+# stdin으로 읽으면 modified 플래그가 켜져서 :q 가 막힌다. 읽기용이니 내려둔다.
+VIM_OPTS=( -c 'setf markdown' -c 'setl noswapfile nomodified' )
+
+# tmux가 아니거나 ssh 원격이면 codevim 과 동일하게 직접 실행한다.
+if [[ -z "${TMUX:-}" ]] || is_remote; then
+    trap - EXIT
+    "$VIM_PROGRAM" "${VIM_OPTS[@]}" - < "$tmpfile" || true
+    rm -f "$tmpfile"
+    exit 0
+fi
+
+# split-window 로 넘기는 커맨드 문자열 안에서 리다이렉션해야 stdin이 살아있다.
+# 새 pane의 cwd는 -c 로 명시한다. vim이 종료되면 pane도 닫히고 임시 파일도 지워진다.
+inner="$VIM_PROGRAM -c 'setf markdown' -c 'setl noswapfile nomodified' - < $(printf '%q' "$tmpfile"); rm -f $(printf '%q' "$tmpfile")"
+
+trap - EXIT
+tmux split-window -v -l 60% -c "$PWD" "$inner"

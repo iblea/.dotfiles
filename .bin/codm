@@ -55,6 +55,7 @@ fi
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
 SESSION_NAME="codex_$(date +%s)_$$"
 TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
+export AIAGENTCODE="Codex"
 
 # export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
