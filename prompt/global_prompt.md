@@ -205,9 +205,8 @@ The following is an explanation of the user-defined command.
 | Other | `;err` | Analyze error and provide solution | resolver |
 | Other | `;t` / `;tm` / `;tmux` | Call skill `showtmuxpane` | - |
 | Other | `;path` | Tell path of created file | - |
-| Other | `;cim` / `;codenvim` | Open file in codenvim (background) | - |
+| Other | `;di` / `;code` | Open file in di | - |
 | Other | `;tim` | Open file in tim | - |
-| Other | `;code` | Open file in VS Code | - |
 | Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
 | Other | `;market [opts]` | Call skill `market` | - |
 | Other | `;trading [opts]` | Call skill `trading` | - |
@@ -268,23 +267,27 @@ The following is an explanation of the user-defined command.
 
 - When receiving the command **;path**, tell me the path of the file you created.
 
-- When receiving the command **;cim** or **;codenvim**, open the file you created or the path you just mentioned in the background using `codenvim`. Do not wait after opening with `codenvim`.
-  - Example command: `codenvim --nowait <path>`
-  - If a file name or file path is entered after the command, open that file with the `codenvim` command. Refer to the example command.
-  - If `sv` is entered as `<path>` (`;cim sv`), open the `/tmp/translate_byai.md` file with codenvim. (`codenvim --nowait /tmp/translate_byai.md`)
-    - When you need to position the cursor at a specific line in a FilePath, use `codenvim --nowait +<line> <path>`. (example: `codenvim --nowait +100 testlog.log`)
+- When receiving the command **;di** or **;code**, open the file you created or the path you just mentioned using `di`. Do not wait after opening with `di`.
+  - Example command: `di <path>` or `di <request context>`
+  - `di <path>`
+    - If a file name or file path is entered after the command, open that file with the `di` command. Refer to the example command.
+      - `di <file> (ex: di testlog.log)`
+      - When you need to position the cursor at a specific line in a FilePath, use `di <file>:<line>`. (example: `di testlog.log:100`)
+  - `;di <request>`
+    - If the command is followed by a request or content, open the file/source/logic related to the content at its starting location. (Whenever possible, you must specify the line when opening.)
+      Afterward, briefly explain the location of the opened file and the content of the source.
+      - example: `;di 함수의 초기화 지점이 어디지?` -> Analyze the source and identify the location. -> `di ApplicationListener.java:53`
 
 - When receiving the command **;tim**, open the file you created or the path you just mentioned using `tim`. Do not wait after opening with `tim`.
-  - Example command: `tim <path>`
-  - If a file name or file path is entered after the command, open that file with the `tim` command. Refer to the example command.
-  - If `sv` is entered as `<path>` (`;tim sv`), open the `/tmp/translate_byai.md` file with codenvim. (`tim /tmp/translate_byai.md`)
-    - When you need to position the cursor at a specific line in a FilePath, use `tim +<line> <path>`. (example: `tim +100 testlog.log`)
-
-
-- When receiving the command **;code**, open the file you created or the path you just mentioned in the background using `code`. Do not wait after opening with `code`.
-  - Example command: use the command `code --goto <path>` or `code --goto <path>`
-    - When you need to position the cursor at a specific line in a FilePath, use `code --goto <path>:<line>`. (example: `code --goto testlog.log:100`)
-  - If a file name or file path is entered after the command, open that file with the `code` command. Refer to the example command.
+  - Example command: `tim <path>` or `tim <request context>`
+  - `tim <path>`
+    - If a file name or file path is entered after the command, open that file with the `tim` command. Refer to the example command.
+      - `di <file> / di<file>:<line> (ex: di test.c / di test.c:100)`
+      - When you need to position the cursor at a specific line in a FilePath, use `tim <path>:<line>` or `tim +<line> <path>`. (example: `tim testlog.log:100` / `tim +100 testlog.log`)
+  - `;tim <request>`
+    - If the command is followed by a request or content, open the file/source/logic related to the content at its starting location. (Whenever possible, you must specify the line when opening.)
+      Afterward, briefly explain the location of the opened file and the content of the source.
+      - example: `;tim 함수의 초기화 지점이 어디지?` -> Analyze the source and identify the location. -> `tim ApplicationListener.java:53`
 
 - When receiving the command **;err**, you must analyze the selected error/warning and provide a solution. If you referenced external documents to solve the error, Include the source of the referenced information.
   - In Claude Code, you must use **resolver** sub-agent unconditionally.
