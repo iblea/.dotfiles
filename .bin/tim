@@ -1,72 +1,206 @@
-#!/usr/bin/env bash
-# pvim - tmux 현재 window를 좌/우 분할한 뒤 neovim으로 파일 열기
-# 사용법: pvim [--safe] <file> [file...]
-#
-# 동작:
-#   tmux 안이고 현재 window가 단일 pane이면 가로(-h) 분할 후 새 pane에서 nvim 실행.
-#   nvim 종료 시 shell-command가 끝나면서 pane도 함께 종료됨.
-#
-# 옵션:
-#   --safe   tmux가 아니거나 단일 pane이 아니면 에러로 종료.
-#            옵션이 없으면 fallback으로 nvim을 직접 실행함.
+#!/bin/bash
 
-set -euo pipefail
+# echo "VIM_PROG: $VIM_PROGRAM"
+if [ -z "$VIM_PROGRAM" ]; then
+    if [ -z "$(command -v nvim)" ]; then
+        VIM_PROGRAM="vim"
+    else
+        VIM_PROGRAM="nvim"
+    fi
+else
+    validate_var=$(command -v "$VIM_PROGRAM")
+    if [ -z "$validate_var" ]; then
+        if [ -z "$(command -v nvim)" ]; then
+            VIM_PROGRAM="vim"
+        else
+            VIM_PROGRAM="nvim"
+        fi
+    fi
+fi
 
-safe_mode=0
-while [[ $# -gt 0 ]]; do
-    case "$1" in
-        --safe)
-            safe_mode=1
-            shift
-            ;;
-        --)
-            shift
-            break
-            ;;
-        -*)
-            echo "[pvim] unknown option: $1" >&2
-            exit 1
-            ;;
-        *)
-            break
+# <file>:<line> 형태 인자 처리 (ex: test.txt:46)
+# 1. test.txt:46 이름의 파일이 실제로 있으면 그대로 연다.
+# 2. 없으면 마지막 : 기준으로 분리해서 +<line> test.txt 형태로 변환한다. (<line>이 숫자일 때만)
+_parsed_args=()
+for _arg in "$@"; do
+    case "$_arg" in
+        -*|+*)
+            _parsed_args+=("$_arg")
+            continue
             ;;
     esac
+    if [ -e "$_arg" ]; then
+        _parsed_args+=("$_arg")
+        continue
+    fi
+    _fname="${_arg%:*}"
+    _fline="${_arg##*:}"
+    if [ "$_fname" != "$_arg" ] && [ -n "$_fname" ] && [[ "$_fline" =~ ^[0-9]+$ ]]; then
+        _parsed_args+=("+$_fline" "$_fname")
+    else
+        _parsed_args+=("$_arg")
+    fi
 done
+set -- "${_parsed_args[@]}"
 
-if [[ $# -lt 1 ]]; then
-    echo "사용법: pvim [--safe] <file> [file...]" >&2
-    exit 1
+# echo "$#"
+# for _ext in "$@"; do
+#     echo "$_ext"
+# done
+# exit 0
+
+
+TMUX_COMMAND=( tmux )
+TMUX_COMMAND_STR="tmux"
+if [ -z "$TMUX" ]; then
+    # if [ -n "$SSH_CONNECTION" ] || [ -n "$SSH_CLIENT" ]; then
+    #     if [ -z "$LC_TMUX" ]; then
+    #         exec $VIM_PROGRAM "$@"
+    #         exit 0
+    #     elif [ -z "$LC_TMUX_SOCKET" ]; then
+    #         exec $VIM_PROGRAM "$@"
+    #         exit 0
+    #     fi
+
+    #     TMUX_COMMAND=( tmux -S "${LC_TMUX_SOCKET}" )
+    #     TMUX_COMMAND_STR="tmux -S '${LC_TMUX_SOCKET}'"
+    # else
+        # exec $VIM_PROGRAM "$@"
+        # 'cd ${PWD}' 로 공백이 포함된 경로도 처리 됨.
+        exec $VIM_PROGRAM --cmd 'cd ${PWD}' "$@"
+        exit 0
+    # fi
 fi
 
-if command -v nvim >/dev/null 2>&1; then
-    editor="nvim"
-elif command -v vim >/dev/null 2>&1; then
-    editor="vim"
+NO_WAIT=0
+if [ $# -ge 1 ]; then
+    if [ "$1" = "--nowait" ]; then
+        NO_WAIT=1
+        shift
+        # if [ "$1" = "sv" ]; then
+        #     shift
+        #     # 새 값 + 나머지 인자로 재설정
+        #     set -- "$@" "/tmp/translate_byai.md"
+        #     if [ ! -f "/tmp/translate_byai.md" ]; then
+        #         echo "no file /tmp/translate_byai.md"
+        #         exit 1
+        #     fi
+        # fi
+
+        for arg in "$@"; do
+            if [ "$arg" = "sv" ]; then
+                # 새 값 + 나머지 인자로 재설정
+                if [ ! -f "/tmp/translate_byai.md" ]; then
+                    echo "no file /tmp/translate_byai.md"
+                    exit 1
+                fi
+                shift
+                set -- "$@" "/tmp/translate_byai.md"
+                break
+            fi
+        done
+    fi
+fi
+
+# echo "$@" > $HOME/test-cldarg.txt
+signal="$VIM_PROGRAM-done-$$"
+CURRENT_LINES=$(${TMUX_COMMAND[@]} display-message -p '#{pane_height}')
+PANE_PWD=$(${TMUX_COMMAND[@]} display-message -p '#{pane_current_path}')
+ORIG_PANE=$(${TMUX_COMMAND[@]} display-message -p '#{pane_index}')
+
+# vertical
+# tmux split-window -h "vim '$@'; tmux wait-for -S $signal" \; wait-for $signal
+
+
+if [ $NO_WAIT -ne 1 ]; then
+    ${TMUX_COMMAND[@]} copy-mode
+fi
+
+tmp_editor_var=0
+if [[ "$AIAGENT_CODE" != "" ]] || [[ "$(${TMUX_COMMAND[@]} show-option -pqv @is_aiagent_code 2>/dev/null)" = "1" ]]; then
+    tmp_editor_var=1
 else
-    echo "[pvim] nvim/vim 둘 다 없어." >&2
-    exit 1
+    tmp_editor_var=2
 fi
 
-if [[ -z "${TMUX:-}" ]]; then
-    if (( safe_mode )); then
-        echo "[tvim] only use in tmux. (--safe)" >&2
-        exit 1
+
+# echo "vim enter" >> /tmp/test.txt
+# horizontal
+# $@를 직접 사용하면 tmux split-window에서 제대로 전달이 안되는 문제가 있어서 변수로 저장
+# {
+#     echo "=== codevim debug $(date '+%Y-%m-%d %H:%M:%S') ==="
+#     echo "PANE_PWD=[${PANE_PWD}]"
+#     echo "VIM_PROGRAM=[${VIM_PROGRAM}]"
+#     echo "PWD=[${PWD}]"
+#     echo "EDITOR=[${EDITOR}]"
+#     echo "arg count=$#"
+#     _i=0
+#     for _a in "$@"; do
+#         _i=$((_i+1))
+#         echo "arg[$_i]=[$_a]"
+#     done
+# } >> /tmp/codevim-debug.log 2>&1
+
+# 공백/특수문자 포함 인자가 깨지지 않도록 인자별로 escape 해서 문자열로 저장
+QUOTED_ARGS=""
+if [ $# -gt 0 ]; then
+    QUOTED_ARGS=$(printf '%q ' "$@")
+fi
+
+TMUX_CMD="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' $QUOTED_ARGS"
+TMUX_CMD_WAIT="${TMUX_COMMAND_STR} set -p -t \$TMUX_PANE @aiagent_tmp_editor_localvar 1; export AIAGENT_TMP_EDITOR=${tmp_editor_var}; $VIM_PROGRAM --cmd 'cd ${PANE_PWD}' $QUOTED_ARGS; VIMRC=\$?; ${TMUX_COMMAND_STR} set-environment CODEVIM_EXIT_$$ \$VIMRC; [ \$VIMRC -eq 10 ] && ${TMUX_COMMAND_STR} set-hook -w pane-exited 'run-shell \"$HOME/.dotfiles/.bin/codevim-autosend ${ORIG_PANE} && ${TMUX_COMMAND_STR} set-hook -uw pane-exited\"'"
+
+{
+    echo "TMUX_CMD=[${TMUX_CMD}]"
+    echo "TMUX_CMD_WAIT=[${TMUX_CMD_WAIT}]"
+    echo ""
+} >> /tmp/codevim-debug.log 2>&1
+
+if [ $CURRENT_LINES -ge 26 ]; then
+    if [ $NO_WAIT -eq 1 ]; then
+        ${TMUX_COMMAND[@]} split-window -v -l 13 "$TMUX_CMD"
+    else
+        ${TMUX_COMMAND[@]} split-window -v -l 13 "$TMUX_CMD_WAIT; ${TMUX_COMMAND_STR} wait-for -S $signal"
     fi
-    exec "$editor" "$@"
-fi
-
-pane_count=$(tmux display-message -p '#{window_panes}' 2>/dev/null || true)
-if [[ "$pane_count" != "1" ]]; then
-    if (( safe_mode )); then
-        echo "[tvim] pane of current window is not single pane. (--safe)" >&2
-        exit 1
+elif [ $CURRENT_LINES -ge 15 ]; then
+    if [ $NO_WAIT -eq 1 ]; then
+        ${TMUX_COMMAND[@]} split-window -v -l 7 "$TMUX_CMD"
+    else
+        ${TMUX_COMMAND[@]} split-window -v -l 7 "$TMUX_CMD_WAIT; ${TMUX_COMMAND_STR} wait-for -S $signal"
     fi
-    exec "$editor" "$@"
+else
+    if [ $NO_WAIT -eq 1 ]; then
+        ${TMUX_COMMAND[@]} split-window -v "$TMUX_CMD"
+    else
+        ${TMUX_COMMAND[@]} split-window -v "$TMUX_CMD_WAIT; ${TMUX_COMMAND_STR} wait-for -S $signal"
+    fi
 fi
 
-cmd="$editor"
-for arg in "$@"; do
-    cmd+=" $(printf '%q' "$arg")"
-done
+if [ $NO_WAIT -ne 1 ]; then
+    ${TMUX_COMMAND[@]} select-pane -t $ORIG_PANE
+    ${TMUX_COMMAND[@]} send-keys -X scroll-up
+    ${TMUX_COMMAND[@]} send-keys -X scroll-up
+    ${TMUX_COMMAND[@]} send-keys -X scroll-up
+    ${TMUX_COMMAND[@]} send-keys -X scroll-up
+    ${TMUX_COMMAND[@]} select-pane -t $((ORIG_PANE + 1))
+    ${TMUX_COMMAND[@]} wait-for $signal
+    ${TMUX_COMMAND[@]} select-pane -t $ORIG_PANE
+    ${TMUX_COMMAND[@]} send-keys -X cancel
+    VIM_EXIT=$(${TMUX_COMMAND[@]} show-environment CODEVIM_EXIT_$$ 2>/dev/null | cut -d= -f2)
+    ${TMUX_COMMAND[@]} set-environment -u CODEVIM_EXIT_$$ 2>/dev/null
+fi
 
-exec tmux split-window -h -l 50% "$cmd"
+unset AIAGENT_TMP_EDITOR
+VIM_EXIT=${VIM_EXIT:--1}
+# echo "vim quit (exit: $VIM_EXIT)" >> /tmp/test.txt
+
+# if [ "$VIM_EXIT" -eq 10 ]; then
+#     (sleep 0.15 && tmux send-keys -t 1 Enter) &
+#     disown
+# fi
+
+# tmux new-window -n "claude-code-tmp-editor-$$" "$VIM_PROGRAM '$@'; tmux wait-for -S $signal" \; wait-for $signal
+
+# rm -f $HOME/test-cldarg.txt
+
+exit 0
