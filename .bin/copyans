@@ -2,9 +2,9 @@
 # copyans.sh - 현재 Claude Code 세션의 질문/답변 한 쌍만 골라 vim 빈 버퍼로 띄운다.
 #
 # 사용법:
-#   copyans.sh        마지막 질문+답변
-#   copyans.sh <n>    마지막에서 n번째 위 (Q1/Q2/Q3 에서 "1" -> Q2-A2)
-#   copyans.sh -<n>   최초 n번째         (Q1..Q5 에서 "-2" -> Q2-A2)
+#   copyans        마지막 질문+답변
+#   copyans <n>    마지막에서 n번째 위 (Q1/Q2/Q3 에서 "1" -> Q2-A2)
+#   copyans -<n>   최초 n번째         (Q1..Q5 에서 "-2" -> Q2-A2)
 #
 # 동작 조건:
 #   - AIAGENTCODE="Claude Code" 여야 한다. 아니면 동작하지 않는다.
