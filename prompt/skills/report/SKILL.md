@@ -48,11 +48,20 @@ Any remaining arguments beyond the first two are interpreted as additional instr
 Specifies the format of the report.
 If the first argument is not entered, the default output format is markdown (md).
 
-Supported formats can be various file formats such as md (markdown), html, pdf, txt, excel (xlsx/xls), word (docx/doc), etc.
+Supported formats can be various file formats such as md (markdown), html, art (artifact/artifacts), pdf, txt, excel (xlsx/xls), word (docx/doc), etc.
 
 If the report format is HTML and a diagram is needed, use mermaid.js.
 For the mermaid.min.js file, use the JavaScript file at `https://www.iasdf.com/js/mermaid_11_15_0.min.js`.
  - The mermaid version of the link is 11.15.0.
+
+##### Artifact Format (art / artifact / artifacts)
+
+If the first argument is `art`, `artifact`, or `artifacts`, write the report in HTML format and render it as an Artifact using the Artifact tool.
+- The Artifact tool only accepts a file path (no inline content), so an HTML file must be written first. Write it to the session scratchpad directory (or a temp directory such as `/tmp` if no scratchpad is available) — NOT the current working directory.
+  - This overrides the "Save the report in the current path" rule above. Do NOT leave a report file in the working directory; the artifact itself is the deliverable. (This keeps report files out of the project's git untracked list.)
+  - The filename still follows the Second Option rule with the `.html` extension (the basename is used as the artifact's fallback title).
+- Do NOT use the external mermaid.js link above in this case. Artifacts block external scripts (CSP) but render mermaid natively, so use `<pre class="mermaid">` blocks for diagrams instead.
+- After publishing, provide the artifact URL to the user.
 
 
 

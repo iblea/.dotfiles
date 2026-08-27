@@ -81,10 +81,35 @@ The target may be followed by a description wrapped in parentheses: `<target> (<
 - Use it as context when interpreting the pane output or composing commands to send (especially with the `sk` option). For example, `(ssh win)` means the pane's shell is running on the remote host `win`, so any suggested or sent commands must be valid for that remote environment, not the local one.
 - Options following the closing parenthesis (`sk`, `t`, `h`, ...) are parsed the same as usual.
 
+##### Chained state: `(ssh <alias> - <command>)`
+A description may express a **chained state** by joining steps with ` - `.
+
+- `(ssh <alias> - <command>)` means: the pane connected to the `<alias>` host via ssh, **then** ran `<command>`, and is currently sitting in the resulting state.
+  - example: `(ssh test - sudo su)` — connected to the `test` server, then obtained **root** privileges through `sudo su`. Any command sent to that pane therefore runs as root on `test`.
+- Always compose commands against the **final** state, not just the first step.
+  - Do NOT prefix `sudo` again when the pane is already root.
+  - Do NOT assume a local path/binary exists just because it exists on the local machine.
+- The same form applies to any environment chain, not only `sudo su`.
+  - `(ssh db01 - mysql)` — connected to `db01`, then entered the `mysql` client. Send **SQL**, not shell commands.
+  - `(ssh prod - docker exec -it api bash)` — a shell inside the `api` container on the `prod` host.
+
+##### 🚨 Resolving an ssh alias: `ssh -G` ONLY 🚨
+
+**NEVER read `~/.ssh/config`, `~/.ssh/known_hosts`, or ANY file under `~/.ssh/` to find out what an alias points to.**
+
+- That directory holds highly sensitive data — private/public keys and connection info for unrelated servers — and reading it is blocked by design. Reading it (or trying to work around the block) is a security violation, exactly like capturing a non-specified pane.
+- When you genuinely need the real host/port/user behind an alias (e.g. to judge whether a command is valid on that remote), use `ssh -G <alias>`:
+  - `ssh -G <alias>` evaluates `Host` / `Match` blocks (including `Include`d files and wildcards) and **prints the final resolved config, then exits**. It opens **no network connection**, so it is safe and instant.
+  - Filter to only what you need — never dump the whole output:
+    - `/usr/bin/ssh -G win </dev/null | grep -Ei '^(hostname|port|user) '`
+- NOTE: `ssh` may be defined as a **shell function** in the user's environment. Call the binary directly (`/usr/bin/ssh`), otherwise a non-TTY context fails with `tcgetattr: Operation not supported by device` (exit 255).
+- Look up **only the alias the user actually named**. NEVER enumerate other hosts or list the aliases defined in the config.
+
 - example
   - `;tm .4 (ssh win)` → `showtmuxpane .4` — pane 4 of the current window is a remote session connected via `ssh win`.
   - `;tm 3 (local zsh)` → `showtmuxpane 3` — window 3, pane 1 is a local zsh shell.
   - `;tm 2.3 (docker dreamdb)` → `showtmuxpane 2.3` — window 2, pane 3 is a shell inside the `dreamdb` docker container.
+  - `;tm .5 (ssh test - sudo su)` → `showtmuxpane .5` — pane 5 of the current window is connected to the remote `test` host **and has already escalated to root via `sudo su`**.
   - `;tm .4 (ssh win) sk install gcc` → analyze pane 4 of the current window, then send commands appropriate for the remote `win` host via `sendtmuxpane .4`.
 
 ### Other Option
