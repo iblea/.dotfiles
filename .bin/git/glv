@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+    export LC_ALL=ko_KR.UTF-8
+elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+    export LC_ALL=ko_KR.utf8
+fi
+# --pretty='%Cred%H%Creset %Cgreen%ad%Creset%C(auto)%d%Creset %n%C(bold blue) <%an> [%ce] %Creset %n%B%n' \
+git log --date=iso-local --graph \
+--pretty='%Cred%H%Creset %Cgreen%ad%Creset%C(auto)%d%Creset %n%C(bold blue)<%an> [%ce] %Creset %n%B%n' \
+-3 $@
+

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# glr
+# glr <option1> <option2>
+# glr <option1> <option2> ... <remote name - ex ) origin>
+
+remote_branch="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "${remote_branch}" = "HEAD" ]]; then
+    echo "failed to get remote branch name"
+    exit 1
+fi
+
+opts=""
+remotes=""
+if [ $# -eq 0 ]; then
+    remotes="origin"
+else
+    remotes="${@:${#}:1}"
+    if [[ "${remotes:0:1}" = "-" ]]; then
+        opts=( $@ )
+        remotes="origin"
+    else
+        # $@ 에서 두 번째 인자부터 끝까지 배열로 저장
+        # opts=(${@:2:${#}-1})
+        # $@ 에서 첫 번째 인자부터 끝-1 까지 배열로 저장
+        opts=(${@:1:${#}-1})
+    fi
+fi
+if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+    export LC_ALL=ko_KR.UTF-8
+elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+    export LC_ALL=ko_KR.utf8
+fi
+git log --graph \
+--date=format-local:"%Y-%m-%d %H:%M:%S" \
+--pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an>%Creset %C(auto)%d%Creset %n%s%n' \
+$opts "remotes/${remotes}/${remote_branch}"
+

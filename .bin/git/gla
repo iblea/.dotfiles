@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# git log --graph --pretty='\''%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset'\'' $@
+
+OPTS=()
+if [[ "$1" = "--current-branch" ]] || [[ "$1" = "--curr" ]] || [[ "$1" = "-c" ]]; then
+    shift
+    OPTS=("master..HEAD")
+elif [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+    echo "usage: gla [--current-branch / --curr / -c] [git log options]"
+    return 0
+fi
+if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
+    export LC_ALL=ko_KR.UTF-8
+elif [ "$(locale -a 2>/dev/null | grep 'ko_KR.utf8')" ]; then
+    export LC_ALL=ko_KR.utf8
+fi
+git log --graph \
+--date=format-local:"%Y-%m-%d %H:%M:%S" \
+--pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an>%Creset %C(auto)%d%Creset %n%s%n' \
+${OPTS[@]} $@
+
