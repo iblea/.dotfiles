@@ -1,0 +1,314 @@
+/* ========================================================================== 
+   1. Web fonts
+   Remote fonts use font-display: swap so the report remains readable while
+   fonts are downloading or when a font host is unavailable.
+   ========================================================================== */
+@font-face {
+  font-family: "OperatorMonoCustom";
+  src: url("https://www.iasdf.com/rpt/font/OperatorMono/OperatorMono-Book.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "OperatorMonoCustom";
+  src: url("https://www.iasdf.com/rpt/font/OperatorMono/OperatorMono-Bold.otf") format("opentype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NanumSquareRound";
+  src:
+    url("https://www.iasdf.com/rpt/font/NanumSquareRound/NanumSquareRoundR.woff2") format("woff2"),
+    url("https://www.iasdf.com/rpt/font/NanumSquareRound/NanumSquareRoundR.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NanumSquareRound";
+  src:
+    url("https://www.iasdf.com/rpt/font/NanumSquareRound/NanumSquareRoundB.woff2") format("woff2"),
+    url("https://www.iasdf.com/rpt/font/NanumSquareRound/NanumSquareRoundB.woff") format("woff");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CascadiaCodeNFCustom";
+  src: url("https://www.iasdf.com/rpt/font/CascadiaCodeNFCustom/CascadiaCodeNFOT-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CascadiaCodeNFCustom";
+  src: url("https://www.iasdf.com/rpt/font/CascadiaCodeNFCustom/CascadiaCodeNFOT-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CascadiaCodeNFCustom";
+  src: url("https://www.iasdf.com/rpt/font/CascadiaCodeNFCustom/CascadiaCodeNFOT-Italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "CascadiaCodeNFCustom";
+  src: url("https://www.iasdf.com/rpt/font/CascadiaCodeNFCustom/CascadiaCodeNFOT-BoldItalic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+/* ========================================================================== 
+   2. Design tokens
+   Semantic colors are shared by callouts, badges, and text utilities.
+   ========================================================================== */
+:root {
+  --bg: #f4f7fb;
+  --paper: #ffffff;
+  --ink: #172033;
+  --muted: #5c677d;
+  --line: #dce3ee;
+  --brand: #165dff;
+  --brand-2: #0c3eab;
+  --soft: #edf4ff;
+  --info: #165dff;
+  --info-bg: #edf4ff;
+  --good: #087f5b;
+  --good-bg: #e9fbf4;
+  --warn: #9a5800;
+  --warn-bg: #fff5dd;
+  --bad: #b42318;
+  --bad-bg: #fff0ee;
+  --neutral: #5c677d;
+  --neutral-bg: #eef1f5;
+  --code: #111827;
+  --code-ink: #e5edff;
+  --shadow: 0 14px 44px rgba(21, 39, 78, .10);
+}
+
+/* ========================================================================== 
+   3. Base elements
+   ========================================================================== */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 4% 0%, rgba(22, 93, 255, .12), transparent 28rem),
+    linear-gradient(180deg, #f8faff 0, var(--bg) 22rem);
+  font-family: "OperatorMonoCustom", "NanumSquareRound", -apple-system, BlinkMacSystemFont, "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+  line-height: 1.66;
+}
+a { color: var(--brand-2); text-underline-offset: 3px; }
+code, pre, .source-path { font-family: "CascadiaCodeNFCustom", "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+
+/* ========================================================================== 
+   4. Report shell and navigation
+   ========================================================================== */
+.layout { display: grid; grid-template-columns: 250px minmax(0, 980px); gap: 32px; width: min(1294px, calc(100% - 40px)); margin: 0 auto; }
+aside { position: sticky; top: 22px; align-self: start; margin-top: 28px; padding: 22px 18px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.86); backdrop-filter: blur(10px); box-shadow: var(--shadow); }
+aside .kicker { margin-bottom: 12px; color: var(--brand); font-size: 12px; font-weight: 800; letter-spacing: .12em; }
+aside a { display: block; padding: 6px 9px; border-radius: 8px; color: var(--muted); font-size: 13px; text-decoration: none; }
+aside a:hover { color: var(--brand-2); background: var(--soft); }
+aside .sub { padding-left: 22px; font-size: 12px; }
+main { min-width: 0; padding: 28px 0 72px; }
+
+/* ========================================================================== 
+   5. Report surfaces and typography
+   .panel and .report-section allow the same surface style on non-section tags.
+   ========================================================================== */
+.hero, section, .panel, .report-section { border: 1px solid var(--line); border-radius: 20px; background: var(--paper); box-shadow: var(--shadow); }
+.hero { overflow: hidden; margin-bottom: 22px; }
+.hero-top { padding: 48px 48px 38px; color: white; background: linear-gradient(126deg, #0d2b68, #165dff 72%, #49a7ff); }
+.eyebrow { margin: 0 0 11px; font-size: 13px; font-weight: 800; letter-spacing: .15em; opacity: .86; }
+h1 { max-width: 750px; margin: 0; font-size: clamp(30px, 5vw, 50px); line-height: 1.16; letter-spacing: -.035em; }
+.subtitle { max-width: 760px; margin: 18px 0 0; font-size: 17px; opacity: .91; }
+.hero-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: var(--paper); }
+.hero-meta div { padding: 18px 22px; border-right: 1px solid var(--line); }
+.hero-meta div:last-child { border-right: 0; }
+.hero-meta span { display: block; color: var(--muted); font-size: 12px; }
+.hero-meta strong { display: block; margin-top: 3px; font-size: 14px; }
+section, .report-section { margin-top: 22px; padding: 34px 38px; }
+h2 { margin: 0 0 22px; font-size: 27px; line-height: 1.25; letter-spacing: -.025em; }
+h3 { margin: 30px 0 12px; font-size: 20px; line-height: 1.35; }
+h4 { margin: 22px 0 8px; font-size: 16px; }
+p { margin: 10px 0; }
+.lead { color: #33405a; font-size: 16px; }
+
+/* ========================================================================== 
+   6. Reusable layouts
+   Use grid-2/3/4 directly, or stack/cluster for one-dimensional groups.
+   ========================================================================== */
+.grid, .grid-2, .grid-3, .grid-4 { display: grid; gap: 14px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.cluster { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* ========================================================================== 
+   7. Cards, badges, and callouts
+   Status aliases keep old short names and add reusable descriptive names:
+   good/success, warn/warning, err/error/danger, plus info and neutral.
+   ========================================================================== */
+.summary-grid, .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.summary-card, .card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcff; }
+.summary-card strong, .card strong { display: block; margin-bottom: 6px; color: var(--brand-2); }
+.summary-card p, .card p { margin: 0; color: var(--muted); font-size: 14px; }
+.badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.badge.info { color: var(--info); background: var(--info-bg); }
+.badge.good, .badge.success { color: var(--good); background: var(--good-bg); }
+.badge.warn, .badge.warning { color: var(--warn); background: var(--warn-bg); }
+.badge.bad, .badge.err, .badge.error, .badge.danger { color: var(--bad); background: var(--bad-bg); }
+.badge.neutral { color: var(--neutral); background: var(--neutral-bg); }
+.callout { margin: 18px 0; padding: 16px 18px; border-left: 4px solid var(--info); border-radius: 4px 12px 12px 4px; background: var(--info-bg); }
+.callout.info { border-left-color: var(--info); background: var(--info-bg); }
+.callout.good, .callout.success { border-left-color: var(--good); background: var(--good-bg); }
+.callout.warn, .callout.warning { border-left-color: var(--warn); background: var(--warn-bg); }
+.callout.err, .callout.error, .callout.danger { border-left-color: var(--bad); background: var(--bad-bg); }
+.callout.neutral { border-left-color: var(--neutral); background: var(--neutral-bg); }
+.callout strong { display: block; margin-bottom: 4px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 14px 0 22px; border: 1px solid var(--line); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { color: #26334d; background: #edf2f9; font-weight: 800; text-align: left; }
+th, td { padding: 11px 13px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:nth-child(even) td { background: #fbfcfe; }
+.table-compact th, .table-compact td { padding: 7px 9px; }
+.table-fixed { table-layout: fixed; }
+
+/* Code blocks and inline code */
+pre { position: relative; overflow-x: auto; margin: 14px 0 20px; padding: 18px 20px; border-radius: 12px; color: var(--code-ink); background: var(--code); font-size: 13px; line-height: 1.65; white-space: pre; }
+:not(pre) > code { padding: 2px 6px; border: 1px solid #d9e2ef; border-radius: 6px; color: #123e8f; background: #f2f6fc; font-size: .9em; }
+ul, ol { padding-left: 22px; }
+li + li { margin-top: 6px; }
+.syntax { font-size: 14px; }
+.syntax .token { color: #8ec5ff; }
+.syntax .optional { color: #ffd479; }
+
+/* Simple process flow */
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch; margin: 18px 0; }
+.flow .node { padding: 16px 12px; border: 1px solid #bed2ff; border-radius: 12px; background: #f4f7ff; text-align: center; }
+.flow .arrow { align-self: center; color: var(--brand); font-size: 22px; font-weight: 900; }
+.decision { border-collapse: separate; border-spacing: 0; }
+.decision td:first-child { min-width: 132px; font-weight: 800; }
+.source-path { overflow-wrap: anywhere; font-size: 12px; }
+
+/* References and footer */
+.refs { counter-reset: refs; list-style: none; padding: 0; }
+.refs li { position: relative; padding: 12px 14px 12px 48px; border-bottom: 1px solid var(--line); }
+.refs li::before { counter-increment: refs; content: counter(refs); position: absolute; left: 10px; top: 12px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 7px; color: white; background: var(--brand); font-size: 12px; font-weight: 800; }
+.refs li:last-child { border-bottom: 0; }
+.footnote { color: var(--muted); font-size: 12px; }
+footer { padding: 26px 8px 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+/* ========================================================================== 
+   8. Small reusable utilities
+   ========================================================================== */
+.text-info { color: var(--info); }
+.text-good, .text-success { color: var(--good); }
+.text-warn, .text-warning { color: var(--warn); }
+.text-err, .text-error, .text-danger { color: var(--bad); }
+.text-muted { color: var(--muted); }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.nowrap { white-space: nowrap; }
+.break-word { overflow-wrap: anywhere; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* ========================================================================== 
+   9. Responsive layout
+   ========================================================================== */
+@media (max-width: 980px) {
+  .layout { display: block; width: min(940px, calc(100% - 24px)); }
+  aside { position: static; margin: 16px 0 0; }
+  aside nav { display: grid; grid-template-columns: repeat(2, 1fr); }
+  aside .sub { padding-left: 9px; }
+  main { padding-top: 16px; }
+}
+@media (max-width: 680px) {
+  .hero-top, section, .report-section { padding: 26px 22px; }
+  .hero-meta, .summary-grid, .cards, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hero-meta div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .hero-meta div:last-child { border-bottom: 0; }
+  .flow { grid-template-columns: 1fr; }
+  .flow .arrow { transform: rotate(90deg); justify-self: center; }
+  aside nav { grid-template-columns: 1fr; }
+  table { min-width: 650px; }
+}
+
+/* ========================================================================== 
+   10. Dark theme
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1422;
+    --paper: #151e2e;
+    --ink: #edf2ff;
+    --muted: #a9b4ca;
+    --line: #2b3850;
+    --soft: #172b50;
+    --brand-2: #8db4ff;
+    --info: #8db4ff;
+    --info-bg: #172b50;
+    --good: #63e6be;
+    --good-bg: #12372f;
+    --warn: #ffd27a;
+    --warn-bg: #3d3014;
+    --bad: #ff9b94;
+    --bad-bg: #3b1d20;
+    --neutral: #c4cede;
+    --neutral-bg: #222d40;
+    --code: #090e17;
+    --shadow: none;
+  }
+  body { background: radial-gradient(circle at 4% 0%, rgba(22,93,255,.18), transparent 28rem), var(--bg); }
+  aside { background: rgba(21,30,46,.9); }
+  .summary-card, .card, tbody tr:nth-child(even) td { background:#111a29; }
+  th { color:#e4eafd; background:#202c40; }
+  .lead { color:#c9d3e5; }
+  :not(pre) > code { color:#c6d9ff; background:#1c2940; border-color:#33415b; }
+  .flow .node { background:#17233b; border-color:#36568e; }
+}
+
+/* ========================================================================== 
+   11. Print
+   ========================================================================== */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --paper: #ffffff;
+    --ink: #172033;
+    --muted: #5c677d;
+    --line: #dce3ee;
+    --soft: #edf4ff;
+    --brand-2: #0c3eab;
+    --info: #165dff;
+    --info-bg: #edf4ff;
+    --good: #087f5b;
+    --good-bg: #e9fbf4;
+    --warn: #9a5800;
+    --warn-bg: #fff5dd;
+    --bad: #b42318;
+    --bad-bg: #fff0ee;
+    --neutral: #5c677d;
+    --neutral-bg: #eef1f5;
+    --code: #111827;
+    --shadow: none;
+  }
+  body { background: white; }
+  .layout { display: block; width: 100%; }
+  aside { display: none; }
+  main { padding: 0; }
+  .hero, section, .panel, .report-section { box-shadow: none; break-inside: avoid; }
+  section, .report-section { padding: 22px 24px; }
+  a { color: inherit; text-decoration: none; }
+}
