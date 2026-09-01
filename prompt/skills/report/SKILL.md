@@ -56,12 +56,20 @@ For the mermaid.min.js file, use the JavaScript file at `https://www.iasdf.com/j
 
 ##### HTML Format
 
-If the report format is HTML, write the report based on the stylesheet at `css/report.css` in this skill directory (`~/.dotfiles/prompt/skills/report/css/report.css`).
-- Read `css/report.css` and embed its contents inline in a `<style>` tag inside the HTML report, so that the report remains a single self-contained file.
+If the report format is HTML, write the report based on `report.css`, the stylesheet bundled with this skill.
+
+**Locating `report.css`** — this skill runs with the user's project as the current working directory, NOT the skill directory, so a bare relative path will NOT resolve. Always read the file by absolute path, trying the following in order:
+1. `~/.claude/skills/report/css/report.css` (standard skill location)
+2. `~/.dotfiles/prompt/skills/report/css/report.css` (the real location; `~/.claude/skills` is a symlink to `~/.dotfiles/prompt/skills`)
+
+If neither path exists, do NOT guess or reconstruct the styles from memory. Tell the user that `report.css` could not be found, then write the report with a minimal self-authored style instead.
+
+**Applying the stylesheet**
+- Read the CSS file and embed its contents inline in a `<style>` tag inside the HTML report, so that the report remains a single self-contained file.
 - Follow the class names, layout, and color scheme defined in that CSS. Do not rewrite the existing styles arbitrarily; if a style that the CSS does not provide is needed, add only the minimum extra rules.
 
 For font information, refer to the fonts available under `https://www.iasdf.com/rpt/font/`.
-- Use only the fonts that exist at that location, and declare them with `@font-face` in the same way as in `css/report.css`.
+- Use only the fonts that exist at that location, and declare them with `@font-face` in the same way as in `report.css`.
 - Always specify a fallback font stack (e.g., system fonts) together, so the report stays readable even when the font host is unavailable.
 
 
@@ -76,12 +84,12 @@ If the first argument is `art`, `artifact`, or `artifacts`, write the report in 
 
 ###### Fonts in Artifact Format
 
-The `css/report.css` rule of the HTML Format section still applies (embed the CSS inline in a `<style>` tag), but the `@font-face` blocks of that CSS MUST NOT be copied as-is.
+The `report.css` rule of the HTML Format section still applies (embed the CSS inline in a `<style>` tag), but the `@font-face` blocks of that CSS MUST NOT be copied as-is.
 Artifacts are served under a strict CSP, so the fonts hosted on `https://www.iasdf.com/rpt/font/` cannot be loaded there. They are blocked silently with no visible error, and this is unrelated to the font host's CORS headers — CSP is enforced by the artifact viewer before the request is ever sent, so an `Access-Control-Allow-Origin: *` header does not help.
 
 Therefore, resolve the fonts as follows when writing an Artifact report:
 - Drop every `@font-face` rule that points to `https://www.iasdf.com/...`.
-- Keep the `font-family` declarations and the overall typography of `css/report.css`, but replace the font sources with one of the following, in order of preference:
+- Keep the `font-family` declarations and the overall typography of `report.css`, but replace the font sources with one of the following, in order of preference:
   1. Google Fonts — the only external stylesheet host allowed by the CSP. Load it with `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?...">` (the font files it pulls from `https://fonts.gstatic.com` are allowed as well).
      - Korean body text: `Noto Sans KR` / Code and monospace: `JetBrains Mono`
   2. System font stacks only, making no external request at all.

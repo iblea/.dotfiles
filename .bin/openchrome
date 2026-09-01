@@ -1,0 +1,12 @@
+#!/bin/bash
+
+filepath=$(readlink -e "$*")
+
+# echo "filepath: $filepath"
+if [ ! -f "$filepath" ]; then
+	echo "no file in $filepath"
+	echo "check path: $*"
+	exit 1
+fi
+
+open -na "Google Chrome" --args -new-window "file://${filepath}"
