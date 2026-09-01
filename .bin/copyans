@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# copyans.sh - 현재 Claude Code 세션의 질문/답변 한 쌍만 골라 vim 빈 버퍼로 띄운다.
+# copyans - 현재 Claude Code/Codex 세션의 질문/답변 한 쌍만 골라 vim 빈 버퍼로 띄운다.
 #
 # 사용법:
 #   copyans        마지막 질문+답변
@@ -7,8 +7,9 @@
 #   copyans -<n>   최초 n번째         (Q1..Q5 에서 "-2" -> Q2-A2)
 #
 # 동작 조건:
-#   - AIAGENTCODE="Claude Code" 여야 한다. 아니면 동작하지 않는다.
-#   - 대화 원본은 $HOME/.claude/projects/<encoded-cwd>/<session-id>.jsonl 을 읽는다.
+#   - AIAGENTCODE="Claude Code" 또는 "Codex" 여야 한다.
+#   - Claude Code는 $HOME/.claude/projects/<encoded-cwd>/<session-id>.jsonl 을 읽는다.
+#   - Codex는 $CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl 을 읽는다.
 #   - tmux(로컬)이면 하위 pane을 분할해 vim을 띄운다.
 #     tmux가 아니거나 tmux+ssh(원격)이면 codevim 과 동일하게 vim을 직접 실행한다.
 #
@@ -20,6 +21,7 @@ set -euo pipefail
 
 PROG="$(basename "$0")"
 PROJECTS_DIR="$HOME/.claude/projects"
+CODEX_DIR="${CODEX_HOME:-$HOME/.codex}"
 
 usage() {
     cat >&2 <<EOF
@@ -31,11 +33,15 @@ EOF
     exit 1
 }
 
-# --- 동작 조건: Claude Code 세션인지 ---
-if [[ "${AIAGENTCODE:-}" != "Claude Code" ]]; then
-    echo "[$PROG] Claude Code 세션이 아니야. (AIAGENTCODE=[${AIAGENTCODE:-}])" >&2
-    exit 1
-fi
+# --- 동작 조건: 지원하는 AI 에이전트인지 ---
+case "${AIAGENTCODE:-}" in
+    "Claude Code") agent="claude" ;;
+    "Codex")       agent="codex" ;;
+    *)
+        echo "[$PROG] Claude Code/Codex 세션이 아니야. (AIAGENTCODE=[${AIAGENTCODE:-}])" >&2
+        exit 1
+        ;;
+esac
 
 # --- 인자 파싱 ---
 mode="last"
@@ -77,7 +83,7 @@ encode_path() {
     printf '%s' "$1" | sed 's/[/._]/-/g'
 }
 
-find_transcript() {
+find_claude_transcript() {
     local sid="${CLAUDE_CODE_SESSION_ID:-}"
     local dir="$PROJECTS_DIR/$(encode_path "$PWD")"
 
@@ -110,17 +116,63 @@ find_transcript() {
     return 1
 }
 
-transcript=$(find_transcript) || {
-    echo "[$PROG] 트랜스크립트를 못 찾았어. (cwd=$PWD, session=${CLAUDE_CODE_SESSION_ID:-none})" >&2
-    exit 1
+# Codex는 세션 ID를 환경변수로 제공한다. 없으면 현재 cwd와 같은
+# session_meta를 가진 가장 최근 트랜스크립트를 선택한다.
+find_codex_transcript() {
+    local sid="${CODEX_SESSION_ID:-${CODEX_THREAD_ID:-}}"
+    local dir="$CODEX_DIR/sessions"
+    local hit candidate
+
+    [[ -d "$dir" ]] || return 1
+
+    if [[ -n "$sid" ]]; then
+        hit=$(find "$dir" -type f -name "*${sid}.jsonl" -print -quit 2>/dev/null || true)
+        if [[ -n "$hit" ]]; then
+            printf '%s\n' "$hit"
+            return 0
+        fi
+    fi
+
+    while IFS= read -r candidate; do
+        if jq -e --arg cwd "$PWD" \
+            'select(.type == "session_meta" and .payload.cwd == $cwd)' \
+            "$candidate" >/dev/null 2>&1; then
+            printf '%s\n' "$candidate"
+            return 0
+        fi
+    done < <(
+        find "$dir" -type f -name '*.jsonl' -exec ls -t {} + 2>/dev/null
+    )
+
+    return 1
 }
+
+case "$agent" in
+    claude)
+        transcript=$(find_claude_transcript) || {
+            echo "[$PROG] Claude Code 트랜스크립트를 못 찾았어. (cwd=$PWD, session=${CLAUDE_CODE_SESSION_ID:-none})" >&2
+            exit 1
+        }
+        ;;
+    codex)
+        transcript=$(find_codex_transcript) || {
+            echo "[$PROG] Codex 트랜스크립트를 못 찾았어. (cwd=$PWD, session=${CODEX_SESSION_ID:-${CODEX_THREAD_ID:-none}})" >&2
+            exit 1
+        }
+        ;;
+esac
+
+if [[ ! -r "$transcript" ]]; then
+    echo "[$PROG] 트랜스크립트를 읽을 수 없어. ($transcript)" >&2
+    exit 1
+fi
 
 # --- 턴 추출 jq ---
 # 사람이 직접 입력한 프롬프트만 질문으로 인정한다.
 #   origin.kind == "human" + promptSource 가 있는 user 이벤트가 그것.
 #   tool_result / isMeta / hook / 서브에이전트(isSidechain) 는 전부 제외된다.
 # 질문 하나가 나오면 새 턴을 열고, 다음 질문 전까지의 assistant text 를 그 턴에 쌓는다.
-JQ_TURNS='
+JQ_CLAUDE_TURNS='
 def qtext:
   .message.content
   | if type == "string" then .
@@ -150,6 +202,80 @@ def turns:
       end
     );
 '
+
+# Codex의 질문/답변은 event_msg와 response_item 안의 message를 사용한다.
+# 기존 포맷의 user_message가 있으면 그 이벤트만 질문으로 사용한다. 최신
+# 포맷에서는 content_item_kinds의 user.text만 사람의 질문으로 인정해
+# AGENTS.md/환경 정보/사용자 쉘 명령을 제외한다.
+JQ_CODEX_TURNS='
+def text_content($content_type):
+  [ .payload.content[]?
+    | select(.type == $content_type)
+    | .text // empty
+  ] | join("\n");
+
+def is_event_question:
+  .type == "event_msg"
+  and .payload.type == "user_message"
+  and (.payload.message? | type == "string");
+
+def is_host_context:
+  startswith("# AGENTS.md instructions")
+  or startswith("<environment_context>")
+  or startswith("<turn_aborted>")
+  or startswith("<user_shell_command>");
+
+def is_response_question($has_event_questions):
+  ($has_event_questions | not)
+  and
+  .type == "response_item"
+  and .payload.type == "message"
+  and .payload.role == "user"
+  and (
+    (.payload.internal_chat_message_metadata_passthrough.content_item_kinds? // null) as $kinds
+    | if ($kinds | type) == "array" then
+        any($kinds[]; . == "user.text")
+      else
+        true
+      end
+  )
+  and (text_content("input_text") | is_host_context | not);
+
+def is_assistant_text:
+  .type == "response_item"
+  and .payload.type == "message"
+  and .payload.role == "assistant"
+  and (.payload.content? | type == "array");
+
+def turns:
+  (any(.[]; is_event_question)) as $has_event_questions
+  | [ .[]
+    | if is_event_question then
+        { kind: "q", ts: .timestamp, text: .payload.message }
+      elif is_response_question($has_event_questions) then
+        { kind: "q", ts: .timestamp, text: text_content("input_text") }
+      elif is_assistant_text then
+        { kind: "a", text: text_content("output_text") }
+      else
+        empty
+      end
+    | select(.text | length > 0)
+  ]
+  | reduce .[] as $e ([];
+      if $e.kind == "q" then
+        . + [ { ts: $e.ts, q: $e.text, a: [] } ]
+      elif length > 0 then
+        .[0:-1] + [ .[-1] | .a += [ $e.text ] ]
+      else
+        .
+      end
+    );
+'
+
+case "$agent" in
+    claude) JQ_TURNS="$JQ_CLAUDE_TURNS" ;;
+    codex)  JQ_TURNS="$JQ_CODEX_TURNS" ;;
+esac
 
 total=$(jq -s "$JQ_TURNS turns | length" "$transcript")
 if [[ "$total" -eq 0 ]]; then
