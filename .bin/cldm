@@ -29,6 +29,10 @@ WEBSOCKET_SRV=0
 
 export SSLKEYLOGFILE=""
 export AIAGENTCODE="Claude Code"
+export CLAUDE_CODE_TMPDIR="$HOME/.claude/editor"
+if [ ! -d "$CLAUDE_CODE_TMPDIR" ]; then
+    mkdir -p "$CLAUDE_CODE_TMPDIR"
+fi
 
 if [ -n "$VSCODE_INJECTION" ]; then
     WEBSOCKET_SRV=0
