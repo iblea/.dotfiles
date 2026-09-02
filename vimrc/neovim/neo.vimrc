@@ -167,6 +167,7 @@ func! WinEnterFunction()
           \ || l:dir =~# '^/var/folders/'
           \ || l:dir =~# '^/tmp'
           \ || l:dir =~# '^/private/tmp'
+          \ || l:dir ==# expand('$HOME/.codex/editor')
         return
     endif
     if l:dir =~# '/\.local/share/nvim/leetcode'
