@@ -95,7 +95,7 @@ fi
 
 export ENABLE_LSP_TOOL=true
 
-OTHER_OPTS+=("--search")
+OTHER_OPTS+=("--search" "--approve-for-me")
 
 # codex $@
 codex ${OTHER_OPTS[@]}
