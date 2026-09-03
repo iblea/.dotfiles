@@ -199,6 +199,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;findcode` / `;findcode <description>` | Call skill `findcode` | - |
 | Utility | `;cire` | Recommend a commit message | - |
 | Utility | `;stg` / `;stage` | Stage the changes you made to Git, and Recommend a commit message | - |
+| Utility | `;gb` / `;gco` | Create a new branch, switch to it, and perform your work on that branch. | - |
 | Utility | `;ci` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
@@ -253,7 +254,13 @@ The following is an explanation of the user-defined command.
   - By default, provide the commit message in Korean.
   - If an option for a specific language is additionally entered, respond in that language. (`;cire eng` - respond in English)
 
-
+- When receiving the command **;gb** or **;gco**, follow the process outlined below.
+  - The command is entered in the form `;gb <branch name>`. (Example: `;gb feature/test` / `;gco aidev`)
+  1. Create a branch named `<branch name>`.
+    1-1. If a branch with that name already exists, do not create it.
+  2. Switch to that branch.
+  3. Perform your work on that branch.
+    - When working via the `;gb`/`;gco` command, automatically stage and commit each time a subtask is completed.
 
 - When receiving the command **;ci**, it means the same as saying "continue" or "계속".
 
