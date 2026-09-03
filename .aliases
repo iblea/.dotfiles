@@ -1031,64 +1031,6 @@ function gitapplymacro()
 
 }
 
-
-# gitdiff <option> <commit>
-# gitdiff --name-only 12345678
-# gitdiff --name-only 12345678..abcdefab
-function gitdiff() {
-    if [ $# -eq 0 ]; then
-        git diff
-        echo "================================================================"
-        git diff --cached
-        return 0
-    fi
-
-    # --name-only
-    local opts=( )
-    local commit="$@"
-    if [ $# -ge 2 ]; then
-        local array=( ${@} )
-        local opts=( $(echo "${array[@]:0:${#array[@]}-1}") )
-        commit=${@[-1]}
-    fi
-
-    if [ -z "$commit" ]; then
-        echo "commit argument is empty"
-        return 1
-    fi
-
-    # commits=$(echo "$commit" | tr ' ' '\n')
-    commits=$(echo "$commit" | sed 's/\.\./\n/')
-    commit_wcl=$(echo "$commits" | wc -l)
-
-    local head_commit=""
-    local tail_commit=""
-
-    if [ $commit_wcl -eq 1 ]; then
-        # local logs=$(git log --graph --date=format-local:"%Y-%m-%d %H:%M:%S" --pretty='%Cred%h%Creset %Cgreen(%ad)%Creset %C(bold blue)<%an>%Creset %C(auto)%d%Creset %n%s%n' -2 "$commit" )
-        local logs=$(git log --graph --date=iso-local --pretty='%Cred%h%Creset - %s %Cgreen(%ad)%C(auto)%d%Creset %C(bold blue)<%an>%Creset' -2 "$commit")
-        commits=$(echo "$logs" | awk -F ' ' '{ print $2 }')
-        head_commit=$(echo "$commits" | head -n 1)
-        tail_commit=$(echo "$commits" | tail -n 1)
-    elif [ $commit_wcl -eq 2 ]; then
-        # gitdiff "aaa..bbb"
-        head_commit=$(echo "$commits" | tail -n 1) # bbb
-        tail_commit=$(echo "$commits" | head -n 1) # aaa
-    else
-        echo "wrong diff hash argument (only 1 or 2)"
-        return 1
-    fi
-
-    if [ -z "$head_commit" ] || [ -z "$tail_commit" ]; then
-        echo "diff failed"
-        return 1
-    fi
-
-    echo "diff $tail_commit -> $head_commit (diff : $(git rev-list --count ${tail_commit}..${head_commit}))"
-    echo "\n"
-    git diff ${opts[@]} "${tail_commit}..${head_commit}"
-}
-
 function gitshow() {
     git show -m -p --stat $@
 }

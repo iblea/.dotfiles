@@ -8,7 +8,7 @@ if [[ "$1" = "--current-branch" ]] || [[ "$1" = "--curr" ]] || [[ "$1" = "-c" ]]
     OPTS=("master..HEAD")
 elif [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
     echo "usage: gla [--current-branch / --curr / -c] [git log options]"
-    return 0
+    exit 0
 fi
 if [ "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
     export LC_ALL=ko_KR.UTF-8
