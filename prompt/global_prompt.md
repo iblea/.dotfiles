@@ -200,7 +200,8 @@ The following is an explanation of the user-defined command.
 | Utility | `;cire` | Recommend a commit message | - |
 | Utility | `;stg` / `;stage` | Stage the changes you made to Git, and Recommend a commit message | - |
 | Utility | `;gb` / `;gco` | Create a new branch, switch to it, and perform your work on that branch. | - |
-| Utility | `;ci` | Continue (계속) | - |
+| Utility | `;gci` | Create separate commits for each discrete unit of work. | - |
+| Utility | `;cn` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
 | Other | `;err` | Analyze error and provide solution | resolver |
@@ -262,7 +263,11 @@ The following is an explanation of the user-defined command.
   3. Perform your work on that branch.
     - When working via the `;gb`/`;gco` command, automatically stage and commit each time a subtask is completed.
 
-- When receiving the command **;ci**, it means the same as saying "continue" or "계속".
+- When receiving the command **;gci**, Create separate commits for each discrete unit of work.
+  - Ignore changes to .gitignore, uncommitted documents (which are likely temporary), and files used exclusively for local development (e.g., local development configuration files).
+  - Follow the commit conventions.
+
+- When receiving the command **;cn**, it means the same as saying "continue" or "계속".
 
 - When receiving the command **;o** or **;dd** or **;ㅇㅇ**, it means the same as saying "yes", "ok" or "응", "네".
 
