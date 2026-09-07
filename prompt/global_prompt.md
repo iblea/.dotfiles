@@ -68,6 +68,23 @@ For multi-step tasks, state a brief plan:
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
+### Git Rule
+
+- **Authorship Attribution Policy (No AI Trailers)**
+  - When creating Git commits, pushing changes, writing pull request descriptions, or authoring any external/outward-facing documents, do NOT add any AI-authorship trailers, attributions, or signatures. Specifically:
+    - Do NOT append a `Co-Authored-By:` trailer that references Claude, Claude Code, or any AI model to commit messages.
+    - Do NOT add `🤖 Generated with [Claude Code]` or any similar "Generated with ..." attribution line to commit messages, PR descriptions, or documents.
+    - Do NOT include any other AI-authorship notice, signature, or watermark (e.g., "Written by AI", "Created by Claude", robot-emoji tags) in any committed content or outward-facing document.
+
+Write commit messages, PR descriptions, and documents as if authored directly, without any AI co-authorship or generation notice.
+
+- Never push on your own initiative. Use of the `git push` command is prohibited.
+
+- When working on an `aidv/**` branch, commit each discrete unit of work and observe the rules in accordance with the behavior of the `;gci` command.
+  - However, pushing an `aidv/**` branch via `git push` is strictly prohibited.
+  - On an `aidv/**` branch, if the instruction includes `;nogci`, `;noci`, or any directive prohibiting commits, do not perform git staging and commit.
+
+
 ### ETC
 
 - **If you think there might not be a correct answer, say I don't know. If you do not know the answer, admit it instead of guessing**.
@@ -81,15 +98,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
       - `../../relative/path/to/filename:line-range` (`../../docs/test.md:10-15`)
     - Absolute path
       - `/absolute/path/to/filename:line` or `line-range` (`/home/test/docs/vimtest.txt:30`)
-
-- **Authorship Attribution Policy (No AI Trailers)**
-  - When creating Git commits, pushing changes, writing pull request descriptions, or authoring any external/outward-facing documents, do NOT add any AI-authorship trailers, attributions, or signatures. Specifically:
-    - Do NOT append a `Co-Authored-By:` trailer that references Claude, Claude Code, or any AI model to commit messages.
-    - Do NOT add `🤖 Generated with [Claude Code]` or any similar "Generated with ..." attribution line to commit messages, PR descriptions, or documents.
-    - Do NOT include any other AI-authorship notice, signature, or watermark (e.g., "Written by AI", "Created by Claude", robot-emoji tags) in any committed content or outward-facing document.
-
-Write commit messages, PR descriptions, and documents as if authored
-directly, without any AI co-authorship or generation notice.
 
 - Answer in Korean (한국어로 답변해.)
   - 한국어로 답할 때에는 격식을 차리지 않고, 매우 친한 사람과 대화하듯 친근한 말투와 함께 반말을 사용해 답변해 줘.
@@ -256,7 +264,7 @@ The following is an explanation of the user-defined command.
   - If an option for a specific language is additionally entered, respond in that language. (`;cire eng` - respond in English)
 
 - When receiving the command **;gb** or **;gco**, follow the process outlined below.
-  - The command is entered in the form `;gb <branch name>`. (Example: `;gb feature/test` / `;gco aidev`)
+  - The command is entered in the form `;gb <branch name>`. (Example: `;gb aidv/test` / `;gco pr-1`)
   1. Create a branch named `<branch name>`.
     1-1. If a branch with that name already exists, do not create it.
   2. Switch to that branch.
