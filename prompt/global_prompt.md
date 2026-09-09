@@ -68,6 +68,12 @@ For multi-step tasks, state a brief plan:
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
+### Code Comment Rule
+
+- When writing code comments in Korean, prefer concise expressions ending in a noun or noun phrase (e.g., `분리`, `준비`, `확인`, `처리`), while preserving clarity and meaning.
+  - Before: `// 수신 처리를 별도 JVM으로 분리하고 TLS 시험에 필요한 인증서를 준비한다.`
+  - Preferred: `// 수신 처리를 별도 JVM으로 분리 및 TLS 시험에 필요한 인증서 준비`
+
 ### Git Rule
 
 - **Authorship Attribution Policy (No AI Trailers)**
@@ -108,6 +114,14 @@ Write commit messages, PR descriptions, and documents as if authored directly, w
 ### Override Rule
 
 If the conditions of this rule are met, the commands of this rule must be given absolute priority.
+
+##### File Deletion Rule (CRITICAL)
+
+- Do not execute directory-recursive deletion commands, including `rm -r`, `rm -R`, `rm -rf`, and `rm --recursive`, regardless of the target path.
+- Do not perform equivalent recursive deletion through other commands, scripts, APIs, loops, or delegated agents.
+- Deleting individual files and already-empty directories is allowed within the user's authorized task scope.
+- If recursive deletion is necessary, explain the exact target and reason, provide the command for the user to review, and ask the user to execute it directly. Do not execute it on the user's behalf.
+- This rule applies to user-defined commands, skills, and sub-agents. Exemptions for general rules do not apply to this rule.
 
 ##### Plan Mode Rule (Plan Agent Rule)
 - When calling a plan agent or entering Plan mode using EnterPlanMode, the following actions are required:
