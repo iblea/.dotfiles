@@ -7,6 +7,7 @@
 
 CODEX_OPT=""
 DEFAULT_EDITOR="vi"
+export CODEX_ALIAS_FILE="$HOME/.dotfiles/.aliases"
 
 if [ $# -eq 0 ]; then
     CODEX_OPT=""

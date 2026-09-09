@@ -9,5 +9,10 @@ if [ ! -e "$ZDOTDIR/.zshrc" ]; then
         /bin/rm -f "$ZDOTDIR/.zshrc"
     fi
     ln -s "$HOME/.zshrc" "$ZDOTDIR/.zshrc"
+    ln -s "$HOME/.zshenv" "$ZDOTDIR/.zshenv"
+fi
+
+if [[ -n ${CODEX_ALIAS_FILE:-} && -r $CODEX_ALIAS_FILE ]]; then
+  source "$CODEX_ALIAS_FILE"
 fi
 
