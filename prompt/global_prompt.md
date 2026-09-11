@@ -226,6 +226,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;cn` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
+| Utility | `;ro` / `;readonly` | Do not write / edit file.  | - |
 | Other | `;err` | Analyze error and provide solution | resolver |
 | Other | `;t` / `;tm` / `;tmux` | Call skill `showtmuxpane` | - |
 | Other | `;path` | Tell path of created file | - |
@@ -294,6 +295,12 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;o** or **;dd** or **;ㅇㅇ**, it means the same as saying "yes", "ok" or "응", "네".
 
 - When receiving the command **;x** or **;ss** or **;ㄴㄴ**, it means the same as saying "no", "nope" or "아니", "아니오".
+
+- When receiving **;ro** or **;readonly**, activate read-only mode to prevent file changes (e.g., during review, discussion, or planning).
+  - Do not create, modify, delete, move, or rename files through any tools or shell commands. Temporary file creation is allowed.
+  - Keep this mode active across subsequent turns until the user enters **;ro x** or **;readonly x**, or explicitly instructs or
+  authorizes file changes. (e.g., "이 내용을 파일에 반영해" or "파일을 수정해도 좋아")
+  - General agreement or continuation requests (e.g., "OK", "좋아", "계속") do not deactivate this mode.
 
 ### User-Defined Category: Other (Coding)
 
