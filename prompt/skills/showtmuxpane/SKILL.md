@@ -78,8 +78,8 @@ The target may be followed by a description wrapped in parentheses: `<target> (<
 
 - The parenthesized text is a user-provided hint describing the environment running in the target window/pane (e.g. remote ssh host, docker container, DB shell, local shell).
 - It is **NOT** part of the tmux target. **NEVER** pass it as an argument to `showtmuxpane` / `sendtmuxpane`.
-- Use it as context when interpreting the pane output or composing commands to send (especially with the `sk` option). For example, `(ssh win)` means the pane's shell is running on the remote host `win`, so any suggested or sent commands must be valid for that remote environment, not the local one.
-- Options following the closing parenthesis (`sk`, `t`, `h`, ...) are parsed the same as usual.
+- Use it as context when interpreting the pane output or composing commands to send (especially with the `sk` or `sksf` option). For example, `(ssh win)` means the pane's shell is running on the remote host `win`, so any suggested or sent commands must be valid for that remote environment, not the local one.
+- Options following the closing parenthesis (`sk`, `sksf`, `t`, `h`, ...) are parsed the same as usual.
 
 ##### Chained state: `(ssh <alias> - <command>)`
 A description may express a **chained state** by joining steps with ` - `.
@@ -119,8 +119,8 @@ Additionally, based on the contents of the pane, instructions such as "Analyze t
 
 #### sendkeys or sk
 
-If this option is not provided, only the `capture-pane` command should be executed by default. (Commands such as `send-keys` must never be executed.)
-If this option is provided, a specific tmux window can be manipulated through the `sendtmuxpane` command.
+If none of `sendkeys`, `sk`, or `sksf` is provided, only the `capture-pane` command should be executed by default. (Commands such as `send-keys` must never be executed.)
+If `sendkeys` or `sk` is provided, a specific tmux window/pane can be manipulated through the `sendtmuxpane` command. `sksf` enables the same interaction with the additional restrictions in the `sksf (sendkeys safe)` section below.
 
 ##### `sendtmuxpane` command
   - `sendtmuxpane` is available in `$PATH` by default (`~/.dotfiles/.bin/sendtmuxpane`). If not available, use `./script/sendtmuxpane` instead.
@@ -131,6 +131,7 @@ If this option is provided, a specific tmux window can be manipulated through th
   - `sendtmuxpane` automatically detects and cancels copy-mode on the target pane before sending keys. No manual copy-mode check is required when using `sendtmuxpane`.
 
 ##### `-w` (`--write`) run mode
+  - **Forbidden while `sksf` is active:** this mode creates/overwrites output files even when the command sent to the pane only reads data.
   - Usage: `sendtmuxpane -w [--timeout <sec>] <target> '<command>'`
     - `-w` (or `--write`) MUST be the first argument. `--timeout <sec>` works ONLY right after `-w` (default 30 seconds, wall-clock upper bound).
     - `<command>` is a single string argument.
@@ -201,6 +202,27 @@ If this option is provided, a specific tmux window can be manipulated through th
   - When the above command is entered, the content of window 2 is analyzed using `showtmuxpane` or `capture-pane`.
   - Subsequently, the apt error message is analyzed to suggest appropriate countermeasures and commands, and the user is asked whether to execute them in window 2. (Since the instruction was only to analyze the content, asking before execution is mandatory.)
   - Then, depending on the user's response, the commands are executed in window 2 through `sendtmuxpane`.
+
+##### sksf (sendkeys safe)
+
+- `sksf` is a restricted form of `sk`. It enables send-keys by itself; adding `sk` is unnecessary. It inherits `sk`'s exact-target, subsequent-interaction, and result-checking rules, subject to the restrictions below. If both options are present, **`sksf` takes precedence**.
+- **NEVER execute commands or send interactive input that creates, modifies, overwrites, appends to, moves, renames, or deletes files/directories, or changes their metadata/permissions.** This applies to local and remote files, including temporary files. Judge the complete command and its effects, not just the command name.
+- Forbidden operations include:
+  - File transfer/copy/move/delete commands: `scp`, `cp`, `mv`, `rm`, `unlink`, and file-writing `rsync` operations.
+  - File creation or metadata changes: `touch`, `mkdir`, `chmod`, `chown`, and `truncate`.
+  - In-place edits or explicit file writes: `sed -i`, `sed`'s `w` command, `perl -i`, editor save commands, and scripts that write/delete files (including Python or shell scripts).
+  - File-writing redirection such as `echo "test" > output.txt`, `>>`, `2>`, `&>`, or `<>`; writing through `tee`, `dd`, or similar tools is also forbidden.
+  - Commands whose effects include file writes, such as package installation, builds that generate artifacts, archive extraction, and downloads saved to disk.
+- Do not bypass these restrictions through aliases, functions, scripts, command substitutions, pipelines, `sh -c`, `sudo`, SSH/container commands, another tool, or another pane. Check every component of a compound command. If its file effects are unclear, do not execute it; explain the uncertainty and use a known read-only alternative when available.
+- Read-only commands and transformations that only print to the terminal are allowed, such as `pwd`, `ls`, `cat`, `grep`, `head`, `tail`, and `sed 's/old/new/g' input.txt`. Read-only input redirection (`cat < input.txt`) and pipelines are allowed only when no component writes files.
+- Use plain `sendtmuxpane` followed by `showtmuxpane` / `capture-pane -p` to inspect results. **Do not use `sendtmuxpane -w` / `--write`**, file-backed output capture, or redirection of captured output to a file; temporary output files are not exempt.
+- Keep `sksf` active for subsequent command-related interactions until the user explicitly switches out of safe mode. A request to modify/delete a file or a generic confirmation does not silently disable it; explain that the operation is prohibited under `sksf` and do not execute it.
+- These are agent execution rules in this skill, not a shell sandbox or a command-filtering flag implemented by `sendtmuxpane`. Do not pass `sksf` to the helper scripts.
+- Examples:
+  - `;tm .2 sksf` → inspect the specified pane and conduct subsequent commands there under the restrictions above.
+  - `;tm .4 (ssh win) sksf inspect the logs` → send read-only log inspection commands to `.4` in the existing remote session.
+  - Allowed: `sendtmuxpane .2 -l 'cat app.log'` followed by `sendtmuxpane .2 Enter` and `showtmuxpane .2 -S -20`.
+  - Forbidden: `scp app.conf host:/tmp/`, `rm app.log`, `sed -i 's/old/new/g' app.conf`, `echo "test" > output.txt`, and `cat app.log | tee copy.log`.
 
 #### tail or t (optional number: default 20)
 
