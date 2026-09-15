@@ -67,6 +67,12 @@ open_external_editor = [ "ctrl-k" ]
 [tui.keymap.list]
 move_up = ["up", "ctrl-p", "k"]
 
+# [tui.keymap.chat]
+# interrupt_turn = ["ctrl-c"]
+[tui.keymap.chat]
+interrupt_turn = []
+
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
