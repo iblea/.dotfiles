@@ -33,7 +33,17 @@ for (( i=1; i<=$#; i++ )); do
     opt="${!i}"
 
     if [[ "$opt" = "-c" ]] || [[ "$opt" = "--continue" ]]; then
-        OTHER_OPTS+=("resume" "--last")
+        j=i
+        ((j++))
+        tmp_opt="${!j}"
+        # codex fork --last
+        # codex resume --last
+        # OTHER_OPTS+=("resume" "--last")
+        if [[ "$tmp_opt" = "f" ]] || [[ "$tmp_opt" = "fork" ]]; then
+            OTHER_OPTS+=("fork" "--last")
+        else
+            OTHER_OPTS+=("resume" "--last")
+        fi
     elif [[ "$opt" = "-r" ]] || [[ "$opt" = "--resume" ]]; then
         OTHER_OPTS+=("resume")
     elif [[ "$opt" = "--dan" ]] || [[ "$opt" = "-d" ]] || [[ "$opt" = "dan" ]] || [[ "$opt" = "-y" ]] || [[ "$opt" = "--yolo" ]] || [[ "$opt" = "yolo" ]]; then
