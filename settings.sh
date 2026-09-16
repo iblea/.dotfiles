@@ -168,11 +168,11 @@ if [ ! -e "$fixed_home/.bcomp.sh" ]; then
 
     if [ -n "$(uname -r | grep 'WSL')" ]; then
         # wsl
-        ln -s $settings_full_dir/.bin/.localbcomp.sh $fixed_home/.bcomp.sh
+        ln -s $settings_full_dir/bin/.localbcomp.sh $fixed_home/.bcomp.sh
     elif [[ "$(uname -s)" = "Darwin" ]]; then
-        ln -s $settings_full_dir/.bin/.localbcomp.sh $fixed_home/.bcomp.sh
+        ln -s $settings_full_dir/bin/.localbcomp.sh $fixed_home/.bcomp.sh
     else
-        ln -s $settings_full_dir/.bin/.remotebcomp.sh $fixed_home/.bcomp.sh
+        ln -s $settings_full_dir/bin/.remotebcomp.sh $fixed_home/.bcomp.sh
     fi
 fi
 

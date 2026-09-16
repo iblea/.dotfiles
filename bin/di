@@ -5,7 +5,7 @@ codeopt=""
 # [ -n "$(command -v code)" ] && codepath=code
 # [ -n "$(command -v 'code-insiders')" ] && codepath=code-insiders
 # [ -n "$(command -v 'cursor')" ] && codepath=cursor
-codepath="$HOME/.dotfiles/.bin/code"
+codepath="$HOME/.dotfiles/bin/code"
 
 if [ -n "$(command -v fzf)" ]; then
     size_0_cmd=""

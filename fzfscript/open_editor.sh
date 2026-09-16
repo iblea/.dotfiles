@@ -8,7 +8,7 @@ fi
 
 PATH_BACKUP="$PATH"
 code_path="$(which code)"
-export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/\.bin:\?||" )
+export PATH=$( echo "$PATH" | sed -e "s|$HOME/\.dotfiles/bin:\?||" )
 if [ -n "$(command -v code)" ] || [ -n "$(command -v cursor)" ]; then
 	"$code_path" --goto $@
 	exit 0

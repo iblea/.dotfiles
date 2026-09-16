@@ -312,14 +312,14 @@ function watcha() {
 alias makef='make -j8'
 
 # add export path
-if [ -d $HOME/.dotfiles/.bin/ ]; then
-    if ! grep -q "$HOME/.dotfiles/.bin" <<< "$PATH"; then
-        export PATH=$HOME/.dotfiles/.bin:$PATH
+if [ -d $HOME/.dotfiles/bin/ ]; then
+    if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
+        export PATH=$HOME/.dotfiles/bin:$PATH
     fi
 fi
-if [ -d $HOME/.dotfiles/.bin/git ]; then
-    if ! grep -q "$HOME/.dotfiles/.bin/git" <<< "$PATH"; then
-        export PATH=$HOME/.dotfiles/.bin/git:$PATH
+if [ -d $HOME/.dotfiles/bin/git ]; then
+    if ! grep -q "$HOME/.dotfiles/bin/git" <<< "$PATH"; then
+        export PATH=$HOME/.dotfiles/bin/git:$PATH
     fi
 fi
 
@@ -439,7 +439,7 @@ if [ -n "$(uname -r | grep 'WSL')" ]; then
 elif [[ "$(uname -s)" = "Darwin" ]]; then
     # alias code="/Applications/'Visual Studio Code.app'/Contents/Resources/app/bin/code"
 
-    # .bin/code
+    # bin/code
     # if [ -d "/Applications/Cursor.app" ]; then
     #     alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
     # elif [ -d "/Applications/Visual Studio Code.app" ]; then
@@ -624,7 +624,7 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
 
 else
     alias diffb='~/.bcomp.sh'
-    # .bin/code
+    # bin/code
     # if [ -n "$(command -v cursor)" ]; then
     #     alias code="cursor"
     # fi
@@ -2022,7 +2022,7 @@ alias aitov="aito v"
 if [ -n "$(command -v claude)" ]; then
     # alias claude="ANTHROPIC_MODEL=claude-sonnet-4-20250514 claude "
     # alias vim=/usr/bin/vim
-    alias cldie=". $HOME/.dotfiles/.bin/cldi;"
+    alias cldie=". $HOME/.dotfiles/bin/cldi;"
     alias cl=cldi
     alias cldp="ANTHROPIC_API_KEY='' claude -p --output-format text "
     function clcc() {

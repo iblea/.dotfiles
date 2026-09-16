@@ -4,7 +4,7 @@ set -euo pipefail
 curpath=$(readlink -e $(dirname "$0"))
 
 # execute with cron
-export PATH="$HOME/.dotfiles/.bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/sbin:/usr/sbin"
+export PATH="$HOME/.dotfiles/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/sbin:/usr/sbin"
 
 
 # 전용 tmux 소켓 사용.

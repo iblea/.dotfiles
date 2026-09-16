@@ -19,12 +19,12 @@ fi
 # IS_VIMTERM="$(ps -p $PPID -o comm=)"
 # if [ "$IS_VIMTERM" = "vim" ] || [ "$IS_VIMTERM" = "nvim" ]; then
 if [ -n "$MYVIMRC" ]; then
-    $HOME/.dotfiles/.bin/cod
+    $HOME/.dotfiles/bin/cod
     exit 0
 fi
 
 
-CODEX_COMMAND="$HOME/.dotfiles/.bin/cod"
+CODEX_COMMAND="$HOME/.dotfiles/bin/cod"
 if [ "$VIM_PROGRAM" = "n" ]; then
     $NVIM_PATH -c "set nonu | set nornu | set mouse=a | set scrollback=10000 | set scrolloff=0" \
         -c "execute 'tnoremap <c-h> <LEFT>' | execute 'tnoremap <c-j> <DOWN>' | execute 'tnoremap <c-k> <UP>' | execute 'tnoremap <c-l> <RIGHT>'" \

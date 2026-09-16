@@ -123,7 +123,7 @@ If none of `sendkeys`, `sk`, or `sksf` is provided, only the `capture-pane` comm
 If `sendkeys` or `sk` is provided, a specific tmux window/pane can be manipulated through the `sendtmuxpane` command. `sksf` enables the same interaction with the additional restrictions in the `sksf (sendkeys safe)` section below.
 
 ##### `sendtmuxpane` command
-  - `sendtmuxpane` is available in `$PATH` by default (`~/.dotfiles/.bin/sendtmuxpane`). If not available, use `./script/sendtmuxpane` instead.
+  - `sendtmuxpane` is available in `$PATH` by default (`~/.dotfiles/bin/sendtmuxpane`). If not available, use `./script/sendtmuxpane` instead.
   - Usage: `sendtmuxpane <window number>[.<pane number>] [tmux send-keys options...]`
     - The first argument specifies the target window (e.g., `2` for window 2, `2.2` for window 2 pane 2, or `.2` for current window pane 2).
     - The remaining arguments are passed directly as `tmux send-keys` options.

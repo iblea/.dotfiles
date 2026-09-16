@@ -61,7 +61,7 @@ else
     fi
 fi
 
-AGENT_COMMAND="$HOME/.dotfiles/.bin/cld"
+AGENT_COMMAND="$HOME/.dotfiles/bin/cld"
 
 # If vim terminal is already opend
 # if [ -n "$VIMTERM" ] && [ "$VIMTERM" -eq "1" ]; then
