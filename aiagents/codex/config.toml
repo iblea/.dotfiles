@@ -1,11 +1,16 @@
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
 personality = "pragmatic"
 web_search = "live"
 approvals_reviewer = "auto_review"
 model_reasoning_summary = "detailed"
 show_raw_agent_reasoning = true
 hide_agent_reasoning = false
+service_tier = "default"
+model_context_window = 872000
+model_auto_compact_token_limit = 784800
+
 
 [agents]
 enabled = true
@@ -44,6 +49,7 @@ url = "https://developers.openai.com/mcp"
 [notice]
 hide_gpt5_1_migration_prompt = true
 "hide_gpt-5.1-codex-max_migration_prompt" = true
+hide_rate_limit_model_nudge = true
 
 [notice.model_migrations]
 "gpt-5.1-codex-mini" = "gpt-5.2-codex"
@@ -57,6 +63,7 @@ memories = true
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "branch-changes", "context-remaining", "five-hour-limit", "weekly-limit"]
 status_line_use_colors = true
+terminal_title = ["activity", "project-name"]
 
 [tui.keymap.editor]
 kill_line_end = [ "ctrl-g" ]
@@ -76,6 +83,7 @@ interrupt_turn = []
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
+gpt-6-astra = 4
 
 
 [plugins."google-drive@openai-curated"]
