@@ -84,10 +84,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Write commit messages, PR descriptions, and documents as if authored directly, without any AI co-authorship or generation notice.
 
-- Never push on your own initiative. Use of the `git push` command is prohibited.
+- `git push` is prohibited by default, including on `aidv/**` branches.
+- Exception: For user-requested ChatGPT Sites publishing, temporarily allow pushing only that Site's source to the exact repository URL and designated branch returned by the official Sites tools for the same `project_id`.
+- This exception applies only to the current Sites publishing operation and requires no additional conversational confirmation. It does not authorize pushes to other repositories or branches.
+- Force pushes, including `--force`, `--force-with-lease`, and force refspecs (`+`), remain prohibited.
 
 - When working on an `aidv/**` branch, commit each discrete unit of work and observe the rules in accordance with the behavior of the `;gci` command.
-  - However, pushing an `aidv/**` branch via `git push` is strictly prohibited.
   - On an `aidv/**` branch, if the instruction includes `;nogci`, `;noci`, or any directive prohibiting commits, do not perform git staging and commit.
 
 
