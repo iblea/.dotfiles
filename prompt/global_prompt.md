@@ -223,6 +223,7 @@ The following is an explanation of the user-defined command.
 | Utility | `;stg` / `;stage` | Stage the changes you made to Git, and Recommend a commit message | - |
 | Utility | `;gb` / `;gco` | Create a new branch, switch to it, and perform your work on that branch. | - |
 | Utility | `;gci` | Create separate commits for each discrete unit of work. | - |
+| Utility | `;gm` | Rebase or merge the branch. | - |
 | Utility | `;cn` | Continue (계속) | - |
 | Utility | `;o` / `;dd` / `;ㅇㅇ` | Yes / OK (응/네) | - |
 | Utility | `;x` / `;ss` / `;ㄴㄴ` | No / Nope (아니) | - |
@@ -289,6 +290,16 @@ The following is an explanation of the user-defined command.
 - When receiving the command **;gci**, Create separate commits for each discrete unit of work.
   - Ignore changes to .gitignore, uncommitted documents (which are likely temporary), and files used exclusively for local development (e.g., local development configuration files).
   - Follow the commit conventions.
+
+- When receiving the command **;gm**, Rebase or merge the branch.
+  - The command is entered in the form `;gm <merging method> <source branch> -> <target branch>`.
+  - `;gm <merging method ex: rebase/merge (r/m/sm(squashmerge))> <source branch> -> <target branch>`
+    - `;gm merge master -> HEAD` or `;gm merge master -> current`
+      - master 브랜치의 변경 사항을 현재 브랜치로 머지해라.
+    - `;gm sm master -> head` or `;gm merge master -> current`
+      - master 브랜치의 변경 사항을 현재 브랜치로 squash 머지해라.
+    - `;gm r feature/test -> master`
+      - feature/test 브랜치의 내용을 master 브랜치로 리베이스해라.
 
 - When receiving the command **;cn**, it means the same as saying "continue" or "계속".
 
