@@ -61,6 +61,16 @@ export AIAGENTCODE="Codex"
 
 # export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
 
+
+
+_run_or_exec() {
+    if [ $WEBSOCKET_SRV -ge 1 ]; then
+        "$@"
+    else
+        exec "$@"
+    fi
+}
+
 # SSH 환경에서 로컬 tmux 윈도우 이동 트리거
 # OSC escape sequence로 pane title을 변경하여 로컬 tmux hook을 트리거
 # SSH 환경 (로컬 tmux 밖): tmux 생성 없이 cod 직접 실행
