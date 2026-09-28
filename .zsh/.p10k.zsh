@@ -52,9 +52,12 @@
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
+
+    context                 # user@hostname
+
     # direnv                  # direnv status (https://direnv.net/)
     # asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
-    # virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
+    virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
     anaconda                # conda environment (https://conda.io/)
     # pyenv                   # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
@@ -114,15 +117,13 @@
     # =========================[ Line #2 ]=========================
     newline
 
-    virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
 
-    ip                      # ip address and bandwidth usage for a specified network interface
+    # ip                      # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
     # proxy                 # system-wide http/https/ftp proxy
     # battery               # internal battery
     # wifi                  # wifi speed
     # example               # example user-defined segment (see prompt_example function below)
-    context                 # user@hostname
   )
 
   # Defines character set used by powerlevel10k. It's best to let `p10k configure` set it for you.
