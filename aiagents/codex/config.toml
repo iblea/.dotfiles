@@ -4,6 +4,7 @@ plan_mode_reasoning_effort = "xhigh"
 personality = "pragmatic"
 web_search = "live"
 approvals_reviewer = "auto_review"
+# approvals_reviewer = "user"
 model_reasoning_summary = "detailed"
 show_raw_agent_reasoning = true
 hide_agent_reasoning = false
@@ -37,7 +38,13 @@ url = "https://developers.openai.com/mcp"
 # [mcp_servers.playwright]
 # command = "npx"
 # args = ["-y", "@playwright/mcp@latest"]
-# disabled = false
+# disabled = true
+
+# [mcp_servers.hwp-mcp]
+# command = "npx"
+# args = ["-y", "hwp-mcp@latest"]
+# disabled = true
+
 
 # experimental_use_rmcp_client = true
 # [mcp_servers.github]
@@ -64,6 +71,9 @@ memories = true
 status_line = ["model-with-reasoning", "current-dir", "git-branch", "branch-changes", "context-remaining", "five-hour-limit", "weekly-limit"]
 status_line_use_colors = true
 terminal_title = ["activity", "project-name"]
+session_picker_view = "comfortable"
+screen_reader_detection_done = true
+fullscreen_transcript = false
 
 [tui.keymap.editor]
 kill_line_end = [ "ctrl-g" ]
@@ -91,3 +101,13 @@ enabled = true
 
 [plugins."github@openai-curated"]
 enabled = true
+
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "/bin/bash $HOME/.codex/hooks/dangerous_command_check.sh"
+timeout = 5
+
+
