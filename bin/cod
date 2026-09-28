@@ -106,7 +106,7 @@ fi
 
 export ENABLE_LSP_TOOL=true
 
-OTHER_OPTS+=("--search" "--approve-for-me")
+OTHER_OPTS+=("--search" "--approve-for-me" "--no-daemon")
 
 # codex $@
 codex ${OTHER_OPTS[@]}
