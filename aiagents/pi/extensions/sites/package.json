@@ -1,0 +1,22 @@
+{
+  "name": "pi-sites-local",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Native ChatGPT Sites integration for Pi: inspection and explicit private source publishing.",
+  "type": "module",
+  "engines": { "node": ">=22.21" },
+  "keywords": ["pi-package", "pi-extension", "chatgpt-sites"],
+  "pi": { "extensions": ["./index.ts"] },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^22.0.0"
+  },
+  "scripts": {
+    "test": "node --experimental-transform-types --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit"
+  }
+}

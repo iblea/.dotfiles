@@ -1,0 +1,16 @@
+{
+  "memoryMode": "legacy-inject",
+  "memoryCharLimit": 5000,
+  "userCharLimit": 5000,
+  "projectCharLimit": 5000,
+  "reviewEnabled": true,
+  "reviewTransport": "direct",
+  "llmThinkingOverride": "low",
+  "nudgeInterval": 10,
+  "nudgeToolCalls": 15,
+  "reviewRecentMessages": 40,
+  "flushRecentMessages": 40,
+  "correctionDetection": true,
+  "flushOnCompact": true,
+  "flushOnShutdown": true
+}

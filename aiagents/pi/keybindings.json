@@ -1,0 +1,13 @@
+{
+  "app.interrupt": "ctrl+c",
+  "app.clear": "ctrl+g",
+  "app.editor.external": "ctrl+k",
+  "tui.editor.deleteToLineEnd": "alt+k",
+  "app.model.cycleForward": [],
+  "app.model.cycleBackward": [],
+  "tui.select.up": ["up", "ctrl+p"],
+  "tui.select.down": ["down", "ctrl+n"],
+  "app.session.togglePath": "alt+p",
+  "app.session.toggleNamedFilter": "alt+n",
+  "app.models.toggleProvider": "alt+o"
+}

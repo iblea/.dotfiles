@@ -1,0 +1,14 @@
+{
+  "name": "pi-extensions",
+  "private": true,
+  "overrides": {
+    "pi-subagents": {
+      "undici": "8.10.2"
+    }
+  },
+  "dependencies": {
+    "@narumitw/pi-btw": "^0.61.1",
+    "pi-hermes-memory": "^0.9.9",
+    "pi-subagents": "^0.73.1"
+  }
+}

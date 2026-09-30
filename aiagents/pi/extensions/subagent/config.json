@@ -1,0 +1,15 @@
+{
+  "globalConcurrencyLimit": 3,
+  "parallel": {
+    "maxTasks": 8,
+    "concurrency": 3
+  },
+  "maxSubagentDepth": 1,
+  "authorityPolicy": {
+    "discardWorktree": "forbid",
+    "destructiveCleanup": "forbid"
+  },
+  "artifactConfig": {
+    "cleanupDays": 0
+  }
+}

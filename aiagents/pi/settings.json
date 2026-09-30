@@ -1,0 +1,58 @@
+{
+  "lastChangelogVersion": "0.99.1",
+  "theme": "dark",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-6-astra",
+  "defaultThinkingLevel": "xhigh",
+  "quietStartup": true,
+  "hideThinkingBlock": false,
+  "doubleEscapeAction": "none",
+  "shellCommandPrefix": "shopt -s expand_aliases\nsource \"$HOME/.aliases\"",
+  "compaction": {
+    "enabled": false,
+    "modelOverrides": {
+      "openai/gpt-6-astra": {
+        "reserveTokens": 100000,
+        "keepRecentTokens": 20000
+      },
+      "openai-codex/gpt-6-astra": {
+        "reserveTokens": 100000,
+        "keepRecentTokens": 20000
+      }
+    }
+  },
+  "subagents": {
+    "defaultModel": "inherit",
+    "defaultProvider": "openai-codex",
+    "defaultExtensions": [],
+    "defaultSubagentOnlyExtensions": [
+      "$HOME/.pi/agent/extensions/command-guard/index.ts"
+    ],
+    "agentOverrides": {
+      "scout": {
+        "inheritGlobalContext": true
+      },
+      "worker": {
+        "inheritGlobalContext": true
+      },
+      "reviewer": {
+        "inheritGlobalContext": true
+      },
+      "oracle": {
+        "inheritGlobalContext": true
+      },
+      "delegate": {
+        "inheritGlobalContext": true
+      }
+    }
+  },
+  "packages": [
+    "npm:pi-hermes-memory@0.9.9",
+    "npm:@narumitw/pi-btw@0.61.1",
+    "npm:pi-subagents@0.73.1",
+    "git:github.com/obra/superpowers@v6.4.2"
+  ],
+  "terminal": {
+    "showTerminalProgress": false
+  }
+}
