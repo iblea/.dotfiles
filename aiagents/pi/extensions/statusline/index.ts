@@ -184,13 +184,13 @@ export default function statusline(pi: ExtensionAPI) {
 					weeklyQuota = null;
 					nextQuotaRefresh = 0;
 				}
-				if (provider !== "openai-codex" || quotaPending || Date.now() < nextQuotaRefresh) return;
+				if ((provider !== "openai-codex" && provider !== "openai") || quotaPending || Date.now() < nextQuotaRefresh) return;
 				const generation = quotaGeneration;
 				quotaPending = true;
 				nextQuotaRefresh = Date.now() + WEEKLY_QUOTA_REFRESH_MS;
 				try {
 					const result = await fetchWeeklyQuota(ctx.modelRegistry, controller.signal);
-					if (!disposed && generation === quotaGeneration && ctx.model?.provider === "openai-codex") {
+					if (!disposed && generation === quotaGeneration && ctx.model?.provider === provider) {
 						weeklyQuota = result;
 						// 주간 리셋 시점에는 3분 캐시보다 먼저 갱신
 						if (result?.resetsAt && result.resetsAt * 1000 > Date.now()) {
@@ -241,6 +241,7 @@ export default function statusline(pi: ExtensionAPI) {
 						const effort = pi.getThinkingLevel();
 						first.push(theme.fg(effort === "max" ? "error" : effort === "xhigh" ? "warning" : "muted", `💪 ${effort}`));
 					}
+					first.push(theme.fg("muted", singleLine(model?.provider || "no-provider")));
 					const branch = git?.branch || footerData.getGitBranch();
 					const changes = git ? gitSummary(git) : "";
 					first.push(branch
@@ -253,15 +254,13 @@ export default function statusline(pi: ExtensionAPI) {
 					const extensionStatuses = footerData.getExtensionStatuses();
 					const fastStatus = extensionStatuses.get("openai-fast-mode");
 					const now = Date.now();
-					first.push(
-						...(fastStatus ? [theme.fg(fastStatus.startsWith("fast: ON") ? "success" : "muted", "F")] : []),
-						theme.fg("muted", formatDuration(started, now)),
-						theme.fg("muted", new Date(now).toTimeString().slice(0, 8)),
-					);
+					if (fastStatus) first.push(theme.fg(fastStatus.startsWith("fast: ON") ? "success" : "muted", "F"));
 					const second = [
 						theme.fg("mdLink", `↑${formatTokens(usage.input)} ↓${formatTokens(usage.output)} ~$${usage.cost.toFixed(3)}`),
-						...(model?.provider === "openai-codex" ? [renderWeeklyQuota(weeklyQuota, theme, now)] : []),
+						...(model?.provider === "openai-codex" || model?.provider === "openai" ? [renderWeeklyQuota(weeklyQuota, theme, now)] : []),
 						renderContext(context, theme),
+						theme.fg("muted", formatDuration(started, now)),
+						theme.fg("muted", new Date(now).toTimeString().slice(0, 8)),
 					];
 					const lines = [first.join(separator), second.join(separator)];
 					// 다른 확장의 setStatus() 정보 보존

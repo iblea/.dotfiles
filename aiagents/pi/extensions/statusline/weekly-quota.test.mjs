@@ -107,7 +107,7 @@ test("인증 없음, 취소, HTTP 오류, 비정상 응답에서 안전하게 �
 	assert.equal(await fetchWeeklyQuota(registry, signal), null);
 });
 
-test("footer: Codex에서만 표시·조회, 캐시, provider 전환, 종료 및 F 배치 보존", async (t) => {
+for (const provider of ["openai-codex", "openai"]) test(`footer: ${provider} 주간 한도·캐시·전환, 제공자 및 두 번째 줄 시간 표시`, async (t) => {
 	let time = now;
 	t.mock.method(Date, "now", () => time);
 	const timers = new Set();
@@ -129,7 +129,7 @@ test("footer: Codex에서만 표시·조회, 캐시, provider 전환, 종료 및
 	let footer;
 	const ctx = {
 		mode: "tui", cwd: resolve(here, "../../.."),
-		model: { provider: "openai", id: "gpt-test", contextWindow: 400000 },
+		model: { provider: "anthropic", id: "gpt-test", reasoning: true, contextWindow: 400000 },
 		modelRegistry: registry,
 		sessionManager: {
 			getHeader: () => ({ timestamp: new Date(time - 300000).toISOString() }),
@@ -147,20 +147,24 @@ test("footer: Codex에서만 표시·조회, 캐시, provider 전환, 종료 및
 			},
 		},
 	};
-	statusline({ on: (event, handler) => handlers.set(event, handler), registerCommand() {} });
+	statusline({ on: (event, handler) => handlers.set(event, handler), registerCommand() {}, getThinkingLevel: () => "high" });
 	try {
 		handlers.get("session_start")({}, ctx);
 		const clock = [...timers].find((timer) => timer.ms === 1000);
 		await setImmediate();
 		assert.equal(requests, 0);
 		assert.doesNotMatch(footer.render(300)[1], /7d/);
-		ctx.model.provider = "openai-codex";
+		ctx.model.provider = provider;
 		clock.callback();
 		await setImmediate();
+		assert.equal(requests, 1);
 		const [firstLine, line] = footer.render(300).map(stripVTControlCharacters);
-		assert.match(firstLine, /\| F \| 5m \| \d{2}:\d{2}:\d{2}$/);
+		assert.deepEqual(firstLine.split(" | ").slice(0, 3), ["🧠 gpt-test", "💪 high", provider]);
+		assert.match(firstLine, /\| F$/);
+		assert.doesNotMatch(firstLine, /\| 5m|\d{2}:\d{2}:\d{2}/);
 		assert.match(line, /7d 86% left \(reset 2d 0h\) \| CTX /);
-		assert.doesNotMatch(line, /5h|99%|fast:|\| F \||\| 5m|\d{2}:\d{2}:\d{2}/);
+		assert.match(line, /\| 5m \| \d{2}:\d{2}:\d{2}$/);
+		assert.doesNotMatch(line, /5h|99%|fast:|\| F \|/);
 		assert.equal(footer.render(300)[2], "other status");
 		for (const width of [1, 20, 80, 160]) assert.ok(footer.render(width).every((row) => visibleWidth(row) <= width));
 		clock.callback();
@@ -180,12 +184,18 @@ test("footer: Codex에서만 표시·조회, 캐시, provider 전환, 종료 및
 		await setImmediate();
 		assert.equal(requests, 2);
 		assert.doesNotMatch(footer.render(300)[1], /7d/);
-		ctx.model.provider = "openai-codex";
+		ctx.model.provider = provider;
 		fail = false;
 		clock.callback();
 		await setImmediate();
 		assert.equal(requests, 3);
 		assert.match(footer.render(300)[1], /7d 86% left/);
+		ctx.model.provider = provider === "openai" ? "openai-codex" : "openai";
+		clock.callback();
+		await setImmediate();
+		assert.equal(requests, 4);
+		assert.match(footer.render(300)[1], /7d 86% left/);
+		assert.equal(footer.render(300)[0].split(" | ")[2], ctx.model.provider);
 	} finally {
 		handlers.get("session_shutdown")();
 		footer?.dispose();

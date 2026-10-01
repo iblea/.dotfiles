@@ -3,10 +3,7 @@
   "mcpServers": {
     "Context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
-      "env": {
-        "CONTEXT7_API_KEY": "!/opt/homebrew/bin/python3.14 -c 'from pathlib import Path; import tomllib; a = tomllib.loads((Path.home() / \".codex/config.toml\").read_text())[\"mcp_servers\"][\"Context7\"][\"args\"]; print(a[a.index(\"--api-key\") + 1])'"
-      }
+      "args": ["-y", "@upstash/context7-mcp"]
     },
     "sequential-thinking-markdown": {
       "command": "node",
