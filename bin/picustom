@@ -90,6 +90,10 @@ fi
 # export ENABLE_LSP_TOOL=true
 # OTHER_OPTS+=("--search" "--approve-for-me" "--no-daemon")
 
+unset ANTHROPIC_API_KEY
+unset OPENAI_API_KEY
+unset GEMINI_API_KEY
+
 # codex $@
 pi ${OTHER_OPTS[@]}
 

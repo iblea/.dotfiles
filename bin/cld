@@ -126,6 +126,8 @@ if [ $NON_INTERACTIVE -eq 1 ]; then
             OTHER_OPTS+=("--output-format" "text")
     fi
     unset ANTHROPIC_API_KEY
+    unset OPENAI_API_KEY
+    unset GEMINI_API_KEY
     claude ${OTHER_OPTS[@]}
     exit $?
 elif [ $NON_INTERACTIVE -eq 11 ]; then
@@ -193,6 +195,9 @@ elif [[ "$EDITOR" = "vim" ]]; then
 fi
 
 export ENABLE_LSP_TOOL=true
+unset ANTHROPIC_API_KEY
+unset OPENAI_API_KEY
+unset GEMINI_API_KEY
 
 if [ "$(id -u)" -eq 0 ] && [ "$DANGEROUS_SKIP" -eq 1 ]; then
     export IS_SANDBOX=1

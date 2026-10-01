@@ -101,6 +101,9 @@ else
 fi
 
 export ENABLE_LSP_TOOL=true
+unset ANTHROPIC_API_KEY
+unset OPENAI_API_KEY
+unset GEMINI_API_KEY
 
 OTHER_OPTS+=("--search" "--approve-for-me" "--no-daemon")
 
