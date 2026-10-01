@@ -51,7 +51,7 @@
     }
   },
   "packages": [
-    "npm:pi-hermes-memory,
+    "npm:pi-hermes-memory",
     "npm:@narumitw/pi-btw",
     "npm:pi-subagents",
     "git:github.com/obra/superpowers"
