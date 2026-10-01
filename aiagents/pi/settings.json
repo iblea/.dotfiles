@@ -8,6 +8,10 @@
   "hideThinkingBlock": false,
   "doubleEscapeAction": "none",
   "shellCommandPrefix": "shopt -s expand_aliases\nsource \"$HOME/.aliases\"",
+  "defaultTools": ["-codemode", "+tool_search"],
+  "outputPad": 0,
+  "defaultProjectTrust": "ask",
+  "treeFilterMode": "default",
   "compaction": {
     "enabled": false,
     "modelOverrides": {
