@@ -2,7 +2,7 @@
 
 if [ -z "$(command -v pi)" ]; then
     echo "pi is not installed"
-	echo "curl -fsSL https://pi.dev/install.sh | sh"
+    echo "curl -fsSL https://pi.dev/install.sh | sh"
     exit 1
 fi
 
@@ -26,15 +26,20 @@ if [ $# -eq 1 ]; then
     if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
         pi --help
         exit $?
-    elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
-		pi update
-        exit $?
     elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
         pi --version
         exit $?
     fi
 fi
 if [ $# -ge 1 ]; then
+    if [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
+        if [[ "$2" = "-e" ]] || [[ "$2" = "--extensions" ]]; then
+            pi update --extensions
+        else
+            pi update
+        fi
+        exit $?
+    fi
     for (( i=1; i<=$#; i++ )); do
         opt="${!i}"
         if [[ "$opt" = "vi" ]] || [[ "$opt" = "-vi" ]] || [[ "$opt" = "nvi" ]] || [[ "$opt" = "-nvi" ]]; then

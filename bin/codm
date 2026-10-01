@@ -2,9 +2,9 @@
 
 if [ -z "$(command -v codex)" ]; then
     echo "codex is not installed"
-	echo "curl -fsSL https://chatgpt.com/codex/install.sh | sh -"
+    echo "curl -fsSL https://chatgpt.com/codex/install.sh | sh -"
     echo "npm install -g @openai/codex"
-	echo "brew install --cask codex"
+    echo "brew install --cask codex"
     exit 1
 fi
 
@@ -30,7 +30,7 @@ if [ $# -eq 1 ]; then
         exit $?
     elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
         # npm install -g @openai/codex
-		codex update
+        codex update
         exit $?
     elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
         codex --version
