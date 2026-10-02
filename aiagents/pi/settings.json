@@ -1,5 +1,4 @@
 {
-  "lastChangelogVersion": "0.99.1",
   "theme": "dark",
   "defaultProvider": "openai",
   "defaultModel": "gpt-6-astra",
@@ -8,7 +7,11 @@
   "hideThinkingBlock": false,
   "doubleEscapeAction": "none",
   "shellCommandPrefix": "shopt -s expand_aliases\nsource \"$HOME/.aliases\"",
-  "defaultTools": ["-codemode", "+tool_search"],
+  "tuiMode": "regular",
+  "defaultTools": [
+    "-codemode",
+    "+tool_search"
+  ],
   "outputPad": 0,
   "defaultProjectTrust": "ask",
   "treeFilterMode": "default",
