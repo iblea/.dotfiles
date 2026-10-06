@@ -18,6 +18,24 @@ else
     fi
 fi
 
+# VS Code 형식 인자(-g/--goto <file>:<line>[:<col>])를 파일 경로만 남기도록 변환
+# Claude Code가 'codevim' 이름 때문에 VS Code로 인식하여 '-g file:line' 전달 (nvim 미지원 옵션)
+_args=()
+while [ $# -gt 0 ]; do
+    if [ "$1" = "-g" ] || [ "$1" = "--goto" ]; then
+        shift
+        [ $# -eq 0 ] && break
+        _goto_file="$1"
+        [[ "$_goto_file" =~ :[0-9]+$ ]] && _goto_file="${_goto_file%:*}"
+        [[ "$_goto_file" =~ :[0-9]+$ ]] && _goto_file="${_goto_file%:*}"
+        _args+=( "$_goto_file" )
+    else
+        _args+=( "$1" )
+    fi
+    shift
+done
+set -- "${_args[@]}"
+
 # echo "$#"
 # for _ext in "$@"; do
 #     echo "$_ext"
