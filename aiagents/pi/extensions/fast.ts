@@ -1,4 +1,7 @@
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { randomUUID } from "node:crypto";
+import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { getAgentDir, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
 
 const STATE_TYPE = "openai-fast-mode";
 
@@ -12,6 +15,8 @@ function supportsPriorityRequest(model: ExtensionContext["model"]): boolean {
 }
 
 export default function fastExtension(pi: ExtensionAPI) {
+	const agentDir = getAgentDir();
+	const statePath = join(agentDir, "fast.json");
 	let enabled = false;
 
 	const statusText = (ctx: ExtensionContext) => {
@@ -25,16 +30,32 @@ export default function fastExtension(pi: ExtensionAPI) {
 
 	const restoreState = (ctx: ExtensionContext) => {
 		enabled = false;
-		for (const entry of ctx.sessionManager.getBranch()) {
-			if (entry.type !== "custom" || entry.customType !== STATE_TYPE) continue;
-			const data = entry.data as { enabled?: unknown } | undefined;
-			if (typeof data?.enabled === "boolean") enabled = data.enabled;
+		try {
+			const data = JSON.parse(readFileSync(statePath, "utf8"));
+			if (typeof data?.enabled !== "boolean") throw new Error("Invalid fast preference");
+			enabled = data.enabled;
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== "ENOENT" && ctx.hasUI) {
+				ctx.ui.notify(`FAST 설정을 읽지 못해서 OFF로 시작해. /fast on 또는 off로 다시 저장할 수 있어 (${statePath}).`, "warning");
+			}
 		}
 		updateStatus(ctx);
 	};
 
+	const saveState = () => {
+		mkdirSync(agentDir, { recursive: true });
+		const temporaryPath = `${statePath}.${randomUUID()}.tmp`;
+		try {
+			writeFileSync(temporaryPath, `${JSON.stringify({ enabled })}\n`, { mode: 0o600, flag: "wx" });
+			renameSync(temporaryPath, statePath);
+		} finally {
+			rmSync(temporaryPath, { force: true });
+		}
+	};
+
 	pi.on("session_start", (_event, ctx) => restoreState(ctx));
-	pi.on("session_tree", (_event, ctx) => restoreState(ctx));
+	// 과거 세션 기록 대신 전역 선택 유지
+	pi.on("session_tree", (_event, ctx) => updateStatus(ctx));
 	pi.on("model_select", (_event, ctx) => updateStatus(ctx));
 
 	pi.on("before_provider_request", (event, ctx) => {
@@ -47,7 +68,7 @@ export default function fastExtension(pi: ExtensionAPI) {
 	});
 
 	pi.registerCommand("fast", {
-		description: "OpenAI GPT priority 요청 토글 (추가 비용 가능): /fast [on|off|status]",
+		description: "OpenAI GPT priority 요청 토글, 다음 실행에도 유지 (추가 비용 가능): /fast [on|off|status]",
 		getArgumentCompletions: (prefix) => {
 			const matches = ["on", "off", "status"].filter((value) => value.startsWith(prefix));
 			return matches.length ? matches.map((value) => ({ value, label: value })) : null;
@@ -80,6 +101,12 @@ export default function fastExtension(pi: ExtensionAPI) {
 					: "FAST OFF: priority 추가를 중단하고 기존 요청 설정을 사용해.",
 				enabled ? "warning" : "info",
 			);
+			try {
+				// 같은 값을 다시 선택해도 다른 세션이 저장한 전역 선택 갱신
+				saveState();
+			} catch {
+				ctx.ui.notify(`FAST ${enabled ? "ON" : "OFF"}: 이번 세션에는 적용했지만 설정을 저장하지 못했어. 다음 실행에 유지되지 않을 수 있어 (${statePath}).`, "warning");
+			}
 		},
 	});
 }

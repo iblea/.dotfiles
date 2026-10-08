@@ -1,6 +1,40 @@
 import assert from "node:assert/strict";
-import test from "node:test";
-import fastExtension from "../extensions/fast.ts";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { homedir, tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
+import test, { afterEach, beforeEach } from "node:test";
+import { fileURLToPath } from "node:url";
+
+const here = dirname(fileURLToPath(import.meta.url));
+const originalAgentDir = process.env.PI_CODING_AGENT_DIR;
+const agentDir = resolve(originalAgentDir?.replace(/^~(?=\/|$)/, homedir()) || join(homedir(), ".pi", "agent"));
+const version = readFileSync(join(agentDir, "install/current-version"), "utf8").trim();
+const modules = join(agentDir, "install/releases", version, "node_modules");
+const { createJiti } = createRequire(join(modules, "jiti/package.json"))("jiti");
+const jiti = createJiti(import.meta.url, {
+	moduleCache: false,
+	alias: { "@earendil-works/pi-coding-agent": join(modules, "@earendil-works/pi-coding-agent/dist/index.js") },
+});
+const fastExtension = await jiti.import(join(here, "../extensions/fast.ts"), { default: true });
+let testDir;
+let statePath;
+beforeEach(() => {
+	testDir = mkdtempSync(join(tmpdir(), "pi-fast-test-"));
+	statePath = join(testDir, "fast.json");
+	process.env.PI_CODING_AGENT_DIR = testDir;
+});
+afterEach(() => {
+	if (originalAgentDir === undefined) delete process.env.PI_CODING_AGENT_DIR;
+	else process.env.PI_CODING_AGENT_DIR = originalAgentDir;
+	// 이 테스트가 만든 파일과 빈 디렉터리만 정리
+	for (const entry of readdirSync(testDir, { withFileTypes: true })) {
+		const path = join(testDir, entry.name);
+		if (entry.isDirectory()) rmdirSync(path);
+		else unlinkSync(path);
+	}
+	rmdirSync(testDir);
+});
 
 const STATE_TYPE = "openai-fast-mode";
 const gpt = { provider: "openai", api: "openai-responses", id: "gpt-test" };
@@ -36,7 +70,7 @@ function setup({ model = gpt, branch = [], hasUI = true } = {}) {
 	};
 }
 
-test("new sessions default to OFF and leave existing request settings untouched", () => {
+test("missing global settings default to OFF and leave existing request settings untouched", () => {
 	const h = setup();
 	assert.match(h.statuses.get(STATE_TYPE), /OFF/);
 	for (const service_tier of [undefined, "default", "flex", "priority"]) {
@@ -47,9 +81,10 @@ test("new sessions default to OFF and leave existing request settings untouched"
 	assert.deepEqual(h.entries, []);
 });
 
-test("bare /fast toggles on and off, persisting only changes", async () => {
+test("bare /fast saves ON/OFF globally and records only changed values in session history", async () => {
 	const h = setup();
 	await h.command();
+	assert.deepEqual(JSON.parse(readFileSync(statePath, "utf8")), { enabled: true });
 	assert.equal(h.request().service_tier, "priority");
 	assert.match(h.statuses.get(STATE_TYPE), /ON/);
 	assert.equal(h.notifications.at(-1).level, "warning");
@@ -57,6 +92,7 @@ test("bare /fast toggles on and off, persisting only changes", async () => {
 	await h.command("on");
 	assert.deepEqual(h.entries, [saved(true)]);
 	await h.command();
+	assert.deepEqual(JSON.parse(readFileSync(statePath, "utf8")), { enabled: false });
 	assert.equal(h.request(), undefined);
 	assert.deepEqual(h.entries, [saved(true), saved(false)]);
 	await h.command("off");
@@ -149,37 +185,115 @@ test("model changes suspend application without losing the toggle; OFF always wo
 	assert.match(h.statuses.get(STATE_TYPE), /OFF/);
 });
 
-test("restores the last valid state on the active branch, including reload and tree navigation", () => {
-	const h = setup({ branch: [
-		saved(false), saved(true),
-		{ type: "custom", customType: "other", data: { enabled: false } },
-		{ type: "message", customType: STATE_TYPE, data: { enabled: false } },
-		{ type: "custom", customType: STATE_TYPE, data: null },
-		{ type: "custom", customType: STATE_TYPE, data: { enabled: "false" } },
-	] });
-	assert.equal(h.request().service_tier, "priority");
-	h.emit("session_start", { reason: "reload" });
-	assert.equal(h.request().service_tier, "priority");
+test("global ON/OFF survives a fresh extension instance and overrides old session entries", async () => {
+	const first = setup();
+	await first.command("on");
+	const restarted = setup({ branch: [saved(false)] });
+	assert.equal(restarted.request()?.service_tier, "priority");
+	assert.deepEqual(JSON.parse(readFileSync(statePath, "utf8")), { enabled: true });
+	await restarted.command("off");
+	const restartedAgain = setup({ branch: [saved(true)] });
+	assert.equal(restartedAgain.request(), undefined);
+	assert.deepEqual(JSON.parse(readFileSync(statePath, "utf8")), { enabled: false });
+	assert.deepEqual(readdirSync(testDir), ["fast.json"]);
+});
+
+test("new, resumed, forked and reloaded sessions keep the global preference", async () => {
+	const h = setup();
+	await h.command("on");
+	for (const reason of ["new", "resume", "fork", "reload"]) {
+		h.entries.splice(0, h.entries.length, saved(false));
+		h.emit("session_start", { reason });
+		assert.equal(h.request()?.service_tier, "priority", reason);
+		assert.match(h.statuses.get(STATE_TYPE), /ON/);
+	}
+});
+
+test("tree navigation does not restore an older session choice", async () => {
+	const h = setup();
+	await h.command("on");
 	h.entries.splice(0, h.entries.length, saved(false));
+	h.emit("session_tree");
+	assert.equal(h.request()?.service_tier, "priority");
+	await h.command("off");
+	h.entries.splice(0, h.entries.length, saved(true));
 	h.emit("session_tree");
 	assert.equal(h.request(), undefined);
 });
 
-test("switching to a new or unrelated session resets the default to OFF", async () => {
-	for (const reason of ["new", "resume", "fork"]) {
-		const h = setup();
-		await h.command("on");
-		h.entries.splice(0);
-		h.emit("session_start", { reason });
-		assert.equal(h.request(), undefined);
-		assert.match(h.statuses.get(STATE_TYPE), /OFF/);
-	}
+test("missing global settings default to OFF even when an old session recorded ON", () => {
+	const h = setup({ branch: [saved(true)] });
+	assert.equal(h.request(), undefined);
+	assert.match(h.statuses.get(STATE_TYPE), /OFF/);
+	assert.equal(existsSync(statePath), false);
+	assert.deepEqual(h.notifications, []);
 });
 
-test("non-interactive sessions apply restored state without touching the status UI", () => {
-	const h = setup({ hasUI: false, branch: [saved(true)] });
+test("non-interactive sessions apply the global preference without touching the status UI", () => {
+	writeFileSync(statePath, '{"enabled":true}');
+	const h = setup({ hasUI: false });
 	assert.equal(h.statuses.size, 0);
-	assert.equal(h.request().service_tier, "priority");
+	assert.equal(h.request()?.service_tier, "priority");
+});
+
+test("restoring ON on an unsupported model keeps the preference but does not apply priority", () => {
+	writeFileSync(statePath, '{"enabled":true}');
+	const h = setup({ model: { ...gpt, provider: "other" } });
+	assert.match(h.statuses.get(STATE_TYPE), /미적용/);
+	assert.equal(h.request(), undefined);
+	h.ctx.model = gpt;
+	h.emit("model_select");
+	assert.equal(h.request()?.service_tier, "priority");
+});
+
+test("status, invalid commands and rejected ON do not write global settings", async () => {
+	const h = setup({ model: null });
+	for (const arg of ["status", "invalid", "on", ""]) await h.command(arg);
+	assert.equal(existsSync(statePath), false);
+});
+
+test("repeating an explicit choice saves it even when this instance already has that state", async () => {
+	const first = setup();
+	const second = setup();
+	await first.command("on");
+	await second.command("off");
+	assert.deepEqual(JSON.parse(readFileSync(statePath, "utf8")), { enabled: false });
+	assert.equal(setup().request(), undefined);
+});
+
+for (const text of ["{", "null", "[]", "{}", '{"enabled":"true"}', '{"enabled":1}']) {
+	test(`invalid global settings default to OFF and warn: ${text}`, () => {
+		writeFileSync(statePath, text);
+		const h = setup({ branch: [saved(true)] });
+		assert.equal(h.request(), undefined);
+		assert.match(h.statuses.get(STATE_TYPE), /OFF/);
+		assert.equal(h.notifications.at(-1)?.level, "warning");
+		assert.equal(readFileSync(statePath, "utf8"), text);
+	});
+}
+
+test("unreadable settings warn and default to OFF", () => {
+	mkdirSync(statePath);
+	const h = setup({ branch: [saved(true)] });
+	assert.equal(h.request(), undefined);
+	assert.equal(h.notifications.at(-1)?.level, "warning");
+});
+
+test("failed saves warn but still apply the current choice, especially OFF", async () => {
+	const h = setup();
+	await h.command("on");
+	unlinkSync(statePath);
+	mkdirSync(statePath);
+	await h.command("off");
+	assert.equal(h.request(), undefined);
+	assert.match(h.statuses.get(STATE_TYPE), /OFF/);
+	assert.equal(h.notifications.at(-1)?.level, "warning");
+	assert.match(h.notifications.at(-1).message, /저장/);
+	assert.deepEqual(readdirSync(testDir), ["fast.json"]);
+	await h.command("on");
+	assert.equal(h.request()?.service_tier, "priority");
+	assert.equal(h.notifications.at(-1)?.level, "warning");
+	assert.deepEqual(readdirSync(testDir), ["fast.json"]);
 });
 
 test("offers argument completions without modifying state", () => {
