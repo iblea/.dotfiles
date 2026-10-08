@@ -209,9 +209,11 @@ if vim.env.TMUX or vim.env.LC_TMUX then
     local sep = (vim.g.fileline_space == 1) and " " or ""
     local ref
     if start_line == end_line then
-      ref = string.format("@%s%s#L%d", relative_path, sep, start_line)
+      -- ref = string.format("@%s%s#L%d", relative_path, sep, start_line)
+      ref = string.format("@%s%s:%d", relative_path, sep, start_line)
     else
-      ref = string.format("@%s%s#L%d-#L%d", relative_path, sep, start_line, end_line)
+      -- ref = string.format("@%s%s#L%d-#L%d", relative_path, sep, start_line, end_line)
+      ref = string.format("@%s%s:%d-%d", relative_path, sep, start_line, end_line)
     end
 
     tmux({"send-keys", "-t", info.target, "-l", ref .. " "})
