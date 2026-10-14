@@ -195,6 +195,7 @@ elif [[ "$EDITOR" = "vim" ]]; then
 fi
 
 export ENABLE_LSP_TOOL=true
+export CLAUDE_CODE_TMUX_TRUECOLOR=1
 unset ANTHROPIC_API_KEY
 unset OPENAI_API_KEY
 unset GEMINI_API_KEY

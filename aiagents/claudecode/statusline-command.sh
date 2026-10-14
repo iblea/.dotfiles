@@ -450,6 +450,15 @@ session_dur=$(get_session_duration)
 # ════════════════════════════════════════════
 line1=""
 
+# CLAUDE_CONFIG_DIR 가 기본 경로(~/.claude)가 아닌 경우 맨 앞에 (C) 표시
+if [ -n "$CLAUDE_CONFIG_DIR" ]; then
+    config_dir="${CLAUDE_CONFIG_DIR/#\~/$HOME}"
+    config_dir="${config_dir%/}"
+    if [ "$config_dir" != "$HOME/.claude" ]; then
+        line1+="(C) | "
+    fi
+fi
+
 # Model badge (플랜/대괄호 제거 — 모델명만 출력. plan_name 데이터는 수집부에 보존됨)
 line1+="🧠 ${C_CYAN}${model}${C_RESET}"
 

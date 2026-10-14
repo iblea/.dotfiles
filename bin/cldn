@@ -1,0 +1,248 @@
+#!/bin/bash
+
+if [ -z "$(command -v claude)" ]; then
+    echo "claude is not installed"
+    echo "https://docs.claude.com/en/docs/claude-code/setup"
+    echo "npm install -g @anthropic-ai/claude-code"
+    echo "curl -fsSL 'https://claude.ai/install.sh' | bash"
+    exit 1
+fi
+
+if [ -z "$(command -v cld)" ]; then
+    echo "failed to find cld binary"
+    echo "check PATH environment variable"
+    exit 1
+fi
+
+NVIM_IDE=0
+NON_INTERACTIVE=0
+WEBSOCKET_SRV=0
+
+WORKING_DIR="$HOME/.claude-work"
+
+export SSLKEYLOGFILE=""
+export AIAGENTCODE="Claude Code"
+export CLAUDE_CODE_TMPDIR="$HOME/.claude/editor"
+export CLAUDE_CONFIG_DIR="$WORKING_DIR"
+
+if [ -z "$(command -v tmux)" ]; then
+    cld "$@"
+    _ret=$?
+    exit $_ret
+
+    # echo "tmux command not found"
+    # exit 0
+fi
+
+if [ ! -d "$CLAUDE_CODE_TMPDIR" ]; then
+    mkdir -p "$CLAUDE_CODE_TMPDIR"
+fi
+
+if [ -n "$VSCODE_INJECTION" ]; then
+    WEBSOCKET_SRV=0
+fi
+
+if [ $# -eq 1 ]; then
+    if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+        claude --help
+        exit $?
+    elif [[ "$1" = "update" ]] || [[ "$1" = "--update" ]] || [[ "$1" = "upgrade" ]] || [[ "$1" = "--upgrade" ]]; then
+        claude update
+        exit $?
+    elif [[ "$1" = "-v" ]] || [[ "$1" = "-V" ]] || [[ "$1" = "version" ]] || [[ "$1" = "--version" ]]; then
+        claude --version
+        exit $?
+    elif [[ "$1" = "changelog" ]] || [[ "$1" = "ch" ]] || [[ "$1" = "-ch" ]] || [[ "$1" = "--changelog" ]]; then
+        echo "github link: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        exit 0
+    fi
+fi
+if [ $# -ge 1 ]; then
+    for (( i=1; i<=$#; i++ )); do
+        opt="${!i}"
+        if [[ "$opt" = "vi" ]] || [[ "$opt" = "-vi" ]] || [[ "$opt" = "nvi" ]] || [[ "$opt" = "-nvi" ]]; then
+            NVIM_IDE=1
+            break
+        elif [[ "${opt}" = "p" ]]; then
+            NON_INTERACTIVE=11
+            # remove p
+            set -- "${@:1:i-1}" "${@:i+1}"
+            break
+        elif [[ "${opt}" = "-p" ]] || [[ "${opt}" = "--print" ]]; then
+            NON_INTERACTIVE=1
+        elif [[ "${opt}" = "ws" ]] || [[ "${opt}" = "-ws" ]]; then
+            WEBSOCKET_SRV=1
+            set -- "${@:1:i-1}" "${@:i+1}"
+        fi
+    done
+fi
+
+if [ $WEBSOCKET_SRV -ge 1 ]; then
+    # ccsv.sh 와 동일하게 ccserver(WebSocket MCP 서버)를 백그라운드로 띄우고
+    # cldm 종료 시 함께 정리되도록 trap 설정
+    CCSERVER_BIN="${CCSERVER_BIN:-$HOME/.dotfiles/aiagents/ccserver/src/index.js}"
+    CCSERVER_READY_FILE="$(mktemp -t ccserver-ready.XXXXXX)"
+    CCSERVER_LOG="${CCSERVER_LOG:-/tmp/ccserver-$$.log}"
+    CCSERVER_PID=""
+
+    _ccsv_cleanup() {
+        if [ -n "$CCSERVER_PID" ] && kill -0 "$CCSERVER_PID" 2>/dev/null; then
+            kill "$CCSERVER_PID" 2>/dev/null || true
+            wait "$CCSERVER_PID" 2>/dev/null || true
+        fi
+        rm -f "$CCSERVER_READY_FILE"
+    }
+    trap _ccsv_cleanup EXIT INT TERM
+
+    if [ ! -f "$CCSERVER_BIN" ]; then
+        echo "[cldm] ccserver가 없어: $CCSERVER_BIN" >&2
+        echo "[cldm] CCSERVER_BIN 환경변수로 경로를 지정하거나 먼저 빌드해야 해." >&2
+        exit 1
+    fi
+
+    node "$CCSERVER_BIN" --ready-file "$CCSERVER_READY_FILE" > "$CCSERVER_LOG" 2>&1 &
+    CCSERVER_PID=$!
+
+    for _ in {1..50}; do
+        if [ -s "$CCSERVER_READY_FILE" ]; then
+            break
+        fi
+        if ! kill -0 "$CCSERVER_PID" 2>/dev/null; then
+            echo "[cldm] ccserver 시작 실패. 로그:" >&2
+            cat "$CCSERVER_LOG" >&2
+            exit 1
+        fi
+        sleep 0.1
+    done
+
+    CCWSPORT="$(cat "$CCSERVER_READY_FILE" 2>/dev/null || true)"
+    if [ -z "$CCWSPORT" ]; then
+        echo "[cldm] ccserver가 5초 안에 준비되지 않았어." >&2
+        cat "$CCSERVER_LOG" >&2
+        exit 1
+    fi
+
+    export CLAUDE_CODE_SSE_PORT="$CCWSPORT"
+    export ENABLE_IDE_INTEGRATION="true"
+    export CCWSPORT
+
+    echo "[cldm] ccserver ready on port $CCWSPORT (pid=$CCSERVER_PID, log=$CCSERVER_LOG)" >&2
+    echo "[cldm] CLAUDE_CODE_SSE_PORT=$CLAUDE_CODE_SSE_PORT" >&2
+
+    # tmux new-session 은 update-environment 목록 외 환경변수를 세션 안으로 전달 안 함
+    # 세션 내부 shell command 에 export 를 직접 삽입해서 cld 가 볼 수 있게 만든다
+    _WS_EXPORTS="export CLAUDE_CODE_SSE_PORT=$CCWSPORT; export ENABLE_IDE_INTEGRATION=true; export CCWSPORT=$CCWSPORT;"
+fi
+
+# WEBSOCKET_SRV 모드에서는 exec 대신 일반 실행으로 돌려야
+# cldm 프로세스가 살아남아 trap이 실행되고 ccserver 가 정리됨
+_run_or_exec() {
+    if [ $WEBSOCKET_SRV -ge 1 ]; then
+        "$@"
+    else
+        exec "$@"
+    fi
+}
+
+if [ $NON_INTERACTIVE -eq 1 ]; then
+    cld $@
+    exit $?
+elif [ $NON_INTERACTIVE -eq 11 ]; then
+    cldst $@
+    exit $?
+fi
+
+# 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
+SESSION_NAME="claude_$(date +%s)_$$"
+TMUX_CONF="$HOME/.dotfiles/tmux/tmux.aiagent.conf"
+
+# # PROXY
+# export HTTP_PROXY=http://localhost:8090
+# export HTTPS_PROXY=http://localhost:8090
+# export NODE_EXTRA_CA_CERTS=~/.mitmproxy/mitmproxy-ca-cert.pem
+
+# sudo security add-trusted-cert -d -r trustRoot \
+#     -k /Library/Keychains/System.keychain \
+#     "$HOME/.mitmproxy/mitmproxy-ca-cert.pem"
+
+
+
+# export NODE_OPTIONS="--tls-keylog=$HOME/sslkeylog.log"
+
+# SSH 환경에서 로컬 tmux 윈도우 이동 트리거
+# OSC escape sequence로 pane title을 변경하여 로컬 tmux hook을 트리거
+# SSH 환경 (로컬 tmux 밖): tmux 생성 없이 cld 직접 실행
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
+    printf '\033]2;__AIDM_SWAP_WIN1__\033\\'
+    sleep 0.3
+    printf '\033]2;@ %s\033\\' "$AIAGENTCODE"
+    export EDITOR="$EDITOR"
+    cld "$@"
+    _ret=$?
+    printf '\033]2;__AIDM_CLEANUP__\033\\'
+    exit $_ret
+fi
+
+if [ -n "$TMUX" ] && tmux info &>/dev/null; then
+# if [ -n "$TMUX" ]; then
+    # 현재 윈도우가 1번이 아니면 1번으로 삽입 (기존 윈도우는 한 칸씩 뒤로)
+    _cur_win=$(tmux display-message -p '#{window_index}')
+    _win1_panes=$(tmux display-message -t :1 -p '#{window_panes}' 2>/dev/null)
+    if [ "${_win1_panes:-0}" -gt 1 ] 2>/dev/null; then
+        _win1_is_aiagent=$(tmux show-option -pqv -t :1.1 @is_aiagent_code 2>/dev/null)
+    else
+        _win1_is_aiagent=$(tmux show-option -pqv -t :1 @is_aiagent_code 2>/dev/null)
+    fi
+    if [ "$_cur_win" != "1" ] && [ "$_win1_is_aiagent" != "1" ]; then
+        _i=$_cur_win
+        while [ "$_i" -gt 1 ]; do
+            _prev=$((_i - 1))
+            tmux swap-window -s ":${_i}" -t ":${_prev}" 2>/dev/null
+            _i=$_prev
+        done
+        tmux select-window -t :1 2>/dev/null
+    fi
+    # vscode terminal shell integration cwd update (tmux passthrough)
+    if [ "$TERM_VSCODE" = "1" ]; then
+        printf '\ePtmux;\e\e]633;P;Cwd=%s\a\e\\' "$PWD"
+    fi
+    export EDITOR="$EDITOR";
+    tmux set-option -p @is_aiagent_code 1 2>/dev/null
+
+    cld $@
+    _ret=$?
+    tmux set-option -pu @is_aiagent_code 2>/dev/null
+    exit $_ret
+elif [ "$NVIM_IDE" -eq 1 ]; then
+    # vi 모드: window 2개 생성 (window 2: nvim 먼저, window 1: cld 나중)
+    _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" -d \; \
+        new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
+        select-window -t "$SESSION_NAME:1" \; \
+        attach-session -t "$SESSION_NAME"
+    exit $?
+else
+
+    # cld (window 1) + shell (window 2)
+    _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@" \; \
+        new-window -t "$SESSION_NAME" \; \
+        clear-history -t "$SESSION_NAME:2" \; \
+        send-keys -t "$SESSION_NAME:2" "" C-m \; \
+        select-window -t "$SESSION_NAME:1"
+    exit $?
+fi
+
+
+
+
+
+
+# # VSCode 터미널에서 색상 쿼리 escape sequence 제거
+# if [ -n "$VSCODE_INJECTION" ] || [ "$TERM_PROGRAM" = "vscode" ]; then
+#     exec tmux new-session -s "$SESSION_NAME" "sleep 0.1 && clear && claude; tmux kill-session -t $SESSION_NAME"
+# else
+#     exec tmux new-session -s "$SESSION_NAME" "claude; tmux kill-session -t $SESSION_NAME"
+# fi
+
