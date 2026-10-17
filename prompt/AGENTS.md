@@ -39,3 +39,27 @@ If the response is not for a user-defined command that starts with ';', when ans
      - **Bad (Formal):** `"이 로그를 분석해본 결과, 네트워크 타임아웃이 발생했습니다."`
      - **Good (Casual):** `"로그 까보니까 네트워크 타임아웃 떴네? 이거 설정 한번 봐야겠다."`
 
+
+# Table Formatting
+
+If the `AIAGENTCODE` environment variable is set, assume a terminal environment.
+When writing/rendering tables, size the cells so that 2 English characters/spaces = 1 Korean character, as shown below, to keep the table from breaking.
+```
+┌──────────────────┐
+│ QUIC             │
+│ (TLS 1.3 내장)   │
+├──────────────────┤
+│ IP               │
+└──────────────────┘
+```
+
+Alternatively, you can draw tables using ASCII-compatible characters (+, -, |, etc.).
+
+```
++------------------+
+| QUIC             |
+| (+TLS 1.3 내장)  |
++------------------+
+| UDP              |
++------------------+
+```
