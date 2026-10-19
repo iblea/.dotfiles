@@ -43,6 +43,7 @@ elif [ "$#" -eq 1 ]; then
         echo "The -E option is set as the default value, and this cannot be changed."
         echo "    Default Value: \$((\$(tmux display -p -t <window_number> '#{pane_height}') - 1))"
         echo "The p option is enabled, and this cannot be changed."
+        echo "The J option is enabled (join wrapped lines), and this cannot be changed."
         exit 0
 
         echo "Argument"
@@ -126,11 +127,11 @@ done
 # echo "OTHER_OPT: ${OTHER_OPTS[@]}"
 
 if [ -n "$TAIL_OPT" ] && [ $TAIL_OPT -ne 0 ]; then
-    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -J -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | tail -n $TAIL_OPT
 elif [ -n "$HEAD_OPT" ] && [ $HEAD_OPT -ne 0 ]; then
-    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | head -n $HEAD_OPT
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -J -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}' | head -n $HEAD_OPT
 else
-    ${TMUX_COMMAND[@]} capture-pane -t $target -p -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
+    ${TMUX_COMMAND[@]} capture-pane -t $target -p -J -E $(($(${TMUX_COMMAND[@]} display -p -t $target '#{pane_height}') - 1)) ${OTHER_OPTS[@]} | sed -e :a -e '/^\n*$/{$d;N;ba}'
 fi
 
 # tmux capture-pane -t $target -p -E $(($(tmux display -p -t $target '#{pane_height}') - 1)) $@ | sed -e :a -e '/^\n*$/{$d;N;ba}'

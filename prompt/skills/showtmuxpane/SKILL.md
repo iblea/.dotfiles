@@ -32,10 +32,11 @@ Please refer to the details below. (`#SKILL OPTS` section)
   - Verify whether the `showtmuxpane` function is defined using `command -v showtmuxpane` or similar methods. If it is defined, utilize the `showtmuxpane` function to reference the output of a specific window.
   - Use the following format: `showtmuxpane <window name> -S <tail line count>`.
   - `showtmuxpane 2 -S -30` is equivalent to the following command:
-    - `tmux capture-pane -t 2 -p -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 2))`
+    - `tmux capture-pane -t 2 -p -J -S -30 -E $(($(tmux display -p -t 2 '#{pane_height}') - 1))`
+    - `-J` joins wrapped lines, so a narrow pane still returns each output line as one line. `-S` counts physical screen rows, not output lines, so a narrow pane needs a larger value (e.g. `showtmuxpane 2 -S -200 --tail 50` for the last 50 output lines).
 
   - Therefore, if the `showtmuxpane` command is not available, use the following command instead. (Replace `<window number>` and `<tail line count>` with appropriate values.)
-    - `tmux capture-pane -t <window number> -p -S <tail line count> -E $(($(tmux display -p -t <window number> '#{pane_height}') - 2))`
+    - `tmux capture-pane -t <window number> -p -J -S <tail line count> -E $(($(tmux display -p -t <window number> '#{pane_height}') - 1))`
 
 
 # SKILL OPTS
@@ -131,15 +132,19 @@ If `sendkeys` or `sk` is provided, a specific tmux window/pane can be manipulate
   - `sendtmuxpane` automatically detects and cancels copy-mode on the target pane before sending keys. No manual copy-mode check is required when using `sendtmuxpane`.
 
 ##### `-w` (`--write`) run mode
-  - **Forbidden while `sksf` is active:** this mode creates/overwrites output files even when the command sent to the pane only reads data.
+  - **Allowed under `sksf` as an explicit exception:** the helper's own capture files are exempt, but `<command>` must still satisfy every `sksf` restriction (see the `sendtmuxpane -w` capture-file exception in the `sksf` section).
   - Usage: `sendtmuxpane -w [--timeout <sec>] <target> '<command>'`
     - `-w` (or `--write`) MUST be the first argument. `--timeout <sec>` works ONLY right after `-w` (default 30 seconds, wall-clock upper bound).
     - `<command>` is a single string argument.
-  - Behavior: runs `<command>` in the target pane, waits for completion, then writes **only the command's output** to stdout AND `/tmp/sendtmuxpane.txt`.
-    - `/tmp/sendtmuxpane.txt` is **overwritten on every run** (previous content is discarded).
+  - Behavior: runs `<command>` in the target pane, waits for completion, then writes **only the command's output** to stdout AND `/tmp/sendtmuxpane-<uid>/output.txt` (`<uid>` = `id -u` of the user running the helper).
+    - `/tmp/sendtmuxpane-<uid>/output.txt` is **overwritten on every run** (previous content is discarded).
+    - The capture directory is owner-only (`700`) and its files are `600`, because they hold raw command output (possibly secrets).
+    - If the helper fails with `ERROR: unsafe capture directory` (the path is a symlink or owned by another user), stop and report it to the user. Do not delete, move, or chmod that path yourself.
     - The pane screen keeps displaying the output as usual (output is copied via `pipe-pane`, not intercepted).
     - The ONLY keys sent to the pane are `<command>` + Enter. No markers/wrappers are injected.
-    - Output is streamed to a file, so large outputs (thousands of lines) are saved without the screen-history truncation of `capture-pane`. **Use this mode to collect large command outputs** (install logs, build logs, log queries) instead of `showtmuxpane`.
+    - Sequence: type `<command>` → wait until its echo is rendered in the pane (max 3s, then proceed anyway) → start collection → press Enter. The input echo is excluded from collection, so commands longer than the pane width (which shells wrap with ` \r` / redraws) are still extracted correctly.
+    - Output is streamed to a file, so large outputs (thousands of lines) are saved without the screen-history truncation of `capture-pane`, independent of the pane size. **Use this mode to collect large command outputs** (install logs, build logs, log queries) instead of `showtmuxpane`.
+    - Width-aware programs (`ps` without a pipe, `systemctl status`, etc.) still truncate their own output to the pane width; append `| cat`, `--no-pager`, or `-ww` when full lines matter.
   - Works on remote panes too (ssh / docker): completion is detected by observation only, in 4 stages:
     1. pane foreground process returns to a shell (local pane, fast)
     2. the prompt captured right before execution reappears (remote pane, fast)
@@ -206,7 +211,7 @@ If `sendkeys` or `sk` is provided, a specific tmux window/pane can be manipulate
 ##### sksf (sendkeys safe)
 
 - `sksf` is a restricted form of `sk`. It enables send-keys by itself; adding `sk` is unnecessary. It inherits `sk`'s exact-target, subsequent-interaction, and result-checking rules, subject to the restrictions below. If both options are present, **`sksf` takes precedence**.
-- **Except for the explicit `make` build exception below, NEVER execute commands or send interactive input that creates, modifies, overwrites, appends to, moves, renames, or deletes files/directories, or changes their metadata/permissions.** This applies to local and remote files, including temporary files. Judge the complete command and its effects, not just the command name.
+- **Except for the explicit `make` build and `sendtmuxpane -w` capture-file exceptions below, NEVER execute commands or send interactive input that creates, modifies, overwrites, appends to, moves, renames, or deletes files/directories, or changes their metadata/permissions.** This applies to local and remote files, including temporary files. Judge the complete command and its effects, not just the command name.
 - Forbidden operations include:
   - File transfer/copy/move/delete commands: `scp`, `cp`, `mv`, `rm`, `unlink`, and file-writing `rsync` operations.
   - File creation or metadata changes: `touch`, `mkdir`, `chmod`, `chown`, and `truncate`.
@@ -219,14 +224,18 @@ If `sendkeys` or `sk` is provided, a specific tmux window/pane can be manipulate
 - **`make` build exception:** `make` used solely for compilation/building is allowed, including creation or updates of normal build artifacts. Confirm the selected target and its recipes only perform the permitted build; a command named `make` is not automatically safe. This exception does not permit installation (`make install`), external-script download/execution, database or service changes, or unrelated file manipulation. If the recipes' effects are unclear, do not execute them.
 - Do not bypass these restrictions through aliases, functions, scripts, command substitutions, pipelines, `sh -c`, `sudo`, SSH/container commands, another tool, or another pane. Check every component of a compound command. If its effects on files, databases, services, or external-code execution are unclear, do not execute it; explain the uncertainty and use a known read-only alternative when available.
 - Read-only commands and transformations that only print to the terminal are allowed, such as `pwd`, `ls`, `cat`, `grep`, `head`, `tail`, and `sed 's/old/new/g' input.txt`. Read-only SQL queries and service-status inspection are also allowed when they do not cause prohibited effects. Read-only input redirection (`cat < input.txt`) and pipelines are allowed only when every component complies with these restrictions, including the explicit `make` build exception.
-- Use plain `sendtmuxpane` followed by `showtmuxpane` / `capture-pane -p` to inspect results. **Do not use `sendtmuxpane -w` / `--write`**, file-backed output capture, or redirection of captured output to a file; temporary output files are not exempt.
+- **`sendtmuxpane -w` capture-file exception:** `sendtmuxpane -w` / `--write` is allowed under `sksf`. Its only file writes are the helper's own capture files on the machine where the helper runs, inside the owner-only directory `/tmp/sendtmuxpane-<uid>/` (created if missing): `output.txt` (overwritten every run) and the temporary raw file `.raw_<pid>` (deleted on exit). Only these helper-managed files are exempt.
+  - The `<command>` sent with `-w` must still satisfy every `sksf` restriction above. The exception never covers files, databases, or services affected by the command itself.
+  - Do not add redirection or `tee` to `<command>`, and do not copy, move, or edit `/tmp/sendtmuxpane-<uid>/output.txt` afterward (reading it is allowed). Other file-backed capture (manual `pipe-pane`, `capture-pane` redirected to a file, `save-buffer`) remains forbidden.
+  - Plain `sendtmuxpane` followed by `showtmuxpane` / `capture-pane -p` remains available, and is required for interactive programs or commands that do not finish on their own.
 - Keep `sksf` active for subsequent command-related interactions until the user explicitly switches out of safe mode. A request for a prohibited operation or a generic confirmation does not silently disable it; explain that the operation is prohibited under `sksf` and do not execute it.
 - These are agent execution rules in this skill, not a shell sandbox or a command-filtering flag implemented by `sendtmuxpane`. Do not pass `sksf` to the helper scripts.
 - Examples:
   - `;tm .2 sksf` → inspect the specified pane and conduct subsequent commands there under the restrictions above.
   - `;tm .4 (ssh win) sksf inspect the logs` → send read-only log inspection commands to `.4` in the existing remote session.
   - Allowed: `sendtmuxpane .2 -l 'cat app.log'` followed by `sendtmuxpane .2 Enter` and `showtmuxpane .2 -S -20`.
-  - Forbidden: `scp app.conf host:/tmp/`, `rm app.log`, `sed -i 's/old/new/g' app.conf`, `echo "test" > output.txt`, and `cat app.log | tee copy.log`.
+  - Allowed: `sendtmuxpane -w .2 'cat app.log'` (output collected through the helper's capture file).
+  - Forbidden: `scp app.conf host:/tmp/`, `rm app.log`, `sed -i 's/old/new/g' app.conf`, `echo "test" > output.txt`, `cat app.log | tee copy.log`, and `sendtmuxpane -w .2 'cat app.log > copy.log'`.
   - Allowed: read-only `SELECT` / `SHOW` queries, `systemctl status nginx`, and `make` after confirming its recipes only build.
   - Forbidden: `UPDATE users SET active = 0`, `SET GLOBAL max_connections = 200`, `systemctl restart nginx`, `curl -sk "url" | sh -`, `make install`, and `apt install gcc` / `yum install gcc` / `dnf install gcc`.
 
