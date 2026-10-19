@@ -39,7 +39,6 @@ return {
             ["cmp-tw2css"] = "[TailwindCSS]",
             luasnip = "[Snip]",
             look = "[Dict]",
-            minuet = "[AI]",
           },
         }),
       },
