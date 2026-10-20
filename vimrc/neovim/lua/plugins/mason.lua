@@ -27,7 +27,10 @@ return {
 
     local function add_values(src_table)
       for _, value in ipairs(src_table) do
-          table.insert(tools, value)
+          -- go 미설치 환경에서 gopls 설치 제외
+          if value ~= "gopls" or vim.fn.executable("go") == 1 then
+            table.insert(tools, value)
+          end
       end
     end
 
