@@ -292,7 +292,7 @@ strip_ansi < "$RAWFILE" | CMD="$cmd" awk '
             }
         }
         if (cut) n = cut - 1
-        while (n > 0 && trimmed(lines[n]) == "") n--
+        while (n > 0 && lines[n] ~ /^[[:space:]]*$/) n--
         for (i = 1; i <= n; i++) print lines[i]
     }
 ' | tee "$OUTFILE"

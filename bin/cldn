@@ -58,6 +58,10 @@ if [ $# -eq 1 ]; then
     fi
 fi
 if [ $# -ge 1 ]; then
+	if [[ "$1" = "daemon" ]]; then
+		claude $@
+		exit 0
+	fi
     for (( i=1; i<=$#; i++ )); do
         opt="${!i}"
         if [[ "$opt" = "vi" ]] || [[ "$opt" = "-vi" ]] || [[ "$opt" = "nvi" ]] || [[ "$opt" = "-nvi" ]]; then
