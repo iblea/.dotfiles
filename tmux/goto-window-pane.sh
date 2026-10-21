@@ -51,12 +51,16 @@ if ! tmux list-windows -F '#I' | grep -qx "$win"; then
     exit 0
 fi
 
+# 페인 번호는 tmux index가 아닌 고정 번호(@pane_slot, pane-slot.sh)로 해석
 # 페인 존재 확인 (없는 페인이면 윈도우 전환도 하지 않아 원자적으로 동작)
-if ! tmux list-panes -t "$win" -F '#I.#P' 2>/dev/null | grep -qx "$target"; then
+slot="${target#*.}"
+pane_id="$(tmux list-panes -t "$win" -F '#{@pane_slot} #{pane_id}' 2>/dev/null |
+    awk -v s="$slot" 's != "" && $1 == s { n++; id = $2 } END { if (n == 1) print id }')"
+if [ -z "$pane_id" ]; then
     tmux display-message "goto: no such pane '$target'"
     exit 0
 fi
 
 # 이동: 윈도우 선택 후 페인 선택
 tmux select-window -t "$win"
-tmux select-pane -t "$target"
+tmux select-pane -t "$pane_id"

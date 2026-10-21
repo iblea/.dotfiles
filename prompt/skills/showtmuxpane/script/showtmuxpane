@@ -33,6 +33,7 @@ elif [ "$#" -eq 1 ]; then
         echo "-h, --help: show help"
         echo ""
         echo "First Argument: <window number>.<pane number>"
+        echo "  (pane number = fixed pane slot @pane_slot shown in the status bar, not tmux pane_index)"
         echo "  ex: showtmuxpane 2 -> window 2, pane 1"
         echo "  ex: showtmuxpane 2.2 -> window 2, pane 2"
         echo "  ex: showtmuxpane .2 -> current window, pane 2"
@@ -95,6 +96,16 @@ if [ -z "$is_exist" ]; then
     echo "window number is wrong"
     exit 1
 fi
+
+# 페인 번호는 tmux index가 아닌 고정 번호(@pane_slot, ~/.dotfiles/tmux/pane-slot.sh)로 해석
+# (split 시 index가 밀려 다른 페인을 잡는 것 방지. 번호가 없거나 중복이면 다른 페인으로 대체하지 않고 중단)
+slot="${target#*.}"
+pane_id=$(${TMUX_COMMAND[@]} list-panes -t "$display_window" -F '#{@pane_slot} #{pane_id}' | awk -v s="$slot" 's != "" && $1 == s { n++; id = $2 } END { if (n == 1) print id }')
+if [ -z "$pane_id" ]; then
+    echo "pane number is wrong"
+    exit 1
+fi
+target="$pane_id"
 
 
 TAIL_OPT=0
