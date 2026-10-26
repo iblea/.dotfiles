@@ -27,9 +27,13 @@ NVIM_IDE=0
 NON_INTERACTIVE=0
 WEBSOCKET_SRV=0
 
+WORKING_DIR="$HOME/.claude"
+
 export SSLKEYLOGFILE=""
 export AIAGENTCODE="Claude Code"
 export CLAUDE_CODE_TMPDIR="$HOME/.claude/editor"
+export CLAUDE_CONFIG_DIR="$WORKING_DIR"
+
 if [ ! -d "$CLAUDE_CODE_TMPDIR" ]; then
     mkdir -p "$CLAUDE_CODE_TMPDIR"
 fi
@@ -214,7 +218,7 @@ elif [ "$NVIM_IDE" -eq 1 ]; then
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
         new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
     exit $?
@@ -222,7 +226,7 @@ else
 
     # cld (window 1) + shell (window 2)
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@" \; \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@" \; \
         new-window -t "$SESSION_NAME" \; \
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \
