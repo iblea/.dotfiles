@@ -225,7 +225,8 @@ nnoremap <C-h> M
 " nnoremap <c-l> :suspend<CR>
 
 
-nnoremap U K
+" nnoremap U K
+nnoremap U <C-r>
 nnoremap L <nop>
 nnoremap H <nop>
 nnoremap M J

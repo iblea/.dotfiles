@@ -116,6 +116,13 @@ for (( i=1; i<=$#; i++ )); do
     fi
 done
 
+# 프로필별 MCP 설정 로드
+MCP_CONFIG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.mcp.json"
+if [ -f "$MCP_CONFIG" ]; then
+    # variadic 옵션이라 뒤 인자까지 경로로 먹는 문제 방지용 = 형식
+    OTHER_OPTS+=("--mcp-config=$MCP_CONFIG")
+fi
+
 # if ( grep -q -- "--dan" <<< "$*" ); then
 #     BYPASS_OPT="--dangerously-skip-permissions"
 #     shift
@@ -128,7 +135,7 @@ if [ $NON_INTERACTIVE -eq 1 ]; then
     unset ANTHROPIC_API_KEY
     unset OPENAI_API_KEY
     unset GEMINI_API_KEY
-    claude ${OTHER_OPTS[@]}
+    claude "${OTHER_OPTS[@]}"
     exit $?
 elif [ $NON_INTERACTIVE -eq 11 ]; then
     cldst $CLAUDE_OPT "$*"
@@ -205,29 +212,29 @@ if [ "$(id -u)" -eq 0 ] && [ "$DANGEROUS_SKIP" -eq 1 ]; then
 fi
 
 if [ "$CLAUDE_OPT" = "s" ]; then
-    claude --model=Sonnet ${OTHER_OPTS[@]}
+    claude --model=Sonnet "${OTHER_OPTS[@]}"
     # if [ -f "$PROMPT_PATH" ] ;then
     #     claude --model=Sonnet --append-system-prompt "$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     # else
     #     claude --model=Sonnet ${OTHER_OPTS[@]}
     # fi
 elif [ "$CLAUDE_OPT" = "sm" ] || [ "$CLAUDE_OPT" = "su" ]; then
-    claude --model='Sonnet[1m]' ${OTHER_OPTS[@]}
+    claude --model='Sonnet[1m]' "${OTHER_OPTS[@]}"
     # if [ -f "$PROMPT_PATH" ] ;then
     #     claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests$(echo )$(cat $PROMPT_PATH)" ${OTHER_OPTS[@]}
     # else
     #     claude --model=Sonnet --append-system-prompt "/sc:implement --ultrathink --seq --c7 --play --iterative --with-tests" ${OTHER_OPTS[@]}
     # fi
 elif [ "$CLAUDE_OPT" = "a" ] || [ "$CLAUDE_OPT" = "o" ] || [ "$CLAUDE_OPT" = "d" ]; then
-    claude --model=Opus ${OTHER_OPTS[@]}
+    claude --model=Opus "${OTHER_OPTS[@]}"
 elif [ "$CLAUDE_OPT" = "au" ] || [ "$CLAUDE_OPT" = "ou" ] || [ "$CLAUDE_OPT" = "dm" ] || [ "$CLAUDE_OPT" = "am" ] || [ "$CLAUDE_OPT" = "om" ] || [ "$CLAUDE_OPT" = "dm" ]; then
-    claude --model='Opus[1m]' ${OTHER_OPTS[@]}
+    claude --model='Opus[1m]' "${OTHER_OPTS[@]}"
 elif [ "$CLAUDE_OPT" = "h" ]; then
-    claude --model=Haiku ${OTHER_OPTS[@]}
+    claude --model=Haiku "${OTHER_OPTS[@]}"
 elif [ "$CLAUDE_OPT" = "hu" ] || [ "$CLAUDE_OPT" = "hm" ]; then
-    claude --model='Haiku[1m]' ${OTHER_OPTS[@]}
+    claude --model='Haiku[1m]' "${OTHER_OPTS[@]}"
 else
-    claude ${OTHER_OPTS[@]}
+    claude "${OTHER_OPTS[@]}"
     # claude --model='' ${OTHER_OPTS[@]}
 fi
 

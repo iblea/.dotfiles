@@ -1,0 +1,62 @@
+{
+  "mcpServers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "$API_KEY"
+      ],
+      "env": {}
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--executable-path=/$CHROME_PATH"
+      ]
+    },
+    "gitlab": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@zereight/mcp-gitlab"
+      ],
+      "env": {
+        "GITLAB_PERSONAL_ACCESS_TOKEN": "TOKEN",
+        "GITLAB_API_URL": "https://URL/api/v4/",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    },
+
+
+
+    "automation": {
+      "command": "bun",
+      "args": [
+        "run",
+        "$HOME/src/opensource/automation-mcp/index.ts",
+        "--stdio"
+      ]
+    },
+
+
+    "sequential-thinking": {
+      "command": "node",
+      "args": [
+        "$HOME/.dotfiles/aiagents/claudecode/sequential-thinking-improved/dist/index.js"
+      ]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "GITHUB PATH"
+      }
+    }
+  },
+  "disabledMcpServers": [ ]
+}

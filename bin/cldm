@@ -145,11 +145,17 @@ _run_or_exec() {
 }
 
 if [ $NON_INTERACTIVE -eq 1 ]; then
-    cld $@
+    cld "$@"
     exit $?
 elif [ $NON_INTERACTIVE -eq 11 ]; then
-    cldst $@
+    cldst "$@"
     exit $?
+fi
+
+# tmux 명령 문자열용 인자 이스케이프 (인자 없으면 빈 값)
+_QUOTED_ARGS=""
+if [ $# -gt 0 ]; then
+    _QUOTED_ARGS=$(printf '%q ' "$@")
 fi
 
 # 고유한 세션 이름 생성 (타임스탬프 + 프로세스 ID)
@@ -209,7 +215,7 @@ if [ -n "$TMUX" ] && tmux info &>/dev/null; then
     export EDITOR="$EDITOR";
     tmux set-option -p @is_aiagent_code 1 2>/dev/null
 
-    cld $@
+    cld "$@"
     _ret=$?
     tmux set-option -pu @is_aiagent_code 2>/dev/null
     exit $_ret
@@ -218,7 +224,7 @@ elif [ "$NVIM_IDE" -eq 1 ]; then
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
         new-session -s "$SESSION_NAME" -d \; \
         new-window -t "$SESSION_NAME" "export TMUX_AIAGENT_IDE_NVIM=1; nvim" \; \
-        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@)" C-m \; \
+        send-keys -t "$SESSION_NAME:1" "(${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export TMUX_AIAGENT_IDE_NVIM=1; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $_QUOTED_ARGS)" C-m \; \
         select-window -t "$SESSION_NAME:1" \; \
         attach-session -t "$SESSION_NAME"
     exit $?
@@ -226,7 +232,7 @@ else
 
     # cld (window 1) + shell (window 2)
     _run_or_exec tmux -L sock_${SESSION_NAME} -f "$TMUX_CONF" \
-        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $@" \; \
+        new-session -s "$SESSION_NAME" "${_WS_EXPORTS:-} trap 'tmux kill-session -t $SESSION_NAME 2>/dev/null' EXIT; trap '' INT; export CLAUDE_CONFIG_DIR=\"$WORKING_DIR\"; export EDITOR=\"$EDITOR\"; tmux set-option -p @is_aiagent_code 1; sleep 0.1 && clear && cld $_QUOTED_ARGS" \; \
         new-window -t "$SESSION_NAME" \; \
         clear-history -t "$SESSION_NAME:2" \; \
         send-keys -t "$SESSION_NAME:2" "" C-m \; \
