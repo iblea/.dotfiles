@@ -1,16 +1,6 @@
 {
   "version": 2,
   "plugins": {
-    "context7@claude-plugins-official": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/context7/unknown",
-        "version": "unknown",
-        "installedAt": "2025-12-20T05:15:15.065Z",
-        "lastUpdated": "2026-03-25T06:59:31.213Z"
-      }
-    ],
     "pyright-lsp@claude-plugins-official": [
       {
         "scope": "project",
@@ -47,56 +37,14 @@
         "gitCommitSha": "61c0597779bd2d670dcd4fbbf37c66aa19eb2ce6"
       }
     ],
-    "code-review@claude-plugins-official": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/code-review/unknown",
-        "version": "unknown",
-        "installedAt": "2025-12-20T05:21:17.663Z",
-        "lastUpdated": "2026-03-25T06:59:31.214Z"
-      }
-    ],
-    "playwright@claude-plugins-official": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/playwright/unknown",
-        "version": "unknown",
-        "installedAt": "2025-12-20T05:21:23.695Z",
-        "lastUpdated": "2026-03-25T06:59:31.213Z"
-      }
-    ],
-    "clarify@team-attention-plugins": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/team-attention-plugins/clarify/1.0.0",
-        "version": "1.0.0",
-        "installedAt": "2026-01-17T06:23:09.632Z",
-        "lastUpdated": "2026-03-11T07:31:23.801Z",
-        "gitCommitSha": "419cbcb50e82a7ed32883276d6484474c21b027e"
-      }
-    ],
-    "ralph-loop@claude-plugins-official": [
-      {
-        "scope": "project",
-        "projectPath": "___DOTFILES_SED_HOME_CONFIG___",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/ralph-loop/1.0.0",
-        "version": "1.0.0",
-        "installedAt": "2026-01-23T02:33:31.531Z",
-        "lastUpdated": "2026-03-29T10:19:05.441Z",
-        "gitCommitSha": "e30768372b4150ca1bc0839d93283e8edc30d60d"
-      }
-    ],
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0",
-        "version": "5.1.0",
+        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/claude-plugins-official/superpowers/7.0.0",
+        "version": "7.0.0",
         "installedAt": "2026-03-30T23:56:19.001Z",
-        "lastUpdated": "2026-05-05T05:19:20.707Z",
-        "gitCommitSha": "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06"
+        "lastUpdated": "2026-10-17T05:56:18.938Z",
+        "gitCommitSha": "bb92a77741419a4ab5f06e711a283343f1ada0c3"
       }
     ],
     "codex@openai-codex": [
@@ -107,26 +55,6 @@
         "installedAt": "2026-05-06T05:30:33.278Z",
         "lastUpdated": "2026-05-06T05:30:33.278Z",
         "gitCommitSha": "807e03ac9d5aa23bc395fdec8c3767500a86b3cf"
-      }
-    ],
-    "document-skills@anthropic-agent-skills": [
-      {
-        "scope": "user",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/document-skills/690f15cac7f7",
-        "version": "690f15cac7f7",
-        "installedAt": "2026-05-06T08:10:58.279Z",
-        "lastUpdated": "2026-05-20T00:13:31.724Z",
-        "gitCommitSha": "690f15cac7f7b4c055c5ab109c79ed9259934081"
-      }
-    ],
-    "claude-api@anthropic-agent-skills": [
-      {
-        "scope": "user",
-        "installPath": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/cache/anthropic-agent-skills/claude-api/690f15cac7f7",
-        "version": "690f15cac7f7",
-        "installedAt": "2026-05-06T08:11:15.932Z",
-        "lastUpdated": "2026-05-20T00:13:31.723Z",
-        "gitCommitSha": "690f15cac7f7b4c055c5ab109c79ed9259934081"
       }
     ]
   }

@@ -5,15 +5,7 @@
       "repo": "anthropics/claude-plugins-official"
     },
     "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/claude-plugins-official",
-    "lastUpdated": "2026-05-26T07:34:25.804Z"
-  },
-  "team-attention-plugins": {
-    "source": {
-      "source": "github",
-      "repo": "team-attention/plugins-for-claude-natives"
-    },
-    "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/team-attention-plugins",
-    "lastUpdated": "2026-01-17T06:22:54.156Z"
+    "lastUpdated": "2026-11-04T09:04:04.401Z"
   },
   "openai-codex": {
     "source": {
@@ -22,13 +14,5 @@
     },
     "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/openai-codex",
     "lastUpdated": "2026-05-06T05:30:27.115Z"
-  },
-  "anthropic-agent-skills": {
-    "source": {
-      "source": "github",
-      "repo": "anthropics/skills"
-    },
-    "installLocation": "___DOTFILES_SED_HOME_CONFIG___/.claude/plugins/marketplaces/anthropic-agent-skills",
-    "lastUpdated": "2026-05-26T07:34:25.584Z"
   }
 }
