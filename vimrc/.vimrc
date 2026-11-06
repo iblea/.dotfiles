@@ -41,6 +41,7 @@ if !empty(glob($HOME."/.vim/autoload/plug.vim"))
 	call plug#end()
 endif
 
+let skip_defaults_vim = 1
 if !empty(glob($HOME."/.dotfiles/vimrc/.vs.vimrc"))
 	source $HOME/.dotfiles/vimrc/.vs.vimrc
 endif

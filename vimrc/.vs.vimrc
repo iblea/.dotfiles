@@ -1,3 +1,8 @@
+" 단독 사용 시 defaults.vim 로드 (.vimrc 경유 시 skip_defaults_vim으로 건너뜀)
+if filereadable($VIMRUNTIME . '/defaults.vim')
+	source $VIMRUNTIME/defaults.vim
+endif
+
 " hex editor
 " :%!xxd
 " hex to text editor
