@@ -74,7 +74,7 @@ vim.cmd('colorscheme monokai-pro-classic')
 
 if vim.env.TMUX_AIAGENT_IDE_NVIM == "1" then
   -- split 방향 토글 (horizontal <-> vertical) + 크기 균등화
-  vim.keymap.set("n", "<leader>nn", function()
+  vim.keymap.set("n", "<leader>wc", function()
     local layout = vim.fn.winlayout()
     if layout[1] == "col" then
       vim.cmd("wincmd H")
@@ -228,14 +228,16 @@ if vim.env.TMUX or vim.env.LC_TMUX then
   end
 
   -- normal mode: 파일 절대경로를 클립보드에 복사
-  vim.keymap.set("n", "<leader>pa", function()
+  local function copy_abs_path()
     local path = vim.fn.expand("%:p")
     copy_osc52(path)
     print("absolute path (normal) copy!")
-  end, { desc = "Copy absolute path to clipboard" })
+  end
+  vim.keymap.set("n", "<leader>pa", copy_abs_path, { desc = "Copy absolute path to clipboard" })
+  vim.keymap.set("n", "<leader>m", copy_abs_path, { desc = "Copy absolute path to clipboard" })
 
   -- visual mode: 파일 절대경로 + 라인 범위를 클립보드에 복사
-  vim.keymap.set("v", "<leader>pa", function()
+  local function copy_abs_path_lines()
     local start_line = vim.fn.line("v")
     local end_line = vim.fn.line(".")
     if start_line > end_line then
@@ -253,7 +255,9 @@ if vim.env.TMUX or vim.env.LC_TMUX then
     copy_osc52(ref)
     print("absolute path + line (visual) copy!")
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
-  end, { desc = "Copy absolute path with lines to clipboard" })
+  end
+  vim.keymap.set("v", "<leader>pa", copy_abs_path_lines, { desc = "Copy absolute path with lines to clipboard" })
+  vim.keymap.set("v", "<leader>m", copy_abs_path_lines, { desc = "Copy absolute path with lines to clipboard" })
 
   -- normal mode: 파일 절대경로 출력
   vim.keymap.set("n", "<leader>pp", function()
