@@ -139,6 +139,9 @@ if vim.env.TMUX or vim.env.LC_TMUX then
   local function focus_target(info)
     if info.focus == "pane" then
       tmux({"select-pane", "-t", info.target})
+    elseif info.focus == "window_pane" then
+      tmux({"select-window", "-t", info.target:match("^[^.]+")})
+      tmux({"select-pane", "-t", info.target})
     else
       tmux({"select-window", "-t", info.target})
     end
@@ -186,40 +189,128 @@ if vim.env.TMUX or vim.env.LC_TMUX then
     return table.concat(rel_parts, "/")
   end
 
-  -- normal mode: 파일 전체를 claude code에 전송
-  vim.keymap.set("n", "<leader>b", function()
-    local info = resolve_target()
-    if not info then return end
-    local ref = "@" .. get_claude_file_path(info.target)
+  -- 파일 참조 문자열 생성 및 대상 페인 전송 (start_line 없으면 파일 전체)
+  local function send_ref(info, start_line, end_line)
+    local path = info.abs and vim.fn.expand("%:p") or get_claude_file_path(info.target)
+    local ref
+    if not start_line then
+      ref = "@" .. path
+    else
+      local sep = (vim.g.fileline_space == 1) and " " or ""
+      if start_line == end_line then
+        -- ref = string.format("@%s%s#L%d", path, sep, start_line)
+        ref = string.format("@%s%s:%d", path, sep, start_line)
+      else
+        -- ref = string.format("@%s%s#L%d-#L%d", path, sep, start_line, end_line)
+        ref = string.format("@%s%s:%d-%d", path, sep, start_line, end_line)
+      end
+    end
+
     tmux({"send-keys", "-t", info.target, "-l", ref .. " "})
     focus_target(info)
-  end, { desc = "Send file reference to Claude Code" })
+  end
 
-  -- visual mode: 선택한 라인 범위를 claude code에 전송
-  vim.keymap.set("v", "<leader>b", function()
-    local info = resolve_target()
-    if not info then return end
+  -- visual 선택 라인 범위 (start <= end 정렬)
+  local function visual_range()
     local start_line = vim.fn.line("v")
     local end_line = vim.fn.line(".")
     if start_line > end_line then
       start_line, end_line = end_line, start_line
     end
+    return start_line, end_line
+  end
 
-    local relative_path = get_claude_file_path(info.target)
-    local sep = (vim.g.fileline_space == 1) and " " or ""
-    local ref
-    if start_line == end_line then
-      -- ref = string.format("@%s%s#L%d", relative_path, sep, start_line)
-      ref = string.format("@%s%s:%d", relative_path, sep, start_line)
-    else
-      -- ref = string.format("@%s%s#L%d-#L%d", relative_path, sep, start_line, end_line)
-      ref = string.format("@%s%s:%d-%d", relative_path, sep, start_line, end_line)
+  -- 입력값 → 전송 대상 변환
+  --   ""          : <leader>b 기본 대상
+  --   "N"         : N번 윈도우 1번 페인
+  --   ".N" / " N" : 현재 윈도우 N번 페인
+  --   "W.P"       : W번 윈도우 P번 페인
+  --   끝에 'a' 또는 공백 : 절대경로 전송 (예: "2.1a", "2.1 ", "a")
+  -- 반환: info 또는 nil, 오류 메시지
+  local function parse_target(input)
+    -- 끝의 'a' 또는 공백 한 글자: 절대경로 지정자 분리
+    local body, suffix = input:match("^(.-)([a ]?)$")
+    local abs = suffix ~= ""
+
+    if body == "" then
+      local info = resolve_target()
+      if info then info.abs = abs end
+      return info
     end
 
-    tmux({"send-keys", "-t", info.target, "-l", ref .. " "})
-    focus_target(info)
+    local win, pane = body:match("^(%d+)%.(%d+)$")
+    if not win then
+      win = body:match("^(%d+)$")
+      pane = win and "1"
+    end
+    if not win then
+      pane = body:match("^[. ](%d+)$")
+      if pane then
+        win = tmux({"display-message", "-p", "#{window_index}"}):gsub("%s+$", "")
+      end
+    end
+    if not win then
+      return nil, "잘못된 입력: '" .. input .. "'"
+    end
+
+    -- 대상 존재 확인 및 현재 페인(nvim 자신) 전송 방지
+    -- display-message는 없는 대상도 exit 0 이므로 결과값 비교로 판별
+    local target = tonumber(win) .. "." .. tonumber(pane)
+    local resolved = tmux({"display-message", "-p", "-t", target, "#{window_index}.#{pane_index}"}):gsub("%s+$", "")
+    if resolved ~= target then
+      return nil, "대상 없음: " .. target
+    end
+    local current = tmux({"display-message", "-p", "#{window_index}.#{pane_index}"}):gsub("%s+$", "")
+    if resolved == current then
+      return nil, "현재 페인에는 전송 불가: " .. target
+    end
+    return { target = target, focus = "window_pane", abs = abs }
+  end
+
+  -- 전송 대상 입력 후 전송 (Esc 취소 시 미전송)
+  local function prompt_and_send(start_line, end_line)
+    vim.ui.input({ prompt = "Send to [Enter: auto | N | .N | W.P] (+a/space: abs): " }, function(input)
+      if input == nil then return end
+      local info, err = parse_target(input)
+      if not info then
+        if err then vim.notify(err, vim.log.levels.WARN) end
+        return
+      end
+      send_ref(info, start_line, end_line)
+    end)
+  end
+
+  -- visual 선택 범위 확정 후 대상 입력 및 전송
+  local function prompt_and_send_visual()
+    local start_line, end_line = visual_range()
+    vim.cmd("normal! \27")
+    prompt_and_send(start_line, end_line)
+  end
+
+  -- normal mode: 파일 전체를 claude code에 전송 (SSH 경유 시 대상 입력)
+  vim.keymap.set("n", "<leader>b", function()
+    if tmux_sock then return prompt_and_send() end
+    local info = resolve_target()
+    if not info then return end
+    send_ref(info)
+  end, { desc = "Send file reference to Claude Code" })
+
+  -- visual mode: 선택한 라인 범위를 claude code에 전송 (SSH 경유 시 대상 입력)
+  vim.keymap.set("v", "<leader>b", function()
+    if tmux_sock then return prompt_and_send_visual() end
+    local info = resolve_target()
+    if not info then return end
+    send_ref(info, visual_range())
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
   end, { desc = "Send file reference to Claude Code" })
+
+  -- normal mode: 대상 선택 후 파일 전체 전송
+  vim.keymap.set("n", "<leader>n", function()
+    prompt_and_send()
+  end, { desc = "Send file reference to selected tmux pane" })
+
+  -- visual mode: 대상 선택 후 선택 라인 범위 전송
+  vim.keymap.set("v", "<leader>n", prompt_and_send_visual, { desc = "Send file reference to selected tmux pane" })
 
   -- setreg는 TextYankPost를 트리거하지 않아서 tmux OSC 52 autocmd가 동작하지 않음
   local function copy_osc52(text)
