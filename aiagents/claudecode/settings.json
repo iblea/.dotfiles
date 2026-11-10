@@ -8,7 +8,7 @@
     "CLAUDE_CODE_DISABLE_THINKING": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_DEFAULT_EDITOR": "vi",
-    "CLAUDE_CODE_DEFAULT_EFFORT": "xhigh",
+    "CLAUDE_CODE_DEFAULT_EFFORT": "high",
     "CLAUDE_CODE_EFFORT_LEVEL": ""
   },
   "permissions": {
@@ -142,7 +142,7 @@
   },
   "language": "한국어",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "tui": "default",
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,

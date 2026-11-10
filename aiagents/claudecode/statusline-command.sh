@@ -32,6 +32,7 @@ C_MAGENTA="\033[35m"
 C_CYAN="\033[36m"
 C_GRAY="\033[38;5;249m"
 C_PATH="\033[38;5;67m"
+C_SKY="\033[38;5;117m"
 
 # ── Git status symbols ──
 GIT_SYM_STASH="*"      # stash count
@@ -361,12 +362,13 @@ get_memory_color() {
     fi
 }
 
-# ── Helper: effort level color (low/medium/high=회색, xhigh=노랑, max=빨강) ──
+# ── Helper: effort level color (low/medium=회색, high=하늘, xhigh=노랑, max=빨강) ──
 # 주의: ultracode는 별도 값이 아니라 .effort.level 이 xhigh 로 들어오므로(stdin/env 모두)
 #       xhigh 와 색 구분 불가. 구분하려면 transcript 로그 파싱이 필요한데 성능/신뢰성 문제로 미채택
 get_effort_color() {
     case "$1" in
-        low|medium|high) echo "$C_GRAY" ;;
+        low|medium)      echo "$C_GRAY" ;;
+        high)            echo "$C_SKY" ;;
         xhigh)           echo "$C_YELLOW" ;;
         max)             echo "$C_RED" ;;
         *)               echo "$C_GRAY" ;;
