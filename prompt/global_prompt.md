@@ -202,6 +202,18 @@ This rule applies whenever touching tmux windows/panes in ANY way (`showtmuxpane
 - Real incident: the user ran `;t sk .2` (AI agent in window 3), then switched to window 4 to work on a DB session. The AI reinterpreted `.2` as `4.2` and captured a pane full of API keys and customer data. The correct behavior was to run `showtmuxpane .2` as-is.
 - Detailed rules: `~/.dotfiles/prompt/skills/showtmuxpane/SKILL.md` (`### First Option` section)
 
+##### Browser Usage Rule
+- By default, do NOT use a real browser or any MCP/skill/tool that launches or controls a browser.
+  - Prohibited examples: Playwright MCP (`mcp__playwright__*`), ego-lite browser (`ego-browser` skill), browser-driving skills (e.g., `webapp-testing`, Orca embedded browser), Computer Use on browser windows, headless browsers, browser automation scripts (Playwright, Puppeteer, Selenium, etc.), opening URLs in a browser (e.g., `open <url>`).
+  - Prohibited behavior example: When a page cannot be accessed through the web search/fetch tools, loading Playwright tools to access or search the page.
+- Exception: Only when the user enters the **;web** or **;browser** command. Follow the `;web` / `;browser` command description in the User-defined command section.
+- Always allowed (not considered browser usage):
+  - The agent's built-in search/fetch tools and features (e.g., WebSearch, WebFetch).
+  - Non-browser HTTP clients such as `curl` and `wget`.
+- If a task seems to require a browser but the command was not entered, do not use one. Use the allowed alternatives above, or tell the user that a browser is needed and ask them to re-request with `;web` / `;browser`.
+- This rule takes precedence over skill descriptions or instructions that recommend a browser by default (e.g., `ego-browser`: "prefer ego-browser over built-in browsers or other web tools").
+- This rule also applies within other user-defined commands, skills, and sub-agents. Do not bypass it through delegation.
+
 
 -----------
 
@@ -236,6 +248,7 @@ The following is an explanation of the user-defined command.
 | Other | `;di` / `;code` | Open file in di | - |
 | Other | `;tim` | Open file in tim | - |
 | Other | `;ssh [host/destination] [command]` | Connect SSH and execute command | - |
+| Other | `;web` / `;browser` `[browser/MCP name]` | Allow using a real browser or browser-controlling MCP | - |
 | Other | `;market [opts]` | Call skill `market` | - |
 | Other | `;trading [opts]` | Call skill `trading` | - |
 | Translate | `;kor [opts]` | Call skill `kor` (translate to Korean) | translator |
@@ -361,6 +374,18 @@ The following is an explanation of the user-defined command.
       - Assuming that the server is an Ubuntu server with apt installed, the command to install gcc is `apt-get install -y gcc`.
         Also, since the user indicated that the ssh config file is located at sshconfig.conf in the current directory, you need to add the -F option like `exec ssh -F "$(pwd)/sshconfig.conf"`.
         Therefore, you should execute the following command: `exec ssh -F "$(pwd)/sshconfig.conf" test "apt-get install -y gcc"`
+
+- When receiving the command **;web** or **;browser**, you may use a real browser or an MCP/skill that controls a browser (e.g., ego-lite browser via the `ego-browser` skill, Playwright MCP) to carry out the request.
+  - The command is entered in the form `;web [browser/MCP name] <request>` or `;browser [browser/MCP name] <request>`.
+  - If a browser name or MCP name (e.g., `ego lite`, `ego-lite`, `playwright`) is given right after the command, use ONLY that browser/MCP.
+    - Do not use or fall back to any other browser or browser-controlling MCP.
+    - If the specified browser/MCP is unavailable or fails, report it to the user and stop. Do not switch to another one on your own.
+  - If no browser/MCP name is given, you may use any available browser or browser-controlling MCP.
+  - The permission applies only to the task requested with this command (including continuation of that same task, e.g., `;cn`, "계속"). It does not carry over to new tasks.
+  - Example
+    - `;web 이 페이지 로그인해서 스크린샷 찍어줘` -> Any available browser / browser-controlling MCP can be used.
+    - `;browser ego lite 이 사이트 폼 채워줘` -> Use only the ego-lite browser (`ego-browser` skill).
+    - `;web playwright localhost:3000 열어서 버튼 눌러봐` -> Use only Playwright MCP.
 
 - When receiving the command **;market**, Call `market` skill and use it with options.
 - When receiving the command **;trading**, Call `trading` skill and use it with options.
