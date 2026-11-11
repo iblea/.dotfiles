@@ -8,7 +8,7 @@
     "CLAUDE_CODE_DISABLE_THINKING": "0",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
     "CLAUDE_CODE_DEFAULT_EDITOR": "vi",
-    "CLAUDE_CODE_DEFAULT_EFFORT": "high",
+    "CLAUDE_CODE_DEFAULT__EFFORT": "xhigh",
     "CLAUDE_CODE_EFFORT_LEVEL": ""
   },
   "permissions": {
@@ -83,7 +83,7 @@
     "ask": [],
     "defaultMode": "auto"
   },
-  "model": "Opus[1m]",
+  "model": "opus",
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "server-sequential-thinking"
@@ -142,7 +142,18 @@
   },
   "language": "한국어",
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    },
+    "claude-fable-5-2": {
+      "effortLevel": "high"
+    },
+    "claude-opus-4-8": {
+      "effortLevel": "xhigh"
+    }
+  },
   "tui": "default",
   "showThinkingSummaries": true,
   "skipDangerousModePermissionPrompt": true,
