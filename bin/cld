@@ -6,7 +6,7 @@ CLAUDE_OPT=""
 DEFAULT_EDITOR="vi"
 DEFAULT_EFFORT="xhigh"
 
-if ! printenv CLAUDE_CONFIG_DIR > /dev/null 2&>1; then
+if ! printenv CLAUDE_CONFIG_DIR > /dev/null 2>&1; then
     export CLAUDE_CONFIG_DIR="$HOME/.claude"
 fi
 
