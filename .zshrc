@@ -32,7 +32,7 @@ if [ -n "$(command -v tmux)" ]; then
   fi
   
   # auto start tmux
-  if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ]; then
+  if [ -n "$(which tmux)" ] && [ -z "$TMUX" ] && [ -z "$LC_TMUX" ] && [ -t 0 ] && [ -t 1 ]; then
     # env > /tmp/envprint.log
     # vscode shell integration cwd signal
     _tmux_extra_args=""
