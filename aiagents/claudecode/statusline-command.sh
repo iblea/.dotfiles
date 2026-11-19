@@ -337,15 +337,22 @@ get_claude_memory() {
         done
         queue=$(echo "$next_queue" | xargs)
     done
-    local total_rss=0
-    for p in $all_pids; do
-        local rss
-        rss=$(ps -o rss= -p "$p" 2>/dev/null | tr -d ' ')
-        if [ -n "$rss" ] && [ "$rss" -gt 0 ] 2>/dev/null; then
-            total_rss=$((total_rss + rss))
-        fi
-    done
-    local mb=$((total_rss / 1024))
+    local kb=0 p
+    if [ "$KERNEL_TYPE" = "Darwin" ]; then
+        # phys_footprint 합산 (top MEM / Activity Monitor 와 동일 기준)
+        local args=""
+        for p in $all_pids; do args="$args -p $p"; done
+        kb=$(footprint $args --noCategories -f bytes 2>/dev/null \
+            | awk '/phys_footprint:/{s+=$2} END{print int(s/1024)}')
+    else
+        # PSS 합산 (공유 페이지 중복 제거)
+        local pss
+        for p in $all_pids; do
+            pss=$(awk '/^Pss:/{print $2}' "/proc/$p/smaps_rollup" 2>/dev/null)
+            [ -n "$pss" ] && kb=$((kb + pss))
+        done
+    fi
+    local mb=$((kb / 1024))
     echo "${claude_pid}:${mb}"
 }
 
