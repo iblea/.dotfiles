@@ -16,10 +16,12 @@
 #     N   : src의 window를 N번 window와 swap
 #     .N  : src pane을 같은 window의 N번 pane과 swap
 #     W.N : src pane을 W번 window의 N번 pane과 swap
-#   pane-slot.sh move <src-pane-id> <N|.N|W.N>   # 접힌 pane은 접힌 채로 이동 (pane-fold.sh join)
-#     N   : src pane을 N번 window의 첫 pane(pane-base-index) 아래로 이동
+#   pane-slot.sh move <src-pane-id> <.N|W.N>[h|j|k|l]   # 접힌 pane은 접힌 채로 이동 (pane-fold.sh join)
 #     .N  : src pane을 같은 window의 N번 pane 아래로 이동
 #     W.N : src pane을 W번 window의 N번 pane 아래로 이동
+#     끝의 h/j/k/l : 대상 pane의 왼쪽/아래/위/오른쪽 (생략 시 아래)
+#     번호 생략(.j / W.l 등) : window 전체 기준 가장자리 (방향 필수)
+#     점 없는 입력(N)은 window 번호와 혼동되므로 거부
 
 sync_slots() {
     local base
@@ -99,29 +101,52 @@ swap_target() {
 }
 
 move_target() {
-    local src="$1" input="$2" sess target slot dst
-    # 빈 입력은 "N" 분기로 빠져 현재 window 첫 pane 아래로 옮겨지므로 조용히 종료
+    local src="$1" input="$2" sess win slot dir="" full="" target dst
     [ -z "$input" ] && return
-    sess="$(tmux display-message -p -t "$src" '#{session_id}')"
-
+    # 점 없는 입력("1")은 window 번호로 오인해 다른 window로 보내는 실수 방지를 위해 거부
     case "$input" in
-        .*)  target="$src"; slot="${input#.}" ;;
-        *.*) target="${sess}:${input%%.*}"; slot="${input#*.}" ;;
+        *.*) ;;
         *)
-            # "N" -> N번 window의 첫 pane (goto와 동일)
-            target="${sess}:${input}"
-            slot="$(tmux show-options -gv pane-base-index 2>/dev/null)"
-            slot="${slot:-0}"
+            tmux display-message -d 2000 "move failed: use .N[hjkl] or W.N[hjkl] [$input]"
+            return
             ;;
     esac
-    dst="$(tmux list-panes -t "$target" -F '#{@pane_slot} #{pane_id}' 2>/dev/null |
-        awk -v s="$slot" 's != "" && $1 == s { n++; id = $2 } END { if (n == 1) print id }')"
+    sess="$(tmux display-message -p -t "$src" '#{session_id}')"
+    win="${input%%.*}"
+    slot="${input#*.}"
+
+    # 끝의 h/j/k/l -> 붙일 방향 (생략 시 join 기본값인 아래)
+    case "$slot" in
+        *[hjkl]) dir="${slot: -1}"; slot="${slot%?}" ;;
+    esac
+
+    # ".N" -> 현재 window, "W.N" -> W번 window
+    if [ -z "$win" ]; then target="$src"; else target="${sess}:${win}"; fi
+
+    if [ -z "$slot" ]; then
+        # 번호 생략(".j", "2.l") -> window 전체 기준 가장자리, "." 단독 실수 방지로 방향 필수
+        if [ -z "$dir" ]; then
+            tmux display-message -d 2000 "move failed: no pane or direction [$input]"
+            return
+        fi
+        full=f
+        # -f는 레이아웃상 window 가장자리에 붙지만 pane 목록에는 dst 바로 뒤(-b면 앞)에 삽입됨
+        # select-layout(@fold_base 복원)은 목록 순서대로 pane을 배치하므로 둘이 어긋나지 않게
+        # 아래/오른쪽은 목록 마지막 pane, 위/왼쪽은 목록 첫 pane을 dst로 선택
+        case "$dir" in
+            h|k) dst="$(tmux list-panes -t "$target" -F '#{pane_id}' 2>/dev/null | grep -vxF -- "$src" | head -n 1)" ;;
+            *)   dst="$(tmux list-panes -t "$target" -F '#{pane_id}' 2>/dev/null | grep -vxF -- "$src" | tail -n 1)" ;;
+        esac
+    else
+        dst="$(tmux list-panes -t "$target" -F '#{@pane_slot} #{pane_id}' 2>/dev/null |
+            awk -v s="$slot" 's != "" && $1 == s { n++; id = $2 } END { if (n == 1) print id }')"
+    fi
 
     if [ -z "$dst" ]; then
         tmux display-message -d 2000 "move failed: no such pane [$input]"
         return
     fi
-    "$(dirname "$0")/pane-fold.sh" join "$src" "$dst"
+    "$(dirname "$0")/pane-fold.sh" join "$src" "$dst" "$dir" "$full"
 }
 
 case "$1" in
