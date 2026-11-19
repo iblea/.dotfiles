@@ -17,6 +17,7 @@
 #   pane-fold.sh unfold-all <pane-id>   # pane이 속한 window의 접힌 pane 전부 펼치기
 #   pane-fold.sh goto <pane-id>         # 접힌 pane 순회: 보이는 pane -> 접힌1 -> 접힌2 -> ... -> 출발 pane
 #   pane-fold.sh move <next|prev> <pane-id>  # 접힌 pane을 건너뛰고 다음/이전 pane 선택
+#   pane-fold.sh join <src-pane-id> <dst-pane-id>  # src를 dst 아래로 이동 (접힌 pane은 접힌 채로)
 #
 # run-shell은 0이 아닌 종료 코드를 pane에 덮어 표시하므로 실패 시에도 0으로 종료
 
@@ -191,13 +192,75 @@ goto() {
     fi
 }
 
+# src pane을 dst pane 아래로 이동 (move-pane -v), 접힌 상태 유지
+#   move-pane은 dst를 반으로 나눠 넣을 뿐 @folded/@fold_base를 모르므로
+#   양쪽 window 펼침 -> 이동 -> 접혀 있던 pane 다시 접기 순으로 처리
+#   (펼친 상태에서 이동하므로 이동 후 펼친 레이아웃이 @fold_base로 새로 저장됨)
+join() {
+    local src="$1" dst="$2" src_win src_folded src_panes dst_win wins folded w id err moved=0
+    read -r src_win src_folded src_panes <<< "$(tmux display-message -p -t "$src" '#{window_id} #{?@folded,1,0} #{window_panes}' 2>/dev/null)"
+    dst_win="$(tmux display-message -p -t "$dst" '#{window_id}' 2>/dev/null)"
+    if [ -z "$src_win" ] || [ -z "$dst_win" ] || [ "$src" = "$dst" ]; then
+        tmux display-message -d 2000 "move failed: invalid pane [$src -> $dst]"
+        return
+    fi
+
+    # 보이는 pane을 다른 window로 빼면 출발 window에 접힌 pane만 남는 경우 차단 (toggle과 같은 조건)
+    if [ "$src_win" != "$dst_win" ] && [ "$src_folded" = 0 ] && [ "$src_panes" -gt 1 ] &&
+        [ -z "$(visible_target "$src" next)" ]; then
+        tmux display-message -d 2000 "move failed: no other visible pane in source window"
+        return
+    fi
+
+    wins="$src_win"
+    [ "$dst_win" != "$src_win" ] && wins="$wins $dst_win"
+
+    # 1. 양쪽 window의 접힌 pane 기억 후 펼침
+    folded="$(for w in $wins; do
+        tmux list-panes -t "$w" -F '#{pane_id} #{?@folded,1,0}' 2>/dev/null
+    done | awk '$2 == 1 { printf "%s ", $1 }')"
+    if [ -n "$folded" ]; then
+        for id in $folded; do
+            tmux set-option -pu -t "$id" @folded 2>/dev/null
+        done
+        for w in $wins; do
+            apply "$w"
+        done
+    fi
+
+    # 2. 이동 (실패해도 3에서 원래 상태로 다시 접힘)
+    if err="$(tmux move-pane -v -s "$src" -t "$dst" 2>&1)"; then
+        moved=1
+    else
+        tmux display-message -d 2000 "move failed: $err"
+    fi
+
+    # 3. 기억한 pane 다시 접기
+    #    (pane이 1개뿐이던 출발 window는 이동 후 사라짐, 빈 target은 현재 window로 해석되므로 존재 확인)
+    if [ -n "$folded" ]; then
+        for id in $folded; do
+            tmux set-option -p -t "$id" @folded 1 2>/dev/null
+        done
+        for w in $wins; do
+            tmux list-panes -t "$w" >/dev/null 2>&1 && apply "$w"
+        done
+    fi
+
+    # 4. 옮긴 pane이 접혀 있으면 포커스를 보이는 pane으로
+    #    (move-pane은 src를 dst 바로 뒤에 넣으므로 prev 방향 첫 보이는 pane = dst, dst도 접혔으면 그 앞)
+    if [ "$moved" = 1 ] && [ "$(tmux display-message -p -t "$src" '#{?@folded,1,0}' 2>/dev/null)" = 1 ]; then
+        move prev "$src"
+    fi
+}
+
 case "$1" in
     toggle) toggle "$2" ;;
     unfold-all) unfold_all "$2" ;;
     goto) goto "$2" ;;
     move) move "$2" "$3" ;;
+    join) join "$2" "$3" ;;
     *)
-        echo "Usage: pane-fold.sh toggle <pane-id> | unfold-all <pane-id> | goto <pane-id> | move <next|prev> <pane-id>" >&2
+        echo "Usage: pane-fold.sh toggle <pane-id> | unfold-all <pane-id> | goto <pane-id> | move <next|prev> <pane-id> | join <src-pane-id> <dst-pane-id>" >&2
         exit 1
         ;;
 esac

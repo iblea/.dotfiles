@@ -16,6 +16,10 @@
 #     N   : src의 window를 N번 window와 swap
 #     .N  : src pane을 같은 window의 N번 pane과 swap
 #     W.N : src pane을 W번 window의 N번 pane과 swap
+#   pane-slot.sh move <src-pane-id> <N|.N|W.N>   # 접힌 pane은 접힌 채로 이동 (pane-fold.sh join)
+#     N   : src pane을 N번 window의 첫 pane(pane-base-index) 아래로 이동
+#     .N  : src pane을 같은 window의 N번 pane 아래로 이동
+#     W.N : src pane을 W번 window의 N번 pane 아래로 이동
 
 sync_slots() {
     local base
@@ -94,11 +98,38 @@ swap_target() {
     [ $? -eq 0 ] || tmux display-message -d 2000 "swap failed: [$input]"
 }
 
+move_target() {
+    local src="$1" input="$2" sess target slot dst
+    # 빈 입력은 "N" 분기로 빠져 현재 window 첫 pane 아래로 옮겨지므로 조용히 종료
+    [ -z "$input" ] && return
+    sess="$(tmux display-message -p -t "$src" '#{session_id}')"
+
+    case "$input" in
+        .*)  target="$src"; slot="${input#.}" ;;
+        *.*) target="${sess}:${input%%.*}"; slot="${input#*.}" ;;
+        *)
+            # "N" -> N번 window의 첫 pane (goto와 동일)
+            target="${sess}:${input}"
+            slot="$(tmux show-options -gv pane-base-index 2>/dev/null)"
+            slot="${slot:-0}"
+            ;;
+    esac
+    dst="$(tmux list-panes -t "$target" -F '#{@pane_slot} #{pane_id}' 2>/dev/null |
+        awk -v s="$slot" 's != "" && $1 == s { n++; id = $2 } END { if (n == 1) print id }')"
+
+    if [ -z "$dst" ]; then
+        tmux display-message -d 2000 "move failed: no such pane [$input]"
+        return
+    fi
+    "$(dirname "$0")/pane-fold.sh" join "$src" "$dst"
+}
+
 case "$1" in
     sync) sync_slots ;;
     swap) swap_target "$2" "$3" ;;
+    move) move_target "$2" "$3" ;;
     *)
-        echo "Usage: pane-slot.sh sync | swap <src-pane-id> <slot>" >&2
+        echo "Usage: pane-slot.sh sync | swap <src-pane-id> <slot> | move <src-pane-id> <slot>" >&2
         exit 1
         ;;
 esac
