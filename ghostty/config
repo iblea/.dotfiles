@@ -110,17 +110,26 @@ selection-background = #57584f
 selection-foreground = #fdfff1
 
 # font
-font-family = "Cascadia Code NFOT"
+# font-family = "Cascadia Code NFOT"
+font-family = "Monaco"
 # font-family = "Cascadia Code NFMMO"
-font-size = 14
+font-size = 13.0
 # font-family = "CaskaydiaCove Nerd Font"
 # font-family = "Tmoney Roundwind"
 
 # 한글 폰트만 따로 지정
 # font-family = "둥근모꼴"
+
 font-codepoint-map = U+AC00-U+D7AF=Tmoney Roundwind
 font-codepoint-map = U+3130-U+318F=Tmoney Roundwind
-font-codepoint-map = U+1100-U+11FF=Tmoney Roundwind
+font-codepoint-map = U+1100-U+11FF=NeoDunggeunmo
+
+# font-codepoint-map = U+AC00-U+D7AF=Apple SD Gothic Neo
+# font-codepoint-map = U+3130-U+318F=Apple SD Gothic Neo
+# font-codepoint-map = U+1100-U+11FF=Apple SD Gothic Neo
+
+# font-codepoint-map = U+1100-U+11FF=CascadiaCodeNFOT
+# font-codepoint-map = U+1100-U+11FF=Tmoney Roundwind
 # font-codepoint-map = U+AC00-U+D7AF=Ycomputer
 # font-codepoint-map = U+3130-U+318F=Ycomputer
 # font-codepoint-map = U+1100-U+11FF=Ycomputer
