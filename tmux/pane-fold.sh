@@ -11,9 +11,11 @@
 #     (원래 크기로 키우면 바로 옆 pane이 1칸으로 눌리므로 select-layout -E 사용)
 #   - 접힌 동안 펼친 pane 크기를 수동 조절해도 다음 접기/펼치기에서 @fold_base 크기로 돌아감
 #   - 마우스 클릭/goto/방향키(C-s 방향키)/last-pane 으로는 접힌 pane에 들어갈 수 있음 (접힌 상태 유지)
+#   - @folded 값: 1 = 접기(크기 축소), 2 = soft 접기(크기 변경 없이 pane 전환 시 건너뛰기만)
+#     soft 접힌 pane은 접기/펼치기 모두 resize 없음, @fold_base 복원/재접기 대상에서도 제외
 #
 # Usage:
-#   pane-fold.sh toggle <pane-id>       # 접기 (접힌 pane이면 펼치기), 접은 뒤 다음 pane으로 이동
+#   pane-fold.sh toggle <pane-id> [soft] # 접기 (접힌 pane이면 펼치기), 접은 뒤 다음 pane으로 이동, soft = 크기 유지
 #   pane-fold.sh unfold-all <pane-id>   # pane이 속한 window의 접힌 pane 전부 펼치기
 #   pane-fold.sh goto <pane-id>         # 접힌 pane 순회: 보이는 pane -> 접힌1 -> 접힌2 -> ... -> 출발 pane
 #   pane-fold.sh move <next|prev> <pane-id>  # 접힌 pane을 건너뛰고 다음/이전 pane 선택
@@ -101,8 +103,8 @@ apply() {
         tmux set-option -pu -t "$id" @fold_dir \; set-option -pu -t "$id" @fold_seq 2>/dev/null
     done
 
-    # 2. 접힌 pane이 없으면 기준 레이아웃 삭제
-    folded="$(tmux list-panes -t "$win" -F '#{pane_id} #{?@folded,1,0}' 2>/dev/null | awk '$2 == 1 { printf "%s ", $1 }')"
+    # 2. 접힌 pane이 없으면 기준 레이아웃 삭제 (soft 접힌 pane(@folded=2)은 제외)
+    folded="$(tmux list-panes -t "$win" -F '#{pane_id} #{@folded}' 2>/dev/null | awk '$2 == 1 { printf "%s ", $1 }')"
     if [ -z "$folded" ]; then
         tmux set-option -wu -t "$win" @fold_base \; set-option -wu -t "$win" @fold_base_ids \; \
             set-option -wu -t "$win" @fold_return 2>/dev/null
@@ -123,10 +125,12 @@ apply() {
 }
 
 toggle() {
-    local pane="$1" dst
-    if [ "$(tmux display-message -p -t "$pane" '#{?@folded,1,0}' 2>/dev/null)" = 1 ]; then
+    local pane="$1" mode="$2" dst cur
+    cur="$(tmux display-message -p -t "$pane" '#{@folded}' 2>/dev/null)"
+    if [ -n "$cur" ]; then
         tmux set-option -pu -t "$pane" @folded 2>/dev/null
-        apply "$pane"
+        # soft 접힘 해제는 resize 없음
+        [ "$cur" = 1 ] && apply "$pane"
         return
     fi
 
@@ -136,8 +140,12 @@ toggle() {
         tmux display-message -d 1500 "fold: no other visible pane"
         return
     fi
-    tmux set-option -p -t "$pane" @folded 1 2>/dev/null
-    apply "$pane"
+    if [ "$mode" = soft ]; then
+        tmux set-option -p -t "$pane" @folded 2 2>/dev/null
+    else
+        tmux set-option -p -t "$pane" @folded 1 2>/dev/null
+        apply "$pane"
+    fi
     tmux select-pane -t "$dst" 2>/dev/null
 }
 
@@ -224,9 +232,9 @@ join() {
     wins="$src_win"
     [ "$dst_win" != "$src_win" ] && wins="$wins $dst_win"
 
-    # 1. 양쪽 window의 접힌 pane 기억 후 펼침
+    # 1. 양쪽 window의 접힌 pane 기억 후 펼침 (soft 접힌 pane은 크기 변경이 없으므로 그대로 둠)
     folded="$(for w in $wins; do
-        tmux list-panes -t "$w" -F '#{pane_id} #{?@folded,1,0}' 2>/dev/null
+        tmux list-panes -t "$w" -F '#{pane_id} #{@folded}' 2>/dev/null
     done | awk '$2 == 1 { printf "%s ", $1 }')"
     if [ -n "$folded" ]; then
         for id in $folded; do
@@ -266,13 +274,13 @@ join() {
 }
 
 case "$1" in
-    toggle) toggle "$2" ;;
+    toggle) toggle "$2" "$3" ;;
     unfold-all) unfold_all "$2" ;;
     goto) goto "$2" ;;
     move) move "$2" "$3" ;;
     join) join "$2" "$3" "$4" "$5" ;;
     *)
-        echo "Usage: pane-fold.sh toggle <pane-id> | unfold-all <pane-id> | goto <pane-id> | move <next|prev> <pane-id> | join <src-pane-id> <dst-pane-id> [h|j|k|l] [f]" >&2
+        echo "Usage: pane-fold.sh toggle <pane-id> [soft] | unfold-all <pane-id> | goto <pane-id> | move <next|prev> <pane-id> | join <src-pane-id> <dst-pane-id> [h|j|k|l] [f]" >&2
         exit 1
         ;;
 esac
