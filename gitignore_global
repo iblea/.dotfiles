@@ -3,3 +3,5 @@
 aitodo.md
 *.sw?
 .*.sw?
+
+**/.claude/settings.local.json

@@ -87,9 +87,9 @@ For font information, refer to the fonts available under `https://www.iasdf.com/
 - Always specify a fallback font stack (e.g., system fonts) together, so the report stays readable even when the font host is unavailable.
 
 
-##### Artifact Format (art / artifact / artifacts / site)
+##### Artifact / Site Format (art / artifact / artifacts / site)
 
-If the first argument is `art`, `artifact`, or `artifacts`, write the report in HTML format and render it as an Artifact using the Artifact tool.
+If the first argument is `art`, `artifact`, `artifacts` or `site`, write the report in HTML format and render it as an Artifact using the Artifact tool.
 - The Artifact tool only accepts a file path (no inline content), so an HTML file must be written first. Write it to the session scratchpad directory (or a temp directory such as `/tmp` if no scratchpad is available) — NOT the current working directory.
   - This overrides the "Save the report in the current path" rule above. Do NOT leave a report file in the working directory; the artifact itself is the deliverable. (This keeps report files out of the project's git untracked list.)
   - The filename still follows the Second Option rule with the `.html` extension (the basename is used as the artifact's fallback title).
