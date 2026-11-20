@@ -620,6 +620,10 @@ elif [[ "$(uname -s)" = "Darwin" ]]; then
         echo "convert path: $convert_path"
         echo ""
         nfd2nfc convert --mode "$CONVERT_MODE" --target "$convert_target" "$convert_path"
+        # recursive 모드는 대상 디렉토리 자신의 이름을 제외하므로 name 모드로 추가 변환
+        if [ "$CONVERT_MODE" = "recursive" ]; then
+            nfd2nfc convert --mode name --target "$convert_target" "$convert_path"
+        fi
     }
 
 else
