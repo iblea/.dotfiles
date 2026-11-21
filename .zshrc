@@ -1,14 +1,9 @@
 
-# environment path (envpath)
-if [ -d "$HOME/.local/.bin/" ]; then
-    if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
-        export PATH="$HOME/.local/.bin:$PATH"
-    fi
+if ! grep -q "$HOME/.local/bin" <<< "$PATH"; then
+export PATH="$HOME/.local/bin:$PATH"
 fi
-if [ -d $HOME/.dotfiles/bin/ ]; then
-    if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
-        export PATH=$HOME/.dotfiles/bin:$PATH
-    fi
+if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
+export PATH="$HOME/.dotfiles/bin:$PATH"
 fi
 if [ -f $HOME/.envpath ]; then
   # . ~/.envpath
@@ -455,4 +450,5 @@ zshaddhistory() {
   done
   return 0
 }
+
 

@@ -54,6 +54,10 @@ sbin_paths=(
 	"/usr/local/sbin"
 	"/usr/sbin"
 	"/sbin"
+	"$HOME/.local/.bin"
+	"$HOME/.cargo/bin" # rust cargo path
+	"$HOME/.codeium/windsurf/bin" # windsurf path
+	"/usr/local/go/bin" # go custom path
 )
 for sbin_path in ${sbin_paths[@]}; do
 	if [ -d "$sbin_path" ]; then
@@ -111,21 +115,6 @@ if [ -n "$(command -v go)" ]; then
 	unset goversion
 fi
 
-# rust path
-if [ -d "$HOME/.cargo/bin" ]; then
-	if ! grep -q "$HOME/.cargo/bin" <<< "$PATH"; then
-		export PATH="$HOME/.cargo/bin:$PATH"
-	fi
-fi
-
-
-# Added by Windsurf
-if [ -d "$HOME/.codeium/windsurf/bin" ]; then
-	if ! grep -q "$HOME/.codeium/windsurf/bin" <<< "$PATH"; then
-		export PATH="$HOME/.codeium/windsurf/bin:$PATH"
-	fi
-fi
-
 # .bun/bin
 if [ -d "$HOME/.bun/bin/" ]; then
 	if ! grep -q "$HOME/.bun/bin" <<< "$PATH"; then
@@ -137,15 +126,6 @@ if [ -d "$HOME/.bun/bin/" ]; then
 		[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 	fi
 fi
-
-# go custom bin
-if [ -d "/usr/local/go/bin" ]; then
-	if ! grep -q "/usr/local/go/bin" <<< "$PATH"; then
-		export PATH="/usr/local/go/bin:$PATH"
-	fi
-fi
-
-
 
 # if homebrew exist
 if [ -d "/opt/homebrew/" ] && [[ "$(uname -s)" = "Darwin" ]]; then
