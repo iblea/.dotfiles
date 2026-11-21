@@ -46,6 +46,8 @@ return {
       mapping = {
         ["<C-j>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
         ["<C-k>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
+        ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "c" }),
+        ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "c" }),
         ["<C-d>"] = cmp.mapping.scroll_docs(4),
         ["<C-u>"] = cmp.mapping.scroll_docs(-4),
         ["<C-s>"] = cmp.mapping.close(),
