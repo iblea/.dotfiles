@@ -39,12 +39,6 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 		fi
 	fi
 
-	if [ -d $HOME/.dotfiles/bin/ ]; then
-		if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
-			export PATH=$HOME/.dotfiles/bin:$PATH
-		fi
-	fi
-
 	if [ -n "$(locale -a 2>/dev/null | grep 'ko_KR.UTF-8')" ]; then
 		export LC_ALL=ko_KR.UTF-8
 		export LANG=ko_KR.UTF-8
@@ -54,19 +48,6 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 	fi
 fi
 
-
-# custom binary / script
-if [ -d "$HOME/.local/bin/" ]; then
-	if ! grep -q "$HOME/.local/bin" <<< "$PATH"; then
-		export PATH="$HOME/.local/bin:$PATH"
-	fi
-fi
-
-if [ -d "$HOME/.local/.bin/" ]; then
-	if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
-		export PATH="$HOME/.local/.bin:$PATH"
-	fi
-fi
 
 # sbin paths (for ifconfig, iptables, etc.)
 sbin_paths=(

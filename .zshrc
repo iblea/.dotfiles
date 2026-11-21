@@ -1,9 +1,20 @@
 
 # environment path (envpath)
+if [ -d "$HOME/.local/.bin/" ]; then
+    if ! grep -q "$HOME/.local/.bin" <<< "$PATH"; then
+        export PATH="$HOME/.local/.bin:$PATH"
+    fi
+fi
+if [ -d $HOME/.dotfiles/bin/ ]; then
+    if ! grep -q "$HOME/.dotfiles/bin" <<< "$PATH"; then
+        export PATH=$HOME/.dotfiles/bin:$PATH
+    fi
+fi
 if [ -f $HOME/.envpath ]; then
   # . ~/.envpath
   source ~/.envpath
 fi
+
 
 if [ -n "$(command -v tmux)" ]; then
   # vscode terminal: 부모 tmux 세션에서 상속받은 환경변수 초기화
