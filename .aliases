@@ -1879,6 +1879,11 @@ if [ -n "$TMUX" ]; then
     function tmtiled() {
         tmux select-layout tiled $@
     }
+    # 화면 clear 후 tmux 스크롤백(history)까지 정리
+    function cmc() {
+        clear
+        tmux refresh-client \; clear-history \; display-message "clear success!"
+    }
 fi
 
 

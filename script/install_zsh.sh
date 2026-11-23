@@ -11,7 +11,10 @@ read -s -n1
 
 echo "run"
 
-curpath=$(dirname "$(realpath $0)")
+# 원본 파일 위치 (심링크 따라감) - GNU 의존 없음
+curpath=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+# 링크가 놓인 위치 — GNU 의존 없음
+# curpath=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 cd "$curpath"
 
 if [ ! -d "$HOME/.zsh/" ]; then

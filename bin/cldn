@@ -55,6 +55,10 @@ if [ $# -eq 1 ]; then
     elif [[ "$1" = "changelog" ]] || [[ "$1" = "ch" ]] || [[ "$1" = "-ch" ]] || [[ "$1" = "--changelog" ]]; then
         echo "github link: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
         exit 0
+    elif [[ "$1" = "-ar" ]]; then
+        curpath=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+		"$curpath/../script/allclaude.sh"
+        exit $?
     fi
 fi
 if [ $# -ge 1 ]; then
