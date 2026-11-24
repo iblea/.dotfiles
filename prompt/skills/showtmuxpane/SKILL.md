@@ -104,12 +104,25 @@ A description may express a **chained state** by joining steps with ` - `.
 
 - `(ssh <alias> - <command>)` means: the pane connected to the `<alias>` host via ssh, **then** ran `<command>`, and is currently sitting in the resulting state.
   - example: `(ssh test - sudo su)` — connected to the `test` server, then obtained **root** privileges through `sudo su`. Any command sent to that pane therefore runs as root on `test`.
+- A step that switches the shell user means every later command runs as that user.
+  - **Root (superuser):** `sudo su`, `su -`, and equivalents (`su`, `sudo su -`, `sudo -i`, `sudo -s`). e.g. `(ssh test - su -)` → root on `test`.
+  - **Another user:** a bare user name, or a user-switch command that names a user. e.g. `(ssh test - usr1)`, `(ssh test - su - usr1)`, `(ssh test - sudo su - usr1)` → `usr1` on `test`.
+  - A bare word that names a program (e.g. `mysql`) is a program, not a user (see the examples below). If it is unclear whether a bare word is a user name or a program, check the target pane's prompt; if it is still unclear, ask the user.
 - Always compose commands against the **final** state, not just the first step.
   - Do NOT prefix `sudo` again when the pane is already root.
+  - When the pane is another (non-root) user, assume only that user's permissions; `~` is that user's home.
   - Do NOT assume a local path/binary exists just because it exists on the local machine.
 - The same form applies to any environment chain, not only `sudo su`.
-  - `(ssh db01 - mysql)` — connected to `db01`, then entered the `mysql` client. Send **SQL**, not shell commands.
+  - `(ssh db01 - mysql ; DB서버)` — connected to `db01`, then entered the `mysql` client. Send **SQL**, not shell commands. `DB서버` is a note (see `Description note` below).
   - `(ssh prod - docker exec -it api bash)` — a shell inside the `api` container on the `prod` host.
+
+##### Description note: `; <note>`
+Inside the parentheses, ` ; ` starts a free-text note about the server/pane (its role, purpose, etc.): `(<environment> ; <note>)`.
+
+- Everything after the first `;` up to the closing parenthesis is the note. It is NOT a chain step or a command: never send or run it.
+- `;` here is NOT a shell command separator. `(ssh db01 - mysql ; DB서버)` does not mean "run `mysql`, then run `DB서버`".
+- The part before `;` is parsed as usual (including ` - ` chains). Use the note only as context when interpreting the pane output or composing commands.
+- example: `(ssh db01 - mysql ; DB서버)` → environment `ssh db01 - mysql` (the `mysql` client on `db01`), note `DB서버`.
 
 ##### 🚨 Resolving an ssh alias: `ssh -G` ONLY 🚨
 
@@ -134,7 +147,7 @@ A description may express a **chained state** by joining steps with ` - `.
 
 ##### `#` request text
 - The first `#` **outside parentheses** starts the request text. Everything after it, including `|` and `#`, is request text, never a target, separator, or option.
-- `|` and `#` inside parentheses belong to the pane description and are ignored for parsing.
+- `|`, `#`, and `;` inside parentheses belong to the pane description and are ignored for parsing.
 - `#` is optional (legacy form: request text right after the targets/options). If that text contains `|` and the command string is clearly identifiable, proceed. Otherwise ask the user to re-enter it with `#` and end the response without running any tmux command. Even when it is identifiable, asking for `#` and stopping is allowed.
 
 ##### `|` multiple targets
