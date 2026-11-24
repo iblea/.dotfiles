@@ -1,0 +1,367 @@
+#!/bin/bash
+# tmcp - tmux pane에 열린 셸끼리 파일/디렉토리 복사 (cp -r / scp -r 과 같은 규칙)
+#        각 pane 셸의 현재 계정·권한·디렉토리 그대로 사용
+#
+#   tmcp 2.3:/opt/a.tgz 1.2                          # 1.2 셸의 현재 디렉토리에 a.tgz
+#   tmcp .2:/home/src/test.tgz .3:/opt/opttest.tgz   # opttest.tgz로 이름 변경 (디렉토리면 그 안에 test.tgz)
+#   tmcp 2.2:/home/src/test 1.2:/home/usr/dream      # dream이 디렉토리면 dream/test, 없으면 dream으로 복사
+#
+# 목적지 규칙 (GNU cp -r / scp -r 과 동일)
+#   - 기존 디렉토리: 그 안에 원래 이름으로 (같은 이름 디렉토리는 병합, 같은 이름 파일은 덮어씀)
+#   - 없는 경로: 그 이름으로 복사 (부모 디렉토리는 있어야 함), 파일을 "없는경로/"로는 불가
+#   - 기존 파일: 원본이 파일이면 덮어씀 (기존 권한 유지), 디렉토리면 불가
+#   - 시각은 복사 시점, 소유자는 받는 pane 계정, 새 파일 권한은 원본 & umask
+#   - 원본 경로의 심볼릭 링크는 따라가고, 디렉토리 안의 링크는 링크로 복사
+#   - 원본이 없거나 읽을 수 없으면 받는 쪽은 건드리지 않음
+#
+# 동작
+#   1. pane의 ssh 연결(ControlMaster 재사용)로 양쪽 임시 디렉토리에 FIFO 생성
+#   2. 보내는 pane 셸에서 "tar cf - ... > FIFO" 실행 → 원본 종류(파일/디렉토리) 확인
+#   3. 받는 pane 셸에서 목적지 판단 + "tar xf - < FIFO" 실행
+#      (실제 로직은 임시 디렉토리의 스크립트, pane에는 " sh <스크립트" 한 줄만 입력)
+#   4. 두 FIFO 사이를 ssh 채널로 중계 (tmux 화면 미경유, 인코딩 없음)
+#   → sudo su 등으로 바뀐 계정 권한 그대로 사용, 원격 설치·설정 불필요
+#
+# - pane 표기: goto-window-pane.sh와 동일 ("2", "2.2", "2 2", ".2", %ID / 번호는 @pane_slot)
+# - 재인증 없이 쓰려면 로컬 ~/.ssh/config ControlMaster 설정 필요 (없으면 호스트별 1회 인증)
+#   pane별 마스터 설정 권장 (tmux 밖에서는 꺼짐, pane의 ssh가 끝나면 연결도 종료):
+#     tmux 설정:  set-environment -gF TMUX_SRV '#{b:socket_path}'
+#     ssh 설정 (아래 내용 참고)
+#
+# Match exec "printenv TMUX_PANE >/dev/null && printenv TMUX_SRV >/dev/null"
+#     ControlMaster auto
+#     ControlPath ~/.ssh/cm/cm-%C-${TMUX_SRV}-${TMUX_PANE}
+#
+#     (~/.ssh/cm 디렉토리는 미리 생성: mkdir -m 700 ~/.ssh/cm)
+#
+# - 두 pane 모두 입력 줄이 빈 셸 프롬프트 상태여야 함 (전체화면 앱 실행 중이면 거부)
+# - ssh를 감싼 래퍼(zssh, autossh, sshpass 등)로 접속한 pane도 지원
+# - pane 셸 종류 무관 (bash, zsh, dash, csh, fish 등, 실제 실행은 sh)
+# - 한계: 중첩 ssh(pane 안에서 다시 ssh), mosh 미지원
+# - 임시 FIFO 위치: TMCP_TMPDIR (기본 /tmp)
+
+set -o pipefail
+
+TMPBASE=${TMCP_TMPDIR:-/tmp}
+START_TIMEOUT=10     # pane 명령 시작 대기 (초)
+FINISH_TIMEOUT=60    # 중계 종료 후 pane 명령 종료 대기 (초)
+SHELLS='^-?(zsh|bash|sh|dash|ash|ksh|mksh|csh|tcsh|fish)$'
+# 원격 명령 공통: stdin 앞 16바이트에서 토큰 읽기 (토큰은 프로세스 인자에 노출 안 함)
+TK='t=$(dd bs=1 count=16 2>/dev/null); [ ${#t} -eq 16 ] || exit 1'
+
+die() { printf 'tmcp: %s\n' "$*" >&2; exit 1; }
+
+# 셸용 작은따옴표 인용
+q() { printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"; }
+
+# 경로 → 셸 단어 (~ 는 pane 셸의 $HOME 기준)
+word() {
+    case $1 in
+        '~')   printf '"$HOME"' ;;
+        '~/'*) printf '"$HOME"/%s' "$(q "${1#\~/}")" ;;
+        *)     q "$1" ;;
+    esac
+}
+
+# "pane:경로" 분리 → SP, SPATH
+split() { case $1 in *:*) SP=${1%%:*}; SPATH=${1#*:} ;; *) SP=$1; SPATH="" ;; esac; }
+
+# pane 표기 → pane_id (goto-window-pane.sh 규칙, ".N"은 $2 pane의 창 기준)
+pane_id_of() {
+    local in win slot id
+    in=$(printf '%s' "$1" | sed 's/^ *//; s/ *$//' | tr -s ' ' '.')
+    case $in in
+        %*)
+            tmux list-panes -a -F '#{pane_id}' | grep -qx -- "$in" || die "pane 없음: $1"
+            echo "$in"; return ;;
+        .*)
+            if [ -n "$2" ]; then win=$(tmux display-message -p -t "$2" '#I'); else win=$(tmux display-message -p '#I'); fi
+            slot=${in#.} ;;
+        *.*) win=${in%%.*}; slot=${in#*.} ;;
+        *)   win=$in; slot=$(tmux show-options -gv pane-base-index 2>/dev/null); slot=${slot:-0} ;;
+    esac
+    tmux list-windows -F '#I' | grep -qx -- "$win" || die "창 없음: $1"
+    id=$(tmux list-panes -t "$win" -F '#{@pane_slot} #{pane_id}' |
+        awk -v s="$slot" 's != "" && $1 == s { n++; id = $2 } END { if (n == 1) print id }')
+    [ -n "$id" ] || die "pane 없음: $1"
+    echo "$id"
+}
+
+# pane 프로세스 트리에서 가장 얕은 ssh 탐색 (없으면 빈 출력)
+find_ssh() {
+    local queue pid
+    queue=$(tmux display-message -p -t "$1" '#{pane_pid}')
+    while [ -n "$queue" ]; do
+        set -- $queue
+        pid=$1; shift
+        case $(ps -o comm= -p "$pid" 2>/dev/null) in
+            ssh|*/ssh) echo "$pid"; return ;;
+        esac
+        queue=$(echo $* $(pgrep -P "$pid" || true))
+    done
+}
+
+# pane_id → 채널 실행기(RUN), 로컬 여부(LOCAL), 표시용 설명(DESC)
+resolve() {
+    local id=$1 pid a o rest val i dest="" label cp
+    local -a args opts envs
+    label=$(tmux display-message -p -t "$id" '#{window_index}.#{@pane_slot}')
+    pid=$(find_ssh "$id")
+
+    if [ -z "$pid" ]; then
+        RUN=(sh -c); LOCAL=1; DESC="$label (local)"
+        return
+    fi
+    LOCAL=""
+    SSH_PID=$pid
+    PANE_PID=$(tmux display-message -p -t "$id" '#{pane_pid}')
+
+    if [ -r "/proc/$pid/cmdline" ]; then
+        while IFS= read -r -d '' a; do args+=("$a"); done < "/proc/$pid/cmdline"
+    else
+        read -r -a args <<< "$(ps -ww -o args= -p "$pid")"
+    fi
+
+    # tty 해제, 설정 파일의 RemoteCommand/포워딩 무시, 기존 연결 재사용 (없으면 60초 유지 연결 생성)
+    opts=(-T -o RemoteCommand=none -o ClearAllForwardings=yes -o ControlMaster=auto -o ControlPersist=60)
+    i=1
+    while [ $i -lt ${#args[@]} ]; do
+        a=${args[i]}; i=$((i + 1))
+        case $a in
+            --)  dest=${args[i]}; break ;;
+            -?*) ;;
+            *)   dest=$a; break ;;
+        esac
+        rest=${a#-}
+        while [ -n "$rest" ]; do    # -Ap22 같은 결합 옵션 처리
+            o=${rest:0:1}; rest=${rest:1}
+            case $o in
+                [BbcDEeFIiJLlmOoPpQRSWw])    # 인자 받는 옵션
+                    if [ -n "$rest" ]; then val=$rest; rest=""; else val=${args[i]}; i=$((i + 1)); fi
+                    case $o in [DEeLORWw]) ;; *) opts+=("-$o" "$val") ;; esac ;;
+                [fGMNnqsTtVv]) ;;            # 백그라운드/tty/디버그 플래그 제외
+                *) opts+=("-$o") ;;
+            esac
+        done
+    done
+    [ -n "$dest" ] || die "ssh 접속 대상 파싱 실패: ${args[*]}"
+
+    # pane별 마스터 설정(ControlPath에 ${TMUX_SRV}-${TMUX_PANE}) 대응: 대상 pane 기준 환경으로 경로 계산
+    # 설정에 ControlPath가 없으면 tmcp 전용 경로 사용
+    if [ -n "$SRV" ]; then envs=(env TMUX_PANE="$id" TMUX_SRV="$SRV"); else envs=(env -u TMUX_SRV TMUX_PANE="$id"); fi
+    cp=$("${envs[@]}" ssh -G "${opts[@]}" "$dest" 2>/dev/null | awk '$1 == "controlpath" { print $2 }')
+    if [ -z "$cp" ] || [ "$cp" = none ]; then opts+=(-o "ControlPath=$HOME/.ssh/tmcp-%C"); fi
+    RUN=("${envs[@]}" ssh "${opts[@]}" "$dest")
+    if "${envs[@]}" ssh -O check "${opts[@]}" "$dest" >/dev/null 2>&1; then
+        DESC="$label (ssh $dest, 기존 연결 재사용)"
+    else
+        DESC="$label (ssh $dest, 새 연결: 인증 필요할 수 있음)"
+    fi
+}
+
+# pane 키 입력이 ssh까지 가는지 확인: pane tty의 포그라운드 그룹이
+# ssh ~ pane 셸 사이의 셸 아닌 프로세스(ssh 자신 또는 zssh·autossh 같은 래퍼) 것이어야 함
+fg_in_ssh_chain() {    # $1 ssh pid, $2 pane pid
+    local tp p pg comm
+    tp=$(ps -o tpgid= -p "$2" | tr -d ' ')
+    p=$1
+    while [ -n "$p" ] && [ "$p" -gt 1 ]; do
+        read -r pg comm <<< "$(ps -o pgid=,comm= -p "$p")"
+        comm=${comm##*/}
+        if ! [[ $comm =~ $SHELLS ]] && [ "$pg" = "$tp" ]; then return 0; fi
+        [ "$p" = "$2" ] && break
+        p=$(ps -o ppid= -p "$p" | tr -d ' ')
+    done
+    return 1
+}
+
+# 명령 입력 가능한 상태인지 확인 (copy mode는 해제), resolve 직후 호출
+check_pane() {    # $1 pane_id, $2 설명
+    local alt mode cmd
+    read -r alt mode cmd <<< "$(tmux display-message -p -t "$1" '#{alternate_on} #{pane_in_mode} #{pane_current_command}')"
+    [ "$alt" != 1 ] || die "$2: 전체화면 앱 실행 중 (vim, less 등) → 셸 프롬프트로 돌아간 뒤 재시도"
+    if [ -n "$LOCAL" ]; then
+        [[ $cmd =~ $SHELLS ]] || die "$2: 셸 프롬프트 아님 ($cmd 실행 중)"
+    else
+        fg_in_ssh_chain "$SSH_PID" "$PANE_PID" || die "$2: 포그라운드가 ssh 세션 아님 ($cmd 실행 중)"
+    fi
+    if [ "$mode" = 1 ]; then tmux send-keys -t "$1" -X cancel; fi
+}
+
+# 임시 디렉토리(711) + FIFO + 상태·에러 파일(622) 생성 후 디렉토리 경로 출력
+setup_cmd() {    # $1 FIFO 권한 (보내는 쪽 622: pane 셸이 씀 / 받는 쪽 644: pane 셸이 읽음)
+    echo "umask 077; $TK; d=\$(mktemp -d $TMPBASE/tmcp.XXXXXX) || exit 1; chmod 711 \"\$d\" && mkfifo \"\$d/\$t.f\" && chmod $1 \"\$d/\$t.f\" && : >\"\$d/\$t.st\" && : >\"\$d/\$t.e\" && chmod 622 \"\$d/\$t.st\" \"\$d/\$t.e\" && echo \"\$d\""
+}
+
+# 임시 FIFO 정리: O_RDWR로 열었다 닫아 대기 중인 open을 깨운 뒤 삭제
+cleanup_cmd() {    # $1 디렉토리
+    echo "$TK; f=$1/\$t.f; if [ -p \"\$f\" ]; then exec 3<>\"\$f\"; exec 3>&-; sleep 0.2; fi; rm -f \"\$f\" $1/\"\$t.st\" $1/\"\$t.e\" $1/\"\$t.s\"; rmdir $1"
+}
+
+# pane 셸이 실행할 스크립트를 임시 디렉토리에 저장 (644, 토큰은 stdin으로 전달)
+put_script() {    # $1 src|dst, $2 디렉토리, $3 스크립트 내용
+    { printf %s "$TOKEN"; printf '%s\n' "$3"; } | "$1" "$TK; cat >$2/\"\$t.s\" && chmod 644 $2/\"\$t.s\""
+}
+
+# 임시 디렉토리의 파일 읽기 ($2 확장자: st 상태 / e 에러)
+#   상태: 보내는 쪽 "S <종류> <종료 코드>" (종류 F/D/X), 받는 쪽 "S <종료 코드>"
+read_tmp() {    # $1 src|dst, $2 확장자
+    if [ "$1" = src ]; then
+        printf %s "$TOKEN" | src "$TK; cat <$SD/\"\$t.$2\""
+    else
+        printf %s "$TOKEN" | dst "$TK; cat <$DD/\"\$t.$2\""
+    fi 2>/dev/null
+}
+status_of() { read_tmp "$1" st | tr '\n' ' '; }
+
+valid_dir() { case $1 in "$TMPBASE"/tmcp.*) case $1 in *[!A-Za-z0-9/._-]*) return 1 ;; esac ;; *) return 1 ;; esac; }
+
+meter() { if command -v pv >/dev/null 2>&1; then pv; else cat; fi; }
+
+src() { "${SRC_RUN[@]}" "$@"; }
+dst() { "${DST_RUN[@]}" "$@"; }
+
+# 실패 원인 출력: pane 셸이 남긴 에러 + 화면 확인 안내
+report() {    # $1 src|dst, $2 종료 코드, $3 설명
+    local msg
+    msg=$(read_tmp "$1" e)
+    if [ -n "$msg" ]; then
+        printf '%s\n' "$msg" >&2
+    else
+        echo "tmcp: $([ "$1" = src ] && echo 보내는 || echo 받는) 쪽 실패 (종료 코드 ${2:-없음}) → $3 화면에서 에러 확인" >&2
+    fi
+}
+
+cleanup() {
+    trap - EXIT INT TERM
+    exec 2>/dev/null    # 중계 프로세스 종료 시 bash 잡 알림 숨김
+    if [ -n "$PIPE" ] && kill -0 "$PIPE" 2>/dev/null; then pkill -P "$PIPE" 2>/dev/null; kill "$PIPE" 2>/dev/null; fi
+    [ -n "$SD" ] && printf %s "$TOKEN" | src "$(cleanup_cmd "$SD")" >/dev/null 2>&1
+    [ -n "$DD" ] && printf %s "$TOKEN" | dst "$(cleanup_cmd "$DD")" >/dev/null 2>&1
+    [ -n "$PIPE" ] && wait "$PIPE" 2>/dev/null
+}
+
+# ===== 인자 처리 =====
+if [ $# -ne 2 ]; then
+    echo 'usage: tmcp <pane>:<경로> <pane>[:<경로>]   (예: tmcp 2.3:/opt/a.tgz 1.2, tmcp .2:a.tgz .3:/opt/b.tgz)' >&2
+    exit 2
+fi
+case $TMPBASE in /*) ;; *) die "TMCP_TMPDIR는 절대 경로여야 함: $TMPBASE" ;; esac
+case $TMPBASE in *[!A-Za-z0-9/._-]*) die "TMCP_TMPDIR에 특수문자 불가: $TMPBASE" ;; esac
+
+# pane별 마스터 경로에 쓰는 tmux 서버 이름 (tmux 설정: set-environment -gF TMUX_SRV '#{b:socket_path}')
+SRV=$(tmux show-environment -g TMUX_SRV 2>/dev/null)
+case $SRV in TMUX_SRV=*) SRV=${SRV#TMUX_SRV=} ;; *) SRV="" ;; esac
+
+split "$1"; SRC_ID=$(pane_id_of "$SP" "${TMUX_PANE:-}") || exit 1; SRC=${SPATH%/}
+split "$2"; DST_ID=$(pane_id_of "$SP" "${TMUX_PANE:-}") || exit 1; DDIR=$SPATH
+[ -n "$SRC" ] || die "보낼 경로 없음 (예: 2.3:/opt/a.tgz)"
+[ "$SRC_ID" != "$DST_ID" ] || die "보내는 pane과 받는 pane이 같음"
+case ${TMUX_PANE:-} in "$SRC_ID"|"$DST_ID") die "tmcp를 실행한 pane 자신은 대상으로 지정 불가" ;; esac
+
+case $SRC in
+    */*) sdir=${SRC%/*}; sbase=${SRC##*/}; [ -n "$sdir" ] || sdir=/ ;;
+    *)   sdir=.; sbase=$SRC ;;
+esac
+
+resolve "$SRC_ID"; SRC_RUN=("${RUN[@]}"); SRC_DESC=$DESC; SRC_LOCAL=$LOCAL; check_pane "$SRC_ID" "$SRC_DESC"
+resolve "$DST_ID"; DST_RUN=("${RUN[@]}"); DST_DESC=$DESC; check_pane "$DST_ID" "$DST_DESC"
+
+TOKEN=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom 2>/dev/null | head -c 16)
+[ ${#TOKEN} -eq 16 ] || die "토큰 생성 실패"
+
+# ===== 준비: 양쪽 임시 FIFO =====
+SD="" DD="" PIPE=""
+trap cleanup EXIT
+trap 'exit 130' INT TERM
+SD=$(printf %s "$TOKEN" | src "$(setup_cmd 622)") && valid_dir "$SD" || { SD=""; die "임시 FIFO 생성 실패: $SRC_DESC"; }
+DD=$(printf %s "$TOKEN" | dst "$(setup_cmd 644)") && valid_dir "$DD" || { DD=""; die "임시 FIFO 생성 실패: $DST_DESC"; }
+
+printf '%s:%s\n  -> %s:%s\n' "$SRC_DESC" "$SRC" "$DST_DESC" "${DDIR:-(셸 현재 디렉토리)}" >&2
+
+# ===== 중계 시작: 보내는 쪽 FIFO → 로컬 → 받는 쪽 FIFO =====
+(
+    printf %s "$TOKEN" | src "$TK; exec cat <$SD/\"\$t.f\"" |
+        { printf %s "$TOKEN"; meter; } |
+        dst "$TK; exec cat >$DD/\"\$t.f\""
+) &
+PIPE=$!
+
+# ===== pane 셸이 실행할 스크립트 (pane에는 " sh <스크립트"만 입력) =====
+# 입력 줄을 짧게 유지 (줄 편집 없는 셸의 입력 줄 길이 한도 회피), pane 셸 종류와 무관하게 sh로 실행
+# 리다이렉트는 안쪽 서브셸로 격리 (리다이렉트 실패로 셸이 빠져나가도 종료 코드 기록 보장)
+# 에러는 pane 화면과 에러 파일에 같이 기록 (tmcp 실행 화면에 표시)
+
+# 보내는 쪽: 원본 확인 → 종류(F, D:<권한>, 실패 X) 기록 → 묶어서 FIFO로
+#   디렉토리: 내용만 묶음 (받는 쪽이 대상 디렉토리 이름·권한 결정) / 파일: 링크 따라감(-h)
+envp=""
+if [ -n "$SRC_LOCAL" ]; then envp="COPYFILE_DISABLE=1 "; fi    # macOS tar의 ._ 메타파일 방지
+S_ST=$SD/$TOKEN.st; S_E=$SD/$TOKEN.e; S_F=$SD/$TOKEN.f
+scmd="(echo S >>$S_ST; s=$(word "$SRC"); if [ -d \"\$s\" ] && [ -r \"\$s\" ] && [ -x \"\$s\" ]; then m=\$( (stat -L -c %a \"\$s\" || stat -L -f %Lp \"\$s\") 2>/dev/null); echo \"D:\$m\" >>$S_ST; ({ ${envp}tar -c -f - -C \"\$s\" .; } >$S_F); elif [ -f \"\$s\" ] && [ -r \"\$s\" ]; then echo F >>$S_ST; ({ ${envp}tar -c -h -f - -C $(word "$sdir") $(q "./$sbase"); } >$S_F); else echo \"tmcp: \$s: 없거나 읽을 수 없음\" | tee -a $S_E >&2; echo X >>$S_ST; (exit 1); fi; echo \$? >>$S_ST)"
+
+# 받는 쪽: cp -r 규칙으로 최종 경로(f) 결정 → FIFO에서 풀기
+#   기존 디렉토리면 그 안에, 아니면 그 이름으로 / 새 파일은 같은 디렉토리 임시 위치에 푼 뒤 mv
+#   새 디렉토리 권한은 원본 & umask, 기존 디렉토리 권한은 유지 (GNU tar는 --no-overwrite-dir)
+dst_cmd() {    # $1 원본 종류 F|D, $2 원본 디렉토리 권한(8진수, 없으면 umask 기본)
+    local D_ST=$DD/$TOKEN.st D_E=$DD/$TOKEN.e D_F=$DD/$TOKEN.f bq slash conflict extract
+    local x="tar -x -m --no-same-owner --no-same-permissions -f -"
+    bq=$(q "$sbase")
+    if [ "$1" = F ]; then
+        slash='case $d in */) e "$d: 디렉토리가 아님" ;; esac; '
+        conflict='[ -d "$f" ] && e "$f: 디렉토리를 파일로 덮어쓸 수 없음"; '
+        extract="exec <$D_F; if [ -e \"\$f\" ]; then tar -x -O -f - >\"\$f\"; else t=\$(mktemp -d \"\$p/.tmcp.XXXXXX\") || exit 1; $x -C \"\$t\" && mv -f \"\$t\"/$bq \"\$f\"; r=\$?; rm -f \"\$t\"/$bq; rmdir \"\$t\"; exit \$r; fi"
+    else
+        slash=''
+        conflict='[ -e "$f" ] && [ ! -d "$f" ] && e "$f: 파일을 디렉토리로 덮어쓸 수 없음"; '
+        local mk="mkdir \"\$f\""
+        [ -n "$2" ] && mk="mkdir -m \"\$(printf %o \$((0$2 & ~0\$(umask))))\" \"\$f\""
+        extract="exec <$D_F; o=; tar --version 2>/dev/null | grep 'GNU tar' >/dev/null && o=--no-overwrite-dir; [ -d \"\$f\" ] || $mk || exit 1; $x \$o -C \"\$f\""
+    fi
+    echo "(echo S >>$D_ST; (e() { echo \"tmcp: \$*\" | tee -a $D_E >&2; exit 1; }; d=$(word "${DDIR:-.}"); if [ -d \"\$d\" ]; then p=\$d; f=\${d%/}/$bq; else ${slash}f=\${d%/}; p=\$(dirname -- \"\$f\"); [ -d \"\$p\" ] || e \"\$p: 디렉토리 없음\"; fi; ${conflict}${extract}); echo \$? >>$D_ST)"
+}
+
+# 앞 공백: 히스토리 제외 설정 시 기록 안 남음
+put_script src "$SD" "$scmd" || die "스크립트 저장 실패: $SRC_DESC"
+tmux send-keys -t "$SRC_ID" -l " sh <$SD/$TOKEN.s" && tmux send-keys -t "$SRC_ID" Enter || die "명령 입력 실패: $SRC_DESC"
+echo "전송 중..." >&2
+
+# ===== 보내는 쪽 시작·원본 종류 확인 후 받는 쪽 명령 입력 =====
+SECONDS=0
+while :; do
+    read -r _ stype rs <<< "$(status_of src)"
+    [ -n "$stype" ] && break
+    [ $SECONDS -ge $START_TIMEOUT ] && die "명령 시작 안 됨: $SRC_DESC → ${START_TIMEOUT}초 대기 초과, 셸 프롬프트 상태인지·중첩 ssh 아닌지 확인 (입력된 명령은 나중에 실행돼도 임시 파일이 없어 실패로 끝남)"
+    sleep 0.3
+done
+if [ "$stype" = X ]; then
+    [ -n "$rs" ] || sleep 0.3
+    report src 1 "$SRC_DESC"; exit 1
+fi
+smode=""
+case $stype in D:*) smode=${stype#D:}; stype=D ;; esac
+case $smode in *[!0-7]*) smode="" ;; esac    # 8진수만 허용
+
+put_script dst "$DD" "$(dst_cmd "$stype" "$smode")" || die "스크립트 저장 실패: $DST_DESC"
+tmux send-keys -t "$DST_ID" -l " sh <$DD/$TOKEN.s" && tmux send-keys -t "$DST_ID" Enter || die "명령 입력 실패: $DST_DESC"
+
+# ===== 완료 대기: 양쪽 상태 파일 감시 =====
+SECONDS=0
+pipe_end=""
+while :; do
+    read -r _ _ rs <<< "$(status_of src)"
+    read -r ds rd <<< "$(status_of dst)"
+    [ -n "$rs" ] && [ -n "$rd" ] && break                                     # 양쪽 종료
+    { [ -n "$rs" ] && [ "$rs" != 0 ]; } || { [ -n "$rd" ] && [ "$rd" != 0 ]; } && break    # 한쪽 실패
+    if [ -z "$ds" ] && [ $SECONDS -ge $START_TIMEOUT ]; then break; fi        # 받는 쪽 시작 안 됨
+    if [ -z "$pipe_end" ] && ! kill -0 "$PIPE" 2>/dev/null; then pipe_end=$SECONDS; fi
+    if [ -n "$pipe_end" ] && [ $((SECONDS - pipe_end)) -ge $FINISH_TIMEOUT ]; then break; fi
+    sleep 0.5
+done
+
+if [ -z "$ds" ]; then
+    die "명령 시작 안 됨: $DST_DESC → ${START_TIMEOUT}초 대기 초과, 셸 프롬프트 상태인지·중첩 ssh 아닌지 확인 (입력된 명령은 나중에 실행돼도 임시 파일이 없어 실패로 끝남)"
+fi
+# 받는 쪽 실패가 원인이면 보내는 쪽은 끊긴 것뿐이라 받는 쪽만 보고
+if [ "$rd" != 0 ]; then report dst "$rd" "$DST_DESC"; exit 1; fi
+if [ "$rs" != 0 ]; then report src "$rs" "$SRC_DESC"; exit 1; fi
+echo "완료 (${SECONDS}초)" >&2

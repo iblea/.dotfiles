@@ -48,6 +48,7 @@ if [[ "$(uname -s)" = "Darwin" ]]; then
 	fi
 fi
 
+[ -d "$HOME/.ssh/cm" ] || mkdir -m 700 "$HOME/.ssh/cm"
 
 # sbin paths (for ifconfig, iptables, etc.)
 sbin_paths=(
