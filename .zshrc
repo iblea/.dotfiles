@@ -397,6 +397,8 @@ fi
 if [ -f "$HOME/.dotfiles/bindkey/bindkey.sh" ]; then
   source $HOME/.dotfiles/bindkey/bindkey.sh
 fi
+# M-h: 입력 중인 줄 보존(push-line) 후 ll 실행 (oh-my-zsh의 M-l -> ls 방식)
+bindkey -s "\eh" "^q ll\n"
 
 # ssh-agent
 if [ -f "$HOME/.dotfiles/script/ssh-agent-init.sh" ]; then
