@@ -20,6 +20,12 @@ return {
     config = function()
         require('render-markdown').setup({
             render_modes = { 'n', 'c', 'nt' },
+            -- 커서 위치 행도 렌더링 유지
+            anti_conceal = { enabled = false },
+            -- 커서 위치 행의 conceal 유지 (테이블 정렬, 인라인 기호 등)
+            win_options = {
+                concealcursor = { rendered = 'nc' },
+            },
         })
         require('render-markdown').enable()
     end,

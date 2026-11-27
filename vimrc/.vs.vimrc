@@ -172,9 +172,9 @@ nnoremap F <C-w>W
 " vnoremap <Leader>g <C-w>-
 " nnoremap <Leader>h <C-w>+
 " vnoremap <Leader>h <C-w>+
-nnoremap <Leader>r <C-w>-
+" nnoremap <Leader>r <C-w>-
 vnoremap <Leader>r <C-w>-
-nnoremap <Leader>t <C-w>+
+" nnoremap <Leader>t <C-w>+
 vnoremap <Leader>t <C-w>+
 nnoremap <Leader>, <C-w><
 vnoremap <Leader>, <C-w><
@@ -182,8 +182,8 @@ nnoremap <Leader>. <C-w>>
 vnoremap <Leader>. <C-w>>
 nnoremap <Leader>v <C-W>=
 vnoremap <Leader>v <C-W>=
-nnoremap <Leader>r <c-w>K
-nnoremap <Leader>t <c-w>H
+nnoremap <Leader>R <c-w>K
+nnoremap <Leader>T <c-w>H
 " nnoremap <Leader>p <ESC>:sp<CR>
 
 " nnoremap <Leader>u :bp<CR>

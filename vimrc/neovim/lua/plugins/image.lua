@@ -1,3 +1,5 @@
+local ib = require("modules.image_backend")
+
 return {
   "3rd/image.nvim",
   build = false,
@@ -36,20 +38,13 @@ return {
   cond = vim.fn.executable("magick") == 1,
   event = "VimEnter",
   opts = {
-    backend = (function()
-      local is_ghostty = vim.env.TERM_PROGRAM == "ghostty"
-        or vim.env.LC_TERM_PROGRAM == "ghostty"
-      if not is_ghostty and vim.env.TMUX then
-        local result = vim.fn.system("tmux show-environment -g LC_TERM_PROGRAM 2>/dev/null")
-        is_ghostty = result:find("ghostty") ~= nil
-      end
-      return is_ghostty and "kitty" or "sixel"
-    end)(),
+    backend = ib.is_ghostty() and "kitty" or "sixel",
     kitty_method = vim.env.TMUX and "unicode-placeholders" or "normal",
     processor = "magick_cli",
     integrations = {
       markdown = {
-        enabled = true,
+        -- snacks.image 사용 시 문서 이미지는 snacks 담당
+        enabled = not ib.use_snacks(),
         clear_in_insert_mode = false,
         download_remote_images = true,
         filetypes = { "markdown", "vimwiki" },
@@ -57,17 +52,46 @@ return {
     },
     max_height_window_percentage = 50,
     tmux_show_only_in_active_window = true,
-    hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" },
+    -- snacks.image 사용 시 이미지 파일 열기도 snacks 담당
+    hijack_file_patterns = ib.use_snacks() and {} or { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" },
   },
   config = function(_, opts)
     local image = require("image")
     image.setup(opts)
     image.disable()
+
+    -- kitty unicode-placeholders 잔상 임시 대응
+    -- placeholder를 tty에 직접 출력하므로 nvim이 다시 그리지 않는 셀에 잔상 발생
+    -- 화면 변경 시 전체 redraw 후 렌더된 이미지 강제 재렌더 (sixel 백엔드 방식 모방)
+    if opts.backend == "kitty" then
+      local timer = vim.uv.new_timer()
+      local function redraw_images()
+        if not image.is_enabled() or #image.get_images() == 0 then return end
+        vim.cmd("noautocmd mode")
+        vim.schedule(function()
+          for _, img in ipairs(image.get_images()) do
+            if img.is_rendered then
+              img.is_rendered = false -- 동일 위치 렌더 skip 회피
+              img:render()
+            end
+          end
+        end)
+      end
+      vim.api.nvim_create_autocmd({ "WinScrolled", "WinResized", "TextChanged", "InsertLeave", "BufWinEnter" }, {
+        group = vim.api.nvim_create_augroup("ImageGhostRedraw", { clear = true }),
+        callback = function()
+          -- 연속 스크롤 시 마지막 이벤트 기준 1회 처리
+          timer:stop()
+          timer:start(50, 0, vim.schedule_wrap(redraw_images))
+        end,
+      })
+    end
   end,
   keys = {
     {
-      "<leader>it",
+      "<leader>ti",
       function()
+        if ib.use_snacks() then return ib.toggle_snacks() end
         local image = require("image")
         if image.is_enabled() then
           image.disable()
